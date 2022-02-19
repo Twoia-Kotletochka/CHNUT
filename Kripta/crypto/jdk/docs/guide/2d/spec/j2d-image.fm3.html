@@ -1,0 +1,298 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API: 5 - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-image.fm2.html">PREV</a>
+ | <a href="j2d-image.fm4.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="66504"><i>5.3	</i> Using BufferedImages
+</a></h2>
+
+<blockquote>
+<a name="66506"><!-- --></a>
+The <kbd>BufferedImage</kbd> class is the main class supporting the immediate imaging mode. It manages an image in memory, providing ways to store pixel data, interpret pixel data, and to render the pixel data to a <kbd>Graphics</kbd> or 
+<kbd>Graphics2D</kbd> context. <p>
+</blockquote>
+<br>
+<h3>
+<a name="66509"><!-- --></a>
+<i>5.3.1	</i> Creating a BufferedImage
+</h3>
+
+<blockquote>
+<a name="67919"><!-- --></a>
+To create a <kbd>BufferedImage</kbd>, call the <kbd>Component.createImage</kbd> method; this returns a <kbd>BufferedImage</kbd> whose drawing characteristics match those of the component used to create it&#45;&#45;the created image is opaque, has the 
+foreground 
+and background colors of the <kbd>Component</kbd>, and you can&#39;t adjust the transparency of the image. You could use this technique when you want to do double buffered drawing for animation in a component; the discussion 
+<a href="j2d-image.fm3.html#67210">&#34;Drawing in an Offscreen Buffer&#34;</a> gives more details. <p>
+</blockquote><blockquote><pre>    public Graphics2D createDemoGraphics2D(Graphics g) {
+        Graphics2D g2 = null;
+        int width = getSize().width; 
+        int height = getSize().height; 
+
+        if (offImg == null || offImg.getWidth() != width ||
+                        offImg.getHeight() != height) {
+            offImg = (BufferedImage) createImage(width, height);
+        } 
+
+        if (offImg != null) {
+            g2 = offImg.createGraphics();
+            g2.setBackground(getBackground());
+        }
+
+        // .. clear canvas ..
+        g2.clearRect(0, 0, width, height);
+
+        return g2;
+    }
+</pre></blockquote><blockquote>
+<a name="66519"><!-- --></a>
+You can also create a blank <kbd>BufferedImage</kbd> in memory using one of several constructor methods provided. <p>
+</blockquote>
+<br>
+<h3>
+<a name="66525"><!-- --></a>
+<i>5.3.2	</i> Drawing in an Offscreen Buffer
+</h3>
+
+<blockquote>
+<a name="67511"><!-- --></a>
+The <kbd>BufferedImage</kbd> class can be used to prepare graphic elements offscreen then copy them to the screen. This technique is especially useful when a graphic is complex or used repeatedly. For example, if you want to display a complicated shape se
+
+veral times, you could draw it once into an offscreen buffer and then copy it to different locations in the window. By drawing the shape once and copying it, you can display the graphics more quickly. <p>
+<a name="67512"><!-- --></a>
+The <kbd>java.awt</kbd> package facilitates the use of offscreen buffers by letting you draw to an <kbd>Image</kbd> object the same way that you draw to a window. All of the Java 2D<sup>TM</sup> API rendering features can be used when drawing to offscreen
+
+ images. <p>
+<a name="67516"><!-- --></a>
+Offscreen buffers are often used for animation. For example, you could use an offscreen buffer to draw an object once and then move it around in a window. Similarly, you could use an offscreen buffer to provide feedback as a user moves a graphic using the
+
+ mouse. Instead of redrawing the graphic at every mouse location, you could draw the graphic once to an offscreen buffer, and then copy it to the mouse location as the user drags the mouse.<a href="#67519"><sup>1</sup></a><p>
+<a name="67523"><!-- --></a>
+<p><center><img src="j2d-image.fm.anc7.gif"></center><p>
+</blockquote>
+<blockquote><p>
+<a name="67525"><!-- --></a>
+<b>Figure 5-3	</b> Using an Offscreen Buffer
+
+</p>
+</blockquote><blockquote>
+<a name="67529"><!-- --></a>
+<a href="j2d-image.fm3.html#67525">Figure&#160;5-3</a> demonstrates how a program can draw to an offscreen image and then copy that image into a window multiple times. The last time the image is copied, it is transformed. Note that transforming the image 
+
+instead of redrawing it with the transformation might produce unsatisfactory results.<p>
+</blockquote>
+<br>
+<a name="67530"><!-- --></a>
+<h4><i>5.3.2.1	 Creating an Offscreen Buffer
+</i></h4>
+
+<blockquote>
+<a name="67531"><!-- --></a>
+The simplest way to create an image that you can use as an offscreen buffer is to use the <kbd>Component</kbd>.<kbd>createImage</kbd> method.<p>
+<a name="67532"><!-- --></a>
+By creating an image whose color space, depth, and pixel layout exactly match the window into which you are drawing, the image can be efficiently blitted to a graphics device. This allows <kbd>drawImage</kbd> to do its job quickly.<p>
+<a name="67533"><!-- --></a>
+You can also construct a<kbd> BufferedImage </kbd>object directly to use as an offscreen buffer. This is useful when you need control over the offscreen image&#39;s type or transparency. <p>
+<a name="67534"><!-- --></a>
+<kbd>BufferedImage</kbd> supports several predefined image types:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="67535"><!-- --></a>
+<kbd>TYPE_3BYTE_BGR</kbd>
+</li>
+<li>
+<a name="67536"><!-- --></a>
+<kbd>TYPE_4BYTE_ABGR</kbd>
+</li>
+<li>
+<a name="67537"><!-- --></a>
+<kbd>TYPE_4BYTE_ABGR_PRE</kbd>
+</li>
+<li>
+<a name="69224"><!-- --></a>
+<kbd>TYPE_BYTE_BINARY</kbd>
+</li>
+<li>
+<a name="69228"><!-- --></a>
+<kbd>TYPE_BYTE_GRAY</kbd>
+</li>
+<li>
+<a name="69238"><!-- --></a>
+<kbd>TYPE_BYTE_INDEXED</kbd>
+</li>
+<li>
+<a name="67539"><!-- --></a>
+<kbd>TYPE_CUSTOM</kbd>
+</li>
+<li>
+<a name="69260"><!-- --></a>
+<kbd>TYPE_INT_ARGB_PRE</kbd>
+</li>
+<li>
+<a name="67540"><!-- --></a>
+<kbd>TYPE_INT_ARGB</kbd>
+</li>
+<li>
+<a name="69264"><!-- --></a>
+<kbd>TYPE_INT_BGR</kbd>
+</li>
+<li>
+<a name="69274"><!-- --></a>
+<kbd>TYPE_INT_RGB</kbd>
+</li>
+<li>
+<a name="69284"><!-- --></a>
+<kbd>TYPE_USHORT_555_RGB</kbd>
+</li>
+<li>
+<a name="69288"><!-- --></a>
+<kbd>TYPE_USHORT_565_RGB</kbd>
+</li>
+<li>
+<a name="69268"><!-- --></a>
+<kbd>TYPE_INT_GRAY</kbd>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="69324"><!-- --></a>
+A <kbd>BufferedImage</kbd> object can contain an alpha channel. In <a href="j2d-image.fm3.html#67525">Figure&#160;5-3</a>, an alpha channel is used to distinguish painted and unpainted areas, allowing an irregular shape to appear over graphics that have a
+
+lready been painted (in this case, a shaded rectangle). In other cases, you might use alpha channel to blend the colors of the new image into those in the existing image. <p>
+<a name="69325"><!-- --></a>
+Note: unless you need alpha image data for transparency, as with the irregularly shaped images shown in Figure 5-2, you should avoid creating an off-screen buffer with alpha. Using alpha where it&#39;s unnecessary slows rendering performance. <p>
+<a name="67543"><!-- --></a>
+<kbd>GraphicsConfiguration</kbd> provides convenience methods that automatically create buffered images in a format compatible with your configuration. You can also query the graphics configuration associated with the graphics device on which the window r
+
+esides to get the information you need to construct a compatible <kbd>BufferedImage</kbd> object. <p>
+</blockquote>
+<br>
+<a name="67210"><!-- --></a>
+<h4><i>5.3.2.2	 Drawing in an Offscreen Buffer
+</i></h4>
+
+<blockquote>
+<a name="66527"><!-- --></a>
+To draw in a buffered image, you call its <kbd>BufferedImage.createGraphics</kbd> method, which returns a <kbd>Graphics2D</kbd> object. With this object, you can call all of the <kbd>Graphics2D</kbd> methods to draw graphics primitives, place text, and re
+
+nder other images in the image. This drawing technique supports dithering and other enhancements provided by the 2D imaging package. The following code illustrates the use of offscreen buffering:<p>
+</blockquote><blockquote><pre><code>
+</code><code>    public void update(Graphics g){
+</code><code>        Graphics2D g2 = (Graphics2D)g;
+</code><code>        if(firstTime){
+</code><code>            Dimension dim = getSize();
+</code><code>            int w = dim.width;
+</code><code>            int h = dim.height;
+</code><code>            area = new Rectangle(dim);
+</code>            bi = (BufferedImage)createImage(w, h);
+            big = bi.createGraphics();
+            rect.setLocation(w/2-50, h/2-25);
+            big.setStroke(new BasicStroke(8.0f));
+            firstTime = false;
+        } 
+
+        // Clears the rectangle that was previously drawn.
+        big.setColor(Color.white);
+        big.clearRect(0, 0, area.width, area.height);
+
+        // Draws and fills the newly positioned rectangle to the buffer.
+        big.setPaint(strokePolka);
+        big.draw(rect);
+        big.setPaint(fillPolka);
+        big.fill(rect);
+
+        // Draws the buffered image to the screen.
+        g2.drawImage(bi, 0, 0, this);
+<code>            
+</code><code>    }
+</code><code>
+</code></pre></blockquote>
+<br>
+<h3>
+<a name="67504"><!-- --></a>
+<i>5.3.3	</i> Manipulating BufferedImage Data Directly
+</h3>
+
+<blockquote>
+<a name="67505"><!-- --></a>
+In addition to drawing directly in a <kbd>BufferedImage</kbd>, you can directly access and manipulate the image&#39;s pixel data in a couple of ways. These are useful if you&#39;re implementing the <kbd>BufferedImageOp</kbd> filtering interface, as 
+described in 
+<a href="j2d-image.fm8.html#63208">&#34;Image Processing and Enhancement&#34;</a>. <p>
+<a name="66543"><!-- --></a>
+You can use the <kbd>BufferedImage</kbd>.<kbd>setRGB</kbd> methods to directly set the value of a pixel or a pixel array to a specific RGB value. Note that no dithering is performed when you modify pixels directly. You can also manipulate pixel data by 
+manipulating a <kbd>WritableRaster</kbd> object associated with a <kbd>BufferedImage</kbd> (see<a href="j2d-image.fm4.html#66674">&#34;Managing and Manipulating Rasters&#34;</a>). <p>
+</blockquote>
+<br>
+<h3>
+<a name="66550"><!-- --></a>
+<i>5.3.4	</i> Filtering a BufferedImage
+</h3>
+
+<blockquote>
+<a name="66611"><!-- --></a>
+You can apply a filtering operation to a <kbd>BufferedImage</kbd> using an object that implements <kbd>BufferedImageOp</kbd> interface. Filtering and the classes that provide this filtering interface are discussed in 
+<a href="j2d-image.fm8.html#63208">&#34;Image Processing and Enhancement&#34;</a>. <p>
+</blockquote>
+<br>
+<h3>
+<a name="66557"><!-- --></a>
+<i>5.3.5	</i> Rendering a BufferedImage
+</h3>
+
+<blockquote>
+<a name="66559"><!-- --></a>
+To render a buffered image into a specific context, call one of the <kbd>drawImage</kbd> method of the context&#39;s <kbd>Graphics</kbd> object. For example, when rendering within a <kbd>Component</kbd>.<kbd>paint</kbd> method, you call 
+<kbd>drawImage</kbd> on the graphics object passed to the method. <p>
+</blockquote><blockquote><pre>    public void paint(Graphics g) {
+
+        if (getSize().width &lt;= 0 || getSize().height &lt;= 0)
+            return;
+
+        Graphics2D g2 = (Graphics2D) g;
+
+        if (offImg != null &amp;&amp; isShowing())  {
+            g2.drawImage(offImg, 0, 0, this);
+        }
+    }
+</pre></blockquote>
+<font size="-1">
+<a name="67519">
+1. It is up to the programmer to  erase  the previous version of
+the image before making a new copy at a new location. This can be
+done by redrawing the background or copying the background from
+another offscreen buffer.
+</font>
+ <br> <hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-image.fm2.html">PREV</a>
+ | <a href="j2d-image.fm4.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Mon Nov 22 09:37:15 1999 -->
+ 
+
+
+</body>
+</html>

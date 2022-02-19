@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 5 - Versioning of Serializable Objects
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="version.doc5.html">PREV</a>
+ | <a href="version.doc7.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="6678"><i>	5.6	</i> Type Changes Affecting Serialization
+</a></h2>
+
+<blockquote>
+<a name="5366"><!-- --></a>
+With these concepts, we can now describe how the design will cope with the different cases of an evolving class. The cases are described in terms of a stream written by some version of a class. When the stream is read back by the same version of the class, there is no loss of information or functionality. The stream is the only source of information about the original class. Its class descriptions, while a subset of the original class description, are sufficient to match up the data in the stream with the version of the class being reconstituted.<p>
+<a name="6723"><!-- --></a>
+The descriptions are from the perspective of the stream being read in order to reconstitute either an earlier or later version of the class. In the parlance of RPC systems, this is a &#34;receiver makes right&#34; system. The writer writes its data in the most suitable form and the receiver must interpret that information to extract the parts it needs and to fill in the parts that are not available.<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="version.doc5.html">PREV</a>
+ | <a href="version.doc7.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:48:07 1999 -->
+ 
+
+
+</body>
+</html>

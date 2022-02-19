@@ -1,0 +1,362 @@
+<HTML>
+
+<HEAD>
+
+   <TITLE>Java IDL: Example 2</TITLE>
+
+<!-- Changed by: desoto, 1/29/98 -->
+
+   <X-SAS-WINDOW TOP=42 BOTTOM=477 LEFT=4 RIGHT=534>
+
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF">
+
+
+
+<H1 ALIGN=CENTER>Example 2: Hello World with Persistent State</H1>
+
+<HR>
+
+
+
+<P>
+Java IDL only supports transient objects - 
+if an object's server process halts and restarts, the object reference
+becomes invalid. However, Example 2 illustrates 
+how a transient object can store its state and re-initialize itself
+from this state each time the server is restarted. 
+
+<p>
+The Example 2 server hosts a Hello object that stores a string
+in a file. You provide the string as a command line argument to the
+client program. The server Hello object "remembers" the string and
+returns it to the client the next time that the client is run,
+ even if the server has been stopped and restarted.
+
+<P> 
+Example 2 is identical to Example 1 except for the persistence
+enhancements. This page only discusses the <font color=red>code
+neccessary to these enhancements.</font> 
+<P>This page contains:
+<UL>
+
+   <LI>The <A href="#IDL">IDL</A> for the persistent "Hello World" program
+
+   
+
+   <LI>A <A href="#server">transient server</A> that creates an object, 
+
+   registers it in a naming context, and saves its state in a file.
+
+   
+
+   <LI>An <A HREF="#application">application client</A>.
+   </UL>
+
+
+
+<P><A href="#instructions">Instructions</A> for compiling and running 
+
+the example are provided.
+
+
+
+
+
+
+<!--************IDL*************-->
+
+
+
+<A name="IDL">
+
+<H2>Interface Definition (<code>Hello.idl</code>)</H2></A>
+
+
+<PRE>
+module HelloApp
+{
+
+    interface Hello
+    {
+        <font color=red>exception cantWriteFile{};
+        exception cantReadFile{};</font>
+
+        string sayHello(<font color=red>in string message)
+                raises (cantWriteFile);
+
+        string lastMessage()
+                raises (cantReadFile);</font>
+    };
+};
+
+</PRE>
+
+<font color=red><li></font>
+Because the Hello object reads from and writes to a file, you will
+need to throw Java language exceptions. (See 
+<a href="#server">Implementing the Server</a> below). The
+Hello interface must define and raise exceptions in order to generate
+the appropriate skeleton definitions.<br><br>
+
+<font color=red><li></font>
+The <code>sayHello</code> method has been modified to take a string argument,
+which will be stored in a file at runtime. A <code>lastMessage</code>
+method has been added to return this stored string to the client.<br><br>
+
+<font color=red><li></font>
+The IDL compiler generates a directory <code>HelloApp/
+<font color=red>HelloPackage</font></code> that contains the following
+exception class files: 
+<UL>
+<DL><font color=red>
+<DT><TT>cantReadFile.java</TT>
+<DT><TT>cantReadFileHelper.java</TT>
+<DT><TT>cantReadFileHolder.java</TT>
+<DT><TT>cantWriteFile.java</TT>
+<DT><TT>cantWriteFileHelper.java</TT>
+<DT><TT>cantWriteFileHolder.java</TT>
+</DL></UL></font>
+
+<br>Use of these classes is illustrated in the <a href="#server">implementation</a> below.
+<!--************TRANSIENT SERVER*************-->
+
+
+
+<A NAME="server">
+
+<H2>Implementing the Server (<code>HelloServer.java</code>)</H2></A>
+
+
+
+
+<PRE>// <A HREF="examplelicense.html">Copyright and License</A> 
+
+import HelloApp.*;
+import org.omg.CosNaming.*;
+import org.omg.CosNaming.NamingContextPackage.*;
+import org.omg.CORBA.*;
+&nbsp;
+class HelloServant extends _HelloImplBase
+{<font color=red>
+    public String sayHello(String msg)
+        throws HelloApp.HelloPackage.cantWriteFile
+    {
+        try {
+                synchronized(this) {
+                   File helloFile = new File("helloStorage.txt");
+                   FileOutputStream fos = new FileOutputStream(helloFile);
+                   byte[] buf = new byte[msg.length()];
+                   msg.getBytes(0, msg.length(), buf, 0);
+                   fos.write(buf);
+                   fos.close();
+                }
+        } catch(Exception e) {
+                throw new HelloApp.HelloPackage.cantWriteFile();
+        }</font>
+        return "\nHello world !!\n";
+    }
+      <font color=red> 
+    public String lastMessage()
+        throws HelloApp.HelloPackage.cantReadFile
+    {
+        try {
+                synchronized(this) {
+                   File helloFile = new File("helloStorage.txt");
+                   FileInputStream fis = new FileInputStream(helloFile);
+                   byte[] buf = new byte[1000];
+                   int n = fis.read(buf);
+                   String lastmsg = new String(buf);
+                   fis.close();
+                   return lastmsg;
+                }
+        } catch(Exception e) {
+                throw new HelloApp.HelloPackage.cantReadFile();
+        }
+    }</font>
+}
+
+&nbsp;
+public class HelloServer {
+&nbsp;
+    public static void main(String args[])
+    {
+	try{
+	    // create and initialize the ORB
+	    ORB orb = ORB.init(args, null);
+&nbsp;
+	    // create servant and register it with the ORB
+	    HelloServant helloRef = new HelloServant();
+	    orb.connect(helloRef);
+&nbsp;
+	    // get the root naming context
+	    org.omg.CORBA.Object objRef = 
+		orb.resolve_initial_references("NameService");
+	    NamingContext ncRef = NamingContextHelper.narrow(objRef);
+&nbsp;
+	    // bind the Object Reference in Naming
+	    NameComponent nc = new NameComponent("Hello", "");
+	    NameComponent path[] = {nc};
+	    ncRef.rebind(path, helloRef);
+&nbsp;
+	    // wait for invocations from clients
+            java.lang.Object sync = new java.lang.Object();
+            synchronized (sync) {
+                sync.wait();
+            }
+&nbsp;
+	} catch (Exception e) {
+	    System.err.println("ERROR: " + e);
+	    e.printStackTrace(System.out);
+	}
+    }
+}
+&nbsp;</PRE>
+
+
+<font color=red><li></font>
+The <code>sayHello</code> and <code>lastMessage</code> method implementations
+throw the exceptions defined in the IDL file.  These methods must throw file
+IO exceptions or the Java language compiler issues warnings and errors.<br><br>
+
+<font color=red><li></font>
+The <code>HelloServant</code> object receives ansychronous and 
+possibly simultaneous method requests at
+runtime. Therefore, you should enclose all file IO code  
+in a <code>synchronized</code> clause.<br><br>
+
+<font color=red><li></font>
+No changes are required to <code>HelloServer.main</code>.
+
+
+<!--************APPLICATION*************-->
+
+
+
+<A name="application">
+
+<H2>Implementing the Client (<code>HelloClient.java</code>)</H2></A>
+
+<PRE>// <A HREF="examplelicense.html">Copyright and License</A> 
+&nbsp;
+import HelloApp.*;
+import org.omg.CosNaming.*;
+import org.omg.CORBA.*;
+&nbsp;
+public class HelloClient 
+{
+    public static void main(String args[])
+    {
+	try{
+	    // create and initialize the ORB
+	    ORB orb = ORB.init(args, null);
+&nbsp;
+            // get the root naming context
+            org.omg.CORBA.Object objRef = orb.resolve_initial_references("NameService");
+            NamingContext ncRef = NamingContextHelper.narrow(objRef);
+
+            // resolve the Object Reference in Naming
+            NameComponent nc = new NameComponent("Hello", "");
+            NameComponent path[] = {nc};
+            Hello helloRef = HelloHelper.narrow(ncRef.resolve(path));
+&nbsp;
+	    // call the Hello server object and print results
+	<font color=red>
+	    String oldhello = helloRef.lastMessage();
+            System.out.println(oldhello);</font>
+            String hello = helloRef.sayHello(<font color=red>args[0]</font>);
+            System.out.println(hello);
+&nbsp;
+	} catch (Exception e) {
+	    System.out.println("ERROR : " + e) ;
+	    e.printStackTrace(System.out);
+	}
+    }
+}
+
+&nbsp;</PRE>
+
+<font color=red><li></font>
+This client retrieves the stored message via <code>lastMessage</code>
+and stores the new message via an argument to <code>sayHello</code>.
+
+
+<!--************COMPILING THE EXAMPLES************-->
+
+
+
+<A name="instructions">
+
+<H2>Building and Running Hello World</H2></A>
+
+
+
+<P>
+The following instructions assume you can use port 1050
+for the Java&nbsp;IDL name server. Substitute a different
+port if necessary.  Note that for ports below 1024,
+you need root access on UNIX machines, and administrator
+privileges on Windows95 and NT.   Note also that the instructions use
+a slash (/) for path names. Windows95 and NT users should 
+subtitute a backslash (\).</P>
+
+<UL>
+
+<LI>Create source files as shown above. <br><br>
+
+<LI>Run <TT>idltojava</TT> on the IDL file to
+create stubs and skeletons:
+
+<PRE>
+	idltojava  Hello.idl
+</PRE>
+
+<LI>Compile the <TT>.java</TT> files, including the stubs and skeletons:
+<PRE>
+	javac *.java HelloApp/*.java
+</PRE>
+
+<LI>Make sure the name server is running:
+<PRE>
+	tnameserv -ORBInitialPort 1050&
+</PRE>
+
+<LI>Start the Hello server:
+<PRE>
+	java HelloServer -ORBInitialPort 1050
+</PRE>
+
+   <LI>Run the Hello application client from a different shell than the 
+   server:
+<PRE>
+	java HelloClient "remember this message" -ORBInitialPort 1050
+</PRE>
+</UL>
+
+
+
+<CENTER><P><HR>
+
+<TABLE cellpadding=8 cellspacing=4>
+<TR>
+  <TD ALIGN=CENTER><A href="index.html">Home</A></TD>
+</TR></TABLE>
+
+
+
+<HR><P><FONT SIZE="-2">
+
+   <A HREF="../../relnotes/SMICopyright.html">Copyright &#169;</A> 1995-98
+
+   <A HREF="http://www.sun.com/">Sun Microsystems, Inc.</A>
+
+    All Rights Reserved.</FONT></P>
+
+</CENTER>
+
+
+
+</BODY>
+
+</HTML>

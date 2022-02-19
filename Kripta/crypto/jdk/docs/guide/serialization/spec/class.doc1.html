@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 4 - Class Descriptors	
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="class.doc.html">PREV</a>
+ | <a href="class.doc2.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="5082"><i>	4.1	</i> The ObjectStreamClass Class
+</a></h2>
+
+<blockquote>
+<a name="1052"><!-- --></a>
+The <code>ObjectStreamClass</code> provides information about classes that are saved in a Serialization stream. The descriptor provides the fully-qualified name of the class and its serialization version UID. A <code>SerialVersionUID</code> identifies the unique original class version for which this class is capable of writing streams and from which it can read. <p>
+<a name="3047"><!-- --></a>
+<pre>package java.io;
+
+public class ObjectStreamClass
+{
+    public static ObjectStreamClass lookup(Class cl);
+
+    public String getName();
+
+    public Class forClass();
+
+    public ObjectStreamField[] getFields();
+
+    public long getSerialVersionUID();
+
+    public String toString();
+}
+</pre>
+
+
+<a name="1066"><!-- --></a>
+The <code>lookup</code> method returns the <code>ObjectStreamClass</code> descriptor for the specified class in the virtual machine. If the class has defined <code>serialVersionUID</code> it is retrieved from the class. If the <code>serialVersionUID</code> is not defined by the class, it is computed from the definition of the class in the virtual machine. <em>I</em>f the specified class is not serializable or externalizable, <em>null</em> is returned.<p>
+<a name="3132"><!-- --></a>
+The <code>getName</code> method returns the fully-qualified name of the class. The class name is saved in the stream and is used when the class must be loaded.<p>
+<a name="4501"><!-- --></a>
+The <code>forClass</code> method returns the <code>Class</code> in the local virtual machine if one was found by <code>ObjectInputStream.resolveClass</code> method. Otherwise, it returns <em>null</em>.<p>
+<a name="3133"><!-- --></a>
+The <code>getFields</code> method returns an array of <code>ObjectStreamField</code> objects that represent the serializable fields of this class.<p>
+<a name="5019"><!-- --></a>
+The <code>getSerialVersionUID</code> method returns the <code>serialVersionUID</code> of this class.   Refer to <a href="class.doc6.html#4100">Section&#160;4.6, &#34;Stream Unique Identifiers</a>.&#34; If not specified by the class, the value returned is a hash computed from the class&#39;s name, interfaces, methods, and fields using the Secure Hash Algorithm (SHA) as defined by the National Institute of Standards.<p>
+<a name="3157"><!-- --></a>
+The <code>toString</code> method returns a printable representation of the class descriptor including the name of the class and the <code>serialVersionUID</code>.<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="class.doc.html">PREV</a>
+ | <a href="class.doc2.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:48:04 1999 -->
+ 
+
+
+</body>
+</html>

@@ -1,0 +1,15 @@
+D:\CHNTU\Kripta\Lab1\Laba1_Csh\Laba1_Csh\bin\Release\net5.0\Laba1_Csh.exe
+D:\CHNTU\Kripta\Lab1\Laba1_Csh\Laba1_Csh\bin\Release\net5.0\Laba1_Csh.deps.json
+D:\CHNTU\Kripta\Lab1\Laba1_Csh\Laba1_Csh\bin\Release\net5.0\Laba1_Csh.runtimeconfig.json
+D:\CHNTU\Kripta\Lab1\Laba1_Csh\Laba1_Csh\bin\Release\net5.0\Laba1_Csh.runtimeconfig.dev.json
+D:\CHNTU\Kripta\Lab1\Laba1_Csh\Laba1_Csh\bin\Release\net5.0\Laba1_Csh.dll
+D:\CHNTU\Kripta\Lab1\Laba1_Csh\Laba1_Csh\bin\Release\net5.0\ref\Laba1_Csh.dll
+D:\CHNTU\Kripta\Lab1\Laba1_Csh\Laba1_Csh\bin\Release\net5.0\Laba1_Csh.pdb
+D:\CHNTU\Kripta\Lab1\Laba1_Csh\Laba1_Csh\obj\Release\net5.0\Laba1_Csh.GeneratedMSBuildEditorConfig.editorconfig
+D:\CHNTU\Kripta\Lab1\Laba1_Csh\Laba1_Csh\obj\Release\net5.0\Laba1_Csh.AssemblyInfoInputs.cache
+D:\CHNTU\Kripta\Lab1\Laba1_Csh\Laba1_Csh\obj\Release\net5.0\Laba1_Csh.AssemblyInfo.cs
+D:\CHNTU\Kripta\Lab1\Laba1_Csh\Laba1_Csh\obj\Release\net5.0\Laba1_Csh.csproj.CoreCompileInputs.cache
+D:\CHNTU\Kripta\Lab1\Laba1_Csh\Laba1_Csh\obj\Release\net5.0\Laba1_Csh.dll
+D:\CHNTU\Kripta\Lab1\Laba1_Csh\Laba1_Csh\obj\Release\net5.0\ref\Laba1_Csh.dll
+D:\CHNTU\Kripta\Lab1\Laba1_Csh\Laba1_Csh\obj\Release\net5.0\Laba1_Csh.pdb
+D:\CHNTU\Kripta\Lab1\Laba1_Csh\Laba1_Csh\obj\Release\net5.0\Laba1_Csh.genruntimeconfig.cache

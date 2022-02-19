@@ -1,0 +1,284 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API: 3 - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-geom.fm.html">PREV</a>
+ | <a href="j2d-geom.fm2.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="62744"><i>3.1	</i> Interfaces and Classes
+</a></h2>
+
+<blockquote>
+<a name="64157"><!-- --></a>
+The following tables list the key geometry interfaces and classes. Most of these interfaces and classes are part of the <kbd>java.awt.geom</kbd> package. Some, like <kbd>Shape</kbd>, are part of the <kbd>java.awt</kbd> package, primarily to maintain backw
+ard compatibility with earlier versions of the JDK software.<p>
+<a name="62349"><!-- --></a>
+
+
+<br><br>
+<Table Border="1" Cellpadding="5">
+<caption></caption>
+
+<tr><th><a name="62240"><!-- --></a>
+<blockquote><hr noshade size="1"><b>Interface</b> 
+<hr noshade size="1"></blockquote>
+</th><th><a name="62242"><!-- --></a>
+<blockquote><hr noshade size="1"><b>Description</b> 
+<hr noshade size="1"></blockquote>
+</th></tr>
+<tr><td><a name="62244"><!-- --></a>
+<p><code>PathIterator</code>
+
+</td><td><a name="62612"><!-- --></a>
+<p>Defines methods for retrieving elements from a path.
+
+</td></tr>
+<tr><td><a name="64151"><!-- --></a>
+<p><code>Shape</code>
+
+<a name="64154"><!-- --></a>
+<p>(java.awt)
+
+</td><td><a name="64153"><!-- --></a>
+<p>Provides a common set of methods for describing and inspecting geometric path objects. Implemented by <code>GeneralPath </code>and other geometry classes.
+
+</td></tr>
+
+</Table>
+ 
+<Table>
+<tr><td></td>
+</tr>
+</Table><p>
+ <p>
+<a name="63427"><!-- --></a>
+
+
+<br><br>
+<Table Border="1" Cellpadding="5">
+<caption></caption>
+
+<tr><th><a name="62355"><!-- --></a>
+<blockquote><hr noshade size="1"><b>Class</b> 
+<hr noshade size="1"></blockquote>
+</th><th><a name="62357"><!-- --></a>
+<blockquote><hr noshade size="1"><b>Description</b> 
+<hr noshade size="1"></blockquote>
+</th></tr>
+<tr><td><a name="62363"><!-- --></a>
+<p><code>Arc2D</code>
+
+<a name="64281"><!-- --></a>
+<p><code>Arc2D.Double</code>
+
+<a name="64286"><!-- --></a>
+<p><code>Arc2D.Float</code>
+
+</td><td><a name="62621"><!-- --></a>
+<p>Extends: <code>RectangularShape</code>
+
+<a name="62622"><!-- --></a>
+<p>Represents an arc defined by a bounding rectangle, start angle, angular extent, and a closure type. Implemented to specify arcs in float and double precision: <code>Arc2D.Float</code> and <code>Arc2D.Double.</code>
+
+</td></tr>
+<tr><td><a name="62372"><!-- --></a>
+<p><code>Area</code>
+
+</td><td><a name="62627"><!-- --></a>
+<p>Implements: <code>Shape, Cloneable </code>
+
+<a name="63389"><!-- --></a>
+<p>Represents an area geometry that supports boolean operations.
+
+</td></tr>
+<tr><td><a name="64311"><!-- --></a>
+<p><code>CubicCurve2D</code>   
+<p><code>CubicCurve2D.Double</code>
+
+<a name="64315"><!-- --></a>
+<p><code>CubicCurve2D.Float</code>
+
+<a name="62376"><!-- --></a>
+<p><code></code>
+
+</td><td><a name="62632"><!-- --></a>
+<p>Implements: <code>Shape</code>
+
+<a name="64321"><!-- --></a>
+<p>Represents a cubic parametric curve segment in (w) coordinate space. Implemented to specify cubic curves in float and double precision: <code>CubicCurve2D.Float </code>and <code>CubicCurve2D.Double.</code>
+
+</td></tr>
+<tr><td><a name="62504"><!-- --></a>
+<p><code>Dimension2D</code>
+
+</td><td><a name="62642"><!-- --></a>
+<p>Encapsulates a width and height dimension. Abstract superclass for all objects that store a 2D dimension.
+
+</td></tr>
+<tr><td><a name="64336"><!-- --></a>
+<p><code>Ellipse2D</code>
+
+<a name="64339"><!-- --></a>
+<p><code>Ellipse2D.Double</code>
+
+<a name="64341"><!-- --></a>
+<p><code>Ellipse2D.Float</code>
+
+</td><td><a name="64353"><!-- --></a>
+<p>Extends: <code>RectangularShape</code>
+
+<a name="64358"><!-- --></a>
+<p>Represents an ellipse defined by a bounding rectangle. Implemented to specify ellipses in float and double precision: <code>Ellipse2D.Float </code>and <code>Ellipse2D.Double.</code> 
+
+</td></tr>
+<tr><td><a name="64525"><!-- --></a>
+<p>FlatteningPathIterator
+
+</td><td><a name="64529"><!-- --></a>
+<p>Returns a flattened view of a <code>PathIterator</code> object.
+
+<a name="64530"><!-- --></a>
+<p>Can be used to provide flattening behavior for <code>Shapes</code> that don&#39;t perform the interpolation calculations themselves.
+
+</td></tr>
+<tr><td><a name="62435"><!-- --></a>
+<p><code>GeneralPath</code>
+
+</td><td><a name="62653"><!-- --></a>
+<p>Implements: <code>Shape</code>
+
+<a name="62654"><!-- --></a>
+<p>Represents a geometric path constructed from lines and quadratic and cubic curves.
+
+</td></tr>
+<tr><td><a name="62443"><!-- --></a>
+<p><code>Line2D</code>
+
+<a name="64370"><!-- --></a>
+<p><code>Line2D.Double</code>
+
+<a name="64375"><!-- --></a>
+<p><code>Line2D.Float</code>
+
+</td><td><a name="64386"><!-- --></a>
+<p>Implements: <code>Shape</code>
+
+<a name="62445"><!-- --></a>
+<p>Represents a line segment in (x, y) coordinate space. Implemented to specify lines in float and double precision: <code>Line2D.Float </code>and <code>Line2D.Double.</code>
+
+</td></tr>
+<tr><td><a name="62451"><!-- --></a>
+<p><code>Point2D</code>
+
+<a name="64413"><!-- --></a>
+<p><code>Point2D.Double</code>
+
+<a name="64420"><!-- --></a>
+<p><code>Point2D.Float</code>
+
+</td><td><a name="62669"><!-- --></a>
+<p>A point representing a location in (x,y) coordinate space. Implemented to specify points in float and double precision: <code>Point2D.Float </code>and <code>Point2D.Double.</code>
+
+</td></tr>
+<tr><td><a name="62558"><!-- --></a>
+<p><code>QuadCurve2D</code>
+
+<a name="64442"><!-- --></a>
+<p><code>QuadCurve2D.Double</code>
+
+<a name="64449"><!-- --></a>
+<p><code>QuadCurve2D.Float</code>
+
+</td><td><a name="62677"><!-- --></a>
+<p>Implements: <code>Shape</code>
+
+<a name="62678"><!-- --></a>
+<p>Represents a quadratic parametric curve segment in (x, y) coordinate space. Implemented to specify quadratic curves in float and double precision: <code>QuadCurve2D.Float </code>and <code>QuadCurve2D.Double.</code>
+
+</td></tr>
+<tr><td><a name="62550"><!-- --></a>
+<p><code>Rectangle2D</code>
+
+<a name="64471"><!-- --></a>
+<p><code>Rectangle2D.Double</code>
+
+<a name="64478"><!-- --></a>
+<p><code>Rectangle2D.Float</code>
+
+</td><td><a name="62683"><!-- --></a>
+<p>Extends: <code>RectangularShape</code>
+
+<a name="62684"><!-- --></a>
+<p>Represents a rectangle defined by a location (x, y) and dimension (w x h). Implemented to specify rectangles in float and double precision: <code>Rectangle2D.Float </code>and <code>Rectangle2D.Double.</code>
+
+</td></tr>
+<tr><td><a name="62538"><!-- --></a>
+<p><code>RectangularShape</code>
+
+</td><td><a name="62692"><!-- --></a>
+<p>Implements: <code>Shape</code>
+
+<a name="62693"><!-- --></a>
+<p>Provides common manipulation routines for operating on shapes that have rectangular bounds. 
+
+</td></tr>
+<tr><td><a name="62534"><!-- --></a>
+<p><code>RoundRectangle2D</code>
+
+<a name="64502"><!-- --></a>
+<p><code>RoundRectangle2D.Double</code>
+
+<a name="64507"><!-- --></a>
+<p><code>RoundRectangle2D.Float</code>
+
+</td><td><a name="62699"><!-- --></a>
+<p>Extends: <code>RectangularShape</code>
+
+<a name="62700"><!-- --></a>
+<p>Represents a rectangle with rounded corners defined by a location (x, y), a dimension (w x h), and the width and height of the corner arc. Implemented to specify round rectangles in float and double precision: <code>RoundRectangle2D.Float </code>and <c
+ode>RoundRectangle2D.Double.</code>
+
+</td></tr>
+
+</Table>
+ 
+<Table>
+<tr><td></td>
+</tr>
+</Table><p>
+<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-geom.fm.html">PREV</a>
+ | <a href="j2d-geom.fm2.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Mon Nov 22 09:37:04 1999 -->
+ 
+
+
+</body>
+</html>

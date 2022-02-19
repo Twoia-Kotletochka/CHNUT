@@ -1,0 +1,610 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API: 1 - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-intro.fm3.html">PREV</a>
+ | <a href="j2d-awt.fm.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="62037"><i>1.4	</i> The Java 2D<sup>TM</sup> API Packages
+</a></h2>
+
+<blockquote>
+<a name="62039"><!-- --></a>
+The Java 2D API classes are organized into the following packages:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="62041"><!-- --></a>
+<kbd>java.awt</kbd>
+</li>
+<li>
+<a name="66198"><!-- --></a>
+<kbd>java.awt.geom</kbd>
+</li>
+<li>
+<a name="66206"><!-- --></a>
+<kbd>java.awt.font</kbd>
+</li>
+<li>
+<a name="66210"><!-- --></a>
+<kbd>java.awt.color</kbd>
+</li>
+<li>
+<a name="66194"><!-- --></a>
+<kbd>java.awt.image</kbd>
+</li>
+<li>
+<a name="66196"><!-- --></a>
+<kbd>java.awt.image.renderable</kbd>
+</li>
+<li>
+<a name="62589"><!-- --></a>
+<kbd>java.awt.print</kbd>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="66217"><!-- --></a>
+Package <kbd>java.awt</kbd> contains those Java 2D API classes and interfaces that are general in nature or that enhance legacy classes. (Obviously, not all of the classes in <kbd>java.awt </kbd>are Java 2D classes.)
+
+<br><br>
+<Table Border="1" Cellpadding="5">
+<caption></caption>
+
+<tr><td><a name="66220"><!-- --></a>
+<p><code>AlphaComposite </code>
+
+</td><td><a name="66222"><!-- --></a>
+<p><code>BasicStroke </code>
+
+</td><td><a name="66224"><!-- --></a>
+<p><code>Color </code>
+
+</td></tr>
+<tr><td><a name="66226"><!-- --></a>
+<p><code>Composite</code>
+
+</td><td><a name="66228"><!-- --></a>
+<p><code>CompositeContext</code>
+
+</td><td><a name="66230"><!-- --></a>
+<p><code>Font</code>
+
+</td></tr>
+<tr><td><a name="66232"><!-- --></a>
+<p><code>GradientPaint</code>
+
+</td><td><a name="66316"><!-- --></a>
+<p><code>Graphics2D</code>
+
+</td><td><a name="66236"><!-- --></a>
+<p><code>GraphicsConfiguration</code>
+
+</td></tr>
+<tr><td><a name="66317"><!-- --></a>
+<p><code>GraphicsDevice</code>
+
+</td><td><a name="66240"><!-- --></a>
+<p><code>GraphicsEnvironment</code>
+
+</td><td><a name="66242"><!-- --></a>
+<p><code>Paint</code>
+
+</td></tr>
+<tr><td><a name="66244"><!-- --></a>
+<p><code>PaintContext</code>
+
+</td><td><a name="66246"><!-- --></a>
+<p><code>Rectangle</code>
+
+</td><td><a name="66248"><!-- --></a>
+<p><code>Shape</code>
+
+</td></tr>
+<tr><td><a name="66250"><!-- --></a>
+<p><code>Stroke</code>
+
+</td><td><a name="66252"><!-- --></a>
+<p><code>TexturePaint</code>
+
+</td><td><a name="66254"><!-- --></a>
+<p><code>Transparency</code>
+
+</td></tr>
+
+</Table>
+ 
+<Table>
+<tr><td></td>
+</tr>
+</Table><p>
+<p>
+<a name="66189"><!-- --></a>
+Package<kbd> java.awt.geom</kbd> contains classes and interfaces related to the definition of geometric primitives:
+
+<br><br>
+<Table Border="1" Cellpadding="5">
+<caption></caption>
+
+<tr><td><a name="66419"><!-- --></a>
+<p>AffineTransform
+
+</td><td><a name="66421"><!-- --></a>
+<p>Arc2D
+
+</td><td><a name="66423"><!-- --></a>
+<p>Arc2D.Double
+
+</td></tr>
+<tr><td><a name="66425"><!-- --></a>
+<p>Arc2D.Float
+
+</td><td><a name="66427"><!-- --></a>
+<p>Area
+
+</td><td><a name="66429"><!-- --></a>
+<p>CubicCurve2D
+
+</td></tr>
+<tr><td><a name="66431"><!-- --></a>
+<p>CubicCurve2D.Double
+
+</td><td><a name="66433"><!-- --></a>
+<p>CubicCurve2D.Float
+
+</td><td><a name="66435"><!-- --></a>
+<p>Dimension2D
+
+</td></tr>
+<tr><td><a name="66437"><!-- --></a>
+<p>Ellipse2D
+
+</td><td><a name="66439"><!-- --></a>
+<p>Ellipse2D.Double
+
+</td><td><a name="66441"><!-- --></a>
+<p>Ellipse2D.Float
+
+</td></tr>
+<tr><td><a name="66443"><!-- --></a>
+<p>FlatteningPathIterator
+
+</td><td><a name="66445"><!-- --></a>
+<p>GeneralPath
+
+</td><td><a name="66447"><!-- --></a>
+<p>Line2D
+
+</td></tr>
+<tr><td><a name="66545"><!-- --></a>
+<p>Line2D.Double
+
+</td><td><a name="66552"><!-- --></a>
+<p>Line2D.Float
+
+</td><td><a name="66453"><!-- --></a>
+<p>PathIterator
+
+</td></tr>
+<tr><td><a name="66455"><!-- --></a>
+<p>Point2D
+
+</td><td><a name="66457"><!-- --></a>
+<p>Point2D.Double
+
+</td><td><a name="66485"><!-- --></a>
+<p>Point2D.Float
+
+</td></tr>
+<tr><td><a name="66461"><!-- --></a>
+<p>QuadCurve2D
+
+</td><td><a name="66463"><!-- --></a>
+<p>QuadCurve2D.Double
+
+</td><td><a name="66503"><!-- --></a>
+<p>QuadCurve2D.Float
+
+</td></tr>
+<tr><td><a name="66467"><!-- --></a>
+<p>Rectangle2D
+
+</td><td><a name="66514"><!-- --></a>
+<p>Rectangle2D.Double
+
+</td><td><a name="66520"><!-- --></a>
+<p>Rectangle2D.Float
+
+</td></tr>
+<tr><td><a name="66473"><!-- --></a>
+<p>RectangularShape
+
+</td><td><a name="66475"><!-- --></a>
+<p>RoundRectangle2D
+
+</td><td><a name="66576"><!-- --></a>
+<p>RoundRectangle2D.Double
+
+</td></tr>
+<tr><td><a name="66578"><!-- --></a>
+<p>RoundRectangle2D.Float
+
+</td><td><a name="66580"><!-- --></a>
+<p>
+
+</td><td><a name="66483"><!-- --></a>
+<p>
+
+</td></tr>
+
+</Table>
+ 
+<Table>
+<tr><td></td>
+</tr>
+</Table><p>
+<p>
+<a name="62052"><!-- --></a>
+Many of the geometric primitives have corresponding <kbd>.Float</kbd> and <kbd>.Double</kbd> implementations. This was done to enable both floating single- and double-precision implementations. Double-precision implementations provide greater rendering precision at the expense of performance on some platforms.<p>
+<a name="62612"><!-- --></a>
+Package <kbd>java.awt.font</kbd> contains classes and interfaces used for text layout and the definition of fonts:
+
+<br><br>
+<Table Border="1" Cellpadding="5">
+<caption></caption>
+
+<tr><td><a name="66588"><!-- --></a>
+<p>FontRenderContext
+
+</td><td><a name="66590"><!-- --></a>
+<p>GlyphJustificationInfo
+
+</td><td><a name="66592"><!-- --></a>
+<p>GlyphMetrics
+
+</td></tr>
+<tr><td><a name="64007"><!-- --></a>
+<p>GlyphVector
+
+</td><td><a name="64009"><!-- --></a>
+<p>GraphicAttribute
+
+</td><td><a name="64011"><!-- --></a>
+<p>ImageGraphicAttribute
+
+</td></tr>
+<tr><td><a name="62618"><!-- --></a>
+<p>LineBreakMeasurer
+
+</td><td><a name="62620"><!-- --></a>
+<p>LineMetrics
+
+</td><td><a name="62622"><!-- --></a>
+<p>MultipleMaster
+
+</td></tr>
+<tr><td><a name="64021"><!-- --></a>
+<p>OpenType
+
+</td><td><a name="64023"><!-- --></a>
+<p>ShapeGrapicAttribute
+
+</td><td><a name="64025"><!-- --></a>
+<p>TextAttribute
+
+</td></tr>
+<tr><td><a name="64034"><!-- --></a>
+<p>TextHitInfo
+
+</td><td><a name="64036"><!-- --></a>
+<p>TextLayout
+
+</td><td><a name="64038"><!-- --></a>
+<p>TransformAttribute
+
+</td></tr>
+
+</Table>
+ 
+<Table>
+<tr><td></td>
+</tr>
+</Table><p>
+<p>
+<a name="62057"><!-- --></a>
+Package<kbd>java.awt.color</kbd> contains classes and interfaces for the definition of color spaces and color profiles:
+
+<br><br>
+<Table Border="1" Cellpadding="5">
+<caption></caption>
+
+<tr><td><a name="62635"><!-- --></a>
+<p>ColorSpace 
+
+</td><td><a name="62637"><!-- --></a>
+<p>ICC_ColorSpace 
+
+</td><td><a name="62639"><!-- --></a>
+<p>ICC_Profile 
+
+</td></tr>
+<tr><td><a name="62641"><!-- --></a>
+<p>ICC_ProfileGray 
+
+</td><td><a name="62643"><!-- --></a>
+<p>ICC_ProfileRGB
+
+</td><td><a name="62645"><!-- --></a>
+<p>
+
+</td></tr>
+
+</Table>
+ 
+<Table>
+<tr><td></td>
+</tr>
+</Table><p>
+<p>
+<a name="62648"><!-- --></a>
+The <kbd>java.awt.image</kbd> and <kbd>java.awt.image.renderable</kbd> packages contain classes and interfaces for the definition and rendering of images:
+
+<br><br>
+<Table Border="1" Cellpadding="5">
+<caption></caption>
+
+<tr><td><a name="62662"><!-- --></a>
+<p><code>AffineTransformOp</code>
+
+</td><td><a name="62664"><!-- --></a>
+<p><code>BandCombineOp</code>
+
+</td><td><a name="62666"><!-- --></a>
+<p><code>BandedSampleModel</code>
+
+</td></tr>
+<tr><td><a name="64138"><!-- --></a>
+<p><code>BufferedImage</code>
+
+</td><td><a name="64140"><!-- --></a>
+<p><code>BufferedImageFilter</code>
+
+</td><td><a name="64142"><!-- --></a>
+<p><code>BufferedImageOp</code>
+
+</td></tr>
+<tr><td><a name="62668"><!-- --></a>
+<p><code>ByteLookupTable</code>
+
+</td><td><a name="62670"><!-- --></a>
+<p><code>ColorConvertOp</code>
+
+</td><td><a name="62672"><!-- --></a>
+<p><code>ColorModel</code>
+
+</td></tr>
+<tr><td><a name="64086"><!-- --></a>
+<p><code>ComponentColorModel</code>
+
+</td><td><a name="64088"><!-- --></a>
+<p><code>ComponentSampleModel</code>
+
+</td><td><a name="64090"><!-- --></a>
+<p><code>ConvolveOp</code>
+
+</td></tr>
+<tr><td colspan=2 rowspan=1><a name="67434"><!-- --></a>
+<p>ContextualRenderedImageFactory
+
+</td><td><a name="67438"><!-- --></a>
+<p><code>DataBuffer</code>
+
+</td></tr>
+<tr><td><a name="65031"><!-- --></a>
+<p><code>DataBufferByte</code>
+
+</td><td><a name="65033"><!-- --></a>
+<p><code>DataBufferInt</code>
+
+</td><td><a name="65035"><!-- --></a>
+<p><code>DataBufferShort</code>
+
+</td></tr>
+<tr><td><a name="62674"><!-- --></a>
+<p><code>DataBufferUShort</code>
+
+</td><td><a name="62676"><!-- --></a>
+<p><code>DirectColorModel</code>
+
+</td><td><a name="62678"><!-- --></a>
+<p><code>IndexColorModel</code>
+
+</td></tr>
+<tr><td><a name="62680"><!-- --></a>
+<p><code>Kernel</code>
+
+</td><td><a name="62682"><!-- --></a>
+<p><code>LookupOp</code>
+
+</td><td><a name="62684"><!-- --></a>
+<p><code>LookupTable</code>
+
+</td></tr>
+<tr><td><a name="64120"><!-- --></a>
+<p><code>MultiPixelPackedSampleModel</code>
+
+</td><td><a name="64122"><!-- --></a>
+<p><code>PackedColorModel</code>
+
+</td><td><a name="64124"><!-- --></a>
+<p><code>ParameterBlock</code>
+
+</td></tr>
+<tr><td><a name="67444"><!-- --></a>
+<p><code>PixelInterleavedSampleModel</code>
+
+</td><td><a name="67446"><!-- --></a>
+<p><code>Raster</code>
+
+</td><td><a name="67448"><!-- --></a>
+<p><code>RasterOp</code>
+
+</td></tr>
+<tr><td><a name="64210"><!-- --></a>
+<p><code>RenderableImage</code>
+
+</td><td><a name="64212"><!-- --></a>
+<p><code>RenderableImageOp</code>
+
+</td><td><a name="64214"><!-- --></a>
+<p>RenderableImageProducer<code></code>
+
+</td></tr>
+<tr><td><a name="64216"><!-- --></a>
+<p><code>RenderContext</code>
+
+</td><td><a name="64218"><!-- --></a>
+<p>RenderedImageFactory
+
+</td><td><a name="64220"><!-- --></a>
+<p><code>RenderedImage</code>
+
+</td></tr>
+<tr><td><a name="62692"><!-- --></a>
+<p><code>RescaleOp</code>
+
+</td><td><a name="62694"><!-- --></a>
+<p><code>SampleModel</code>
+
+</td><td><a name="62696"><!-- --></a>
+<p><code>ShortLookupTable</code>
+
+</td></tr>
+<tr><td colspan=2 rowspan=1><a name="67417"><!-- --></a>
+<p><code>SinglePixelPackedSampleModel</code>
+
+</td><td><a name="67421"><!-- --></a>
+<p><code>TileObserver</code>
+
+</td></tr>
+<tr><td><a name="65004"><!-- --></a>
+<p><code>WritableRaster</code>
+
+</td><td><a name="65006"><!-- --></a>
+<p><code>WritableRenderedImage</code>
+
+</td><td><a name="65013"><!-- --></a>
+<p><code></code>
+
+</td></tr>
+
+</Table>
+ 
+<Table>
+<tr><td></td>
+</tr>
+</Table><p>
+<p>
+<a name="62063"><!-- --></a>
+Package <kbd>java.awt.image</kbd> was present in earlier versions of the AWT. The Java 2D API enhances the following legacy AWT image classes:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="62064"><!-- --></a>
+<kbd>ColorModel</kbd>
+</li>
+<li>
+<a name="62065"><!-- --></a>
+<kbd>DirectColorModel</kbd>
+</li>
+<li>
+<a name="62066"><!-- --></a>
+<kbd>IndexColorModel</kbd>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="62068"><!-- --></a>
+These color model classes remain in the <kbd>java.awt.image</kbd> package for backward compatibility. To maintain consistency, the new color model classes are also located in the <kbd>java.awt.image</kbd> package.<p>
+<a name="66255"><!-- --></a>
+Package<kbd> java.awt.print</kbd> contains classes and interfaces that enable printing of all Java 2D&#45;based text, graphics, and images.
+
+<br><br>
+<Table Border="1" Cellpadding="5">
+<caption></caption>
+
+<tr><td><a name="66278"><!-- --></a>
+<p>Book
+
+</td><td><a name="66280"><!-- --></a>
+<p>Pageable
+
+</td><td><a name="66282"><!-- --></a>
+<p>PageFormat
+
+</td></tr>
+<tr><td><a name="66284"><!-- --></a>
+<p>Paper
+
+</td><td><a name="66286"><!-- --></a>
+<p>Printable
+
+</td><td><a name="66288"><!-- --></a>
+<p>PrinterGraphics
+
+</td></tr>
+<tr><td><a name="66290"><!-- --></a>
+<p>PrinterJob
+
+</td><td><a name="66292"><!-- --></a>
+<p>
+
+</td><td><a name="66294"><!-- --></a>
+<p>
+
+</td></tr>
+
+</Table>
+ 
+<Table>
+<tr><td></td>
+</tr>
+</Table><p>
+<p>
+<a name="66274"><!-- --></a>
+<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-intro.fm3.html">PREV</a>
+ | <a href="j2d-awt.fm.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Mon Nov 22 09:36:53 1999 -->
+ 
+
+
+</body>
+</html>

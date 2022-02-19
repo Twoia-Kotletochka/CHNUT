@@ -1,0 +1,302 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 3 - Object Input Classes
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="input.doc.html">PREV</a>
+ | <a href="input.doc2.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="961"><i>	3.1	</i> The ObjectInputStream Class
+</a></h2>
+
+<blockquote>
+<a name="1162"><!-- --></a>
+Class <code>ObjectInputStream</code> implements object deserialization. It maintains the state of the stream including the set of objects already deserialized. Its methods allow primitive types and objects to be read from a stream written by <code>ObjectOutputStream</code>. It manages restoration of the object and the objects that it refers to from the stream.<p>
+<a name="5015"><!-- --></a>
+<pre>package java.io;
+
+public class ObjectInputStream
+    extends InputStream
+    implements ObjectInput, ObjectStreamConstants
+{
+    public ObjectInputStream(InputStream in)
+        throws StreamCorruptedException, IOException;
+</pre>
+
+
+<a name="5233"><!-- --></a>
+<pre>    public final Object readObject()
+        throws OptionalDataException, ClassNotFoundException, 
+            IOException;
+
+    public void defaultReadObject()
+        throws IOException, ClassNotFoundException,
+            NotActiveException;
+
+    public GetField readFields()
+        throws IOException;
+
+    public synchronized void registerValidation(
+        ObjectInputValidation obj, int prio)
+        throws NotActiveException, InvalidObjectException;
+
+    protected ObjectStreamClass readClassDescriptor()
+        throws IOException, ClassNotFoundException;
+
+    protected Class resolveClass(ObjectStreamClass v)
+        throws IOException, ClassNotFoundException;
+
+    protected Object resolveObject(Object obj)
+        throws IOException;
+
+    protected boolean enableResolveObject(boolean enable)
+        throws SecurityException;
+
+    protected void readStreamHeader()
+        throws IOException, StreamCorruptedException;
+
+    public int read() throws IOException;
+
+    public int read(byte[] data, int offset, int length)
+        throws IOException
+
+    public int available() throws IOException;
+
+    public void close() throws IOException;
+
+    public boolean readBoolean() throws IOException;
+
+    public byte readByte() throws IOException;
+
+    public int readUnsignedByte() throws IOException;
+
+    public short readShort() throws IOException;
+
+    public int readUnsignedShort() throws IOException;
+
+    public char readChar() throws IOException;
+
+    public int readInt() throws IOException;
+
+    public long readLong() throws IOException;
+
+    public float readFloat() throws IOException;
+
+    public double readDouble() throws IOException;
+
+    public void readFully(byte[] data) throws IOException;
+
+    public void readFully(byte[] data, int offset, int size)
+        throws IOException;
+
+    public int skipBytes(int len) throws IOException;
+
+    public String readLine() throws IOException;
+
+    public String readUTF() throws IOException;
+
+    // Class to provide access to serializable fields.
+    static abstract public class GetField
+    {
+        public ObjectStreamClass getObjectStreamClass();
+
+        public boolean defaulted(String name)
+            throws IOException, IllegalArgumentException;
+
+        public char get(String name, char default)
+            throws IOException, IllegalArgumentException;
+
+        public boolean get(String name, boolean default)
+            throws IOException, IllegalArgumentException;
+
+        public byte get(String name, byte default)
+            throws IOException, IllegalArgumentException;
+
+        public short get(String name, short default)
+            throws IOException, IllegalArgumentException;
+
+        public int get(String name, int default)
+            throws IOException, IllegalArgumentException;
+
+        public long get(String name, long default)
+            throws IOException, IllegalArgumentException;
+
+        public float get(String name, float default)
+            throws IOException, IllegalArgumentException;
+
+        public double get(String name, double default)
+            throws IOException, IllegalArgumentException;
+
+        public Object get(String name, Object default)
+            throws IOException, IllegalArgumentException;
+    }
+
+    protected ObjectInputStream()
+        throws StreamCorruptedException, IOException;
+
+    protected readObjectOverride()
+        throws OptionalDataException, ClassNotFoundException,
+            IOException;
+}
+</pre>
+
+
+<a name="1168"><!-- --></a>
+The <code>ObjectInputStream</code> constructor requires an <code>InputStream</code>. The constructor calls <code>readStreamHeader</code> to read and verifies the header and version written by the corresponding <code>ObjectOutputStream.writeStreamHeader</code> method.<p>
+</blockquote>
+<blockquote>
+<blockquote><hr noshade size="1">
+<b><a name="5998">Note - </a></b>The <code>ObjectInputStream</code> constructor blocks until it completes reading the serialization stream header.  Code which waits for an <code>ObjectInputStream</code> to be constructed before creating the corresponding <code>ObjectOutputStream</code> for that stream will deadlock, since the <code>ObjectInputStream</code> constructor will block until a header is written to the stream, and the header will not be written to the stream until the <code>ObjectOutputStream</code> constructor executes.  This problem can be resolved by creating the <code>ObjectOutputStream</code> before the <code>ObjectInputStream</code>, or otherwise removing the timing dependency between completion of <code>ObjectInputStream</code> construction and the creation of the <code>ObjectOutputStream</code>. 
+<hr noshade size="1">
+</blockquote>
+</blockquote>
+<blockquote>
+<a name="1169"><!-- --></a>
+The <code>readObject</code> method is used to deserialize an object from the stream. It reads from the stream to reconstruct an object.<p>
+</blockquote><ol>
+<li>
+<a name="5509"><!-- --></a>
+If the <code>ObjectInputStream</code> subclass is overriding the implementation, call the <code>readObjectOverride</code> method and return. Reimplementation is described at the end of this section. 
+</li>
+
+<li>
+<a name="5512"><!-- --></a>
+If a block data record occurs in the stream, throw a BlockDataException with the number of available bytes.
+</li>
+
+<li>
+<a name="4418"><!-- --></a>
+If the object in the stream is null, return null.
+</li>
+
+<li>
+<a name="5328"><!-- --></a>
+If the object in the stream is a handle to a previous object, return the object.
+</li>
+
+<li>
+<a name="5330"><!-- --></a>
+If the object in the stream is a <code>Class</code>, read its <code>ObjectStreamClass</code> descriptor, add it and its handle to the set of known objects, and return the corresponding <code>Class</code> object.
+</li>
+
+<li>
+<a name="3491"><!-- --></a>
+If the object in the stream is an <code>ObjectStreamClass</code>, read its name, <code>serialVersionUID</code>, and fields. Add it and its handle to the set of known objects. Call the <code>resolveClass</code> method on the stream to get the local class for this descriptor, and throw an exception if the class cannot be found. Return the <code>ObjectStreamClass</code> object.
+</li>
+
+<li>
+<a name="5334"><!-- --></a>
+If the object in the stream is a String, read its UTF encoding, add it and its handle to the set of known objects, and proceed to Step 11.
+</li>
+
+<li>
+<a name="3492"><!-- --></a>
+If the object in the stream is an array, read its <code>ObjectStreamClass</code> and the length of the array. Allocate the array, and add it and its handle in the set of known objects. Read each element using the appropriate method for its type and assign it to the array. Proceed to Step 11.
+</li>
+
+<li>
+<a name="3483"><!-- --></a>
+For all other objects, the <code>ObjectStreamClass</code> of the object is read from the stream. The local class for that <code>ObjectStreamClass</code> is retrieved. The class must be serializable or externalizable.
+</li>
+
+<li>
+<a name="4917"><!-- --></a>
+An instance of the class is allocated. The instance and its handle are added to the set of known objects. The contents restored appropriately:
+</li>
+
+<ol type=a>
+<li >
+<a name="4918"><!-- --></a>
+For serializable objects, the no-arg constructor for the first non-serializable supertype is run. For serializable classes, the fields are initialized to the default value appropriate for its type. Then the fields of each class are restored by calling class-specific <code>readObject</code> methods, or if these are not defined, by calling the <code>defaultReadObject</code> method. Note that field initializers and constructors are not executed for serializable classes during deserialization. In the normal case, the version of the class that wrote the stream will be the same as the class reading the stream. In this case, all of the supertypes of the object in the stream will match the supertypes in the currently-loaded class. If the version of the class that wrote the stream had different supertypes than the loaded class, the <code>ObjectInputStream</code> must be more careful about restoring or initializing the state of the differing classes. It must step through the classes, matching the available data in the stream with the classes of the object being restored. Data for classes that occur in the stream, but do not occur in the object, is discarded. For classes that occur in the object, but not in the stream, the class fields are set to default values by default serialization.
+</li>
+
+<li >
+<a name="3584"><!-- --></a>
+For externalizable objects, the no-arg constructor for the class is run and then the <code>readExternal</code> method is called to restore the contents of the object.
+</li>
+
+</ol>
+<li>
+<a name="5072"><!-- --></a>
+Process potential substitutions by the class of the object and/or by a subclass of <code>ObjectInputStream</code><code>:</code> 
+</li>
+
+<ol type=a>
+<li >
+<a name="5078"><!-- --></a>
+If the class of the object defines the appropriate <code>readResolve</code> method, the method is called to allow the object to replace itself.
+</li>
+
+<li >
+<a name="5079"><!-- --></a>
+Then if previously enabled by <code>enableResolveObject,</code> the <code>resolveObject</code> method is called to allow subclasses of the stream to examine and replace the object. If the previous step did replace the original object, the <code>resolveObject</code> method is called with the replacement object.
+</li>
+
+</ol>
+</ol>
+<blockquote>
+<a name="5080"><!-- --></a>
+If a replacement took place, the table of known objects is updated so the replacement object is associated with the handle. The replacement object is then returned from <code>readObject</code>.<p>
+<a name="3621"><!-- --></a>
+All of the methods for reading primitives types only consume bytes from the block data records in the stream. If a read for primitive data occurs when the next item in the stream is an object, the read methods return <em>-1</em> or the EOFException as appropriate. The value of a primitive type is read by a <code>DataInputStream</code> from the block data record.<p>
+<a name="4427"><!-- --></a>
+The exceptions thrown reflect errors during the traversal or exceptions that occur on the underlying stream. If any exception is thrown, the underlying stream is left in an unknown and unusable state.<p>
+<a name="4563"><!-- --></a>
+When the reset token occurs in the stream, all of the state of the stream is discarded. The set of known objects is cleared.<p>
+<a name="4564"><!-- --></a>
+When the exception token occurs in the stream, the exception is read and a new WriteAbortedException is thrown with the terminating exception as an argument. The stream context is reset as described earlier.<p>
+<a name="3502"><!-- --></a>
+The <code>defaultReadObject</code> method is used to read the fields and object from the stream. It uses the class descriptor in the stream to read the fields in the canonical order by name and type from the stream. The values are assigned to the matching fields by name in the current class. Details of the versioning mechanism can be found in <a href="version.doc5.html#6519">Section&#160;5.5, &#34;Compatible Java<sup><font size="-2">TM</font></sup> Type Evolution</a>.&#34; Any field of the object that does not appear in the stream is set to its default value. Values that appear in the stream, but not in the object, are discarded. This occurs primarily when a later version of a class has written additional fields that do not occur in the earlier version. This method may only be called from the <code>readObject</code> method while restoring the fields of a class. When called at any other time, the NotActiveException is thrown.<p>
+<a name="4979"><!-- --></a>
+The <code>readFields</code> method reads the values of the serializable fields from the stream and makes them available via the <code>GetField</code> class. The <code>readFields</code> method is only callable from within the <code>readObject</code> method of a serializable class. It cannot be called more than once or if <code>defaultReadObject</code> has been called. The <code>GetFields</code> object uses the current object&#39;s <code>ObjectStreamClass</code> to verify the fields that can be retrieved for this class. The <code>GetFields</code> object returned by <code>readFields</code> is only valid during this call to the classes <code>readObject</code> method. The fields may be retrieved in any order. Additional data may only be read directly from stream after <code>readFields</code> has been called.<p>
+<a name="1302"><!-- --></a>
+The <code>registerValidation</code> method can be called to request a callback when the entire graph has been restored but before the object is returned to the original caller of <code>readObject</code>. The order of validate callbacks can be controlled using the priority. Callbacks registered with higher values are called before those with lower values. The object to be validated must support the <code>ObjectInputValidation</code> interface and implement the <code>validateObject</code> method. It is only correct to register validations during a call to a class&#39;s <code>readObject</code> method. Otherwise, a NotActiveException is thrown. If the callback object supplied to <code>registerValidation</code> is null, an InvalidObjectException is thrown.<p>
+<a name="5994"><!-- --></a>
+Starting with the Java<sup><font size="-2">TM</font></sup> SDK, Standard Edition, v1.3, the <code>readClassDescriptor</code> method is used to read in all <code>ObjectStreamClass</code> objects.  <code>readClassDescriptor</code> is called when the <code>ObjectInputStream</code> expects a class descriptor as the next item in the serialization stream.  Subclasses of <code>ObjectInputStream</code> may override this method to read in class descriptors that have been written in non-standard formats (by subclasses of <code>ObjectOutputStream</code> which have overridden the <code>writeClassDescriptor</code> method).  By default, this method reads class descriptors according to the format described in <a href="protocol.doc4.html#10258">Section&#160;6.4, &#34;Grammar for the Stream Format</a>&#34;.<p>
+<a name="1194"><!-- --></a>
+The <code>resolveClass</code> method is called while a class is being deserialized, and after the class descriptor has been read. Subclasses may extend this method to read other information about the class written by the corresponding subclass of <code>ObjectOutputStream</code>. The method must find and return the class with the given name and <code>serialVersionUID</code>. The default implementation locates the class by calling the class loader of the closest caller of <code>readObject</code> that has a class loader. If the class cannot be found <code>ClassNotFoundException</code> should be thrown. Prior to JDK<sup><font size="-2">TM</font></sup> 1.1.6, the <code>resolveClass</code> method was required to return the same fully qualified class name as the class name in the stream. In order to accommodate package renaming across releases, <code>method</code> <code>resolveClass</code> only needs to return a class with the same base class name and <code>SerialVersionUID</code> in JDK<sup><font size="-2">TM</font></sup> 1.1.6 and later versions. <p>
+<a name="5264"><!-- --></a>
+The <code>resolveObject</code> method is used by trusted subclasses to monitor or substitute one object for another during deserialization. Resolving objects must be enabled explicitly by calling <code>enableResolveObject</code> before calling <code>readObject</code> for the first object to be resolved. Once enabled, <code>resolveObject</code> is called once for each serializable object just prior to the first time it is being returned from <code>readObject</code>. Note that the <code>resolveObject</code> method is not called for objects of the specially handled classes, <code>Class</code>, <code>ObjectStreamClass</code>, <code>String</code>, and arrays. A subclass&#39;s implementation of <code>resolveObject</code> may return a substitute object that will be assigned or returned instead of the original. The object returned must be of a type that is consistent and assignable to every reference of the original object or else a ClassCastException will be thrown. All assignments are type-checked. All references in the stream to the original object will be replaced by references to the substitute object.<p>
+<a name="5120"><!-- --></a>
+The <code>enableResolveObject</code> method is called by trusted subclasses of <code>ObjectOutputStream</code> to enable the monitoring or substitution of one object for another during deserialization. Replacing objects is disabled until <code>enableResolveObject</code> is called with a true value. It may thereafter be disabled by setting it to false. The previous setting is returned. The <code>enableResolveObject</code> method checks if the stream has permission to request substitution during serialization. To ensure that the private state of objects is not unintentionally exposed, only trusted streams may use <code>resolveObject</code>. Trusted classes are those classes with a class loader equal to null or belong to a security protection domain that provides permission to enable substitution.<p>
+<a name="5521"><!-- --></a>
+If the subclass of <code>ObjectInputStream</code> is not considered part of the system domain, a line has to be added to the security policy file to provide to a subclass of <code>ObjectInputStream </code>permission to call <code>enableResolveObject</code>. The <code>SerializablePermission</code> to add is <code>&#34;enableSubstitution&#34;</code>. AccessControlException is thrown if the protection domain of the subclass of <code>ObjectStreamClass</code> does not have permission to <code>&#34;enableSubstitution&#34;</code> by calling <code>enableResolveObject</code>. See the document Java<sup><font size="-2">TM</font></sup> Security Architecture (JDK<sup><font size="-2">TM</font></sup> 1.2) for additional information about the security model.<p>
+<a name="5059"><!-- --></a>
+The <code>readStreamHeader</code> method reads and verifies the magic number and version of the stream. If they do not match, the StreamCorruptedMismatch is thrown.<p>
+<a name="5506"><!-- --></a>
+To override the implementation of deserialization, a subclass of <code>ObjectInputStream</code> should call the protected no-arg <code>ObjectInputStream</code>, constructor. There is a security check within the no-arg constructor for <code>SerializablePermission &#34;enableSubclassImplementation&#34;</code> to ensure that only trusted classes are allowed to override the default implementation. This constructor does not allocate any private data for <code>ObjectInputStream</code> and sets a flag that indicates that the final <code>readObject</code> method should invoke the <code>readObjectOverride</code> method and return. All other <code>ObjectInputStream</code> methods are not final and can be directly overridden by the subclass.<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="input.doc.html">PREV</a>
+ | <a href="input.doc2.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:47:59 1999 -->
+ 
+
+
+</body>
+</html>

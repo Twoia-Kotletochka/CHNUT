@@ -1,0 +1,240 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title></title>
+</head>
+<body bgcolor=#ffffff>
+
+<table width=100%><tr>
+<td><font size=-1>
+<a href="jdbc2.1.frame.html">Contents</a>  | <a href="jdbc2.1.frame9.html">Prev</a>  | <a href="jdbc2.1.frame11.html">Next</a>
+</font></td><td align=right><i>JDBC<sup><font size=-2>TM</font></sup> Guide: Getting Started</i></td>
+</tr></table>
+<hr>
+<br>
+ 
+
+<a name="288813"></a>
+<h2>	10	 Other New Features and Changes</h2>
+
+<a name="284721"></a>
+This chapter describes additional changes that have been made in the JDBC API.
+<p>
+
+<a name="284722"></a>
+<h3>10.1 	  &nbsp; &nbsp; Changes to java.sql.ResultSet</h3>
+<a name="284729"></a>
+A version of the <code>ResultSet.getBigDecimal()</code> method that returns full precision has 
+been added.
+<p>
+
+<a name="299317"></a>
+<h3>10.2 	  &nbsp; &nbsp; Changes to java.sql.ResultSetMetaData</h3>
+<a name="299318"></a>
+The <code>ResultSetMetaData.getColumnType()</code> method may now return the new SQL 
+type codes: <code>STRUCT</code>, <code>DISTINCT</code>, <code>BLOB</code>, etc. The <code>STRUCT</code> and <code>DISTINCT</code> type codes are always
+returned for structured and distinct values, independent of whether the default or 
+a custom type mapping is being used.
+<p>
+<a name="299321"></a>
+The <code>ResultSetMetaData.getColumnTypeName() </code>method should return the following
+for the new SQL types.
+<p>
+<a name="299322"></a>
+ 
+<Table Border="0">
+<caption></caption>
+<tr><td>Column Type
+<td>Column Type Name
+
+<tr><td>JAVA_OBJECT
+<td>the SQL name of the Java type
+
+<tr><td>DISTINCT
+<td>the SQL name of the distinct type
+
+<tr><td>STRUCT
+<td>the SQL name of the structured type
+
+<tr><td>ARRAY
+<td>data source dependent type name
+
+<tr><td>BLOB
+<td>data source dependent type name
+
+<tr><td>CLOB
+<td>data source dependent type name
+
+<tr><td>REF
+<td>data source dependent type name
+
+
+</Table>
+
+<Table>
+<tr><td>
+</Table>
+
+<p>
+<a name="299463"></a>
+
+<p>
+<a name="299320"></a>
+A <code>ResultSetMetaData</code>.<code>getColumnClassName() </code>method has been added to return the 
+fully qualified name of the Java class whose instances are manufactured if ResultSet.getObject()
+is called to retrieve a value from the column. See the separate API documentation
+for details.
+<p>
+<a name="301140"></a>
+The <code>ResultSetMetaData.getColumnTypeName()</code> method returns a fully qualified 
+SQL type name when the type code is STRUCT, DISTINCT, or JAVA_OBJECT.
+<p>
+
+<a name="299502"></a>
+<h3>10.3 	  &nbsp; &nbsp; Changes to DatabaseMetaData</h3>
+<a name="299506"></a>
+The <code>DatabaseMetaData.getColumns()</code> method may now return DATA_TYPE values
+of the new SQL99 types: BLOB, CLOB, etc. The <code>DatabaseMetaData.getColumns()
+</code> method returns the same type names as those listed in Section <a href="jdbc2.1.frame10.html#299317">10.2</a> for the 
+SQL99 data types.
+<p>
+<a name="299511"></a>
+Added method <code>DatabasemetaData.getConnection()</code> to return the <code>Connection</code> object
+that produced the metadata object.
+<p>
+<a name="299512"></a>
+Added method <code>DatabasemetaData.getUDTs()</code>. See the separate API documentation 
+for details.
+<p>
+<a name="299516"></a>
+Added methods to support the new <code>ResultSet </code>and batch update functionality: <code>supportsResultSetConcurrency()
+</code>, <code>supportsBatchUpdates()</code>, etc. See the separate 
+API documentation for details.
+<p>
+
+<a name="284725"></a>
+<h3>10.4 	  &nbsp; &nbsp; Changes to java.sql.DriverManager</h3>
+<a name="284706"></a>
+A <code>DriverManager.setLogWriter()</code> method that takes a <code>java.io.PrintWriter</code> object
+as input has been added. A new<code> DriverManager.getLogWriter()</code> method returns 
+a <code>PrintWriter</code> object. The <code>set/getLogStream()</code> methods have been deprecated.
+<p>
+
+<a name="301825"></a>
+<h3>10.5 	  &nbsp; &nbsp; Date, Time, and Timestamp</h3>
+<a name="301720"></a>
+The JDBC API follows the Java platform's approach of representing dates and times as 
+a millisecond value relative to January 1, 1970 00:00:00 GMT. Since most databases 
+don't support the notion of a time zone, the JDBC 2.1 core API adds new methods to 
+allow a JDBC driver to get/set <code>Date</code>, <code>Time</code>, and <code>Timestamp</code> values for a particular time 
+zone using a <code>Calendar</code>. For example, 
+<p>
+<a name="301730"></a>
+
+<p>
+<blockquote><pre>ResultSet rs;
+...
+Date date1 = rs.getDate(1);
+
+</pre></blockquote><a name="301732"></a>
+returns a <code>Date</code> object that wraps a millisecond value which denotes a particular date, 
+like January 3, 1999, and a normalized time 00:00:00 in the default time zone. The time 
+component of the Date is set to zero in the default time zone since SQL DATE values 
+don't have a time component. Since a <code>Calendar</code> was not supplied explicitly to <code>getDate()
+</code>, the default time zone (really the default <code>Calendar</code>) is used by the JDBC driver 
+internally to create the appropriate millisecond value assuming that the underlying database
+doesn't store time zone information.
+<p>
+<a name="301748"></a>
+The following example retrieves a date value in GMT-Greenwich Mean Time.
+<p>
+<a name="301778"></a>
+
+<p>
+<blockquote><pre>ResultSet rs;
+...
+
+TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+Calendar cal = Calendar.getInstance();
+Date date2 = rs.getDate(1, cal);
+</pre></blockquote><a name="301753"></a>
+
+<p>
+<a name="301798"></a>
+In the example above, a <code>Calendar</code> is passed explicitly to <code>getDate()</code> to inform the 
+JDBC driver how to calculate the appropriate millisecond value. Note that the same result
+could have been achieved by simply changing the default time zone, and not passing
+the <code>Calendar</code> explicitly since the JDBC driver will use the default time zone by 
+default.
+<p>
+<a name="301800"></a>
+Note that the two <code>Date</code> objects created above will not compare as equal assuming that 
+the default time zone is not GMT, even if they represent the `same' date.
+<p>
+<a name="301801"></a>
+
+<p>
+<blockquote><pre>if (date1.equals(date2))
+	//never get here
+
+</pre></blockquote><a name="301806"></a>
+
+<p>
+<a name="301809"></a>
+This is because each Java language <code>Date</code> object really just wraps a normalized millisecond
+time value and these millisecond values will differ across time zones. If an application
+wishes to compare dates in different time zones it should first convert them to a 
+<code>Calendar</code>.
+<p>
+<a name="301813"></a>
+An application should create a <code>Date</code> object using a <code>Calendar</code>. The application is responsible
+for specifying the time as 00:00:00 on the desired date when using the <code>Calendar
+</code> since the JDBC API uses this convention. In addition when creating a <code>Time</code> value 
+the application must specify a date of January 1, 1970 to the <code>Calendar</code> used to create 
+the millisecond value for the <code>Time</code> as this is the convention specified for time.
+<p>
+<a name="303650"></a>
+
+<p>
+
+<a name="303651"></a>
+<h3>10.6 	  &nbsp; &nbsp; Refinement to the Drop Table requirement</h3>
+<a name="303678"></a>
+The JDBC 1.0 API specification required that JDBC 1.0 compliant drivers provide full 
+support for the SQL92, Transitional Level, DROP TABLE command, including full 
+support for the CASCADE and RESTRICT options of DROP TABLE. Because some 
+popular databases currently do not fully support DROP TABLE as it is defined in the 
+SQL92 specification, this requirement has been relaxed in the JDBC API specification. 
+<p>
+<a name="303694"></a>
+A JDBC compliant driver is required to support the DROP TABLE command as specified
+by SQL92, Transitional Level. However, support for the CASCADE and RESTRICT
+options of DROP TABLE is optional for a JDBC compliant driver. In 
+addition, the behavior of DROP TABLE is implementation defined when there are 
+views or integrity constraints defined that reference a table that is being dropped.
+<p>
+
+
+<br>
+<hr> 
+<font size=-1>
+<a href="jdbc2.1.frame.html">Contents</a>  | <a href="jdbc2.1.frame9.html">Prev</a>  | <a href="jdbc2.1.frame11.html">Next</a>
+</font>
+<hr>
+
+
+
+<address>
+<a href="mailto:jdbc@eng.sun.com">jdbc@eng.sun.com</a>
+or
+<a href="mailto:jdbc-business@eng.sun.com">jdbc-business@eng.sun.com</a>
+</address>
+
+<i><a href="../../../relnotes/SMICopyright.html">
+Copyright</a> &#169; 1996-1999 Sun Microsystems, Inc.   All rights reserved.</i>
+
+
+<!-- HTML generated by Suzette Pelouch on December 01, 1999 -->
+
+</body>
+</html>

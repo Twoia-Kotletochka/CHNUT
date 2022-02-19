@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 6 - Object Serialization Stream Protocol
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="protocol.doc5.html">PREV</a>
+ | <a href="security.doc.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<br>
+<h3>
+<a name="10152"><!-- --></a>
+<i>	6.4.2	</i> Terminal Symbols and Constants
+</h3>
+
+<blockquote>
+<a name="9323"><!-- --></a>
+The following symbols in <code>java.io.ObjectStreamConstants</code> define the terminal and constant values expected in a stream.<p>
+<a name="10162"><!-- --></a>
+<pre>    final static short STREAM_MAGIC = (short)0xaced;
+    final static short STREAM_VERSION = 5;
+    final static byte TC_NULL = (byte)0x70;
+    final static byte TC_REFERENCE = (byte)0x71;
+    final static byte TC_CLASSDESC = (byte)0x72;
+    final static byte TC_OBJECT = (byte)0x73;
+    final static byte TC_STRING = (byte)0x74;
+    final static byte TC_ARRAY = (byte)0x75;
+    final static byte TC_CLASS = (byte)0x76;
+    final static byte TC_BLOCKDATA = (byte)0x77;
+    final static byte TC_ENDBLOCKDATA = (byte)0x78;
+    final static byte TC_RESET = (byte)0x79;
+    final static byte TC_BLOCKDATALONG = (byte)0x7A;
+    final static byte TC_EXCEPTION = (byte)0x7B;
+    final static byte TC_LONGSTRING = (byte) 0x7C;
+    final static byte TC_PROXYCLASSDESC = (byte) 0x7D;
+    final static  int   baseWireHandle = 0x7E0000;
+</pre>
+
+
+<a name="10163"><!-- --></a>
+The flag byte <em>classDescFlags</em> may include values of<p>
+<a name="9422"><!-- --></a>
+<pre>    final static byte SC_WRITE_METHOD = 0x01; //if SC_SERIALIZABLE
+     final static byte SC_BLOCK_DATA = 0x08;    //if SC_EXTERNALIZABLE
+    final static byte SC_SERIALIZABLE = 0x02;
+    final static byte SC_EXTERNALIZABLE = 0x04;
+</pre>
+
+
+<a name="9895"><!-- --></a>
+The flag <em>SC_WRITE_METHOD</em> is set if the Serializable class writing the stream had a <code>writeObject</code> method that may have written additional data to the stream. In this case a <em>TC_ENDBLOCKDATA</em> marker is always expected to terminate the data for that class.<p>
+<a name="10223"><!-- --></a>
+The flag <em>SC_BLOCKDATA</em> is set if the <code>Externalizable</code> class is written into the stream using <code>STREAM_PROTOCOL_2</code>. By default, this is the protocol used to write <code>Externalizable</code> objects into the stream in JDK<sup><font size="-2">TM</font></sup> 1.2. JDK<sup><font size="-2">TM</font></sup> 1.1 writes <em>STREAM_PROTOCOL_1</em>.<p>
+<a name="9900"><!-- --></a>
+The flag <em>SC_SERIALIZABLE</em> is set if the class that wrote the stream extended <code>java.io.Serializable</code> but not <code>java.io.Externalizable</code>, the class reading the stream must also extend <code>java.io.Serializable</code> and the default serialization mechanism is to be used.<p>
+<a name="9901"><!-- --></a>
+The flag <em>SC_EXTERNALIZABLE</em> is set if the class that wrote the stream extended <code>java.io.Externalizable</code>, the class reading the data must also extend <code>Externalizable</code> and the data will be read using its <code>writeExternal</code> and <code>readExternal</code> methods.<p>
+</blockquote>
+<br>
+<a name="10128"><!-- --></a>
+<h4><i>		 Example
+</i></h4>
+
+<blockquote>
+<a name="8334"><!-- --></a>
+Consider the case of an original class and two instances in a linked list:<p>
+<a name="9963"><!-- --></a>
+<pre>class List implements java.io.Serializable {
+    int value;
+    List next;
+    public static void main(String[] args) {
+        try {
+            List list1 = new List();
+            List list2 = new List();
+            list1.value = 17;
+            list1.next = list2;
+            list2.value = 19;
+            list2.next = null;
+
+            ByteArrayOutputStream o = new ByteArrayOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(o);
+            out.writeObject(list1);
+            out.writeObject(list2);
+            out.flush();
+            ...
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+}
+</pre>
+
+
+<a name="9560"><!-- --></a>
+The resulting stream contains:<p>
+<a name="9983"><!-- --></a>
+<pre>00: ac ed 00 05 73 72 00 04 4c 69 73 74 69 c8 8a 15 &gt;....sr..Listi...&lt;
+</pre>
+
+
+<a name="9774"><!-- --></a>
+<pre>10: 40 16 ae 68 02 00 02 49 00 05 76 61 6c 75 65 4c &gt;Z......I..valueL&lt;
+</pre>
+
+
+<a name="9775"><!-- --></a>
+<pre>20: 00 04 6e 65 78 74 74 00 06 4c 4c 69 73 74 3b 78 &gt;..nextt..LList;x&lt;
+</pre>
+
+
+<a name="9776"><!-- --></a>
+<pre>30: 70 00 00 00 11 73 71 00 7e 00 00 00 00 00 13 70 &gt;p....sq.~......p&lt;
+</pre>
+
+
+<a name="9777"><!-- --></a>
+<pre>40: 71 00 7e 00 03                                  &gt;q.~..&lt;
+</pre>
+
+
+<a name="9754"><!-- --></a>
+<pre>
+</pre>
+
+
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="protocol.doc5.html">PREV</a>
+ | <a href="security.doc.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:48:11 1999 -->
+ 
+
+
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title></title>
+</head>
+<body bgcolor=#ffffff>
+
+<table width=600><tr>
+<td><font size=-1>
+<a href="jdbc-spec.frame.html">Contents</a>  | <a href="jdbc-spec.frame1.html">Prev</a>  | <a href="jdbc-spec.frame3.html">Next</a>
+</font></td><td align=right><i>JDBC<sup><font size=-2>TM</font></sup> Guide: Getting Started</i></td>
+</tr></table>
+<hr>
+<br>
+ 
+
+<a name="5442"></a>
+<h2>	2	 Goals and philosophy</h2>
+
+<a name="5443"></a>
+This section outlines the main goals and philosophy driving the API design.
+<p>
+
+<a name="5445"></a>
+<h3>2.1 	  &nbsp; &nbsp; A SQL level API</h3>
+<a name="5446"></a>
+JDBC is intended as a "call-level" SQL interface for Java. This means the focus is on executing 
+raw SQL statements and retrieving their results. We expect that higher-level APIs will be defined
+as well, and these will probably be implemented on top of this base level. Examples of 
+higher-level APIs are direct transparent mapping of tables to Java classes, semantic tree representations
+of more general queries, and an embedded SQL syntax for Java.
+<p>
+<a name="5447"></a>
+We expect that various application builder tools will emit code that uses our API. However we 
+also intend that the API be usable by human programmers, especially because there is no other 
+solution available for Java right now.
+<p>
+
+<a name="11218"></a>
+<h3>2.2 	  &nbsp; &nbsp; SQL Conformance</h3>
+<a name="11219"></a>
+Database systems support a wide range of SQL syntax and semantics, and they are not consistent
+with each other on more advanced functionality such as outer joins and stored procedures. 
+Hopefully with time the portion of SQL that is truly standard will expand to include more and 
+more functionality. In the meantime, we take the following position:
+<p>
+
+<ul><a name="11244"></a>
+<li>JDBC allows any query string to be passed through to an underlying DBMS driver, so 
+an application may use as much SQL functionality as desired at the risk of receiving an 
+error on some DBMSs. In fact, an application query need not even be SQL, or it may 
+be a specialized derivative of SQL, e.g. for document or image queries, designed for 
+specific DBMSs.
+<br><br>
+<a name="11251"></a>
+<li>In order to pass JDBC compliance tests and to be called "JDBC COMPLIANT(TM)" we 
+require that a driver support at least ANSI SQL92 Entry Level. This gives applications 
+that want wide portability a guaranteed least common denominator. We believe ANSI 
+SQL-2 Entry Level is reasonably powerful and is reasonably widely supported today.
+<br><br>
+</ul>
+<a name="5448"></a>
+<h3>2.3 	  &nbsp; &nbsp; JDBC must be implementable on top of common database interfaces</h3>
+<a name="5449"></a>
+We need to ensure that the JDBC SQL API can be implemented on top of common SQL level 
+APIs, in particular ODBC. This requirement has colored some parts of the specification, notably
+the handling of OUT parameters and large blobs.
+<p>
+
+<a name="8219"></a>
+<h3>2.4 	  &nbsp; &nbsp; Provide a Java interface that is consistent with the rest of the Java system</h3>
+<a name="8220"></a>
+There has been a very strong positive response to Java. To a large extent this seems to be because
+the language and the standard runtimes are perceived as being consistent, simple, and 
+powerful. 
+<p>
+<a name="8247"></a>
+As far as we can, we would like to provide a Java database interface that builds on and reinforces
+the style and virtues of the existing core Java classes. 
+<p>
+
+<a name="5450"></a>
+<h3>2.5 	  &nbsp; &nbsp; Keep it simple</h3>
+<a name="5451"></a>
+We would prefer to keep this base API as simple as possible, at least initially. In general we 
+would prefer to provide a single mechanism for performing a particular task, and avoid providing
+duplicate mechanisms. We will extend the API later if any important functionality is missing.
+
+<p>
+
+<a name="5452"></a>
+<h3>2.6 	  &nbsp; &nbsp; Use strong, static typing wherever possible</h3>
+<a name="5453"></a>
+We would prefer that the JDBC API be strongly typed, with as much type information as possible
+expressed statically. This allows for more error checking at compile time.
+<p>
+<a name="5455"></a>
+Because SQL is intrinsically dynamically typed, we may encounter type mismatch errors at 
+run-time where for example a programmer expected a SELECT to return an integer result but 
+the database returned a string "foo". However we would still prefer to allow programmers to 
+express their type expectations at compile time, so that we can statically check as much as possible.
+We will also support dynamically typed interfaces where necessary (see particularly 
+Chapter <a href="jdbc-spec.frame14.html#50686">14</a>).
+<p>
+
+<a name="5456"></a>
+<h3>2.7 	  &nbsp; &nbsp; Keep the common cases simple</h3>
+<a name="16217"></a>
+We would like to make sure that the common cases are simple, and that the uncommon cases 
+are doable. 
+<p>
+<a name="16118"></a>
+A common case is a programmer executing a simple SQL statement (such as a SELECT, INSERT,
+UPDATE or DELETE) without parameters, and then (in the case of SELECT statement)
+processing rows of simple result types. A SQL statement with IN parameters is also 
+common.
+<p>
+<a name="16213"></a>
+Somewhat less common, but still important, is the case where a programmer invokes a SQL 
+statement using INOUT or OUT parameters. We also need to support SQL statements that read 
+or write multi-megabyte objects, and less common cases such as multiple result sets returned 
+by a SQL statement.
+<p>
+<a name="2414"></a>
+We expect that metadata access (e.g. to discover result-set types, or to enumerate the procedures
+in a database) is comparatively rare and is mostly used by sophisticated programmers or 
+by builder tools. Metadata functions are therefore documented at the end of the specification, 
+along with dynamically-typed data access; the average programmer can skip these sections.
+<p>
+
+<a name="16214"></a>
+<h3>2.8 	  &nbsp; &nbsp; Use multiple methods to express multiple functionality</h3>
+<a name="5464"></a>
+One style of interface design is to use a very small number of procedures and offer a large number
+of control flags as arguments to these procedures, so that they can be used to effect a wide 
+range of different behavior.<em>
+</em><p>
+<a name="5466"></a>
+In general the philosophy of the Java core classes has been to use different methods to express 
+different functionality. This tends to lead to a larger number of methods, but makes each method
+easier to understand. This approach has the major advantage that programmers who are 
+learning how to use the basic interface aren't confused by having to specify arguments related 
+to more complex behaviors.
+<p>
+<a name="5467"></a>
+We've tried to adopt the same approach for the JDBC interface, and in general have preferred 
+to use multiple methods rather than using multi-purpose methods with flag arguments.
+<p>
+
+
+<br>
+<hr> 
+<font size=-1>
+<a href="jdbc-spec.frame.html">Contents</a>  | <a href="jdbc-spec.frame1.html">Prev</a>  | <a href="jdbc-spec.frame3.html">Next</a>
+</font>
+<hr>
+
+
+
+<address>
+<a href="mailto:jdbc@wombat.eng.sun.com">jdbc@wombat.eng.sun.com</a>
+or
+<a href="mailto:jdbc-odbc@wombat.eng.sun.com">jdbc-odbc@wombat.eng.sun.com</a>
+</address>
+
+<a href="../../../relnotes/SMICopyright.html">
+<font size=-1><i>Copyright &#169; 1996, 1997 Sun Microsystems, Inc.   All rights reserved.</i></font>
+</a>
+
+<!-- HTML generated by Suzette Pelouch on April 10, 1998 -->
+
+</body>
+</html>

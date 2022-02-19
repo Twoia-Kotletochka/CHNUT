@@ -1,0 +1,109 @@
+<HTML>
+<HEAD>
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.02 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <TITLE>The Scoop on RMI and SSL</TITLE>
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<CENTER>
+<H1>
+<FONT SIZE=+3>The Scoop on RMI and SSL</FONT></H1></CENTER>
+
+<HR>
+
+<P>In response to frequent discussions on RMI and SSL on the RMI users
+list, the RMI group here at Sun is providing a page that tells the 
+RMI/SSL story. If this is a topic that interests you, or if you are interested
+in being included in the communications of the RMI development community
+you'll want to <A HREF="subscribe.html"><i>subscribe to the rmi-users
+list</A></i>.
+
+<P>Below are some questions and answers about SSL and RMI. If you have
+any comments or questions that are not addressed by this document,
+please send mail to <i><A
+HREF="mailto:rmi-comments@java.sun.com">rmi-comments@java.sun.com
+</A></i>.
+<p>
+Q1: Is it possible to use SSL with RMI?
+<BLOCKQUOTE>
+<P>A1: Yes, it is possible, due to RMI enhancements available in the Java<SUP><FONT SIZE=-2>TM</FONT></SUP> 2 SDK, Standard Edition, v1.2 (Java 2 SDK).
+</BLOCKQUOTE>
+<P>Q2: How do I use SSL with RMI?
+<BLOCKQUOTE>
+<P>A2: The version of RMI included in the Java 2 SDK enables the RMI
+developer to use <A HREF="sockettype.doc.html"><i>custom socket
+types</A></i>.  In earlier versions of RMI there could only be one type
+of socket used per Java virtual machine* (JVM), but now RMI allows each
+object to use a different type of socket for its RMI connections. All
+an application has to do is install an RMI socket factory that creates
+sockets of the desired type (that speak a particular protocol). We have
+a tutorial on <A HREF="rmisocketfactory.doc.html"><i>creating a custom
+RMI socket factory</A></i>.  Where to get the Java programming language
+implementation of SSL is discussed next.
+</BLOCKQUOTE>
+
+<P>Q3: Does Sun<SUP><FONT SIZE=-2>TM</FONT></SUP> have a pure Java
+programming language implementation of SSL?
+
+<BLOCKQUOTE>
+<P>A3: The HotJava<SUP><FONT SIZE=-2>TM</FONT></SUP> Browser,
+Java<SUP><FONT SIZE=-2>TM</FONT></SUP> Web Server<SUP><FONT
+SIZE=-2>TM</FONT></SUP>, and JavaServer<SUP><FONT SIZE=-2>TM</FONT>
+</SUP>Toolkit all provide secure communications using a Java
+programming language implementation of SSL from Sun.  In addition, Sun
+has a stand-alone Java programming language implementation of SSL for
+the Java 2 platform, the <a href="http://java.sun.com/products/jsse/">
+Java<SUP><FONT SIZE=-2>TM</FONT></SUP> Secure Socket Extension (JSSE) 1.0</a>.
+</BLOCKQUOTE>
+
+<P>Q4: Does Sun recommend any third party pure Java programming
+language implementations of SSL?
+<BLOCKQUOTE>
+
+<P>A4: While we do not endorse any one vendor's implementation, we would
+like to provide a list of available SSL implementations written in the Java programming language.
+
+<P>Most implementations of SSL use RSA algorithms. In the U.S. the use
+of RSA algorithms must be licensed from RSA. Therefore, U.S. customers
+have to take special care to understand all the legal ramifications of
+the implementations they choose. As a result, the available implementations
+will be listed in two categories: U.S. implementations and non-U.S. implementations.
+U.S. Implementations:
+<UL>
+<LI>
+<A HREF="http://www.phaos.com/main.htm">Phaos Technology's SSLava Toolkit</A></LI>
+
+<BR><FONT SIZE=+0>Phaos has made available an example which shows <i><A HREF="PhaosExample.html">how
+to use SSLava with RMI</A></i>.</FONT></UL>
+Non-U.S. Implementations:
+<UL>
+
+<LI>
+<A HREF="http://www.protekt.com">Protekt SSL Software from Forge Information Technology</A></LI>
+
+<LI>
+<A HREF="http://www.baltimore.ie/products/jssl/index.html">Baltimore Technologies'
+J/SSL</A></LI>
+
+<LI>
+<A HREF="http://jcewww.iaik.tu-graz.ac.at/iSaSiLk/isasilk.htm">IAIK's
+iSaSiLk</A></LI>
+</UL>
+</BLOCKQUOTE>
+<B>*As used on this web site, the terms "Java virtual machine" or "JVM" 
+	mean a virtual machine for the Java platform.</B>
+
+<!-- Body text ends here --><!-- ============================================================== -->
+<HR SIZE=3 NOSHADE>
+<TABLE BORDER=0 WIDTH="100%" >
+<TR VALIGN=TOP>
+<TD><FONT SIZE=-2><A HREF="../../relnotes/SMICopyright.html">Copyright &copy;</A>
+2000 <A HREF="http://www.sun.com/">Sun Microsystems, Inc.</A> All Rights
+Reserved.</FONT>&nbsp;
+<BR><FONT SIZE=-1>Please send comments to: <A HREF="mailto:rmi-comments@java.sun.com">rmi-comments@java.sun.com</A>&nbsp;</FONT></TD>
+
+<TD ALIGN=RIGHT><IMG SRC="../../images/sunlogo64x30.gif" ALT="Sun" BORDER=0 HEIGHT=30 WIDTH=64>&nbsp;
+</TR>
+</TABLE>
+</BODY>
+</HTML>

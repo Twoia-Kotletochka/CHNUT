@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 5 - Versioning of Serializable Objects
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="version.doc6.html">PREV</a>
+ | <a href="version.doc8.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<br>
+<h3>
+<a name="5172"><!-- --></a>
+<i>	5.6.1	</i> Incompatible Changes
+</h3>
+
+<blockquote>
+<a name="6759"><!-- --></a>
+Incompatible changes to classes are those changes for which the guarantee of interoperability cannot be maintained. The incompatible changes that may occur while evolving a class are:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="6756"><!-- --></a>
+Deleting fields - If a field is deleted in a class, the stream written will not contain its value. When the stream is read by an earlier class, the value of the field will be set to the default value because no value is available in the stream. However, this default value may adversely impair the ability of the earlier version to fulfill its contract.
+</li>
+<li>
+<a name="6780"><!-- --></a>
+Moving classes up or down the hierarchy - This cannot be allowed since the data in the stream appears in the wrong sequence.
+</li>
+<li>
+<a name="6796"><!-- --></a>
+Changing a nonstatic field to static or a nontransient field to transient - When relying on default serialization, this change is equivalent to deleting a field from the class. This version of the class will not write that data to the stream, so it will not be available to be read by earlier versions of the class. As when deleting a field, the field of the earlier version will be initialized to the default value, which can cause the class to fail in unexpected ways.
+</li>
+<li>
+<a name="6821"><!-- --></a>
+Changing the declared type of a primitive field - Each version of the class writes the data with its declared type. Earlier versions of the class attempting to read the field will fail because the type of the data in the stream does not match the type of the field.
+</li>
+<li>
+<a name="8066"><!-- --></a>
+Changing the <code>writeObject</code> or <code>readObject</code> method so that it no longer writes or reads the default field data or changing it so that it attempts to write it or read it when the previous version did not. The default field data must consistently either appear or not appear in the stream.
+</li>
+<li>
+<a name="8209"><!-- --></a>
+Changing a class from <code>Serializable</code> to <code>Externalizable</code> or visa-versa is an incompatible change since the stream will contain data that is incompatible with the implementation in the available class.
+</li>
+<li>
+<a name="9352"><!-- --></a>
+Removing either <code>Serializable</code> or <code>Externalizable</code> is an incompatible change since when written it will no longer supply the fields needed by older versions of the class.
+</li>
+<li>
+<a name="9412"><!-- --></a>
+Adding the <code>writeReplace</code> or <code>readResolve</code> method to a class is incompatible if the behavior would produce an object that is incompatible with any older version of the class.
+</li>
+</ul>
+</blockquote>
+
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="version.doc6.html">PREV</a>
+ | <a href="version.doc8.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:48:07 1999 -->
+ 
+
+
+</body>
+</html>

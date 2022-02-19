@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 6 - Object Serialization Stream Protocol
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="protocol.doc2.html">PREV</a>
+ | <a href="protocol.doc4.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="5849"><i>	6.3	</i> Stream Protocol Versions
+</a></h2>
+
+<blockquote>
+<a name="10264"><!-- --></a>
+It was necessary to make a change to the serialization stream format in JDK<sup><font size="-2">TM</font></sup> 1.2 that is not backwards compatible to all minor releases of JDK<sup><font size="-2">TM</font></sup> 1.1. To provide for cases where backwards compatibility is required, a capability has been added to indicate what <em>PROTOCOL_VERSION</em> to use when writing a serialization stream. The method <code>ObjectOutputStream.useProtocolVersion</code> takes as a parameter the protocol version to use to write the serialization stream.<p>
+<a name="10265"><!-- --></a>
+The Stream Protocol Versions are as follows:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<code>ObjectStreamConstants.PROTOCOL_VERSION_1</code>
+</li>
+<br>Indicates the initial stream format.
+<p>
+<li>
+<code>ObjectStreamConstants.PROTOCOL_VERSION_2</code>
+</li>
+<br>Indicates the new external data format. Primitive data is written in block data mode and is terminated with <em>TC_ENDBLOCKDATA</em>.
+<p>
+Block data boundaries have been standardized. Primitive data written in block data mode is normalized to not exceed 1024 byte chunks. The benefit of this change was to tighten the specification of serialized data format within the stream. This change is fully backward and forward compatible.</TD>
+</blockquote>
+<a name="10255"><!-- --></a>
+JDK<sup><font size="-2">TM</font></sup> 1.2 defaults to writing <code>PROTOCOL_VERSION_2</code>.<p>
+<a name="10388"><!-- --></a>
+JDK<sup><font size="-2">TM</font></sup> 1.1 defaults to writing <code>PROTOCOL_VERSION_1</code>.<p>
+<a name="10251"><!-- --></a>
+JDK<sup><font size="-2">TM</font></sup> 1.1.7 and greater can read both versions.<p>
+<a name="11072"><!-- --></a>
+Releases prior to JDK<sup><font size="-2">TM</font></sup> 1.1.7 can only read <code>PROTOCOL_VERSION_1</code>.
+
+</blockquote>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="protocol.doc2.html">PREV</a>
+ | <a href="protocol.doc4.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:48:11 1999 -->
+ 
+
+
+</body>
+</html>

@@ -1,0 +1,86 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Remote Method Invocation: 9 - Garbage Collector Interfaces
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="rmiTOC.html">CONTENTS</a> | <a href="rmi-dgc5.html">PREV</a>
+ | <a href="rmi-protocol.html">NEXT</a> 
+<!-- /font --></td><td align=right><i>Java Remote Method Invocation</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="5112"><i>	9.5	</i> The <code>VMID</code> Class
+</a></h2>
+
+<blockquote>
+<a name="5102"><!-- --></a>
+<blockquote>
+<a name="6614"><!-- --></a>
+The class <code>VMID</code> provides a universally unique identifier among all Java virtual machines. A <code>VMID</code> contains a <code>UID</code> and a host address. A <code>VMID</code> can be used to identify client virtual machines.<p>
+</blockquote><blockquote><pre>package java.rmi.dgc;
+
+public final class VMID implements java.io.Serializable {
+
+	public VMID();
+
+	public static boolean isUnique();
+	public int hashCode();
+	public boolean equals(Object obj);	
+	public String toString();
+}
+</pre></blockquote><blockquote>
+<a name="6729"><!-- --></a>
+The <code>VMID</code> default constructor creates a globally unique identifier among all Java virtual machines under the following conditions:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="7171"><!-- --></a>
+the conditions for uniqueness for objects of the class <code>java.rmi.server.UID</code> are satisfied, and
+</li>
+<li>
+<a name="7213"><!-- --></a>
+ an address can be obtained for the host that is unique and constant for the lifetime of the <code>UID</code> object.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="7175"><!-- --></a>
+A <code>VMID</code> contains the host address of the machine on which it was created. Due to security restrictions, obtaining the true host address is not always possible (for example, the loopback host may be used under security-restricted conditions). The method <code>isUnique</code> can be called to determine if <code>VMIDs</code> generated in this virtual machine are, in fact, unique among all virtual machines. The method <code>isUnique</code> returns true if a valid host name can be determined (other than loopback host); otherwise it returns false.<p>
+<a name="7204"><!-- --></a>
+The <code>hashCode</code>, <code>equals</code> and <code>toString</code> methods are defined for <code>VMID</code>s. Two <code>VMIDs</code> are considered equal if they have the same contents.<p>
+</blockquote><blockquote><pre>
+
+
+</pre></blockquote>
+</ul>
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="rmiTOC.html">CONTENTS</a> | <a href="rmi-dgc5.html">PREV</a>
+ | <a href="rmi-protocol.html">NEXT</a> 
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF=http://java.sun.com/products/jdk/1.3/docs/relnotes/SMICopyright.html>Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Susan Snyder -->
+<!-- Last updated: Wednesday November 10 04 11:11:27 1999 -->
+ 
+
+
+</body>
+</html>

@@ -1,0 +1,527 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Java IDL: Exceptions</TITLE>
+   <META NAME=GENERATOR CONTENT="Claris Home Page 2.0">
+   <X-SAS-WINDOW TOP=42 BOTTOM=477 LEFT=4 RIGHT=534>
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<H1 ALIGN=CENTER>Exceptions</H1>
+<HR>
+
+<P>CORBA has two types of exceptions: standard system exceptions which are
+fully specified by the OMG and user exceptions which are defined
+by the individual application programmer. CORBA exceptions are a little
+different from Java exception objects, but those differences are largely
+handled in the mapping from IDL to Java. 
+
+<P>Topics in this section include:
+
+<UL>
+<LI><A href="#differences">Differences Between CORBA and Java Exceptions</A>
+<LI><A href="#systemexceptions">System Exceptions</A>
+  <UL>
+  <LI><A href="#structure">System Exception Structure</A>
+  <LI><A href="#minorcodes">Minor Codes</A>
+  <LI><A href="#compstatus">Completion Status</A>
+  </UL>
+<LI><A href="#userexceptions">User Exceptions</A>
+<LI><A href="#minorcodemeanings">Minor Code Meanings</A>
+</UL>
+
+
+<!--*********************DIFFERENCES****************-->
+
+<A name="differences">
+<H2>Differences Between CORBA and Java Exceptions</H2></A>
+
+
+<P>To specify an exception in IDL, the interface designer 
+uses the <EM>raises</EM> keyword.
+This is similar to the <EM>throws</EM> specification in Java. 
+When you use the exception
+keyword in IDL you create a user-defined exception. The standard
+system exceptions need not (and cannot) be specified this way.
+
+
+<!--****************SYSTEM EXCEPTIONS***************-->
+
+<A name="systemexceptions">
+<H2>System Exceptions</H2></A>
+
+CORBA defines a set of standard system exceptions, which
+are generally raised by the ORB libraries to signal systemic 
+error conditions like:</P>
+
+<UL>
+   <LI>Server-side system exceptions, such as resource exhaustion 
+   or activation failure.
+   
+   <LI>Communication system exceptions, for example, losing contact with the
+   object, host down, or cannot talk to ORB daemon (orbd).
+   
+   <LI>Client-side system exceptions, such as invalid operand type or
+   anything that occurs before a request is sent or
+   after the result comes back.
+</UL>
+
+<P>All IDL operations can throw system exceptions when invoked. 
+The interface designer need not specify anything to enable operations
+in the interface to throw system exceptions -- the capability is automatic.
+</P>
+
+<P>This makes sense because no matter how trivial an operation's
+implementation is, the potential of an operation invocation coming
+from a client that is in another process, and perhaps (likely) on
+another machine, means that a whole range of errors is possible.</P>
+
+<P>Therefore, a CORBA client should always catch CORBA system
+exceptions. Moreover, developers cannot rely on the Java compiler to
+notify them of a system exception they should catch, because CORBA
+system exceptions are descendants of <TT>java.lang.RuntimeException</TT>. 
+
+
+<A name="structure">
+<H3>System Exception Structure</H3></A>
+
+<P>All CORBA system exceptions have the same structure:
+
+<PRE>
+exception &lt;SystemExceptionName&gt; { // descriptive of error
+    unsigned long <A href="#minorcodes">minor</A>;          // more detail about error
+    CompletionStatus <A href="#compstatus">completed</A>;   // yes, no, maybe
+}
+&nbsp;
+</PRE>
+
+<P>System exceptions are subtypes of <TT>java.lang.RuntimeException</TT>
+through <TT>org.omg.CORBA.SystemException</TT>:
+
+<PRE>
+java.lang.Exception
+ |
+ +--java.lang.RuntimeException
+     |
+     +--org.omg.CORBA.SystemException
+         |
+         +--BAD_PARAM
+         |
+         +--//etc. 
+&nbsp;
+</PRE>
+
+<A name="minorcodes">
+<H3>Minor Codes</H3></A>
+
+<P>All CORBA system exceptions have a minor code field, a number that 
+provides additional information about the nature of the failure that caused
+the exception. Minor code meanings are not specified by the OMG; 
+each ORB vendor
+specifies appropriate minor codes for that implementation. 
+For the meaning of minor codes thrown by the Java&nbsp; ORB, see 
+<A href="#minorcodemeanings">Minor code meanings</A> .
+
+
+<A name="compstatus">
+<H3>Completion Status</H3></A>
+
+<P>All CORBA system exceptions have a completion status field, 
+indicating the status of the operation that threw the exception.
+The completion codes are:
+
+<DL>
+<DT>COMPLETED_YES
+<DD>The object implementation has completed processing prior to the
+exception being raised.
+<DT>COMPLETED_NO
+<DD>The object implementation was not invoked prior to the 
+exception being raised.
+<DT>COMPLETED_MAYBE
+<DD>The status of the invocation is unknown.
+</DL>
+
+
+<!--****************USER EXCEPTIONS***************-->
+
+<A name="userexceptions">
+<H2>User Exceptions</H2></A>
+
+<P>CORBA user exceptions are subtypes of <TT>java.lang.Exception</TT>
+through <TT>org.omg.CORBA.UserException</TT>:
+
+<PRE>
+java.lang.Exception
+ |
+ +--org.omg.CORBA.UserException
+      |
+      +-- Stocks.BadSymbol
+      |
+      +--//etc. 
+</PRE>
+
+<P>Each user-defined exception
+specified in IDL results in a generated Java exception class. These
+exceptions are entirely defined and implemented by the programmer
+
+
+<!--*****************MINOR CODE MEANINGS********************-->
+
+<A name="minorcodemeanings">
+<H2>Minor Code Meanings</H2></A>
+
+<P>System exceptions all have a field <I>minor</I> that allows CORBA vendors
+to provide additional information about the cause of the exception. The table 
+below lists the minor codes of Java IDL's system exceptions, along with their 
+significance.
+
+<P>
+<TABLE BORDER cellspacing=1 cellpadding=4>
+<A name="ORBminorcodes">
+<CAPTION ALIGN=TOP><I><B>ORB Minor Codes and Their Meanings</B></I></CAPTION>
+</A>
+
+<TR>
+  <TH>Code</TH>
+  <TH>Meaning</TH>
+</TR>
+
+<TR>
+  <TH ALIGN=CENTER COLSPAN=2><A name="BAD_PARAMminorcodes">
+  BAD_PARAM Exception Minor Codes</A></TH>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>1</TD>
+  <TD VALIGN=TOP>A null parameter was passed to a Java&nbsp;IDL method.</TD>
+</TR>
+
+<TR>
+  <TH ALIGN=CENTER COLSPAN=2><A name="ORBCOMM_FAILUREminorcodes">
+  COMM_FAILURE Exception Minor Codes</A></TH>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>1</TD>
+  <TD VALIGN=TOP>Unable to connect to the host and port specified in
+  the object reference, or in the object reference obtained after
+  location/object forward.</TD>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>2</TD>
+  <TD VALIGN=TOP>Error occurred while trying to write to the socket.
+  The socket has been closed by the other side, or is aborted.</TD>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>3</TD>
+  <TD VALIGN=TOP>Error occurred while trying to write to the socket.
+  The connection is no longer alive.</TD>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>6</TD>
+  <TD VALIGN=TOP>Unable to successfully connect to the server after several
+  attempts.</TD>
+</TR>
+
+<TR>
+  <TH ALIGN=CENTER COLSPAN=2><A name="ORBDATA_CONVERSIONminorcodes">
+  DATA_CONVERSION Exception Minor Codes</A></TH>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>1</TD>
+  <TD VALIGN=TOP>Encountered a bad hexadecimal character while doing 
+  ORB <TT>string_to_object</TT> operation.</TD>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>2</TD>
+  <TD VALIGN=TOP>The length of the given IOR for <TT>string_to_object()</TT> 
+  is odd. It must be even.</TD>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>3</TD>
+  <TD VALIGN=TOP>The string given to <TT>string_to_object()</TT>
+  does not start with <TT>IOR:</TT> and hence is a
+  bad stringified IOR.</TD>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>4</TD>
+  <TD VALIGN=TOP>Unable to perform ORB <TT>resolve_initial_references</TT> operation
+  due to the host or the port being incorrect or unspecified, or the remote
+  host does not support the Java&nbsp;IDL bootstrap protocol.</TD>
+</TR>
+
+<TR>
+  <TH ALIGN=CENTER COLSPAN=2><A name="ORBINTERNALminorcodes">
+  INTERNAL Exception Minor Codes</A></TH>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>3</TD>
+  <TD VALIGN=TOP>Bad status returned in the IIOP Reply message by the server.</TD>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>6</TD>
+  <TD VALIGN=TOP>When unmarshaling, the repository id of the user exception
+  was found to be of incorrect length.</TD>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>7</TD>
+  <TD VALIGN=TOP>Unable to determine local hostname using the Java APIs 
+  <TT>InetAddress.getLocalHost().getHostName()</TT>.</TD>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>8</TD>
+  <TD VALIGN=TOP>Unable to create the listener thread on the specific port. 
+  Either the port is already in use, there was an error creating the 
+  daemon thread, or security restrictions prevent listening.</TD>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>9</TD>
+  <TD VALIGN=TOP>Bad locate reply status found in the IIOP locate reply.</TD>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>10</TD>
+  <TD VALIGN=TOP>Error encountered while stringifying an object reference.</TD>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>11</TD>
+  <TD VALIGN=TOP>IIOP message with bad GIOP v1.0 message type found.</TD>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>14</TD>
+  <TD VALIGN=TOP>Error encountered while unmarshaling the user exception.</TD>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>18</TD>
+  <TD VALIGN=TOP>Internal initialization error.</TD>
+</TR>
+
+<TR>
+  <TH ALIGN=CENTER COLSPAN=2><A name="ORBINV_OBJREFminorcodes">
+  INV_OBJREF Exception Minor Codes</A></TH>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>1</TD>
+  <TD VALIGN=TOP>An IOR with no profile was encountered.</TD>
+</TR>
+
+<TR>
+  <TH ALIGN=CENTER COLSPAN=2><A name="ORBMARSHALminorcodes">
+  MARSHAL Exception Minor Codes</A></TH>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>4</TD>
+  <TD VALIGN=TOP>Error occured while unmarshaling an object reference.</TD>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>5</TD>
+  <TD VALIGN=TOP>Marshalling/unmarshaling unsupported IDL types like wide
+  characters and wide strings.</TD>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>6</TD>
+  <TD VALIGN=TOP>Character encountered while marshaling or unmarshaling 
+  a character or string that is not ISO Latin-1 (8859.1) compliant. It is 
+  not in the range of 0 to 255.</TD>
+</TR>
+
+<TR>
+  <TH ALIGN=CENTER COLSPAN=2><A name="ORBNO_IMPLEMENTminorcodes">
+  NO_IMPLEMENT Exception Minor Codes</A></TH>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>1</TD>
+  <TD VALIGN=TOP>Dynamic Skeleton Interface is not implemented.</TD>
+</TR>
+
+<TR>
+  <TH ALIGN=CENTER COLSPAN=2><A name="ORBOBJ_ADAPTERminorcodes">
+  OBJ_ADAPTER Exception Minor Codes</A></TH>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>1</TD>
+  <TD VALIGN=TOP>No object adapter was found matching the one in 
+  the object key when dispatching the request on the server 
+  side to the object adapter layer.</TD>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>2</TD>
+  <TD VALIGN=TOP>No object adapter was found matching the one in 
+  the object key when dispatching the locate request on the server 
+  side to the object adapter layer.</TD>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>4</TD>
+  <TD VALIGN=TOP>Error occured when trying to connect a servant to the ORB.</TD>
+</TR>
+
+<TR>
+  <TH ALIGN=CENTER COLSPAN=2><A name="ORBOBJ_NOT_EXISTminorcodes">
+  OBJ_NOT_EXIST Exception Minor Codes</A></TH>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>1</TD>
+  <TD VALIGN=TOP>Locate request got a response indicating that the 
+  object is not known to the locator.</TD>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>2</TD>
+  <TD VALIGN=TOP>Server id of the server that received the request does 
+  not match the server id baked into the object key of the 
+  object reference that was invoked upon.</TD>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>4</TD>
+  <TD VALIGN=TOP>No skeleton was found on the server side that matches the 
+  contents of the object key inside the object reference.</TD>
+</TR>
+
+<TR>
+  <TH ALIGN=CENTER COLSPAN=2><A name="ORBUNKNOWNminorcodes">
+  UNKNOWN Exception Minor Codes</A></TH>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>1</TD>
+  <TD VALIGN=TOP>Unknown user exception encountered while unmarshaling: the
+  server returned a user exception that does not match any expected by the
+  client.</TD>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>3</TD>
+  <TD VALIGN=TOP>Unknown runtime exception thrown by the server implementation.</TD>
+</TR>
+
+</TABLE>
+
+<P>
+<TABLE BORDER cellspacing=1 cellpadding=4>
+<A name="nsminorcodes">
+<CAPTION ALIGN=TOP><I><B>Name Server Minor Codes and Their Meanings</B></I></CAPTION>
+</A>
+
+<TR>
+  <TH>Code</TH>
+  <TH>Meaning</TH>
+</TR>
+
+<TR>
+  <TH ALIGN=CENTER COLSPAN=2><A name="INITIALIZEminorcodes">
+  INITIALIZE Exception Minor Codes</A></TH>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>150</TD>
+  <TD VALIGN=TOP>Transient name service caught a 
+  <CODE>SystemException</CODE> while initializing.</TD>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>151</TD>
+  <TD VALIGN=TOP>Transient name service caught a Java exception
+  while initializing.</TD>
+</TR>
+
+<TR>
+  <TH ALIGN=CENTER COLSPAN=2><A name="NSINTERNALminorcodes">
+  INTERNAL Exception Minor Codes</A></TH>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>100</TD>
+  <TD VALIGN=TOP>An <CODE>AlreadyBound</CODE> exception was thrown in a 
+  <CODE>rebind</CODE> operation.</TD>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>101</TD>
+  <TD VALIGN=TOP>An <CODE>AlreadyBound</CODE> exception was thrown in a 
+  <CODE>rebind_context</CODE> operation.</TD>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>102</TD>
+  <TD VALIGN=TOP>Binding type passed to the internal binding implementation
+  was not <CODE>BindingType.nobject</CODE> or 
+  <CODE>BindingType.ncontext</CODE>.</TD>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>103</TD>
+  <TD VALIGN=TOP>Object reference was bound as a context, but it could not
+  be narrowed to <CODE>CosNaming.NamingContext</CODE>.</TD>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>200</TD>
+  <TD VALIGN=TOP>Implementation of the <CODE>bind</CODE> operation encountered
+  a previous binding.</TD>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>201</TD>
+  <TD VALIGN=TOP>Implementation of the <CODE>list</CODE> operation caught a Java
+  exception while creating the list iterator.</TD>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>202</TD>
+  <TD VALIGN=TOP>Implementation of the <CODE>new_context</CODE> operation caught a
+  Java exception while creating the new <CODE>NamingContext</CODE> servant.</TD>
+</TR>
+
+<TR>
+  <TD ALIGN=CENTER VALIGN=TOP>203</TD>
+  <TD VALIGN=TOP>Implementaton of the <CODE>destroy</CODE> operation
+  caught a Java exception while disconnecting from the ORB.</TD>
+</TR>
+
+</TABLE>
+
+<P><HR>
+<CENTER><P>
+
+<TABLE cellpadding=8 cellspacing=4>
+<TR>
+  <TD ALIGN=CENTER><A href="index.html">Home</A></TD>
+</TR></TABLE>
+
+<HR><FONT
+SIZE="-2">
+<A HREF="http://www.sun.com/share/text/SMICopyright.html">Copyright
+&copy;</A></FONT><FONT SIZE="-2"> 1996-98 Sun Microsystems, Inc.,
+2550 Garcia Ave., Mtn. View, CA. 94043-1100 USA., All rights
+reserved.</FONT></P>
+</CENTER>
+
+</BODY>
+</HTML>
+
+

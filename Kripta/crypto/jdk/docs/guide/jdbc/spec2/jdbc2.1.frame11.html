@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title></title>
+</head>
+<body bgcolor=#ffffff>
+
+<table width=100%><tr>
+<td><font size=-1>
+<a href="jdbc2.1.frame.html">Contents</a>  | <a href="jdbc2.1.frame10.html">Prev</a>  | <a href="jdbc2.1.frame12.html">Next</a>
+</font></td><td align=right><i>JDBC<sup><font size=-2>TM</font></sup> Guide: Getting Started</i></td>
+</tr></table>
+<hr>
+<br>
+ 
+
+<a name="301716"></a>
+<h2>	11	 Clarifications</h2>
+
+<a name="288599"></a>
+We have gotten several requests to clarify some aspects of the JDBC API. This chapter 
+contains additional explanation of some features.
+<p>
+
+<a name="284754"></a>
+<h3>11.1 	  &nbsp; &nbsp; Connection.isClosed()</h3>
+<a name="284746"></a>
+The <code>Connection.isClosed()</code> method is only guaranteed to return true after <code>Connection.closed()
+</code> has been called. <code>Connection.isClosed() </code>cannot be called, in general,
+to determine if a database connection is valid or invalid. A typical client can 
+determine that a connection is invalid by catching the exception that is thrown when an 
+operation is attempted. 
+<p>
+
+<a name="301145"></a>
+<h3>11.2 	  &nbsp; &nbsp; Statement.setCursorName()</h3>
+<a name="288286"></a>
+The <code>Statement.setCursorName() </code>method provides a way for an application to specify
+a cursor name for the cursor associated with the next result set produced by a statement.
+A result set's cursor name can be retrieved by calling 
+<code>ResultSet.getCursorName(). </code>If <code>Statement.setCursorName()</code> is called prior to 
+creating a result set, then <code>ResultSet.getCursorName() </code>should always return the value
+specified in<code> Statement.setCursorName().
+</code><p>
+<a name="288333"></a>
+We note that calling <code>Statement.setCursorName()</code> prior to creating a result set does 
+not mean that the result set is updatable, in other words, positioned update or delete may 
+not be allowed on a result set even if <code>Statement.setCursorName()</code> was called. By default
+, a result set is read-only.
+<p>
+<a name="288335"></a>
+The only use for a cursor name is to embed it in a SQL statement of the form 
+<p>
+<a name="288308"></a>
+
+<p>
+<blockquote><pre>UPDATE ... WHERE CURRENT OF &lt;cursor&gt;
+</pre></blockquote><a name="288290"></a>
+
+<p>
+<a name="288309"></a>
+The cursor name provides a way to do a positioned update or delete. To enable positioned
+update and delete on a result set, a select query of the form
+<p>
+<a name="288312"></a>
+
+<p>
+<blockquote><pre><code>SELECT FOR UPDATE </code>... FROM ... WHERE ...
+</pre></blockquote><a name="288314"></a>
+
+<p>
+<a name="288315"></a>
+should be used to create the result set. If <code>Statement.setCursorName()</code> is not called to 
+specify a cursor name, then the JDBC driver or underlying DBMS must generate a cursor
+name when a <code>SELECT FOR UPDATE</code> statement is executed, if positioned update/delete
+is supported. <code>ResultSet.getCursorName()</code>should return <code>null </code>if the result set is 
+read-only and <code>Statement.setCursorName()</code> was not called to specify a cursor name.
+<p>
+
+<a name="301684"></a>
+<h3>11.3 	  &nbsp; &nbsp; Character conversion</h3>
+<a name="301687"></a>
+JDBC driver implementations are expected to automatically convert the Java programming
+language unicode encoding of strings and characters to and from the character encoding
+of the database being accessed. The JDBC API does not define how to override 
+the character encoding of a database. For example, the API does not define how to store 
+unicode characters in an ASCII database.
+<p>
+
+<a name="302191"></a>
+<h3>11.4 	  &nbsp; &nbsp; Streams as input parameters</h3>
+<a name="302192"></a>
+When an application passes a stream as an input value via a setXXX() or updateXXX() 
+method, the application is responsible for maintaining the stream in a readable state until
+one of the following methods is called: PreparedStatement.execute(), executeQuery(),
+executeUpdate(), or executeBatch(), and ResultSet.insertRow() or updateRow(). 
+A JDBC driver is not required to wait until one of these methods is called to read the 
+stream value.
+<p>
+
+<a name="302202"></a>
+<h3>11.5 	  &nbsp; &nbsp; Result sets not created by a Statement</h3>
+<a name="301685"></a>
+A <code>ResultSet</code> object that is created by a metadata operation is only required to be forward-only.
+Scrollability is not required for result sets produced by <code>DatabaseMetaData</code> 
+operations.
+<p>
+
+
+<br>
+<hr> 
+<font size=-1>
+<a href="jdbc2.1.frame.html">Contents</a>  | <a href="jdbc2.1.frame10.html">Prev</a>  | <a href="jdbc2.1.frame12.html">Next</a>
+</font>
+<hr>
+
+
+
+<address>
+<a href="mailto:jdbc@eng.sun.com">jdbc@eng.sun.com</a>
+or
+<a href="mailto:jdbc-business@eng.sun.com">jdbc-business@eng.sun.com</a>
+</address>
+
+<i><a href="../../../relnotes/SMICopyright.html">
+Copyright</a> &#169; 1996-1999 Sun Microsystems, Inc.   All rights reserved.</i>
+
+
+<!-- HTML generated by Suzette Pelouch on December 01, 1999 -->
+
+</body>
+</html>

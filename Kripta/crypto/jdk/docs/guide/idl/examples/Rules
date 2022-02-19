@@ -1,0 +1,9 @@
+# Example Makefile Rules for building Applications
+#
+JAVA=/opt/java/bin/java
+CLASSPATH="/opt/java/lib/classes.zip:JAVAIDL_HOME=/net/amber-gate/export/home/ORB/opt/JavaIDL-releases/EA2/solaris-sparc
+
+IDL2JAVA=$(JAVAIDL_HOME)/bin/idltojava
+$(JAVAIDL_HOME)/lib/classes.zip:./"
+
+.KEEP_STATE:

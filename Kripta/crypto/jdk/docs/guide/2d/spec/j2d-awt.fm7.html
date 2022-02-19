@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-awt.fm6.html">PREV</a>
+ | <a href="j2d-awt.fm8.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="66518"><i>2.7	</i> Setting the Clipping Path
+</a></h2>
+
+<blockquote>
+<a name="64411"><!-- --></a>
+To define a clipping path:<p>
+</blockquote><blockquote><ol>
+<li>
+<a name="64412"><!-- --></a>
+Create a <kbd>Shape</kbd> that represents the area you want to render.
+</li>
+
+<li>
+<a name="64413"><!-- --></a>
+Call <kbd>Graphics2D.setClip</kbd> to use the shape as the clipping path for the <kbd>Graphics2D</kbd> context.
+</li>
+
+</ol></blockquote>
+<blockquote>
+<a name="64414"><!-- --></a>
+To shrink the clipping path:<p>
+</blockquote><blockquote><ol>
+<li>
+<a name="64415"><!-- --></a>
+Create a <kbd>Shape</kbd> that intersects the current clipping path.
+</li>
+
+<li>
+<a name="64416"><!-- --></a>
+Call <kbd>clip</kbd> to change the clipping path to the intersection of the current clipping path and the new <kbd>Shape</kbd>.
+</li>
+
+</ol></blockquote>
+<blockquote>
+<a name="66632"><!-- --></a>
+In the following example, a clipping path is created from an ellipse and then modified by calling <kbd>clip</kbd>.<p>
+</blockquote><pre><blockquote>public void paint(Graphics g) {
+</blockquote></pre><pre><blockquote>  Graphics2D g2 = (Graphics2D) g;
+</blockquote></pre><pre><blockquote>
+</blockquote></pre><pre><blockquote>// The width and height of the canvas
+</blockquote></pre><pre><blockquote>  int w = getSize().width;
+</blockquote></pre><pre><blockquote>  int h = getSize().height;
+</blockquote></pre><pre><blockquote>  // Create an ellipse and use it as the clipping path
+</blockquote></pre><pre><blockquote>  Ellipse2D e = new Ellipse2D.Float(w/4.0f,h/4.0f,
+</blockquote></pre><pre><blockquote>                                    w/2.0f,h/2.0f);
+</blockquote></pre><pre><blockquote>  g2.setClip(e);
+</blockquote></pre><pre><blockquote>
+</blockquote></pre><pre><blockquote>  // Fill the canvas. Only the area within the clip is rendered
+</blockquote></pre><pre><blockquote>  g2.setColor(Color.cyan);
+</blockquote></pre><pre><blockquote>  g2.fillRect(0,0,w,h);
+</blockquote></pre><pre><blockquote>
+</blockquote></pre><pre><blockquote>  // Change the clipping path, setting it to the intersection of 
+</blockquote></pre><pre><blockquote>  // the current clip and a new rectangle.
+</blockquote></pre><pre><blockquote>  Rectangle r = new Rectangle(w/4+10,h/4+10,w/2-20,h/2-20);
+</blockquote></pre><pre><blockquote>  g2.clip(r);
+</blockquote></pre><pre><blockquote>
+</blockquote></pre><pre><blockquote>  // Fill the canvas. Only the area within the new clip 
+</blockquote></pre><pre><blockquote>  // is rendered
+</blockquote></pre><pre><blockquote>  g2.setColor(Color.magenta);
+</blockquote></pre><pre><blockquote>  g2.fillRect(0,0,w,h);
+</blockquote></pre><pre><blockquote>}
+</blockquote></pre>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-awt.fm6.html">PREV</a>
+ | <a href="j2d-awt.fm8.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1998 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Tue Feb 24 10:24:05 1998 -->
+ 
+
+
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 3 - Object Input Classes
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="input.doc5.html">PREV</a>
+ | <a href="class.doc.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="5903"><i>	3.6	</i> The readResolve Method
+</a></h2>
+
+<blockquote>
+<a name="5904"><!-- --></a>
+For Serializable and Externalizable classes, the <code>readResolve</code> method allows a class to replace/resolve the object read from the stream before it is returned to the caller. By implementing the <code>readResolve</code> method, a class can directly control the types and instances of its own instances being deserialized. The method is defined as follows:<p>
+<a name="5905"><!-- --></a>
+<pre>	ANY-ACCESS-MODIFIER Object readResolve()
+    		throws ObjectStreamException;
+</pre>
+
+
+<a name="5906"><!-- --></a>
+The <code>readResolve</code> method is called when <code>ObjectInputStream</code> has read an object from the stream and is preparing to return it to the caller. <code>ObjectInputStream</code> checks whether the class of the object defines the <code>readResolve</code> method. If the method is defined, the <code>readResolve</code> method is called to allow the object in the stream to designate the object to be returned. The object returned should be of a type that is compatible with all uses. If it is not compatible, a ClassCastException will be thrown when the type mismatch is discovered.<p>
+<a name="5907"><!-- --></a>
+For example, a <code>Symbol</code> class could be created for which only a single instance of each symbol binding existed within a virtual machine. The <code>readResolve</code><code> </code>method would be implemented to determine if that symbol was already defined and substitute the preexisting equivalent <code>Symbol</code> object to maintain the identity constraint. In this way the uniqueness of <code>Symbol</code> objects can be maintained across serialization. <p>
+</blockquote>
+<blockquote>
+<blockquote><hr noshade size="1">
+<b><a name="5981">Note - </a></b>The <code>readResolve</code> method is not invoked on the object until the object is fully constructed, so any references to this object in its object graph will not be updated to the new object nominated by <code>readResolve</code>. However, during the serialization of an object with the <code>writeReplace </code>method, all references to the original object in the replacement object&#39;s object graph are replaced with references to the replacement object. Therefore in cases where an object being serialized nominates a replacement object whose object graph has a reference to the original object, deserialization will result in an incorrect graph of objects. Furthermore, if the reference types of the object being read (nominated by <code>writeReplace</code>) and the original object are not compatible, the construction of the object graph will raise a ClassCastException. 
+<hr noshade size="1">
+</blockquote>
+</blockquote>
+
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="input.doc5.html">PREV</a>
+ | <a href="class.doc.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:47:59 1999 -->
+ 
+
+
+</body>
+</html>

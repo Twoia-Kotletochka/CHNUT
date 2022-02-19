@@ -1,0 +1,189 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API: 2 - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-awt.fm5.html">PREV</a>
+ | <a href="j2d-geom.fm.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="70485"><i>2.6	</i> Rendering in a Multi-Screen Environment
+</a></h2>
+
+<blockquote>
+<a name="70497"><!-- --></a>
+With the release of the JavaTM 2 SDK, version 1.3, the Java 2DTM API supports three different multi-screen configurations that can possibly be configured by a native platform:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="70498"><!-- --></a>
+Two or more independent screens
+</li>
+<li>
+<a name="70499"><!-- --></a>
+Two or more screens where one screen is the primary screen and the other screens display copies of what appears on the primary screen.
+</li>
+<li>
+<a name="70500"><!-- --></a>
+Two or more screens that form a virtual desktop, which is also called a virtual device.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="70504"><!-- --></a>
+The Java 2D API enables you to  create <kbd>Frame</kbd>, <kbd>JFrame</kbd>, <kbd>Window</kbd>, or <kbd>JWindow</kbd> objects with a <kbd>GraphicsConfiguration</kbd> to target a screen device for rendering.<p>
+<a name="70610"><!-- --></a>
+In all three configurations, each screen device is represented by a <kbd>GraphicsDevice.</kbd>  A <kbd>GraphicsDevice</kbd> can have multiple <kbd>GraphicsConfiguration </kbd>objects associated with it.  <p>
+<a name="71780"><!-- --></a>
+When two or more screens are used to form a virtual device, a virtual coordinate system that exists outside of the physical screens is used to represent the virtual device.  The bounds of each <kbd>GraphicsConfiguration</kbd>  in this multi-screen configu
+ration are relative to the virtual coordinate system.  One screen in this environment is identified as the primary screen, which is located at (0, 0) in the virtual coordinate system.  Depending on the location of the primary screen, the virtual device mi
+ght have negative coordinates, as shown in <a href="j2d-awt.fm6.html#70601">Figure&#160;2-10</a>:<p>
+<a name="70840"><!-- --></a>
+<p><center><img src="j2d-awt.fm.anc13.gif"></center><p>
+</blockquote>
+<blockquote><p>
+<a name="70601"><!-- --></a>
+<b>Figure 2-10	</b> Example of a virtual device environment
+
+</p>
+</blockquote><blockquote>
+<a name="70517"><!-- --></a>
+To determine if your environment is a virtual device environment in which a <kbd>Window</kbd> or a <kbd>Frame</kbd> can span two or more physical screens, call <kbd>getBounds</kbd> on each <kbd>GraphicsConfiguration</kbd> in your system and check to see i
+f the origin is something other than (0, 0).  The <kbd>getBounds</kbd> method of a <kbd>GraphicsConfiguration</kbd> returns a <kbd>Rectangle</kbd> in the virtual coordinate system.  So, if any of the origins are not (0, 0), your environment is a virtual d
+evice environment.<p>
+<a name="70845"><!-- --></a>
+In a virtual device environment, the coordinates of the <kbd>GraphicsConfiguration</kbd> objects are relative to the virtual coordinate system. So, you must use virtual coordinates when calling the <kbd>setLocation</kbd> method of a <kbd>Frame</kbd> or <k
+bd>Window</kbd>.  For example, this code sample gets the bounds of a <kbd>GraphicsConfiguration</kbd> and uses the bounds to set the location of a <kbd>Frame</kbd> at (10, 10) relative to the origin of the physical screen of the corresponding <kbd>Graphic
+sConfiguration</kbd>.<p>
+</blockquote><blockquote><pre>
+	Frame f = new Frame(GraphicsConfiguration gc);
+	Rectangle bounds = gc.getBounds();
+	f.setLocation(10 + bounds.x, 10 + bounds.y);
+
+</pre></blockquote><blockquote>
+<a name="70737"><!-- --></a>
+If the bounds of the <kbd>GraphicsConfiguration</kbd> are not taken into account, the <kbd>Frame</kbd> is displayed at (10, 10) on the primary physical screen, which might be different from the physical screen of the specified <kbd>GraphicsConfiguration</
+kbd>.<p>
+<a name="70802"><!-- --></a>
+The <kbd>getBounds</kbd> method can also be used to determine the bounds of the virtual device.  Call <kbd>getBounds</kbd> on each <kbd>GraphicsConfiguration</kbd> in your system.  To determine the bounds of the virtual device, calculate the union of all 
+the bounds.  This technique is used in the following sample.<p>
+</blockquote><blockquote><pre>
+	Rectangle virtualBounds = new Rectangle();
+	GraphicsEnvironment ge =
+   		GraphicsEnvironment.getLocalGraphicsEnvironment();
+	GraphicsDevice[] gs = ge.getScreenDevices();
+	for (int j = 0; j &lt; gs.length; j++) {
+   		GraphicsDevice gd = gs[j];
+   		GraphicsConfiguration[] gc = gd.getConfigurations();
+   		for (int i = 0; i &lt; gc.length; i++) {
+      		   virtualBounds = virtualBounds.union(gc[i].getBounds());
+   		}
+	}
+
+</pre></blockquote><blockquote>
+<a name="71727"><!-- --></a>
+The following applet creates a <kbd>JFrame</kbd> with every <kbd>GraphicsConfiguration</kbd> of every <kbd>GraphicsDevice</kbd> in the <kbd>GraphicsEnvironment</kbd>.  Each <kbd>JFrame</kbd> displays a set of red, green and blue stripes, the screen number
+, the <kbd>GraphicsConfiguration</kbd> number and the bounds of the <kbd>GraphicsConfiguration.  </kbd>This code sample must be run with the Java<sup>TM </sup>2  SDK, version 1.3 or later.<p>
+</blockquote><blockquote><pre>
+	import java.applet.Applet;
+	import java.awt.*;
+	import javax.swing.*;
+
+	public class MultiFrameApplet extends Applet {
+    
+    		public MultiFrameApplet() {
+        	   main(null);
+    		}
+
+    		public static void main(String[] argv) {
+        	   GraphicsEnvironment ge = 
+           		GraphicsEnvironment.getLocalGraphicsEnvironment();
+        	   GraphicsDevice[] gs = ge.getScreenDevices();
+        	   for (int j = 0; j &lt; gs.length; j++) {
+          		GraphicsDevice gd = gs[j];
+          		GraphicsConfiguration[] gc = 
+             		   gd.getConfigurations();
+             		for (int i=0; i &lt; gc.length; i++) {
+               		   JFrame f = 
+                  		new JFrame(gs[j].getDefaultConfiguration());
+               		   GCCanvas c = new GCCanvas(gc[i]);
+               		   Rectangle gcBounds = gc[i].getBounds();
+               		   int xoffs = gcBounds.x;
+               		   int yoffs = gcBounds.y;
+               		   f.getContentPane().add(c);
+               		   f.setTitle("Screen# "+Integer.toString(j)+", 
+                  		GC# "+Integer.toString(i));
+               		   f.setSize(300, 150);
+               		   f.setLocation((i*50)+xoffs, (i*60)+yoffs);
+               		   f.show();
+             		}
+        	   }
+    		}
+	}
+
+	class GCCanvas extends Canvas {
+
+    		GraphicsConfiguration gc;
+    		Rectangle bounds;
+
+    		public GCCanvas(GraphicsConfiguration gc) {
+        		super(gc);
+        		this.gc = gc;
+        		bounds = gc.getBounds();
+    		}
+
+    		public Dimension getPreferredSize() {
+        		return new Dimension(300, 150);
+    		}
+
+    		public void paint(Graphics g) {
+        		g.setColor(Color.red);
+        		g.fillRect(0, 0, 100, 150);
+        		g.setColor(Color.green);
+        		g.fillRect(100, 0, 100, 150);
+        		g.setColor(Color.blue);
+        		g.fillRect(200, 0, 100, 150);
+        		g.setColor(Color.black);
+        		g.drawString("ScreenSize="+
+           			Integer.toString(bounds.width)+
+           			"X"+ Integer.toString(bounds.height), 10, 15);
+        		g.drawString(gc.toString(), 10, 30);
+    		}
+	}
+
+</pre></blockquote><blockquote>
+<a name="70854"><!-- --></a>
+<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-awt.fm5.html">PREV</a>
+ | <a href="j2d-geom.fm.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Mon Nov 22 12:29:53 1999 -->
+ 
+
+
+</body>
+</html>

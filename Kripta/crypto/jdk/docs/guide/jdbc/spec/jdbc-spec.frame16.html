@@ -1,0 +1,234 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title></title>
+</head>
+<body bgcolor=#ffffff>
+
+<table width=600><tr>
+<td><font size=-1>
+<a href="jdbc-spec.frame.html">Contents</a>  | <a href="jdbc-spec.frame15.html">Prev</a>  | <a href="jdbc-spec.frame17.html">Next</a>
+</font></td><td align=right><i>JDBC<sup><font size=-2>TM</font></sup> Guide: Getting Started</i></td>
+</tr></table>
+<hr>
+<br>
+ 
+
+<a name="20122"></a>
+<h2>Appendix B:  Example JDBC Programs</h2>
+
+
+<a name="17961"></a>
+<h3>B.1 	  &nbsp; &nbsp; Using SELECT</h3>
+<pre><code>import java.net.URL;
+</code></pre>
+<pre><code>import java.sql.*;
+</code></pre>
+<pre><code>
+</code></pre>
+<pre><code>class Select {
+</code></pre>
+<pre><code>
+</code></pre>
+<pre><code>	 public static void main(String argv[]) {
+</code></pre>
+<pre><code>		try {
+</code></pre>
+<pre><code>			// Create a URL specifying an ODBC data source name.
+</code></pre>
+<pre><code>			String url = "jdbc:odbc:wombat";
+</code></pre>
+<pre><code>
+</code></pre>
+<pre><code>			// Connect to the database at that URL.
+</code></pre>
+<pre><code>			Connection con = DriverManager.getConnection(url, "kgh", "");
+</code></pre>
+<pre><code>
+</code></pre>
+<pre><code>			// Execute a SELECT statement
+</code></pre>
+<pre><code>			Statement stmt = con.createStatement();
+</code></pre>
+<pre><code>			ResultSet rs = stmt.executeQuery("SELECT a, b, c, d, key FROM Table1");
+</code></pre>
+<pre><code>
+</code></pre>
+<pre><code>			// Step through the result rows.
+</code></pre>
+<pre><code>			System.out.println("Got results:");
+</code></pre>
+<pre><code>			while (rs.next()) {
+</code></pre>
+<pre><code>				// get the values from the current row:
+</code></pre>
+<pre><code>			    	int a = rs.getInt(1);
+</code></pre>
+<pre><code>				BigDecimal b = rs.getBigDecimal(2);
+</code></pre>
+<pre><code>				char c[] = rs.getString(3).tocharArray();
+</code></pre>
+<pre><code>				boolean d = rs.getBoolean(4);
+</code></pre>
+<pre><code>				String key = rs.getString(5);
+</code></pre>
+<pre><code>
+</code></pre>
+<pre><code>				// Now print out the results:
+</code></pre>
+<pre><code>				System.out.print("  key=" + key);
+</code></pre>
+<pre><code>				System.out.print("  a=" + a);
+</code></pre>
+<pre><code>				System.out.print("  b=" + b);
+</code></pre>
+<pre><code>				System.out.print("  c=");
+</code></pre>
+<pre><code>				for (int i = 0; i &lt; c.length; i++) {
+</code></pre>
+<pre><code>					System.out.print(c[i]);
+</code></pre>
+<pre><code>				}
+</code></pre>
+<pre><code>				System.out.print("  d=" + d);
+</code></pre>
+<pre><code>				System.out.print("\n");
+</code></pre>
+<pre><code>			}
+</code></pre>
+<pre><code>
+</code></pre>
+<pre><code>			stmt.close();
+</code></pre>
+<pre><code>			con.close();
+</code></pre>
+<pre><code>		} catch (java.lang.Exception ex) {
+</code></pre>
+<pre><code>			ex.printStackTrace();
+</code></pre>
+<pre><code>		}
+</code></pre>
+<pre><code>	 }
+</code></pre>
+<pre><code>}
+</code></pre>
+<pre><code>
+</code></pre>
+
+<a name="8007"></a>
+<h3>B.2 	  &nbsp; &nbsp; Using UPDATE</h3>
+<pre><code>
+</code></pre>
+<pre><code>// Update a couple of rows in a database.
+</code></pre>
+<pre><code>
+</code></pre>
+<pre><code>import java.net.URL;
+</code></pre>
+<pre><code>import java.sql.*;
+</code></pre>
+<pre><code>
+</code></pre>
+<pre><code>class Update {
+</code></pre>
+<pre><code>
+</code></pre>
+<pre><code>	public static void main(String argv[]) {
+</code></pre>
+<pre><code>		try {
+</code></pre>
+<pre><code>			// Create a URL specifying an ODBC data source name.
+</code></pre>
+<pre><code>			String url = "jdbc:odbc:wombat";
+</code></pre>
+<pre><code>
+</code></pre>
+<pre><code>			// Connect to the database at that URL.
+</code></pre>
+<pre><code>			Connection con = DriverManager.getConnection(url, "kgh", "");
+</code></pre>
+<pre><code>
+</code></pre>
+<pre><code>			// Create a prepared statement to update the "a" field of a
+</code></pre>
+<pre><code>			// row in the "Table1" table.
+</code></pre>
+<pre><code>			// The prepared statement takes two parameters.
+</code></pre>
+<pre><code>			PreparedStatement stmt = con.prepareStatement(
+</code></pre>
+<pre><code>						"UPDATE Table1 SET a = ? WHERE key = ?");
+</code></pre>
+<pre><code>
+</code></pre>
+<pre><code>			// First use the prepared statement to update 
+</code></pre>
+<pre><code>			// the "count" row to 34.
+</code></pre>
+<pre><code>			stmt.setInt(1, 34);
+</code></pre>
+<pre><code>			stmt.setString(2, "count");
+</code></pre>
+<pre><code>			stmt.executeUpdate();
+</code></pre>
+<pre><code>			System.out.println("Updated \"count\" row OK.");
+</code></pre>
+<pre><code>
+</code></pre>
+<pre><code>			// Now use the same prepared statement to update the
+</code></pre>
+<pre><code>			// "mirror" field.
+</code></pre>
+<pre><code>			// We rebind parameter 2, but reuse the other parameter.
+</code></pre>
+<pre><code>			stmt.setString(2, "mirror");
+</code></pre>
+<pre><code>			stmt.executeUpdate();
+</code></pre>
+<pre><code>			System.out.println("Updated \"mirror\" row OK.");
+</code></pre>
+<pre><code>
+</code></pre>
+<pre><code>			stmt.close();
+</code></pre>
+<pre><code>			con.close();
+</code></pre>
+<pre><code>
+</code></pre>
+<pre><code>		} catch (java.lang.Exception ex) {
+</code></pre>
+<pre><code>			ex.printStackTrace();
+</code></pre>
+<pre><code>		}
+</code></pre>
+<pre><code>	}
+</code></pre>
+<pre><code>}
+</code></pre>
+<pre><code>
+</code></pre>
+
+
+<br>
+<hr> 
+<font size=-1>
+<a href="jdbc-spec.frame.html">Contents</a>  | <a href="jdbc-spec.frame15.html">Prev</a>  | <a href="jdbc-spec.frame17.html">Next</a>
+</font>
+<hr>
+
+
+
+<address>
+<a href="mailto:jdbc@wombat.eng.sun.com">jdbc@wombat.eng.sun.com</a>
+or
+<a href="mailto:jdbc-odbc@wombat.eng.sun.com">jdbc-odbc@wombat.eng.sun.com</a>
+</address>
+
+<a href="../../../relnotes/SMICopyright.html">
+<font size=-1><i>Copyright &#169; 1996, 1997 Sun Microsystems, Inc.   All rights reserved.</i></font>
+</a>
+
+<!-- HTML generated by Suzette Pelouch on April 10, 1998 -->
+
+</body>
+</html>

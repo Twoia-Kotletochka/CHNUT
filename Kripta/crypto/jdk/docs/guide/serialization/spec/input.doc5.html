@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 3 - Object Input Classes
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="input.doc4.html">PREV</a>
+ | <a href="input.doc6.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="6014"><i>	3.5	</i> The readExternal Method
+</a></h2>
+
+<blockquote>
+<a name="5177"><!-- --></a>
+Objects implementing <code>java.io.Externalizable</code> must implement the<code> readExternal</code> method to restore the entire state of the object. It must coordinate with its superclasses to restore their state. All of the methods of <code>ObjectInput</code> are available to restore the object&#39;s primitive typed fields and object fields.<p>
+<a name="3410"><!-- --></a>
+<pre>    public void readExternal(ObjectInput stream)
+        throws IOException;
+</pre>
+
+
+</blockquote>
+<blockquote>
+<blockquote><hr noshade size="1">
+<b><a name="1234">Note - </a></b>The <code>readExternal</code> method is public, and it raises the risk of a client being able to overwrite an existing object from a stream. The class may add its own checks to insure that this is only called when appropriate. 
+<hr noshade size="1">
+</blockquote>
+</blockquote>
+<blockquote>
+<a name="5238"><!-- --></a>
+A new stream protocol version has been introduced in JDK<sup><font size="-2">TM</font></sup> 1.2 to correct a problem with <code>Externalizable</code> objects. The old definition of <code>Externalizable</code> objects required the local virtual machine to find a <code>readExternal</code> method to be able to properly read an <code>Externalizable</code> object from the stream. The new format adds enough information to the stream protocol so serialization can skip an <code>Externalizable</code> object when the local <code>readExternal</code> method is not available. Due to class evolution rules, serialization must be able to skip an <code>Externalizable</code> object in the input stream if there is not a mapping for the object using the local classes. <p>
+<a name="5301"><!-- --></a>
+An additional benefit of the new <code>Externalizable</code> stream format is the exception EOFException is thrown if a <code>readExternal</code> method attempts to read beyond the end of an <code>Externalizable</code> object. Also, serialization is able to skip by any External data that is not read by a <code>readExternal</code> method. <p>
+<a name="5325"><!-- --></a>
+Due to the format change, JDK<sup><font size="-2">TM</font></sup> 1.1.6 and earlier releases are not able to read the new format. StreamCorruptedException is thrown when JDK<sup><font size="-2">TM</font></sup> 1.1.6 or earlier attempts to read an <code>Externalizable</code> object from a stream written in <code>PROTOCOL_VERSION_2</code>. Compatibility issues are discussed in more detail in <a href="protocol.doc3.html#5849">Section&#160;6.3, &#34;Stream Protocol Versions</a>.&#34;<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="input.doc4.html">PREV</a>
+ | <a href="input.doc6.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:47:59 1999 -->
+ 
+
+
+</body>
+</html>

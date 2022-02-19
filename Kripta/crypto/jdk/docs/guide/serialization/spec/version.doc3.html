@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 5 - Versioning of Serializable Objects
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="version.doc2.html">PREV</a>
+ | <a href="version.doc4.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="4595"><i>	5.3	</i> Assumptions
+</a></h2>
+
+<blockquote>
+<a name="9369"><!-- --></a>
+The assumptions are that:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="4596"><!-- --></a>
+Versioning will only apply to serializable classes since it must control the stream format to achieve it goals. Externalizable classes will be responsible for their own versioning which is tied to the external format.
+</li>
+<li>
+<a name="8204"><!-- --></a>
+All data and objects must be read from, or skipped in, the stream in the same order as they were written.
+</li>
+<li>
+<a name="4597"><!-- --></a>
+Classes evolve individually as well as in concert with supertypes and subtypes.
+</li>
+<li>
+<a name="4601"><!-- --></a>
+Classes are identified by name. Two classes with the same name may be different versions or completely different classes that can be distinguished only by comparing their interfaces or by comparing hashes of the interfaces.
+</li>
+<li>
+<a name="4605"><!-- --></a>
+Default serialization will not perform any type conversions.
+</li>
+<li>
+<a name="4606"><!-- --></a>
+The stream format only needs to support a linear sequence of type changes, not arbitrary branching of a type.
+</li>
+</ul>
+</blockquote>
+
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="version.doc2.html">PREV</a>
+ | <a href="version.doc4.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:48:07 1999 -->
+ 
+
+
+</body>
+</html>

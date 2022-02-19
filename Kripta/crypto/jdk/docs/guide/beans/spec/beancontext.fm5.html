@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Extensible Runtime Containment and Services Protocol for JavaBeans:  - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="beancontextTOC.fm.html">CONTENTS</a> | <a href="beancontext.fm4.html">PREV</a>
+ | <a href="beancontext.fm6.html">NEXT</a> 
+<!-- /font --></td><td align=right><i>Extensible Runtime Containment and Services Protocol for JavaBeans</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="917715"><i>3.0  </i> Overloading java.beans.instantiate() static method
+</a></h2>
+
+<blockquote>
+<a name="916569"><!-- --></a>
+Since <em>java.beans.instantiate()</em> is the current mechanism for (re)instantiating JavaBeans we need to extend or overload the syntax and semantics of this method in order to accommodate the introduction of the <em>BeanContext</em> abstraction. The extension proposed is:<p>
+</blockquote>
+<blockquote><pre>
+public static Object instantiate(ClassLoader cl,
+		              	 String	      beanName,
+		                 BeanContext beanContext);
+</pre></blockquote><blockquote>
+<a name="916586"><!-- --></a>
+This method behaves has it is currently defined in the JavaBeans specification, but in addition to these existing semantics, when a non-null <em>BeanContext</em> is specified then the method invokes the <em>add() </em>method on the <em>beanContext</em> actual parameter with the value of the <em>targetChild</em> actual parameter = a reference to the newly instantiated JavaBean component.<a href="#foot1"><sup>1</sup></a><p>
+</blockquote>
+<hr>
+<font size="-1">
+<ol>
+<a name="foot1"></a>
+<li>Note: Since simple JavaBeans have no knowledge if a BeanContext, it is not
+advisable to introduce such instances into the hierarchy since there is no
+mechanism for these simple JavaBeans to remove themselves from the hierarchy
+and thus subsequently be garbage collected.
+</ol>
+</font>
+
+</blockquote>
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="beancontextTOC.fm.html">CONTENTS</a> | <a href="beancontext.fm4.html">PREV</a>
+ | <a href="beancontext.fm6.html">NEXT</a> 
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1998-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Thu Dec 03 12:39:43 1998-1999 -->
+ 
+
+
+</body>
+</html>

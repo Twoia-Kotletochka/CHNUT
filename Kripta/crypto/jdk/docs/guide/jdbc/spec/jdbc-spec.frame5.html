@@ -1,0 +1,236 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title></title>
+</head>
+<body bgcolor=#ffffff>
+
+<table width=600><tr>
+<td><font size=-1>
+<a href="jdbc-spec.frame.html">Contents</a>  | <a href="jdbc-spec.frame4.html">Prev</a>  | <a href="jdbc-spec.frame6.html">Next</a>
+</font></td><td align=right><i>JDBC<sup><font size=-2>TM</font></sup> Guide: Getting Started</i></td>
+</tr></table>
+<hr>
+<br>
+ 
+
+<a name="4985"></a>
+<h2>	5	 Security considerations</h2>
+
+<a name="5919"></a>
+Based on the previous discussion, there are two main JDBC scenarios to consider for security 
+purposes:
+<p>
+
+<ul><a name="5936"></a>
+<li>In the case of Java applications, the Java code is "trusted". We also consider trusted 
+applets in this category for security purposes.
+<br><br>
+<a name="5935"></a>
+<li>In contrast, untrusted Java applets are not permitted access to local files and or network 
+connections to arbitrary hosts.
+<br><br>
+</ul>
+<a name="4986"></a>
+<h3>5.1 	  &nbsp; &nbsp; JDBC and untrusted applets</h3>
+<a name="5018"></a>
+JDBC should follow the standard applet security model. Specifically:
+<p>
+
+<ul><a name="4992"></a>
+<li>JDBC should assume that normal unsigned applets are untrustworthy
+<br><br>
+<a name="4996"></a>
+<li>JDBC should not allow untrusted applets access to local database data
+<br><br>
+<a name="5083"></a>
+<li>If a downloaded JDBC Driver registers itself with the JDBC DriverManager, then 
+JDBC should only use that driver to satisfy connection requests from code which has 
+been loaded from the same source as the driver.
+<br><br>
+<a name="5010"></a>
+<li>An untrusted applet will normally only be allowed to open a database connection back 
+to the server from which it was downloaded
+<br><br>
+<a name="5099"></a>
+<li>JDBC should avoid making any automatic or implicit use of local credentials when 
+making connections to remote database servers. 
+<br><br>
+</ul><a name="5094"></a>
+If the JDBC Driver level is completely confident that opening a network connection to a database
+server will imply no authentication or power beyond that which would be obtainable by 
+any random program running on any random internet host, then it may allow an applet to open 
+such a connection. This will be fairly rare, and would require for example, that the database 
+server doesn't use IP addresses as a way of restricting access.
+<p>
+<a name="5076"></a>
+<strong>These restrictions for untrusted applets are fairly onerous. But they are consistent with the general
+applet security model and we can see no good way of relaxing them.
+</strong><p>
+
+<a name="5019"></a>
+<h3>5.2 	  &nbsp; &nbsp; JDBC and Java applications</h3>
+<a name="5037"></a>
+For a normal Java application (i.e. all Java code other than untrusted applets) JDBC should happily
+load drivers from the local classpath and allow the application free access to files, remote 
+servers, etc.
+<p>
+<a name="5058"></a>
+However as with applets, if for some reason an untrusted sun.sql.Driver class is loaded from a 
+remote source, then that Driver should only be used with code loaded from that same source.
+<p>
+
+<a name="20404"></a>
+<h3>5.3 	  &nbsp; &nbsp; Network security</h3>
+<a name="35975"></a>
+The security of database requests and data transmission on the network, especially in the Internet
+case, is also an important consideration for the JDBC user. However, keep in mind that we 
+are defining programming interfaces in this specification, not a network protocol. The network 
+protocols used for database access have generally already been fixed by the DBMS vendor or 
+connectivity vendor. JDBC users should verify that the network protocol provides adequate security
+for their needs before using a JDBC driver and DBMS server.
+<p>
+<a name="35982"></a>
+If JavaSoft proposes a standard for a published protocol for a DBMS-independent JDBC-Net 
+driver, as described in Section <a href="jdbc-spec.frame3.html#506">3</a>, then security considerations will be an important factor in the 
+selection of a protocol.
+<p>
+
+<a name="35974"></a>
+<h3>5.4 	  &nbsp; &nbsp; Security Responsibilities of Drivers</h3>
+<a name="20405"></a>
+Because JDBC drivers may be used in a variety of different situations, it is important that driver 
+writers follow certain simple security rules to prevent applets from making illegal database 
+connections.
+<p>
+<a name="20406"></a>
+These rules are unnecessary if a driver is downloaded as an applet, because the standard security
+manager will prevent an applet driver from making illegal connections. However JDBC 
+driver writers should bear in mind that if their driver is "successful" then users may start installing
+it on their local disks, in which case it becomes a trusted part of the Java environment, 
+and must make sure it is not abused by visiting applets. We therefore urge all JDB driver writers 
+to follow the basic security rules.
+<p>
+<a name="20407"></a>
+These rules all apply at connection open time. This is the point when the driver and the virtual 
+machine should check that the current caller is really allowed to connect to a given database. 
+After connection open, no additional checks are necessary.
+<p>
+
+<a name="20408"></a>
+<h4>	5.4.1	 Be very careful about sharing TCP connections</h4>
+<a name="20409"></a>
+If a JDBC driver attempts to open a TCP connection then the open will be automatically 
+checked by the Java security manager. The security manager will check if there is an applet on 
+the current call stack and if so, will restrict the open to whatever set of machines that applet is 
+allowed to call. So normally a JDBC driver can leave TCP open checks up to the Java virtual 
+machine.
+<p>
+<a name="20410"></a>
+However if a JDBC driver wants to share a single TCP connection among several different database
+connections then it becomes the driver's responsibility to make sure that each of its callers
+is really allowed to talk to the target database. For example, if we open a TCP connection 
+to the machine foobah for applet A, this does not mean that we should automatically allow applet
+B to share that connection. Applet B may have no right whatsoever to access machine 
+foobah.
+<p>
+<a name="20411"></a>
+So before allowing someone to re-use an existing TCP connection the JDBC driver should 
+check with the security manager that the current caller is allowed to connect to that machine. 
+This can be done with the following code fragment:
+<p>
+<pre><code>	SecurityManager security = System.getSecurityManager();
+</code></pre>
+<pre><code>	if (security != null) {
+</code></pre>
+<pre><code>	    security.checkConnect(hostName, portNumber);
+</code></pre>
+<pre><code>	}
+</code></pre>
+<a name="20402"></a>
+The Security.checkConnect method will throw a java.lang.SecurityException if the connection 
+is not permitted.
+<p>
+
+<a name="20424"></a>
+<h4>	5.4.2	 Check all local file access</h4>
+<a name="20428"></a>
+If a JDBC driver needs to access any local data on the current machine, then it must ensure that 
+its caller is allowed to open the target files. For example
+<p>
+<pre><code>	SecurityManager security = System.getSecurityManager();
+</code></pre>
+<pre><code>	if (security != null) {
+</code></pre>
+<pre><code>	    security.checkRead(fileName);
+</code></pre>
+<pre><code>	}
+</code></pre>
+<a name="20437"></a>
+The Security.checkRead method will throw a java.lang.SecurityException if the current caller 
+is an applet which is not allowed to access the given file. 
+<p>
+<a name="25392"></a>
+As with TCP connections, the driver need only be concerned with these security issues if file 
+resources are shared among multiple calling threads and the driver is running as trusted code.
+<p>
+
+<a name="20431"></a>
+<h4>	5.4.3	 Assume the worst</h4>
+<a name="20448"></a>
+Some drivers may use native methods to bridge to lower level database libraries. In these cases 
+it may be difficult to determine what files or network connections will be opened by the lower 
+level libraries.
+<p>
+<a name="20449"></a>
+In these circumstances the driver must make "worst case" security assumptions and deny all 
+database access to downloaded applets unless the driver is completely confident that the intended
+access is innocuous.
+<p>
+<a name="20464"></a>
+For example a JDBC-ODBC bridge might check the meaning of ODBC data source names and 
+only allow an applet to use those ODBC data source names that reference databases on machines
+to which the applet is allowed to open connections (see <a href="jdbc-spec.frame5.html#20408">5.4.1</a> above). But for some 
+ODBC data source names the driver may be unable to determine the hostname of the target database
+and must therefore deny downloaded applets access to these data sources.
+<p>
+<a name="20468"></a>
+In order to determine if the current caller is a trusted application or applet (and can therefore 
+be allowed arbitrary database access) the JDBC driver can check to see if the caller is allowed 
+to write an arbitrary file:
+<p>
+<pre><code>	SecurityManager security = System.getSecurityManager();
+</code></pre>
+<pre><code>	if (security != null) {
+</code></pre>
+<pre><code>	    security.checkWrite("foobaz");
+</code></pre>
+<pre><code>	}
+</code></pre>
+<pre><code>
+</code></pre>
+
+
+<br>
+<hr> 
+<font size=-1>
+<a href="jdbc-spec.frame.html">Contents</a>  | <a href="jdbc-spec.frame4.html">Prev</a>  | <a href="jdbc-spec.frame6.html">Next</a>
+</font>
+<hr>
+
+
+
+<address>
+<a href="mailto:jdbc@wombat.eng.sun.com">jdbc@wombat.eng.sun.com</a>
+or
+<a href="mailto:jdbc-odbc@wombat.eng.sun.com">jdbc-odbc@wombat.eng.sun.com</a>
+</address>
+
+<a href="../../../relnotes/SMICopyright.html">
+<font size=-1><i>Copyright &#169; 1996, 1997 Sun Microsystems, Inc.   All rights reserved.</i></font>
+</a>
+
+<!-- HTML generated by Suzette Pelouch on April 10, 1998 -->
+
+</body>
+</html>

@@ -1,0 +1,283 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+
+<HTML>
+
+<HEAD>
+
+     <TITLE>Security</TITLE>
+
+</HEAD>
+
+
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" VLINK="#000077" ALINK="#FF0000">
+
+
+
+<TABLE BORDER="0" WIDTH="100%">
+
+<TR>
+
+<TD WIDTH="60">
+
+   <IMG SRC="../../images/javalogo52x88.gif" ALT="Java" BORDER=0 WIDTH=52 HEIGHT=88>
+
+</TD>
+
+
+
+<TD>
+
+<center>
+
+           <h1>Security enhancements and changes<br><font size=-1>Java<sup><font size=-2>TM</font></sup> 2 SDK, Standard Edition, v 1.3</font></h1>
+
+</center>
+
+</TD>
+
+
+
+<TD ALIGN=RIGHT VALIGN=TOP>
+
+   <font size="-1"><a href="../../index.html">Documentation Contents</a></font>
+
+</TD>
+
+</TR>
+
+</TABLE>
+
+
+
+<!-- Body text begins here -->
+
+<blockquote>
+
+<a name=trustProxy>
+<h3>trustProxy Property Now true by Default</h3></a>
+<blockquote>
+In version 1.3 of the Java Plug-in, the <tt>trustProxy</tt> property is set 
+to <tt>true</tt> by default.  In previous releases of the Java platform, 
+<tt>trustProxy</tt> was <tt>false</tt> by default. 
+<p>
+<b>Reason for the change:</b><br>
+To prevent DNS spoofing, a security check in Java Plug-in requires 
+the server-side host name to be resolved into an IP address before 
+any connection is made from the applet. As part of this security check, 
+the client-side intranet DNS server must be able to resolve external 
+host names from the Internet. However, the DNS servers within many 
+enterprise networks are not able to perform this resolution due to 
+firewall or other security restrictions on the enterprise site. The 
+<tt>trustProxy</tt> property has been set to true by default so that in such 
+cases the Java Plug-in will defer the DNS name resolution to the 
+client site's proxy server. 
+<p>
+<b>Security implication of the change:</b><br>
+Because the DNS lookup can be delegated to the proxy server when 
+the <tt>trustProxy</tt> property is true, care should be taken that the 
+proxy server will not expose the local site to DNS spoofing attacks. 
+The proxy server should consistently map a given host name to the same IP 
+address and should never map an Internet server host name to the IP 
+address of a machine on the local, client-side intranet.  If the 
+proxy server cannot be trusted to always provide unique 
+host-name/IP-address mappings or cannot distinguish between internal 
+and external IP addresses, network administrators may want to 
+set the <tt>trustProxy</tt> property equal to false.  This can be done by 
+entering <tt>-DtrustProxy=false</tt> in the Java Run Time Parameters field of 
+the Java Plug-in Control Panel. When <tt>trustProxy</tt> is false, DNS 
+lookup will be up to the client-side intranet DNS server and will not be 
+delegated to the proxy server. This will mean, however, that applets will 
+not be able to be downloaded over the Internet whenever the intranet DNS 
+server cannot resolve the applet server's host name.
+</blockquote>
+
+<h3>New Classes/Interfaces</h3>
+
+<ul>
+<li><b><tt>java.security.spec.RSAKeyGenParameterSpec</tt></b><P>
+          New class <tt><a href="../../api/java/security/spec/RSAKeyGenParameterSpec.html">java.security.spec.RSAKeyGenParameterSpec</a></tt>
+          makes it possible to specify both the size of the
+          (to-be-generated) public modulus and the value of the public
+          exponent when generating an RSA keypair.<P>
+
+<li><b><tt>java.security.DomainCombiner</tt></b><P>
+          New interface <tt><a href="../../api/java/security/DomainCombiner.html">java.security.DomainCombiner</a></tt> provides
+          a means to dynamically update the <tt>ProtectionDomain</tt>s
+          associated with the current <tt>AccessControlContext</tt>.<P>
+
+<li><b><tt>java.security.interfaces.RSAKey</tt></b><P>
+          New interface <tt><a href="../../api/java/security/interfaces/RSAKey.html">java.security.interfaces.RSAKey</a></tt> allows
+          generic examination of keys before examining them in detail.
+          <tt>java.security.interfaces.RSAPublicKey.getModulus()</tt> and
+          <tt>java.security.interfaces.RSAPrivateKey.getModulus()</tt> have been
+          moved to this interface.  The existing <tt>RSAPublicKey</tt> and
+          <tt>RSAPrivateKey</tt> interfaces now extend off of this new
+          interface.<P>
+</ul>
+
+<h3>Modified Classes/Interfaces</h3>
+
+<ul>
+<li><b><tt>java.security.BasicPermission</tt></b> and <b><tt>java.lang.System</tt></b><P>
+
+Constructors for class <tt><a href="../../api/java/security/BasicPermission.html">java.security.BasicPermission</a></tt> have
+been modified to:
+<ul>
+<li> raise a <tt><a href="../../api/java/lang/NullPointerException.html">NullPointerException</a></tt> if the permission name is <tt>null</tt>
+<li>raise an <tt><a href="../../api/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></tt> if the permission name
+is empty
+</ul><P>
+Before, these conditions were ignored.
+<P>
+The change also affects the behavior of
+          <tt><a href="../../api/java/lang/System.html#getProperty(java.lang.String)">java.lang.System.getProperty(String key)</a></tt> and
+          <tt><a href="../../api/java/lang/System.html#getProperty(java.lang.String, java.lang.String)">java.lang.System.getProperty(String key, String def)</a></tt> whose implementations
+          construct an instance of <tt><a href="../../api/java/util/PropertyPermission.html">java.util.PropertyPermission</a></tt>, a
+          subclass of <tt><a href="../../api/java/security/BasicPermission.html">java.security.BasicPermission</a></tt>.  Under the change,
+          a call to <tt>java.lang.System.getProperty()</tt> or
+          <tt>java.lang.System.setProperty()</tt> with an empty property name
+          will result in an <tt>IllegalArgumentException</tt>.
+<P>
+<li><b>java.security.interfaces.RSAPrivateKey</b> and <b>java.security.interfaces.RSAPublicKey</b><P>
+
+         The method <tt>getModulus()</tt> of <tt><a href="../../api/java/security/interfaces/RSAPublicKey.html">java.security.interfaces.RSAPublicKey</a></tt>
+         and <tt><a href="../../api/java/security/interfaces/RSAPrivateKey.html">java.security.interfaces.RSAPrivateKey</a></tt> has been moved to
+         <tt><a href="../../api/java/security/interfaces/RSAKey.html">java.security.interfaces.RSAKey</a></tt>.  See above.<P>
+
+<li><b>java.security.KeyPairGenerator</b><P>
+ The method <tt><a href="../../api/java/security/KeyPairGenerator.html#generateKeyPair()">java.security.KeyPairGenerator.generateKeyPair()</a></tt> has
+ been restored to ensure backwards compatibility with JDK
+ 1.1.x.
+<P>
+<li><b>java.security.Security</b><P>
+ Two new methods have been added to <tt>java.security.Security</tt>,
+          making it possible to select service providers based on the
+          capabilities that they offer:
+<ul>
+             <li><tt><a href="../../api/java/security/Security.html#getProviders(java.util.Map)">public static Provider[] getProviders(java.util.Map filter)</a></tt>
+             <li><tt><a href="../../api/java/security/Security.html#getProviders(java.lang.String)">public static Provider[] getProviders(String filter)</a></tt>
+</ul>
+<P>
+<li><b>java.security.Signature</b><P>
+ A new signature verification method has been added to
+          <tt>java.security.Signature</tt>, and this new method is FIPS 140-1
+          compliant. FIPS 140-1 requires a public key to be passed as a
+          certificate, which is accomplished through the addition of:
+<ul>
+<li><tt><a href="../../api/java/security/Signature.html#initVerify(java.security.cert.Certificate)">Signature.initVerify(Certificate certificate)</a></tt>
+</ul>
+</ul>
+
+<h3>Miscellaneous Information</h3>
+<ul>
+<li>Support for RSA signatures and related services is supplied
+          by a Cryptographic Service Provider to the Java Cryptography
+          Architecture (JCA), which is packaged as a JAR file and
+          provided on the bootstrap classpath of the JRE.<P>
+<li> A new command line option (&quot;-provider&quot;) has been added to
+          keytool and jarsigner which allows the user to specify a
+          particular service provider not listed in the security
+          properties file of the Java Runtime Environment (JRE).<P>
+<li>Enhancements have been made to support all X.520 attributes
+          that are either mandated or recommended by PKIX RFC 2459.<P>
+<li>Jarsigner can now verify Netscape-signed jar files.<P>
+<li>The handling of X509 certificates has been updated to include
+          support for multiple Attribute/Value Assertions (AVA's)
+          within a Relative Distinguished Name (RDN).<P>
+<li>Java 2 SDK v 1.3 now fully interoperates with Verisign's code signing
+          certificates.  keytool is now able to import Verisign
+          certificates.<P>
+<li>The 1.2.2 FCS plug-in release
+          required an <i>exact</i> match (including validity period) of the
+          JAR signer's root CA certificate (fingerprint) with one in
+          Microsoft's Internet Explorer (IE) CA store on the
+          executing platform.
+          <P>
+         This algorithm was too restrictive, due to the proliferation
+	  of valid, but different root CA certificates (expiring in
+	  2004, 2018, 2028, etc.) in various incarnations of IE's CA
+	  store.  This date match algorithm was removed.  IE's CA store
+	  is used for verification in the executing environment,
+	  whether using Netscape or IE as the browser.  For more
+	  information, please see:
+<P>
+<blockquote>
+<a href="http://java.sun.com/products/plugin/1.2/docs/nsobjsigning.html">http://java.sun.com/products/plugin/1.2/docs/nsobjsigning.html</a>
+</blockquote>
+<P>
+
+<li>Jar files containing support classes for applets can be
+          placed in the Plug-in lib/applet/ directory.  This reduces
+          startup time for large applets by allowing applet classes to be
+          preloaded from the local file system by the applet
+          classloader, providing the same protections as if they had
+          been downloaded over the network.
+</ul>
+
+</blockquote>
+
+
+
+<!-- Body text ends here -->
+
+<!-- ============================================================== -->
+
+<HR SIZE=3 NOSHADE>
+
+
+
+<TABLE BORDER="0" WIDTH="100%">
+
+<TR VALIGN=TOP>
+
+
+
+<TD>
+
+<P><FONT SIZE="-2">
+
+   <A HREF="../../relnotes/SMICopyright.html">Copyright &#169;</A> 1999
+
+   <A HREF="http://www.sun.com/">Sun Microsystems, Inc.</A>
+
+    All Rights Reserved.</FONT></P>
+
+   <FONT SIZE="-1">
+
+   Please send comments to: <a href="mailto:java-security@sun.com">java-security@sun.com</a>. This is not a subscription list.
+
+   </FONT>
+
+</TD>
+
+
+
+<TD ALIGN=RIGHT>
+
+   <IMG SRC="../../images/sunlogo64x30.gif" ALT="Sun" BORDER=0 WIDTH=64 HEIGHT=30>
+
+   <BR>
+
+   <FONT SIZE="+1">
+
+   <i>Java Software</i>
+
+   </FONT>
+
+</TD>
+
+
+
+</TR>
+
+</TABLE>
+
+
+
+</BODY>
+
+</HTML>
+
+
+

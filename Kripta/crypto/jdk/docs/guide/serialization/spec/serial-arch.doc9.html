@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 1 - System Architecture
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="serial-arch.doc8.html">PREV</a>
+ | <a href="serial-arch.doc10.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="4548"><i>	1.9	</i> The ObjectInput Interface
+</a></h2>
+
+<blockquote>
+<a name="4909"><!-- --></a>
+The <code>ObjectInput</code> interface provides an abstract stream based interface to object retrieval. It extends the <code>DataInput</code> interface so those methods for reading primitive data types are accessible in this interface.<p>
+<a name="5029"><!-- --></a>
+<pre>package java.io;
+
+public interface ObjectInput extends DataInput
+{
+    public Object readObject()
+        throws ClassNotFoundException, IOException;
+    public int read() throws IOException;
+    public int read(byte b[]) throws IOException;
+    public int read(byte b[], int off, int len) throws IOException;
+    public long skip(long n) throws IOException;
+    public int available() throws IOException;
+    public void close() throws IOException;
+}
+</pre>
+
+
+<a name="4551"><!-- --></a>
+The <code>readObject</code> method is used to read and return an object. The exceptions thrown reflect errors while accessing the objects or its fields or exceptions that occur in reading from the storage. If any exception is thrown, the underlying storage may be corrupted. If this occurs, refer to the object implementing this interface for additional information.<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="serial-arch.doc8.html">PREV</a>
+ | <a href="serial-arch.doc10.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:47:50 1999 -->
+ 
+
+
+</body>
+</html>

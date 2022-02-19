@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 5 - Versioning of Serializable Objects
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="version.doc7.html">PREV</a>
+ | <a href="protocol.doc.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<br>
+<h3>
+<a name="6754"><!-- --></a>
+<i>	5.6.2	</i> Compatible Changes
+</h3>
+
+<blockquote>
+<a name="6747"><!-- --></a>
+The compatible changes to a class are handled as follows:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="5174"><!-- --></a>
+Adding fields - When the class being reconstituted has a field that does not occur in the stream, that field in the object will be initialized to the default value for its type. If class-specific initialization is needed, the class may provide a readObject method that can initialize the field to nondefault values.
+</li>
+<li>
+<a name="5523"><!-- --></a>
+Adding classes - The stream will contain the type hierarchy of each object in the stream. Comparing this hierarchy in the stream with the current class can detect additional classes. Since there is no information in the stream from which to initialize the object, the class&#39;s fields will be initialized to the default values.
+</li>
+<li>
+<a name="5524"><!-- --></a>
+Removing classes - Comparing the class hierarchy in the stream with that of the current class can detect that a class has been deleted. In this case, the fields and objects corresponding to that class are read from the stream. Primitive fields are discarded, but the objects referenced by the deleted class are created, since they may be referred to later in the stream. They will be garbage-collected when the stream is garbage-collected or reset.
+</li>
+<li>
+<a name="6785"><!-- --></a>
+Adding <code>writeObject</code>/<code>readObject</code> methods - If the version reading the stream has these methods then <code>readObject</code> is expected, as usual, to read the required data written to the stream by the default serialization. It should call <code>defaultReadObject</code> first before reading any optional data. The <code>writeObject</code> method is expected as usual to call <code>defaultWriteObject</code> to write the required data and then may write optional data.
+</li>
+<li>
+<a name="6786"><!-- --></a>
+Removing <code>writeObject</code>/<code>readObject</code> methods - If the class reading the stream does not have these methods, the required data will be read by default serialization, and the optional data will be discarded.
+</li>
+<li>
+<a name="5209"><!-- --></a>
+Adding <code>java.io.Serializable</code> - This is equivalent to adding types. There will be no values in the stream for this class so its fields will be initialized to default values. The support for subclassing nonserializable classes requires that the class&#39;s supertype have a no-arg constructor and the class itself will be initialized to default values. If the no-arg constructor is not available, the <code>InvalidClassException</code> is thrown.
+</li>
+<li>
+<a name="6837"><!-- --></a>
+Changing the access to a field - The access modifiers public, package, protected, and private have no effect on the ability of serialization to assign values to the fields.
+</li>
+<li>
+<a name="6838"><!-- --></a>
+Changing a field from static to nonstatic or transient to nontransient - When relying on default serialization to compute the serializable fields, this change is equivalent to adding a field to the class. The new field will be written to the stream but earlier classes will ignore the value since serialization will not assign values to static or transient fields. 
+</li>
+<a name="4945"><!-- --></a>
+<pre>
+</pre>
+
+
+</ul>
+</blockquote>
+
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="version.doc7.html">PREV</a>
+ | <a href="protocol.doc.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:48:07 1999 -->
+ 
+
+
+</body>
+</html>

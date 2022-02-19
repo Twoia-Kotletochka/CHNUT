@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-awt.fm7.html">PREV</a>
+ | <a href="j2d-awt.fm9.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="61882"><i>2.8	</i> Compositing Images
+</a></h2>
+
+<blockquote>
+<a name="64024"><!-- --></a>
+A <kbd>Graphics2D</kbd> context includes a <kbd>Composite</kbd> object that encapsulates the composition style to use if objects overlap. <kbd>AlphaComposite</kbd> implements a number of common composition rules that support blending and transparency effects. The most commonly used is <kbd>SRC_OVER</kbd>.<p>
+</blockquote>
+<br>
+<h3>
+<a name="62986"><!-- --></a>
+<i>2.8.1	</i> Using the Source Over Composition Rule
+</h3>
+
+<blockquote>
+<a name="64129"><!-- --></a>
+The <kbd>SRC_OVER</kbd> composition rule composites the source pixel over the destination pixel so that the shared pixel takes the color of the source pixel. For example, if you render a blue rectangle and then render a red rectangle that partially overlaps it, the overlapping area will be red. In other words, the object that is rendered last will appear to be on top.<p>
+<a name="64147"><!-- --></a>
+To use the SRC_OVER composition rule:<p>
+</blockquote><blockquote><ol>
+<li>
+<a name="64148"><!-- --></a>
+Create an <kbd>AlphaComposite</kbd> object by calling <kbd>getInstance</kbd> and specifying the <kbd>SRC_OVER</kbd> rule.
+</li>
+
+</ol></blockquote>
+<pre><blockquote>AlphaComposite ac = 
+AlphaComposite.getInstance(AlphaComposite.SRC_OVER);
+</blockquote></pre><blockquote><ol>
+<li>
+<a name="64163"><!-- --></a>
+Call <kbd>setComposite</kbd> to add the <kbd>AlphaComposite</kbd> object to the <kbd>Graphics2D</kbd> context.
+</li>
+
+</ol></blockquote>
+<pre><blockquote>g2.setComposite(ac);
+</blockquote></pre><blockquote>
+<a name="64153"><!-- --></a>
+Once the composite object is set, overlapping objects will be rendered using the specified composition rule.<p>
+</blockquote>
+<br>
+<h3>
+<a name="64058"><!-- --></a>
+<i>2.8.2	</i> Increasing the Transparency of Composited Objects
+</h3>
+
+<blockquote>
+<a name="64061"><!-- --></a>
+<kbd>AlphaComposite</kbd> allows you to specify an additional constant alpha value that is multiplied with the alpha of the source pixels to increase transparency. <p>
+<a name="64070"><!-- --></a>
+For example, to create an <kbd>AlphaComposite</kbd> object that renders the source object 50% transparent, specify an alpha of .5:<p>
+</blockquote><pre><blockquote>AlphaComposite ac = 
+AlphaComposite.getInstance(AlphaComposite.SRC_OVER, .5f);
+</blockquote></pre><blockquote>
+<a name="67498"><!-- --></a>
+In the following example, a source over alpha composite object is created with an alpha of .5 and added to the graphics context, causing subsequent shapes to be rendered 50% transparent. <p>
+</blockquote><pre><blockquote>public void paint(Graphics g) {
+</blockquote></pre><pre><blockquote>  Graphics2D g2 = (Graphics2D) g;
+</blockquote></pre><pre><blockquote>
+</blockquote></pre><pre><blockquote>  g2.setColor(Color.red);
+</blockquote></pre><pre><blockquote>  g2.translate(100,50);
+</blockquote></pre><pre><blockquote>  // radians=degree * pie / 180
+</blockquote></pre><pre><blockquote>  g2.rotate((45*java.lang.Math.PI)/180); 
+</blockquote></pre><pre><blockquote>  g2.fillRect(0,0,100,100);
+</blockquote></pre><pre><blockquote>  g2.setTransform(new AffineTransform());  // set to identity
+</blockquote></pre><pre><blockquote>  // Create a new alpha composite
+</blockquote></pre><pre><blockquote>  AlphaComposite ac =
+</blockquote></pre><pre><blockquote>      AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.5f);
+</blockquote></pre><pre><blockquote>  g2.setComposite(ac);
+</blockquote></pre><pre><blockquote>  g2.setColor(Color.green);
+</blockquote></pre><pre><blockquote>  g2.fillRect(50,0,100,100);
+</blockquote></pre><pre><blockquote>  g2.setColor(Color.blue);
+</blockquote></pre><pre><blockquote>  g2.fillRect(125,75,100,100);
+</blockquote></pre><pre><blockquote>  g2.setColor(Color.yellow);
+</blockquote></pre><pre><blockquote>  g2.fillRect(50,125,100,100);
+</blockquote></pre><pre><blockquote>  g2.setColor(Color.pink);
+</blockquote></pre><pre><blockquote>  g2.fillRect(-25,75,100,100);
+</blockquote></pre><pre><blockquote>}
+</blockquote></pre>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-awt.fm7.html">PREV</a>
+ | <a href="j2d-awt.fm9.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1998 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Tue Feb 24 10:24:05 1998 -->
+ 
+
+
+</body>
+</html>

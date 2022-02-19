@@ -1,0 +1,589 @@
+<HTML>
+<HEAD>
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.02 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <TITLE>Creating a Custom RMI Socket Factory</TITLE>
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+<A NAME="1"></A>
+<CENTER>
+<H1>
+<FONT SIZE=+3>Creating a Custom RMI Socket Factory</FONT></H1></CENTER>
+
+<HR>
+
+<P>This page shows you the steps to follow to create and install a custom 
+RMI socket factory. A custom RMI socket factory
+is useful if (1) you want your RMI client and server to talk across sockets
+that encrypt or compress your data, or (2) you want to use different types
+of sockets for different connections.
+
+<P>Installing your own RMI socket factory allows the RMI transport
+layer to use a non-TCP or custom transport protocol over IP, rather than
+TCP, provided by <code>java.net.Socket</code> , which RMI uses by default.
+
+<P>Before the release of the Java <sup><font size=-2>TM</font></sup> 2 
+SDK, v1.2, it was possible to create a custom
+<code>java.rmi.RMISocketFactory</code> subclass that produced a type of
+socket other than <code>java.net.Socket</code> for use by the RMI
+transport. It was not possible, however, for an installed RMI socket
+factory to produce different types of sockets on an object-by-object
+basis.&nbsp; For example in JDK1.1, an RMI socket factory could not
+produce SSL sockets for one object and use the Java Remote Method
+Protocol (JRMP) directly over TCP for a different object in the same
+Java virtual machine* (JVM). Also before 1.2, it was necessary to spawn
+an instance of the <code>rmiregistry</code> that spoke only your custom
+socket protocol.
+
+<P>Then in Java SDK, v1.2 Beta3, it was possible for RMI clients to use
+a custom RMI socket factory, but the socket factory could not be
+downloaded, so the client had to be able to find the socket factory
+class locally.
+
+<P>Since the release of the Java 2 SDK, v1.2, it's been possible to
+create a custom RMI socket factory that produces the type of socket
+connection you want when you want on a per-object basis, download a
+client-side socket factory, and continue to use the default
+<code>rmiregistry</code>.
+
+<P>The rest of this tutorial is laid out as follows:
+<BLOCKQUOTE>
+<UL>
+<LI>
+<A HREF="#2">An example of how to create an RMI socket factory that
+produces a single type of socket.</A></LI>
+
+<LI>
+<A HREF="#3">An example of how to create a RMI socket factory that
+produces more than one type of socket.</A></LI>
+
+<LI>
+<A HREF="#4">An example of how to use a custom RMI socket factory
+in an application.</A></LI>
+</UL>
+</BLOCKQUOTE>
+Many people are interested in secure communication between RMI clients
+and servers. For the RMI/SSL story see <A HREF="SSLInfo.html">The Scoop
+on RMI and SSL</A>.
+
+<P>
+<HR>
+<H2>
+<A NAME="2"></A>Creating an RMI Socket Factory That Produces a Single
+Type of Socket</H2>
+There are four steps to creating a custom RMI socket factory, that
+produces a single type of socket.
+<OL>
+<LI>
+<A HREF="#21">Decide upon the type of socket to be produced.</A></LI>
+
+<LI>
+<A HREF="#22">Write a client-side socket factory that implements <code>RMIClientSocketFactory</code>.</A></LI>
+
+<LI>
+<A HREF="#23">Implement the <code>RMIClientSocketFactory createSocket</code>
+method.</A></LI>
+
+<LI>
+<A HREF="#24">Write a server-side socket factory that implements <code>RMIServerSocketFactory</code>.</A></LI>
+
+<LI>
+<A HREF="#25">Implement the <code>RMIServerSocketFactory createServerSocket</code>
+method.</A></LI>
+</OL>
+
+<BLOCKQUOTE>
+<H3>
+<A NAME="21"></A>Step 1:<BR>
+Decide Upon the Type of Socket to be Produced</H3>
+The type of socket to be produced is an application-specific decision.
+You get to choose the type of socket that is appropriate for your application.
+If your server handles a lot of sensitive data, you might want a socket
+that encrypts the data. If your server deals with video, you are likely
+to need a socket that does compression.
+
+<P>For this example, the RMI socket factory will produce sockets
+that provide data compression. We will produce <code>examples.rmisocfac.CompressionSocket</code>
+sockets from the page <A HREF="sockettype.doc.html">Creating a New Socket
+Type</A>.
+<H3>
+<A NAME="22"></A>Step 2:<BR>
+Write a client-side socket factory that implements <code>RMIClientSocketFactory</code></H3>
+Begin the implementation of a client-side RMI socket factory by implementing
+the&nbsp; <code>RMIClientSocketFactory</code>&nbsp; interface. The custom socket
+factory for this example will be called <code>CompressionClientSocketFactory</code>.
+
+<P>Below is the code for the class <code>CompressionClientSocketFactory</code>
+as well the code for the next step, overriding the <code>createSocket</code>
+method. An explanation of that step follows the code example.
+<DL><code>package examples.rmisocfac;</code>
+
+<P><code>import java.io.*;</code>
+<BR><code>import java.net.*;</code>
+<BR><code>import java.rmi.server.*;</code>
+
+<P><code>public class CompressionClientSocketFactory</code>
+<BR><code>&nbsp;&nbsp;&nbsp; implements RMIClientSocketFactory, Serializable
+{</code>
+
+<P><code>&nbsp;&nbsp;&nbsp; public Socket createSocket(String host, int port)</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throws IOException</code>
+<BR><code>&nbsp;&nbsp;&nbsp; {</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CompressionSocket socket
+=</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+new CompressionSocket(host, port);</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return socket;</code>
+<BR><code>&nbsp;&nbsp;&nbsp; }</code>
+
+<P><code>}</code>
+<BR>&nbsp;</DL>
+
+<H3>
+<A NAME="23"></A>Step 3:<BR>
+Implement the <code>RMIClientSocketFactory createSocket</code> method.</H3>
+Since the function of an RMI socket factory is to supply the RMI runtime
+with sockets, the <code>CompressionClientSocketFactory</code> needs to provide
+an implementation of the <code>RMIClientSocketFactory createSocket</code> method,
+so that it creates and returns sockets of the correct type -- <code>CompressionSocket</code>.
+Notice that in the above code, a <code>CompressionSocket</code> is created
+and returned.
+<H3>
+<A NAME="24"></A>Step 4:<BR>
+Write a server-side socket factory that implements <code>RMIServerSocketFactory</code></H3>
+Begin the implementation of a server-side RMI socket factory by implementing
+the&nbsp; <code>RMIServerSocketFactory</code>&nbsp; interface. The custom socket
+factory for this example will be called <code>CompressionServerSocketFactory</code>.
+
+<P>Below is the code for the class <code>CompressionServerSocketFactory</code>
+as well the code for the next step, implementing the <code>createServerSocket</code>
+method. An explanation of that step follows the code example.
+
+<P><code>package examples.rmisocfac;</code>
+
+<P><code>import java.io.*;</code>
+<BR><code>import java.net.*;</code>
+<BR><code>import java.rmi.server.*;</code>
+<BR><code>&nbsp;</code>
+<BR><code>public class CompressionServerSocketFactory</code>
+<BR><code>&nbsp;&nbsp;&nbsp; implements RMIServerSocketFactory, Serializable
+{</code>
+
+<P><code>&nbsp;&nbsp;&nbsp; public ServerSocket createServerSocket(int port)</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throws IOException</code>
+<BR><code>&nbsp;&nbsp;&nbsp; {</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CompressionServerSocket
+server = new CompressionServerSocket(port);</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return server;</code>
+<BR><code>&nbsp;&nbsp;&nbsp; }</code>
+<BR><code>}</code>
+<BR>&nbsp;
+<H3>
+<A NAME="25"></A>Step 5:<BR>
+Implement the <code>RMIServerSocketFactory createServerSocket</code> method.</H3>
+Implementing <code>createServerSocket</code> in your RMI socket factory is
+almost identical to implementing <code>createSocket</code>, except <code>createServerSocket</code>
+needs to create and return a socket of type <code>CompressionServerSocket</code>.
+
+<P>Now that you have worked through one example of creating an RMI socket
+factory, you have all the experience necessary to move on to creating a
+socket factory capable of producing more than one type of socket, which
+is the next example.</BLOCKQUOTE>
+
+<HR>
+<H2>
+<A NAME="3"></A>Creating an RMI Socket Factory that Produces More Than
+One Type of Socket</H2>
+To create an RMI socket factory capable of producing more than one type
+of socket, you start by following the steps for creating a factory which
+produces a single socket type. Only a little more information is necessary
+to create a "wrapper" for the different socket types.
+
+<P>For this example, the custom <code>RMIClientSocketFactory</code> class will
+be named <code>MultiClientSocketFactory</code>, because it supports multiple
+socket types, and likewise, the custom <code>RMIServerSocketFactory</code>
+class will be named <code>MultiServerSocketFactory</code>. Each of these socket
+factories has a constructor that specifies which protocol should be supported
+for this instance of the object.
+
+<P>Now, following the steps to create a custom socket factory, from the
+previous example, we will first decide which types of sockets to produce.
+<BLOCKQUOTE>
+<H3>
+Step 1:<BR>
+Decide Upon the Type of Socket to be Produced</H3>
+This custom RMI socket factory will produce three types of sockets: <code>XorSocket</code>,
+<code>CompressionSocket</code> and the default, <code>java.net.Socket</code>.
+
+<P>The source code for the implementation of sockets of type <code>XorSocket</code>
+can be found <A HREF="XorSocketClasses.html">here</A>.
+
+<P>Step one is now complete. Below is the source code for steps 2-5.&nbsp;
+Following the code is an explanation of each of the remaining steps.
+<DL>
+<PRE>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+package examples.rmisocfac;
+
+import java.io.*;
+import java.net.*;
+import java.rmi.server.*;</PRE>
+
+<PRE>public class MultiClientSocketFactory
+&nbsp;&nbsp;&nbsp; implements RMIClientSocketFactory, Serializable
+{
+&nbsp;&nbsp;&nbsp; /*&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp; * Get the default RMISocketFactory&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp; */
+&nbsp;&nbsp;&nbsp; private static RMISocketFactory defaultFactory =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RMISocketFactory.getDefaultSocketFactory();
+
+&nbsp;&nbsp;&nbsp; private String protocol;
+&nbsp;&nbsp;&nbsp; private byte[] data;
+
+&nbsp;&nbsp;&nbsp; public MultiClientSocketFactory(String protocol, byte[] data) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.protocol = protocol;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.data = data;
+&nbsp;&nbsp;&nbsp; }&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; /*&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp; * Override createSocket to call the default&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp; * RMIClientSocketFactory's createSocket method. This&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp; * way, you'll get a TCP connection if you don't&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp; * specify compression or xor&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp; */&nbsp;
+&nbsp;&nbsp;&nbsp; public Socket createSocket(String host, int port)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throws IOException
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (protocol.equals("compression")) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return new CompressionSocket(host, port);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } else if (protocol.equals("xor")) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (data == null || data.length != 1)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new IOException("invalid argument for XOR protocol");
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return new XorSocket(host, port, data[0]);
+&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return defaultFactory.createSocket(host, port);
+&nbsp;&nbsp;&nbsp; }
+}</PRE>
+</DL>
+
+<H3>
+Step 2:<BR>
+Implement&nbsp; <code>RMIClientSocketFactory</code></H3>
+The above class, <code>MultiClientSocketFactory</code>, implements <code>RMIClientSocketFactory</code>.
+<BR>&nbsp;
+<H3>
+Step 3:<BR>
+Implement the <code>RMIClientSocketFactory createSocket</code> method.</H3>
+Since the socket factory created in this example can produce two different
+types of sockets in addition to sockets of the default type, it is necessary
+to override the <code>createSocket</code> method. If the <code>protocol</code>
+field of the <code>MultiClientSocketFactory</code> constructor is equal to
+"xor" then a <code>XorSocket</code> is created and returned. If the <code>protocol</code>
+field is equal to "compression" then a <code>CompressionSocket</code> is created
+and returned.
+<BR>&nbsp;
+<H3>
+Step 4:<BR>
+Write a server-side socket factory that implements <code>RMIServerSocketFactory</code></H3>
+<code>package examples.rmisocfac;</code>
+
+<P><code>import java.io.*;</code>
+<BR><code>import java.net.*;</code>
+<BR><code>import java.rmi.server.*;</code>
+
+<P><code>public class MultiServerSocketFactory</code>
+<BR><code>&nbsp;&nbsp;&nbsp; implements RMIServerSocketFactory, Serializable</code>
+<BR><code>{</code>
+<BR><code>&nbsp;&nbsp;&nbsp; /*</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp; * Get the default RMISocketFactory</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp; */</code>
+<BR><code>&nbsp;&nbsp;&nbsp; private static RMISocketFactory defaultFactory
+=</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RMISocketFactory.getDefaultSocketFactory();</code>
+
+<P><code>&nbsp;&nbsp;&nbsp; private String protocol;</code>
+<BR><code>&nbsp;&nbsp;&nbsp; private byte[] data;</code>
+
+<P><code>&nbsp;&nbsp;&nbsp; public MultiServerSocketFactory(String protocol,
+byte[] data) {</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.protocol = protocol;</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.data = data;</code>
+<BR><code>&nbsp;&nbsp;&nbsp; }</code>
+
+<P><code>&nbsp;&nbsp;&nbsp; /*</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp; * Override createServerSocket to call
+the default</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp; * RMIServerSocketFactory's createServerSocket
+method, if</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp; * an invalid protocol is specified.</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp; */</code>
+<BR><code>&nbsp;&nbsp;&nbsp; public ServerSocket createServerSocket(int port)</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throws IOException</code>
+<BR><code>&nbsp;&nbsp;&nbsp; {</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (protocol.equals("compression"))
+{</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return new CompressionServerSocket(port);</code>
+
+<P><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } else if (protocol.equals("xor"))
+{</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (data == null || data.length != 1)</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+throw new IOException("invalid argument for XOR protocol");</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return new XorServerSocket(port, data[0]);</code>
+
+<P><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</code>
+
+<P><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return defaultFactory.createServerSocket(port);</code>
+<BR><code>&nbsp;&nbsp;&nbsp; }</code>
+<BR><code>}</code>
+<H3>
+Step 5:<BR>
+Implement the <code>RMIServerSocketFactory createServerSocket</code> method.</H3>
+Overriding <code>createServerSocket</code> is almost identical to overriding
+<code>createSocket</code>. As in step three, the <code>RMIServerSocketFactory</code>
+<code>createServerSocket</code> method, the type of socket created and returned
+is determined by the <code>protocol</code> field of the <code>MultiClientSocketFactory</code>
+constructor.</BLOCKQUOTE>
+
+<HR>
+<H2>
+<A NAME="4"></A>Using Your Custom Socket Factory in an Application</H2>
+There are only two more steps to complete when using a custom RMI socket
+factory for a remote object:
+<OL>
+<LI>
+In the remote object implementation, write a constructor that calls the
+<code>UnicastRemoteObject</code> (or <code>Activatable</code>) constructor that
+takes <code>RMIClientSocketFactory</code> and <code>RMIServerSocketFactory</code>
+parameters.</LI>
+
+<LI>
+Write a <code>java.security.policy</code> file that allows your program to
+create sockets.</LI>
+</OL>
+<B>Note</B>: In this example, for simplicity,&nbsp; we will use a policy
+file that gives global permission to anyone from anywhere. <B><I>Do not
+use this policy file in a production environment</I></B>. For more information
+on how to properly open up permissions using a <code>java.security.policy</code>
+file, please refer to to the following documents
+<BLOCKQUOTE><code><A HREF="../security/PolicyFiles.html">Default Policy Implemenation and Policy File Syntax</A></code>
+<BR><code><A HREF="../security/permissions.html">Permission in the Java 2 SDK</A></code>
+<BR>&nbsp;</BLOCKQUOTE>
+
+<BLOCKQUOTE>
+<H3>
+Step 1:<BR>
+Write a Remote Object Constructor that Calls the <code>UnicastRemoteObject</code>
+Constructor that takes <code>RMIClientSocketFactory</code> and <code>RMIServerSocketFactory</code>
+parameters.</H3>
+If you create your own RMI socket factory, then you need a way to tell
+the RMI runtime which type of socket factory to use. Assuming the server
+extends <code>UnicastRemoteObject</code>, this notification is accomplished
+by creating a remote object constructor that calls the following version
+of the <code>UnicastRemoteObject</code> constructor:
+
+<P><code>protected UnicastRemoteObject(int port, RMIClientSocketFactory csf,</code>
+<BR><code>&nbsp;&nbsp;&nbsp; RMIServerSocketFactory ssf)</code>
+
+<P>Below is a <code>HelloImpl</code> constructor from the original <A HREF="getstart.doc.html">RMI
+"Hello World" example</A> appropriately modified for a socket of type <code>XorSocket</code>.
+
+<P><code>&nbsp;&nbsp;&nbsp; public HelloImpl(String protocol, byte [] pattern)</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throws RemoteException</code>
+<BR><code>&nbsp;&nbsp;&nbsp; {</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; super(0, new MultiClientSocketFactory(protocol,
+pattern),</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new
+MultiServerSocketFactory(protocol, pattern));</code>
+<BR><code>&nbsp;&nbsp;&nbsp; }</code>
+<BR>&nbsp;
+
+<P>Notice that the <code>UnicastRemoteObject</code> constructor,
+
+<P><code>protected UnicastRemoteObject(int port, RMIClientSocketFactory csf,</code>
+<BR><code>&nbsp;&nbsp;&nbsp; RMIServerSocketFactory ssf)</code>
+
+<P>is called from the <code>HelloImpl</code> constructor. Once your custom
+socket factory is set, sockets of the desired type will be used for your
+RMI client-server application.
+<H3>
+Step 2:<BR>
+Write a <code>java.security.policy</code> file that allows your program to
+create sockets.</H3>
+<I>The policy file for this example, is not secure and should not be used
+in a production environment.</I>
+
+<P>The policy file for this example looks like this:
+
+<P><code>grant {</code>
+<BR><code>&nbsp;// Allow everything for now</code>
+<BR><code>&nbsp;permission java.security.AllPermission;</code>
+<BR><code>};</code></BLOCKQUOTE>
+Next is a version of the "Hello World" example that uses <code>MultiClientSocketFactory</code>
+and <code>MultiServerSocketFactory</code> to communicate using sockets of type
+<code>XorSocket</code>.
+
+<P>
+<HR WIDTH="100%">
+
+<P>This example has changed from the original <A HREF="getstart.doc.html">"Hello
+World" example in the RMI tutorial</A>. Most notably, the client in this
+example is <I>not</I> an applet. In addition, the client class in this
+example is called <code>HelloClient</code>. The last difference is that all
+of the classes are in the <code>examples.rmisocfac</code> package.
+
+<P>It is important to recognize that this example assumes that the client,
+server, and registry are all run on the same machine.
+
+<P>Below is the interface <code>Hello</code>, from the file <code>Hello.java</code>.
+Notice that, except for the package name, this interface has not changed
+from the original <code>Hello.java</code>.
+<DL>
+<PRE>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; package examples.rmisocfac;
+&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public interface Hello extends java.rmi.Remote {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; String sayHello() throws java.rmi.RemoteException;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</PRE>
+</DL>
+Take a look at the modified version of the client class, <code>HelloClient.java</code>.
+Notice that the <code>RMISecurityManager is installed </code>at the beginning
+of <code>main</code>. Otherwise the class <code>HelloClient</code> is no different
+than before.
+<DL>
+<PRE>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; package examples.rmisocfac;
+&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; import java.rmi.*;
+&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public class HelloClient {
+&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private static String message = "";
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static void main(String args[]) {
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Create and install a security manager
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (System.getSecurityManager() == null)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.setSecurityManager(new RMISecurityManager());
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Hello obj = (Hello) Naming.lookup("/HelloServer");
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; message = obj.sayHello();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.out.println(message);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } catch (Exception e) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.out.println("HelloClient exception: " +
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.getMessage());
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.printStackTrace();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</PRE>
+</DL>
+Last in this example is the source for <code>HelloImpl</code> from the file
+<code>HelloImpl.java</code>. Besides the change in the package name, two modifications
+have been made so that sockets of type "<code>xor</code>" will be used for
+the RMI calls between the client and the server. Note that the constructor
+has been changed to call the version of the <code>UnicastRemoteObject</code>
+constructor that takes a client and server socket factory as parameters.
+<DL>&nbsp;<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; package examples.rmisocfac;</code>
+
+<P><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; import java.io.*;</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; import java.rmi.*;</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; import java.rmi.server.*;</code>
+
+<P><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public class HelloImpl
+extends UnicastRemoteObject implements Hello {</code>
+<BR><code>&nbsp;</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+/*</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+* Constructor calls constructor of superclass with</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+* client and server socket factory&nbsp; parameters.</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+*/</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+public HelloImpl(String protocol, byte [] pattern) throws RemoteException
+{</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+super(0, new MultiClientSocketFactory(protocol, pattern),</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+new MultiServerSocketFactory(protocol, pattern));</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</code>
+
+<P><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+/*</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+* Remote method returns String "Hello World!"</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+* when invoked.</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+*/</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+public String sayHello() throws RemoteException {</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return&nbsp; "Hello World!";</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</code>
+<BR><code>&nbsp;</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+public static void main(String args[]) {</code>
+
+<P><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//Create and install a security manager</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (System.getSecurityManager() == null)</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+System.setSecurityManager(new RMISecurityManager());</code>
+
+<P><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+byte [] aPattern = { (byte)1011 };</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+try {</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HelloImpl obj = new HelloImpl("xor", aPattern);</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Naming.rebind("/HelloServer", obj);</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+System.out.println("HelloServer bound in registry");</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+} catch (Exception e) {</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+System.out.println("HelloImpl err: " + e.getMessage());</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+e.printStackTrace();</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</code>
+<BR><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</code></DL>
+To download this example and the supporting files, click <A HREF="helloExample2.html">here</A>.
+
+<P>Directions on how to compile and run the above "Hello World" example
+can be found <A HREF="installedCsfHowTo.doc.html">here</A>.
+
+<P>
+<B>*As used on this web site, the terms "Java virtual machine" or "JVM" 
+	mean a virtual machine for the Java platform.</B>
+
+
+<!-- Body text ends here --><!-- ============================================================== -->
+<HR SIZE=3 NOSHADE>
+<TABLE BORDER=0 WIDTH="100%" >
+<TR VALIGN=TOP>
+<TD><FONT SIZE=-2><A HREF="../../relnotes/SMICopyright.html">Copyright &copy;</A>
+1999 <A HREF="http://www.sun.com/">Sun Microsystems, Inc.</A> All Rights
+Reserved.</FONT>&nbsp;
+<BR><FONT SIZE=-1>Please send comments to: <A HREF="mailto:rmi-comments@java.sun.com">rmi-comments@java.sun.com</A>&nbsp;</FONT></TD>
+
+<TD ALIGN=RIGHT><IMG SRC="../../images/sunlogo64x30.gif" ALT="Sun" BORDER=0 HEIGHT=30 WIDTH=64>&nbsp;
+</TR>
+</TABLE>
+</BODY>
+</HTML>

@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 1 - System Architecture
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="serial-arch.doc.html">PREV</a>
+ | <a href="serial-arch.doc2.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="6428"><i>	1.1	</i> Overview
+</a></h2>
+
+<blockquote>
+<a name="3539"><!-- --></a>
+The ability to store and retrieve Java<sup><font size="-2">TM</font></sup> objects is essential to building all but the most transient applications. The key to storing and retrieving objects in a serialized form is representing the state of objects sufficient to reconstruct the object(s). Objects to be saved in the stream may support either the <code>Serializable</code> or the <code>Externalizable</code> interface. For Java<sup><font size="-2">TM</font></sup> objects, the serialized form must be able to identify and verify the Java<sup><font size="-2">TM</font></sup> class from which the contents of the object were saved and to restore the contents to a new instance. For serializable objects, the stream includes sufficient information to restore the fields in the stream to a compatible version of the class. For Externalizable objects, the class is solely responsible for the external format of its contents.<p>
+<a name="1081"><!-- --></a>
+Objects to be stored and retrieved frequently refer to other objects. Those other objects must be stored and retrieved at the same time to maintain the relationships between the objects. When an object is stored, all of the objects that are reachable from that object are stored as well.<p>
+<a name="999"><!-- --></a>
+The goals for serializing Java<sup><font size="-2">TM</font></sup> objects are to:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="1010"><!-- --></a>
+Have a simple yet extensible mechanism.
+</li>
+<li>
+<a name="1011"><!-- --></a>
+Maintain the Java<sup><font size="-2">TM</font></sup> object type and safety properties in the serialized form.
+</li>
+<li>
+<a name="3223"><!-- --></a>
+Be extensible to support marshaling and unmarshaling as needed for remote objects.
+</li>
+<li>
+<a name="1003"><!-- --></a>
+Be extensible to support simple persistence of Java<sup><font size="-2">TM</font></sup> objects.
+</li>
+<li>
+<a name="1041"><!-- --></a>
+Require per class implementation only for customization.
+</li>
+<li>
+<a name="3844"><!-- --></a>
+Allow the object to define its external format.
+</li>
+</ul>
+</blockquote>
+
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="serial-arch.doc.html">PREV</a>
+ | <a href="serial-arch.doc2.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:47:50 1999 -->
+ 
+
+
+</body>
+</html>

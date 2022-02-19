@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification:  - Security in Object Serialization
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="security.doc2.html">PREV</a>
+ | <a href="security.doc4.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="4169"><i>	A.3	</i> Security Issues
+</a></h2>
+
+<blockquote>
+<a name="4170"><!-- --></a>
+Naive use of object serialization may allow a malicious party with access to the serialization byte stream to read private data, create objects with illegal or dangerous state, or obtain references to the private fields of deserialized objects.  Implementors concerned with security should be aware of the following implications of serialization:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="4171"><!-- --></a>
+Default serialization of an object writes the values of all fields of that object to the serialization stream, regardless of whether or not they are public.  Malicious code can effectively read the values of private fields of a serializable object by serializing the object and then examining the resulting byte stream.  Methods for avoiding this problem are described in <a href="security.doc8.html#4346">Section&#160;A.4, &#34;Preventing Serialization of Sensitive Data</a>&#34;.
+</li>
+<li>
+<a name="4197"><!-- --></a>
+During deserialization, objects are created and initialized using data from the incoming serialization stream.  If the stream was corrupted or tampered with prior to deserialization, the deserialized objects may have unexpected or illegal state.  Methods for avoiding this problem are described in <a href="security.doc8.html#4346">Section&#160;A.5, &#34;Writing Class-Specific Serializing Methods</a>&#34;.
+</li>
+<li>
+<a name="4202"><!-- --></a>
+By inserting extra wire handle references into a serialization byte stream, it is possible during deserialization to forge extra references to objects occurring earlier in the stream.  Therefore, it is unsafe for developers to assume that references to private objects obtained via deserialization are unique.  Techniques for dealing with this problem are discussed in section <a href="security.doc8.html#4346">Section&#160;A.6, &#34;Guarding Unshared Deserialized Objects</a>&#34;.
+</li>
+<li>
+<a name="4208"><!-- --></a>
+Objects implementing the Externalizable interface are susceptible to overwriting, since the readExternal method is public.  A caller can invoke the <code>readExternal</code> method at any time, passing it an arbitrary stream to read values from, causing the target object to be reinitialized.  A means of preventing this is outlined in <a href="security.doc8.html#4346">Section&#160;A.7, &#34;Preventing Overwriting of Externalizable Objects</a>&#34;.
+</li>
+</ul>
+</blockquote>
+
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="security.doc2.html">PREV</a>
+ | <a href="security.doc4.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:48:17 1999 -->
+ 
+
+
+</body>
+</html>

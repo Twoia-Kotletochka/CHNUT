@@ -1,0 +1,1259 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>Policy Tool - Policy File Creation and Management Tool</TITLE>
+</head>
+
+<BODY BGCOLOR="#FFFFFF">
+
+<H1><center>Policy Tool - </center></H1>
+<H1><center>Policy File Creation and Management Tool</center></H1>
+
+Creates and modifies the external policy
+configuration files that define your installation's Java security
+policy.
+
+<H2>Table of Contents</H2>
+
+<p><dl>
+<dt><dd><a href="#Introduction">
+<font size="+1"><b>Introduction</b></font>
+</a>
+<br>
+<br>
+
+<dt><dd><a href="#Overview">
+<font size="+1"><b>Permissions and Policy Files Overview</b></font>
+</a><dl>
+
+<dt><dd><a href="#Permissions">
+<b>Permissions</b>
+
+</a><dt><dd><a href="#DefaultFiles">
+<b>Default Policy Files and Their Locations</b>
+
+</a><dt><dd><a href="#FileContents">
+<b>Policy File Contents</b>
+
+</a></dl>
+<br>
+
+<dt><dd><a href="#Usage">
+<font size="+1"><b>Policy Tool Usage</b></font>
+</a><dl>
+
+<dt><dd><a href="#StartTool">
+<b>Starting Policy Tool</b>
+
+</a><dt><dd><a href="#Create">
+<b>Creating a new Policy File</b>
+
+</a><dt><dd><a href="#Open">
+<b>Opening a Different Policy File</b>
+
+</a><dt><dd><a href="#SpecifyKeystore">
+<b>Specifying the Keystore</b>
+
+</a><dt><dd><a href="#AddEntry">
+<b>Adding a New Policy Entry</b>
+</a><dl>
+
+<dt><dd><a href="#AddPerm">
+<b>Adding a New Permission</b>
+
+</a><dt><dd><a href="#EditPerm">
+<b>Editing a Permission</b>
+
+</a><dt><dd><a href="#RemovePerm">
+<b>Removing a Permission</b>
+
+</a><dt><dd><a href="#EntryDone">
+<b>Completing the Addition of a Policy Entry</b>
+
+</a></dl>
+
+
+<dt><dd><a href="#EditEntry">
+<b>Editing a Policy Entry</b>
+
+</a><dt><dd><a href="#RemoveEntry">
+<b>Removing a Policy Entry</b>
+
+</a><dt><dd><a href="#SaveFile">
+<b>Saving the Policy File</b>
+
+</a><dt><dd><a href="#ExitTool">
+<b>Exiting the Policy Tool</b>
+
+</a><dt><dd><a href="#Log">
+<b>Viewing the Warning Log</b>
+
+</a></dl>
+<br>
+
+<dt><dd><a href="#Examples">
+<font size="+1"><b>Examples</b></font>
+</a><dl>
+
+<dt><dd><a href="#ExStartingCreation">
+<b>Starting Creation of the User Policy File</b>
+
+</a><dt><dd><a href="#ExAddEntry">
+<b>Adding a Policy Entry</b>
+
+</a><dt><dd><a href="#ExSpecifyKeystore">
+<b>Specifying a Keystore</b>
+
+</a><dt><dd><a href="#ExAddSignedByEntry">
+<b>Adding a Policy Entry with a SignedBy alias</b>
+
+</a><dt><dd><a href="#ExSaveFile">
+<b>Saving the User Policy File</b>
+
+</a><dt><dd><a href="#ExExit">
+<b>Exiting Policy Tool</b>
+
+
+</a></dl>
+<br>
+
+<dt><dd><a href="#SeeAlso">
+<font size="+1"><b>See Also</b></font>
+</a>
+</dl>
+
+<hr>
+
+<H2><a name="Introduction">Introduction</a></H2>
+
+<blockquote>
+
+<p>The policy for a Java runtime, specifying which 
+<a href = "#Permissions">permissions</a> 
+are available for code from various sources, is represented 
+by a Policy object. The default Policy implementation obtains its
+information from static ASCII policy configuration files.
+
+<p>A policy file can be composed via a simple text editor, or via the 
+graphical <b>Policy Tool </b> utility described in this document.
+Using the <b>Policy Tool </b> saves typing and eliminates the need
+for you to know the required syntax of policy files, thus
+reducing errors.
+
+<p>The <a href = "#Overview">Permissions and Policy Files Overview</a>
+section of this document describes what permissions are,
+and provides information about policy file contents and default
+policy files. It also supplies links to more detailed discussions of
+these topics.
+
+<p>The <a href = "#Usage">Policy Tool Usage</a>
+section describes how to use the
+<b>Policy Tool</b> to create and modify policy files.
+
+<p>The <a href = "#Examples">Examples</a>
+section provides detailed examples of the use of <b>Policy Tool</b>.
+
+<p>The <a href = "#SeeAlso">See Also</a>
+section provides links to related documentation.
+
+</blockquote>
+
+
+<H2><a name="Overview">Permissions and Policy Files Overview</a></H2>
+
+<blockquote>
+
+This section briefly describes what permissions are,
+and provides information about policy file contents and default
+policy files.
+
+<H3><a name="Permissions">Permissions</a></H3>
+
+<blockquote>
+
+<p>A permission represents access to a system resource.
+In order for a resource access to be allowed for an applet
+(or an application running with a security manager),
+the corresponding permission must be explicitly granted to
+the code attempting the access.
+
+<p>A permission typically has a name (often referred to as a
+"target name") and, in some cases, a comma-separated list of
+one or more actions. For example, to
+create a permission to read the file named "abc" in the
+<code>/tmp/</code> directory, you'd create a File Permission (technically, a
+java.io.FilePermission permission) with target name
+"/tmp/abc" and action string "read".
+
+<p>In the default Policy implementation, code trying to
+read the file must be granted the specified permission by a "policy entry" 
+(sometimes referred to as a "grant entry") in a policy
+configuration file. The <b>Policy Tool</b> can be used to create such
+an entry in such a file.
+
+<p>The <a href="../../guide/security/permissions.html">Permissions in the Java 2 Platform</a>
+document contains tables that describe the built-in
+Java 2 Platform permission types and that discuss the risks of granting each 
+permission. It also contains tables showing the Java 2 Platform methods that
+require permissions to be in effect in order to be successful,
+and for each lists the required permission.
+
+</blockquote>
+
+
+
+<H3><a name="DefaultFiles">Default Policy Files and Their Locations</a></H3>
+
+<blockquote>
+
+<p>There is by default a single system-wide policy file, and an optional 
+user policy file.
+
+<p>The system policy file is by default located at
+
+<pre>
+    <i>java.home</i>/lib/security/java.policy
+</pre>
+
+<p>Here, <i>java.home</i> is 
+the runtime environment's directory (the <tt>jre</tt> directory in the SDK 
+or the top-level directory of the Java 2 Runtime Environment).
+
+<p>The user policy file is by default located at
+
+<pre>
+    <i>user.home</i>/.java.policy
+</pre>
+
+<p>Here, <i>user.home</i> indicates the 
+user's home directory.
+
+<p>When the Policy is initialized, the system policy is loaded in first, and 
+then the user policy is added to it. If neither policy is present, a built-in 
+policy is used.  This built-in policy is the same as the original sandbox policy.
+
+<p>Policy file locations are specified in the security properties file, which is 
+located at
+
+<pre>
+    <i>java.home</i>/lib/security/java.security
+</pre>
+
+The policy file locations are specified as the values of properties whose names 
+are of the form
+
+<pre>
+    policy.url.<i>n</i>
+</pre>
+
+Here, <code><i>n</i></code> indicates a number. You specify each such property 
+value in a line of the following form:
+
+<blockquote>
+<pre>
+policy.url.<i>n</i>=<i>URL</i>
+</pre>
+</blockquote>
+
+Here, <i>URL</i> is a URL specification.
+For example, the default policy files, sometimes referred to as
+the "system" and "user" policy files, respectively,
+are defined in the security properties file as
+
+<blockquote>
+<pre>
+policy.url.1=file:${java.home}/lib/security/java.policy
+policy.url.2=file:${user.home}/.java.policy
+</pre>
+</blockquote>
+
+<p>Note: when a string like
+
+<pre>
+    ${some.property}
+</pre>
+
+appears in a policy file, or in the security properties file, it will be expanded 
+to the value of the specified system property. For example,
+
+<pre>
+    ${java.home}
+</pre>
+
+indicates the value of the <i>java.home</i> property specifying the runtime environment's directory (the <tt>jre</tt> directory in the SDK or the 
+top-level directory of the Java 2 Runtime Environment).
+
+<p>Whether or not property expansion is allowed is controlled by the value 
+of the  "policy.expandProperties" property in the security properties 
+file. If the value of this property is true (the default), expansion is 
+allowed.
+
+<p>You can actually specify a number of URLs in the security properties
+file (including ones of the form "http://"), 
+and all the designated policy files will get loaded. You can also comment out or
+change the second one to disable reading the default user policy file.
+
+<p>The algorithm starts at policy.url.1, and keeps incrementing until it does not 
+find a URL. Thus if you have policy.url.1 and policy.url.3, policy.url.3 will 
+never be read.
+
+<p>It is also possible to specify an additional or a different policy file when 
+invoking execution of an application. This can be done via the 
+"-Djava.security.policy" command-line argument, which sets the value of 
+the <i>java.security.policy</i> property. For example, if you 
+type the following, where <i>pURL</i> is a URL indicating
+the location of a policy file, then the 
+specified policy file will be loaded in addition to all the policy files 
+that are specified in the security properties file. 
+
+<pre>
+  java -Djava.security.manager -Djava.security.policy=pURL SomeApp
+</pre>
+
+(The "-Djava.security.manager" argument ensures that the default security 
+manager is installed, and thus the application is subject to policy checks.
+It is not required if the application <i>SomeApp</i> installs a security manager.)
+
+<p>If you instead type the following, using a double equals, then
+just the specified policy file will be used; all others will be ignored.
+
+<pre>
+  java -Djava.security.manager -Djava.security.policy==pURL SomeApp
+</pre>
+
+<p>If you want to pass a policy file to the appletviewer, again use a 
+"-Djava.security.policy" argument as follows:
+
+<pre>
+  appletviewer -J-Djava.security.policy=pURL  myApplet
+</pre>
+
+Please note: The "-Djava.security.policy" policy file value will be ignored 
+(for both java and appletviewer commands) if the "policy.allowSystemProperty" 
+property in the security properties file is set to false. The default is true.
+
+</blockquote>
+
+
+<H3><a name="FileContents">Policy File Contents</a></H3>
+
+<blockquote>
+
+A policy configuration file (policy file, for short) indicates
+what permissions are allowed for code from specified code sources.
+
+<p>A policy configuration file contains a list of entries.
+It may contain a single "keystore" entry, and contains zero or more "policy" 
+(or "grant") entries.
+
+<p>A <i>keystore</i> is a database of private keys and their associated digital 
+certificates such as X.509 certificate chains authenticating the 
+corresponding public keys. The <a href="keytool.html"><b>keytool</b></a>
+utility is used to create and administer keystores. The keystore 
+specified in a policy configuration 
+file is used to look up the public keys of the signers (if any) specified in the 
+grant entries of the file. Public keys are used to verify the digital
+signatures used to sign the code.
+
+<p>A keystore entry must appear in a policy 
+configuration file if any policy entries specify signer aliases.
+
+<p>At this time, there can be only one keystore entry in the policy file.
+The keystore entry specifies the URL location of the keystore and 
+optionally the keystore type. 
+The URL is relative to the policy file location. Thus if the policy 
+file is specified in the security properties file as:
+
+<pre>
+  policy.url.1=http://foo.bar.com/blah/some.policy
+</pre>
+
+and that policy file has a keystore entry with value ".keystore"
+then the keystore will be loaded from:
+
+<pre>
+  http://foo.bar.com/blah/.keystore
+</pre>
+
+The URL can also be absolute.
+
+<p>A keystore type defines the storage and data format of the keystore
+information, and the algorithms used to
+protect private keys in the keystore and the integrity of the keystore
+itself. If you don't specify a type, it is assumed to be that
+specified by the "keystore.type" property value in the security
+properties file. The value is initially  "JKS", specifying 
+a proprietary keystore type 
+supported by Sun Microsystems. 
+
+<p>Code being executed is always considered to come from a particular
+"code source". The code source may include not only the CodeBase 
+location (URL) where the applet (or application) originated from, 
+but also a reference to one or more (symbolic) alias
+names from a keystore specifying the keystore entries containing
+the public key(s) corresponding to the private key(s) used to sign 
+the code.
+
+<p>Each policy entry in the policy file contains the following:
+
+<ul>
+
+<li>an optional <b>CodeBase</b> entry specifying the URL location where the code 
+originates from,<p>
+
+<li>an optional <b>SignedBy</b> entry specifying the alias name from the
+keystore used to reference the signer whose private key was used to 
+sign the code, and<p>
+
+<li>one or more <b>permission</b> entries specifying which permissions
+are granted to code from the specified CodeBase and signed
+by the specified SignedBy alias.
+
+</ul>
+
+</blockquote>
+
+</blockquote>
+
+<p>
+
+
+<H2><a name="Usage">Policy Tool Usage</a></H2>
+
+<blockquote>
+
+
+<H3><a name="StartTool">Starting Policy Tool</a></H3>
+
+<blockquote>
+
+To start <b>Policy Tool</b>, simply type the following
+at the command line. 
+
+<pre>
+  policytool
+</pre>
+
+<p>This brings up the "Policy Tool" window. 
+
+<p>Whenever Policy Tool
+is started, it tries to
+fill in this window with policy information from what is sometimes referred to
+as the "user policy file". 
+The user policy file is by default a file named <code>.java.policy</code> in your
+home directory. If Policy Tool cannot find the user policy file, it reports
+the situation and displays a blank "Policy Tool" window
+(that is, a window with headings and buttons but no data in it):
+
+<p>
+<center><IMG SRC="images/ptBlank.gif" ALT="Blank Policy Tool window">
+</center>
+
+<p>You can then proceed to either 
+<a href = "#Open">open</a> whatever policy file you want to work on
+or create a new policy file, by 
+<a href = "#AddEntry">adding policy entries</a>, optionally
+<a href = "#SpecifyKeystore">specifying a keystore</a>, and 
+<a href = "#SaveFile">saving the file</a>).
+
+<p>The first time you run the <b>Policy Tool</b>, there will not be a
+user policy file (unless you created one manually). 
+
+</blockquote>
+
+
+<H3><a name="Create">Creating a new Policy File</a></H3>
+
+<blockquote>
+
+To create a new policy file, start by simply selecting the <b>New</b> command
+from the <b>File</b> menu. This will close the currently open policy 
+file (if any, after first prompting you to save it if needed) and bring
+up a new policy tool window, that is, a window with headings
+and buttons but no data in it.
+
+<p>Please Note: this is not necessary the first time
+you run the Policy Tool. Since the tool tries to open the user policy
+file and one doesn't exist yet (unless it was created manually),
+the tool will bring up a window without any data in it.
+
+<p>Once you have a new policy tool window, you can then 
+<a href = "#AddEntry">create the policy entries</a>,
+and <a href = "#SpecifyKeystore">specify the keystore</a> (if any of
+the policy entries specify a keystore alias).
+At any point, you can <a href = "#SaveFile">save the policy file</a>.
+
+</blockquote>
+
+
+<H3><a name="Open">Opening a Different Policy File</a></H3>
+
+<blockquote>
+
+To work on a different policy file than the one currently being
+worked on (if any), use the <b>Open</b> command in the
+<b>File</b> menu. 
+
+<p>This will close the currently open policy 
+file (if any, after first prompting you to save it if needed) and 
+will present you with an Open dialog, which you can use
+to navigate the directory structure until you get to the
+directory containing the policy file you want to work on.
+Select that file, then select the <b>OK</b> button.
+
+<p>The "Policy Tool" window will then be filled in with information
+from the policy file, including the policy file name,
+the keystore URL (if any), and the CodeBase and SignedBy parts
+of each policy entry in the policy file.
+
+</blockquote>
+
+
+<H3><a name="SpecifyKeystore">Specifying the Keystore</a></H3>
+
+<blockquote>
+
+To specify the keystore containing the key information for
+the aliases specified in the SignedBy parts of policy entries,
+select the <b>Change Keystore</b> command in the 
+<b>Edit</b> menu.
+
+<p>This brings up a dialog box in which you specify the new
+keystore URL and optionally the keystore type.
+
+<p>As an example, to specify the keystore named "mykeystore" in the
+<code>/tests/</code> directory, type the following 
+<code>file:</code> URL into the text box labeled "New KeyStore URL".
+
+<pre>
+  file:/tests/mykeystore
+</pre>
+
+To also specify that the keystore type is "JKS" (the proprietary
+keystore type supported by Sun Microsystems), type
+the following into the text box labeled "New KeyStore Type".
+
+<pre>
+  JKS
+</pre>
+
+<p>When you are done specifying the keystore URL and 
+type (if any), select <b>OK</b>
+(or you can select <b>Cancel</b> to cancel the operation).
+If you didn't cancel, the text box labeled "Keystore:" is now 
+filled in with the keystore URL and type.
+
+</blockquote>
+
+
+<H3><a name="AddEntry">Adding a New Policy Entry</a></H3>
+
+<blockquote>
+
+To add a new policy entry, select the <b>Add Policy Entry</b> button
+in the main "Policy Tool" window.
+
+<p>This brings up a "Policy Entry" dialog box:
+
+<p>
+<center><IMG SRC="images/AddEntryBlank.gif" ALT="Blank Add Entry Dialog">
+</center>
+
+<p>Using this dialog box, you specify 
+
+<ul>
+
+<li>an optional <b>CodeBase</b> entry indicating the URL location where the code 
+originates from. For example, to indicate code from the local <code>/JavaSoft/TESTS/</code>
+directory, type the following file URL into the <b>CodeBase</b> 
+text box:
+
+<pre>
+  file:/JavaSoft/TESTS/
+</pre>
+
+<p>
+
+<li>an optional <b>SignedBy</b> entry indicating the alias name from the
+keystore used to reference the signer whose private key was used to 
+sign the code. For example, to indicate the alias named "duke",
+simply type the following into the <b>SignedBy</b> text box:
+
+<pre>
+  duke
+</pre>
+
+<p>
+
+<li>one or more <b>permission</b> entries indicating which permissions
+are granted to the code from the source indicated by the 
+CodeBase and SignedBy values (or to any code if no such values
+are specified). See <a href = "#AddPerm">Adding a New Permission</a>.
+
+</ul>
+
+<p>The <b>SignedBy</b> value is a string alias that is mapped (using the
+keystore) to a set of public keys that are associated with the signers.  
+These keys are used to verify that classes from the specified code source
+are really signed by these signers.
+
+<p>The <b>SignedBy</b> value can be a comma-separated string containing 
+names of multiple signers, an example of which is "Adam,Eve,Charles", which 
+means "signed by Adam and Eve and Charles" (i.e., the relationship is AND, 
+not OR). 
+
+<p>The <b>SignedBy</b> value is optional in that, if it is omitted, 
+it signifies "any signer," or in other words, it doesn't matter whether 
+the code is signed or not.
+Similarly, if there is no <b>CodeBase</b> entry, then it 
+signifies "any code"; it doesn't matter where 
+the code originates from.
+
+<p>Thus, if there is no <b>CodeBase</b> entry, then all code signed
+by the specified alias(es) will be granted the specified permissions.
+If there is no <b>SignedBy</b> entry, then all code from
+the specified <b>CodeBase</b> will be granted the specified permissions,
+regardless of whether the code is signed or not, and by whom.
+If there is no <b>CodeBase</b> entry, and also no 
+<b>SignedBy</b> entry, then all code will be granted the specified permissions.
+
+<p>Note: The exact meaning of a <b>CodeBase</b> value depends on the
+characters at the end. A <b>CodeBase</b> with a trailing "/"
+matches all class files (not JAR files) in the specified directory.
+A <b>CodeBase</b> with a trailing "/*" matches 
+all files (both class and JAR files) contained in that directory.
+A <b>CodeBase</b> with a trailing "/-" matches 
+all files (both class and JAR files) in the directory and 
+recursively all files in subdirectories contained in that directory.
+
+
+<H4><a name="AddPerm">Adding a New Permission</a></H4>
+
+<blockquote>
+
+To add a new permission, select the <b>Add Permission</b> button
+in the "Policy Entry" dialog box.
+This brings up the "Permissions" dialog box:
+
+<p>
+<center><IMG SRC="images/AddPermBlank.gif" ALT="Blank Add Permissions Dialog">
+</center>
+
+<p>To add the permission:
+
+<ol>
+
+<li>Type or select a <b>permission type</b>. 
+
+<p>The drop-down list 
+labeled "Permission:" contains a list of built-in permission
+types. If you want such a type, select it from the list, and the
+complete permission type name appears in the text box to the
+right of the drop-down list.
+
+<p>If you instead want to specify a permission type defined by you
+or others, type the permission type into the text box.
+<p>
+
+<li>Type or select a permission <b>target name</b>. 
+
+<p>If you selected a built-in permission from the "Permission:"
+drop-down list, and permissions of that type have specific
+target name values, then the drop-down list 
+labeled "Target Name:" contains a list of those values, from
+which you can choose.
+
+<p>In some cases, where the target name
+possibilities are infinite but there are some built-in target name
+specifications that have special meaning, such target names will
+appear in the drop-down list. For example, the special target name
+of "&lt;&lt;All Files&gt;&gt;" will appear in the list for File Permissions.
+
+<p>To specify a target name not available in the drop-down list,
+type the target name directly into the text box to the
+right of the "Target Name:" drop-down list. For example, to specify 
+the file named <code>data</code> in the <code>/JavaSoft/ptTest/</code>
+directory, type
+
+<pre>
+  /JavaSoft/ptTest/data
+</pre>
+
+<p>
+
+<li>Type or select one or more <b>actions</b>, if actions are relevant.
+
+<p>Some permissions just have a target name, but no actions. For such
+permissions, leave the text box to the right of the "Actions:" drop-down list
+blank. (It will automatically be darkened and unavailable for this type of built-in
+permission.)
+
+<p>For permissions requiring action specifications, type the comma-separated
+list of actions into the text box, or select them from the drop-down list.
+For example, to specify both read and write access to a file specified for a
+File Permission, first select <code>read</code> (or <code>write</code>, 
+order doesn't matter)
+from the list. The word "read" appears in the text box. Then select 
+<code>write</code>, and the word "write" will be appended,
+preceded by a comma and a space.
+
+<p>
+
+<li>Type a <b>SignedBy</b> alias into the text box to the right of the
+"Signed By" label, if required.
+The <b>SignedBy</b> value for a permission entry 
+is optional. If present, it indicates a signed permission. That is,
+the permission class itself must be signed by the given alias(es) in
+order for the permission to be granted.
+
+
+</ol>
+
+When you are done specifying the permission information, select the
+<b>OK</b> button (or <b>Cancel</b> to cancel). The new permission appears in a line
+in the "Policy Entry" dialog.
+
+<p>You can then add additional permissions by following the same sequence
+of steps. Or you can <a href = "#EditPerm">edit</a> an existing permission 
+or <a href = "#RemovePerm">remove</a> a permission.
+
+</blockquote>
+
+
+<H4><a name="EditPerm">Editing a Permission</a></H4>
+
+<blockquote>
+
+To edit an existing permission, select the line for that permission in the
+"Policy Entry" dialog box, then select the <b>Edit Permission</b> button.
+Alternatively, you can simply double-click the line for that permission.
+
+<p>This brings up the same type of "Permissions" dialog box as appears
+when you are <a href = "#AddPerm">adding</a> a new permission, except 
+in this case the dialog box
+is filled in with the existing permission information. To change the
+information, either make new selections from the drop-down lists or
+replace the information in the text boxes.
+
+<p>When you are done, select the
+<b>OK</b> button (or <b>Cancel</b> to cancel changes). 
+The "Policy Entry" dialog now shows the permission with any modifications
+you made.
+
+</blockquote>
+
+
+<H4><a name="RemovePerm">Removing a Permission</a></H4>
+
+<blockquote>
+
+To remove an existing permission, select the line for that permission in the
+"Policy Entry" dialog box, then select the <b>Remove Permission</b> button.
+
+</blockquote>
+
+
+<H4><a name="EntryDone">Completing the Addition of a Policy Entry</a></H4>
+
+<blockquote>
+
+Once you are done adding a policy entry, select the <b>Done</b> button
+in the "Policy Entry" dialog, or <b>Cancel</b> to cancel.
+
+<p>If you selected <b>Done</b>, the "Policy Tool" window now contains a line
+representing the policy entry. The line just contains the CodeBase and SignedBy
+information (if any). If neither was specified in the "Policy Entry"
+dialog, just
+
+<pre>
+  CodeBase &lt;ALL&gt;
+</pre>
+
+appears.
+
+<p>Note: a warning is displayed upon closing the policy entry if 
+it contains any <b>SignedBy</b> 
+aliases that don't yet exist in your keystore. Select <b>OK</b> and 
+make a note to create such
+an alias, or <a href = "#EditEntry">edit the policy entry</a> to fix 
+the alias if was wrong. 
+
+</blockquote>
+
+
+</blockquote>
+
+
+
+<H3><a name="EditEntry">Editing a Policy Entry</H3>
+
+<blockquote>
+
+To edit an existing policy entry, select the line for that entry in the main
+"Policy Tool" window, then select the <b>Edit Policy Entry</b> button.
+Alternatively, you can simply double-click the line for that entry.
+
+<p>This brings up the same type of "Policy Entry" dialog box as appears
+when you are <a href = "#AddEntry">adding</a> a new policy entry, except 
+in this case the dialog box
+is filled in with the existing policy entry information. 
+To change the information, simply retype it (for the <b>CodeBase</b> and
+<b>SignedBy</b> values) or <a href = "#AddPerm">add</a>, 
+<a href = "#RemovePerm">remove</a> , or 
+<a href = "#EditPerm">modify</a> permissions.
+
+<p>When you are done, select the
+<b>Done</b> button (or <b>Cancel</b> to cancel). 
+
+
+</blockquote>
+
+
+<H3><a name="RemoveEntry">Removing a Policy Entry</H3>
+
+<blockquote>
+
+To delete a policy entry from the policy file, select
+the line for that entry in the main "Policy Tool" window,
+then select the <b>Remove Policy Entry</b> button.
+
+<p>The complete policy entry is displayed, and you can then
+either select <b>OK</b> to remove the entry, or <b>Cancel</b> to
+keep it.
+
+</blockquote>
+
+
+<H3><a name="SaveFile">Saving the Policy File</a></H3>
+
+<blockquote>
+
+<p>To save changes to an existing policy file, simply select the
+<b>Save</b> command in the <b>File</b> menu.
+
+<p>To save a new policy file you've been creating, or to copy
+an existing policy file to a new policy file with a different name, 
+select the <b>Save As</b> command from the
+<b>File</b> menu. This brings up the Save As dialog box.
+
+<p>Navigate the directory structure to get to the directory
+in which you want to save the policy file. Type the desired
+file name, then select the <b>OK</b> button. The policy file is
+now saved, and its name and path are shown in the text box labeled 
+"Policy File:"
+
+</blockquote>
+
+
+<H3><a name="ExitTool">Exiting the Policy Tool</a></H3>
+
+<blockquote>
+
+To exit <b>Policy Tool</b>, select the
+<b>Exit</b> command from the <b>File</b> menu.
+
+</blockquote>
+
+
+<H3><a name="Log">Viewing the Warning Log</a></H3>
+
+<blockquote>
+
+If <b>Policy Tool</b> ever reports that warnings have been
+stored in the Warning Log, you can view the log by selecting
+the <b>View Warning Log</b> command in the <b>Edit</b> menu.
+
+<p>For example, if you have a policy file with a Keystore URL
+specifying a keystore that doesn't yet exist, you will get
+such a warning at various times, e.g., when you open the file.
+You can continue to work on the policy file even if warnings exist.
+</blockquote>
+
+
+</blockquote>
+
+</blockquote>
+
+
+<H2><a name="Examples">Examples</a></H2>
+
+<blockquote>
+
+The following examples show how to
+
+<ul>
+
+<li><a href = "#ExStartingCreation">create the user policy file</a> from scratch<p>
+
+<li><a href = "#ExAddEntry">add a policy entry</a><p>
+
+<li><a href = "#ExSpecifyKeystore">specify a keystore</a><p>
+
+<li><a href = "#ExAddSignedByEntry">add a policy entry for signed code</a>
+<p>
+
+<li><a href = "#ExSaveFile">save the user policy file</a>, and<p>
+
+<li><a href = "#ExExit">exit the Policy Tool</a>
+
+</ul>
+
+<p>
+
+<H3><a name="ExStartingCreation">Starting Creation of the User Policy File</a></H3>
+
+<blockquote>
+
+<p>Initially, there is no
+user policy file (unless you created one manually). So to create the
+user policy file, first simply start <b>Policy Tool</b> by typing
+the following at the command line. 
+
+<pre>
+  policytool
+</pre>
+
+<p>This brings up the "Policy Tool" window. 
+
+<p>Whenever Policy Tool
+is started, it tries to
+fill in this window with policy information from what is sometimes referred to
+as the "user policy file". 
+The user policy file is by default a file named <code>.java.policy</code> in your
+home directory. If Policy Tool cannot find the user policy file, it reports
+the situation and displays a blank "Policy Tool" window
+(that is, a window with headings and buttons but no data in it):
+
+<p>
+<center><IMG SRC="images/ptBlank.gif" ALT="Blank Policy Tool window">
+</center>
+
+<p>You can now create the user policy file by adding entries and saving
+the file.
+
+</blockquote>
+
+
+<H3><a name="ExAddEntry">Adding a Policy Entry</a></H3>
+
+<blockquote>
+
+Suppose you want to grant all classes from the <code>/tests/</code> directory 
+permission to read the file named <code>mydata</code> in the 
+<code>/temp/data/</code> directory.
+To do so, first select the <b>Add Policy Entry</b> button
+in the main "Policy Tool" window.
+
+<p>This brings up a "Policy Entry" dialog box:
+
+<p>
+<center><IMG SRC="images/AddEntryBlank.gif" ALT="Blank Add Entry Dialog">
+</center>
+
+<p>Using this dialog box, type the file URL
+
+<pre>
+  file:/tests/
+</pre>
+
+into the <b>CodeBase</b> text box.
+
+<p>Leave the <b>SignedBy</b> text box blank, since you aren't requiring the code
+to be signed.
+
+<p>To add the permission, select the <b>Add Permission</b> button.
+This brings up the "Permissions" dialog box:
+
+<p>
+<center><IMG SRC="images/AddPermBlank.gif" ALT="Blank Add Permissions Dialog">
+</center>
+
+<p>To add the permission:
+
+<ol>
+
+<li>Select "File Permission" from the "Permission:" drop-down list. The
+complete permission type name (java.io.FilePermission) now appears in the 
+text box to the right of the drop-down list.<p>
+
+<li>Type the following in the text box to the right of the list labeled
+"Target Name:":
+
+<pre>
+  /temp/data/mydata
+</pre>
+
+<li>Specify read access by selecting "read" from the 
+"Actions:" drop-down list.
+
+</ol>
+
+Now the "Permission" dialog box looks like the following:
+
+<p>
+<center><IMG SRC="images/sAddFilePerm1.gif" ALT="First File Permission">
+</center>
+
+<p>When you are done specifying the permission information, select the
+<b>OK</b> button. The new permission appears in a line
+in the "Policy Entry" dialog. 
+
+<p>
+<center><IMG SRC="images/sAddEntry1.gif" ALT="First Policy Entry">
+</center>
+
+<p>You are now done specifying this policy entry, so select the <b>Done</b> 
+button. The "Policy Tool" window now contains a line
+representing the policy entry. The line just contains the CodeBase value:
+
+<p>
+<center><IMG SRC="images/sptOneCB.gif" ALT="Policy Tool with one CodeBase">
+</center>
+
+</blockquote>
+
+
+<H3><a name = "ExSpecifyKeystore">Specifying a Keystore</a></H3>
+
+<blockquote>
+
+Suppose you also want to grant any code from the URL
+"http://java.sun.com/" and 
+signed by the alias "duke"
+read access to all files in the <code>/tmp/</code> directory.
+Suppose you also want to give such code permission
+to initiate outgoing socket connections to any hosts. 
+You need to do two things:
+
+<ol>
+
+<li>Specify the keystore containing the alias, and<p>
+
+<li><a href = "#ExAddSignedByEntry">Create the policy entry</a> 
+granting the permissions.
+
+</ol>
+
+To specify the keystore containing the key information for
+the aliases specified in any <b>SignedBy</b> parts of policy entries,
+select the <b>Change Keystore</b> command in the 
+<b>Edit</b> menu of the main "Policy Tool" window.
+
+<p>This brings up a dialog box in which you specify the new
+keystore URL and optionally the keystore type.
+
+<p>As an example, to specify the keystore named "mykeystore" in the
+<code>/tests/</code> directory, type the following 
+<code>file:</code> URL into the text box labeled "New KeyStore URL":
+
+<pre>
+  file:/tests/mykeystore
+</pre>
+
+If the keystore type is the default type, as specified by the
+"keystore.type" property value in the security properties
+file, you don't need to type a "New KeyStore Type" value.
+The default value of that property is "JKS" 
+(the proprietary keystore type supported by Sun Microsystems).
+
+<p>To specify the keystore type, type its value 
+into the text box labeled "New KeyStore Type."
+For example, to indicate that the keystore type is "JKS" 
+type
+
+<pre>
+  JKS
+</pre>
+
+The result is:
+<p>
+<center><IMG SRC="images/sAddKeystore.gif" ALT="Keystore">
+</center>
+
+<p>When you are done specifying the keystore URL and type, select <b>OK</b>.
+The text box labeled "Keystore:" is now 
+filled in with the URL and type.
+ 
+<p>Next, you need to specify the policy entry:
+
+</blockquote>
+
+
+<H3><a name="ExAddSignedByEntry">Adding a Policy Entry with a SignedBy alias</a></H3>
+
+<blockquote>
+
+Select the <b>Add Policy Entry</b> button
+in the main "Policy Tool" window.
+This brings up the "Policy Entry" dialog box.
+Type the following
+into the the <b>CodeBase</b> text box:
+
+<pre>
+  http://java.sun.com/*
+</pre>
+
+The "*" indicates that both class and JAR files in the specified directory
+are to be considered to match this <b>CodeBase</b>.
+
+<p>Now, type the following alias into the <b>SignedBy</b> text box:
+
+<pre>
+  duke
+</pre>
+
+<p>To add the first permission, select the <b>Add Permission</b> button.
+This brings up the "Permissions" dialog box. Do the following
+
+<ol>
+
+<li>Select "File Permission" from the "Permission:" drop-down list. The
+complete permission type name (java.io.FilePermission) now appears in the 
+text box to the right of the drop-down list.<p>
+
+<li>Type the following in the text box to the right of the list labeled
+"Target Name:" to specify all files in the <code>/tmp/</code> directory:
+
+<pre>
+  /tmp/*
+</pre>
+
+<li>Specify read access by selecting "read" from the 
+"Actions:" drop-down list.
+
+</ol>
+
+Now the "Permissions" dialog box looks like the following:
+
+<p>
+<center><IMG SRC="images/sAddFilePerm2.gif" ALT="Second File Permission">
+</center>
+
+<p>Select the
+<b>OK</b> button. The new permission appears in a line
+in the "Policy Entry" dialog.
+
+<p>Now you need to add the other permission. Select the <b>Add Permission</b> button.
+In the "Permissions" dialog box, do the following
+
+<ol>
+
+<li>Select "Socket Permission" from the "Permission:" drop-down list. The
+complete permission type name (java.net.SocketPermission) now appears in the 
+text box to the right of the drop-down list.<p>
+
+<li>Type the following in the text box to the right of the list labeled
+"Target Name:" to specify all hosts:
+
+<pre>
+  *
+</pre>
+
+<li>Specify permission to make connections by selecting "connect" from the 
+"Actions:" drop-down list.
+
+</ol>
+
+Now the "Permissions" dialog box looks like the following:
+
+<p>
+<center><IMG SRC="images/AddSocketPerm.gif" ALT="Socket Permission">
+</center>
+
+<p>Select the
+<b>OK</b> button. The new permission appears in a line
+in the "Policy Entry" dialog.
+
+<p>
+<center><IMG SRC="images/sAddEntry2.gif" 
+ALT="Policy Entry with Two Permissions">
+</center>
+
+<p>
+
+You are now done specifying this policy entry, so select the <b>Done</b> 
+button in the "Policy Entry" dialog. The "Policy Tool" window now contains a line
+representing the policy entry, showing the CodeBase and
+SignedBy values.
+
+<p>
+<center><IMG SRC="images/sptTwoEntries.gif" 
+ALT="Policy Tool with Two Entries">
+</center>
+
+</blockquote>
+
+
+<H3><a name="ExSaveFile">Saving the User Policy File</a></H3>
+
+<blockquote>
+
+Let's assume you want to save the policy file you've been creating
+with the default name (.java.policy) in the default location 
+(your home directory).
+
+<p>To save the user policy file, select the <b>Save As</b> command from the
+<b>File</b> menu. This brings up the Save As dialog box.
+
+<p>Navigate the directory structure to get to your home directory. Type 
+
+<pre>
+  .java.policy
+</pre>
+
+(note the initial period) as
+the file name, then select the <b>OK</b> button. The policy file is
+now saved, and its name and path are shown in the text box labeled 
+"Policy File".
+
+</blockquote>
+
+
+<H3><a name="ExExit">Exiting Policy Tool</a></H3>
+
+<blockquote>
+
+When you want to exit <b>Policy Tool</b>, do so by selecting the
+<b>Exit</b> command from the <b>File</b> menu.
+
+</blockquote>
+
+
+</blockquote>
+
+
+
+
+<h2><a name="SeeAlso">See Also</a></h2>
+
+<blockquote>
+
+<ul>
+
+<li><a href="../../guide/security/permissions.html">Permissions in the Java 2 Platform</a><p>
+
+<li><a href="../../guide/security/PolicyFiles.html">
+Default Policy Information and Policy File Syntax</a><p>
+
+<li><a href="keytool.html">keytool</a> tool documentation<p>
+
+<li><a href="../../guide/security/spec/security-spec.doc.html">Security Architecture Specification</a><p>
+
+<li>The <a href="http://java.sun.com/docs/books/tutorial/security1.2/index.html">
+<b>Security</b></a> trail of the
+<a href="http://java.sun.com/docs/books/tutorial/trailmap.html">
+<b>Java Tutorial</b></a> for examples of the use of the security tools including <b>Policy Tool</b>
+
+
+</ul>
+
+</blockquote>
+
+</body>
+</html>
+
+
+
+
+
+

@@ -1,0 +1,746 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.51 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <title>RMI-IIOP Programmer's Guide</title>
+</head>
+<body text="#000000" bgcolor="#FFFFFF">
+&nbsp;
+<table BORDER=0 WIDTH="100%" >
+<TR>
+<TD WIDTH=30>
+   <IMG SRC="../../images/javalogo52x88.gif" ALT="Java" BORDER=0 WIDTH=52 HEIGHT=88>
+</TD>
+<td ALIGN=CENTER>
+<h1>
+RMI-IIOP Programmer's Guide</h1>
+<br>&nbsp;
+<p><font size=-2>Copyright &copy; 1999 Sun Microsystems, Inc.&nbsp;</font>
+<br><font size=-2>Copyright &copy; 1999 International Business Machines
+Corporation. All Rights Reserved.&nbsp;</font></td>
+<TD ALIGN=RIGHT VALIGN=TOP>
+   <a href="index.html"><FONT SIZE="-1">Documentation Contents</FONT></a> 
+</TD>
+</tr>
+</table>
+
+<hr size=3 noshade>
+<h2>
+Table of Contents</h2>
+
+<ul>
+<li>
+<a href="#Intro">Introduction</a></li>
+
+<li>
+<a href="#Resources">Background Reading</a></li>
+
+<li>
+<a href="#WhatIs">What is RMI-IIOP?</a></li>
+
+<li>
+<a href="#rmic">The New rmic Compiler</a></li>
+
+<li>
+<a href="#idlj">The New idlj Compiler</a></li>
+
+<li>
+<a href="#Convert">How to Make RMI Programs Use IIOP</a></li>
+
+<li>
+<a href="#Restrictions">Restrictions When Running RMI Programs Over IIOP</a></li>
+
+<li>
+<a href="#HelloWorld">Converting the RMI Hello World Program to RMI-IIOP</a></li>
+
+<li>
+<a href="#OtherThings">Other Things You Should Know</a></li>
+</ul>
+<!-- RMI-IIOP INTRODUCTION -->
+<h2>
+<a NAME="Intro"></a>Introduction</h2>
+This document will teach you how to write Java Remote Method Invocation
+(RMI) programs that can access remote objects by using the Internet Inter-ORB
+Protocol (IIOP). By making your RMI programs conform to a small set of
+restrictions, your RMI programs can access CORBA objects. RMI-IIOP gives
+you RMI ease-of-use coupled with CORBA/IIOP language interoperability.
+This document is for RMI programmers who want to write RMI-IIOP programs,
+or convert existing RMI programs to RMI-IIOP.&nbsp;<!-- BACKGROUND READING-->
+<h2>
+<a NAME="Resources"></a>Background Reading</h2>
+Here are some sites to get you up to speed with this technology:
+<ul>
+<li>
+The <a href="http://java.sun.com/products/rmi-iiop/index.html">RMI-IIOP
+home page</a> contains links to RMI-IIOP documentation, sample code, specifications,
+news, other related web sites, and more. Check it out!</li>
+
+<li>
+The <a href="http://java.sun.com/pr/1997/june/statement970626-01.faq.html">RMI-IIOP
+FAQ page</a> answers many basic RMI-IIOP questions.</li>
+
+<li>
+The <a href="http://java.sun.com/products/jdk/rmi/index.html">Java RMI</a>
+home page contains links to RMI documentation, examples, specification,
+and more. Make sure you read this.</li>
+
+<li>
+The <A HREF="http://java.sun.com/docs/books/tutorial/rmi">RMI trail</A> in the Java Tutorial.</li>
+
+<li>
+The <a href="../../api/java/rmi/package-summary.html">RMI API 
+documentation</a>.</li>
+
+<li>
+The <a href="../idl/index.html">Java
+IDL</a> web page will familiarize you with Sun's CORBA/IIOP implementation.</li>
+
+<li>
+The <A HREF="http://java.sun.com/docs/books/tutorial/idl">Java IDL trail</a> in the Java Tutorial.</li>
+<li>
+The <a href="http://www.omg.org/docs/ptc/99-03-09.pdf">Java Language
+to IDL Mapping</a> document is a detailed technical specification of RMI-IIOP.</li>
+</ul>
+<p><!-- WHAT IS RMI-IIOP? --></p>
+<h2><a NAME="WhatIs"></a>What is RMI-IIOP?</h2>
+
+<h3>RMI</h3>
+
+With RMI you can write distributed programs in the Java programming language.
+RMI is easy to use, you don't need to learn a separate interface definition
+language (IDL), and you get Java's inherent "write once, run anywhere"
+benefit. Clients, remote interfaces, and servers are written entirely in
+Java. RMI uses the Java Remote Method Protocol (JRMP) for remote Java object
+comunication. To get a quick introduction to writing RMI programs, see
+the <a href="../rmi/index.html">RMI
+Tutorial</a> web page. That document describes writing a simple "Hello
+World" RMI program.
+<p>RMI lacks interoperability with other languages, and, because it uses
+a non-standard communication protocol, cannot communicate with CORBA objects.
+<h3>
+IIOP, CORBA, and Java IDL</h3>
+IIOP is CORBA's communication protocol. It defines the way the bits are
+sent over a wire between CORBA clients and servers. CORBA is a standard
+distributed object architecture developed by the Object Management Group
+(OMG). Interfaces to remote objects are described in a platform-neutral
+interface definition language (IDL). Mappings from IDL to specific programming
+languages are implemented, binding the language to CORBA/IIOP.
+<p>The JDK's CORBA/IIOP implementation is known as Java IDL. Along with
+the <tt>idltojava</tt> compiler, Java IDL can be used to define, implement,
+and access CORBA objects from the Java programming language.
+<p>The <a href="../idl/index.html">Java
+IDL</a> web page gives you a good, Java-centric view of CORBA/IIOP programming.
+To get a quick introduction to writing Java IDL programs, see the <a href="../idl/GShome.html">Getting
+Started: Hello World</a> web page.
+<h3>
+RMI-IIOP</h3>
+Previously Java programmers had to choose between RMI and CORBA/IIOP (Java
+IDL) for distributed programming solutions. Now, by adhering to a few restrictions,
+RMI objects can use the IIOP protocol, and communicate with CORBA objects.
+This solution is known as RMI-IIOP. RMI-IIOP combines RMI-style ease of
+use with CORBA cross-language interoperability.
+<h2>
+<a NAME="rmic"></a>The New rmic Compiler</h2>
+The RMI-IIOP software comes with a new <tt>rmic</tt> compiler that can
+generate IIOP stubs and ties, and emit IDL.
+<p>Here are the new <tt>rmic</tt> flags:
+<blockquote><tt>-iiop</tt> -- Generates IIOP stubs/ties.
+<br><tt>-idl</tt> -- Generates IDL.
+<br><tt>-noValueMethods</tt> -- Stops generation of IDL for methods and
+constructors within IDL <tt>valuetype</tt>s.
+<br><tt>-always</tt> -- Forces re-generation even when existing stubs/ties/idl
+are newer than the input class.&nbsp; Only valid when -iiop and/or -idl
+flags are present.
+<br><tt>-factory</tt> -- Uses factory keyword.
+<br><tt>-idlModule &lt;fromJavaPackage&lt;.class>> &lt;toIDLModule></tt>
+-- Specifies IDLEntity package mapping.&nbsp; For example:&nbsp; <tt>-idlModule
+foo.bar my::real::idlmod</tt>
+<br><tt>-idlFile &lt;fromJavaPackage&lt;.class>> &lt;toIDLFile></tt> --
+Specifies IDLEntity file mapping.&nbsp; For example: <tt>-idlFile test.pkg.X
+TEST16.idl</tt></blockquote>
+The new <tt>rmic</tt> behaves differently than previous versions when no
+output directory (<tt>-d</tt> option) is specified. In the JDK, the stub
+and tie files are always written into the current working directory when
+no <tt>-d</tt> option is specifed, regardless of package. The new
+<tt>rmic</tt>
+writes the files into subdirectories of the current directory that correspond
+to their packages.
+<h3>
+The -iiop Flag</h3>
+Using <tt>rmic</tt> with the <tt>-iiop</tt> option generates stub and tie
+classes. A stub class is a local proxy for a remote object. Stub classes
+are used by clients to send calls to a server. Each remote interface requires
+a stub class, which implements that remote interface. The client's reference
+to a remote object is actually a reference to a stub. Tie classes are used
+on the server side to process incoming calls, and dispatch the calls to
+the proper implementation class. Each implementation class requires a tie
+class.
+<p>Stub classes are also generated for abstract interfaces. An abstract
+interface is an interface that does not extend <tt>java.rmi.Remote</tt>,
+but whose methods all throw either <tt>java.rmi.RemoteException</tt> or
+a superclass of <tt>java.rmi.RemoteException</tt>. Interfaces that do not
+extend
+<tt>java.rmi.Remote</tt> and have no methods are also abstract interfaces.
+<h3>
+The -idl Flag</h3>
+Using <tt>rmic</tt> with the <tt>-idl</tt> option generates OMG IDL for
+the classes specified and any classes referenced.
+<br>IDL provides a purely declarative, programming language independent
+means for specifying the API for an object.
+<br>The IDL is used as a specification for methods and data that can be
+written in and invoked from any language that provides CORBA bindings.
+This includes Java and C++ among others. See the <a href="http://www.omg.org/docs/ptc/99-03-09.pdf">Java
+Language to IDL Mapping</a> (OMG) document for a complete description.
+<p><b>Note:</b> The generated IDL can only be compiled using an IDL compiler
+that supports the CORBA 2.3 extensions to IDL.
+<h3>
+The -noValueMethods Flag</h3>
+The <tt>-noValueMethods</tt> option, when used with <tt>-idl</tt>, ensures
+that methods and initializers are <i>not</i> included in <tt>valuetype</tt>s
+emitted during IDL Generation. These are optional for <tt>valuetype</tt>s
+and are otherwise omitted.
+<p>See the RMIC tool page (<a href="../../tooldocs/solaris/rmic.html">Solaris Version</a>/<a href="../../tooldocs/win32/rmic.html">Windows version</a>) for a complete
+<tt>rmic</tt>
+description.
+<h2>
+<a NAME="idlj"></a>The New idlj Compiler</h2>
+The RMI-IIOP software includes a new IDL-to-Java compiler. This compiler
+supports the new CORBA Objects By Value feature, which is required for
+interoperation with RMI-IIOP. It is written in Java, and so can run on
+any platform. See the
+<a href="toJavaPortableUG.html">IDL-to-Java Compiler
+User's Guide</a> for details of how to use this compiler.
+<p><!-- The RMI/IIOP COOKBOOK -->
+<h2>
+<a NAME="Convert"></a>How to Make RMI Programs Use IIOP</h2>
+The following steps are a general guide to converting an RMI application
+to RMI-IIOP.
+<ol>
+<li>
+<b>If you are using the RMI registry</b> for naming services, you need
+to switch to JNDI with the <tt>CosNaming</tt> plugin. You need to do the
+following:</li>
+
+<ol type=a>
+<li>
+In both your client and server code, you need to create an <tt>InitialContext</tt>
+for JNDI using the following code:</li>
+
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; import javax.naming.*;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Context initialNamingContext = new InitialContext();</pre>
+
+<li>
+Modify all uses of RMI registry <tt>lookup()</tt> and <tt>bind()</tt> to
+use JNDI <tt>lookup()</tt> and <tt>bind()</tt>instead. For example, instead
+of your RMI server using:</li>
+
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; import java.rmi.*;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Naming.rebind("MyObject", myObj);</pre>
+use:
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; import javax.naming.*;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; initialNamingContext.rebind("MyObject", myObj);</pre>
+
+<li>
+If the client is an applet, the client applet needs to pass <tt>this</tt>
+to the JNDI <tt>CosNaming</tt> plugin. Replace the above code with the
+following:</li>
+
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; import java.util.*;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; import javax.naming.*;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Hashtable env = new Hashtable();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; env.put("java.naming.applet", this);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Context ic = new InitialContext(env);</pre>
+</ol>
+
+<li>
+<b>If you are not using the RMI registry</b> for naming services, you have
+some other way of bootstrapping your initial remote object reference. For
+example, your server code may be using Java serialization to write an RMI
+object reference to an <tt>ObjectOutputStream</tt> and passing this to
+your client code for deserializing into an RMI stub.</li>
+
+<p>On the server side, use the <tt>PortableRemoteObject.toStub()</tt>
+call to obtain a stub, then use <tt>writeObject()</tt> to serialize this
+stub to an <tt>ObjectOutputStream</tt>. The code to do this looks something
+like:
+<blockquote>
+<pre>org.omg.CORBA.ORB myORB = org.omg.CORBA.ORB.init(new String[0], null);
+Wombat myWombat = new WombatImpl();
+javax.rmi.CORBA.Stub myStub = (javax.rmi.CORBA.Stub)PortableRemoteObject.toStub(myWombat);
+myStub.connect(myORB);
+// myWombat is now connected to myORB.&nbsp; To connect other objects to the
+// same ORB, use PortableRemoteObject.connect(nextWombat, myWombat);
+FileOutputStream myFile = new FileOutputStream("t.tmp");
+ObjectOutputStream myStream = new ObjectOutputStream(myFile);
+myStream.writeObject(myStub);</pre>
+</blockquote>
+On the client side, use <tt>readObject()</tt> to deserialize a remote reference
+to the object from an <tt>ObjectInputStream</tt>, with code like:
+<blockquote>
+<pre>FileInputStream myFile = new FileInputStream("t.tmp");
+ObjectInputStream myStream = new ObjectInputStream(myFile);
+Wombat myWombat = (Wombat)myStream.readObject();
+org.omg.CORBA.ORB myORB = org.omg.CORBA.ORB.init(new String[0], null);
+((javax.rmi.CORBA.Stub)myWombat).connect(myORB);
+// myWombat is now connected to myORB.&nbsp; To connect other objects to the
+// same ORB, use PortableRemoteObject.connect(nextWombat, myWombat);</pre>
+</blockquote>
+
+<li>
+Either change your remote implementation classes to inherit from <tt>javax.rmi.PortableRemoteObject</tt>,
+or explicitly export implementation objects after creation by calling <tt>PortableRemoteObject.exportObject()</tt>.</li>
+
+<br>&nbsp;
+<li>
+Change all the places in your code where there is a Java cast of a remote
+interface to use <tt>javax.rmi.PortableRemoteObject.narrow()</tt>.</li>
+
+<br>&nbsp;
+<li>
+Don't depend on distributed garbage collection or use any of the RMI DGC
+facilities. Use <tt>PortableRemoteObject.unexportObject()</tt> to unexport
+objects that are no longer in use. This has no effect for objects exported
+to JRMP on 1.1.6.</li>
+
+<br>&nbsp;
+<li>
+Regenerate the RMI stubs and ties using the <tt>rmic</tt> command with
+the <tt>-iiop</tt> option. This will produce stub and tie files with the
+following names:</li>
+
+<pre>&nbsp;&nbsp;&nbsp;&nbsp; _&lt;implementionName>_Tie.class
+&nbsp;&nbsp;&nbsp;&nbsp; _&lt;interfaceName>_Stub.class</pre>
+
+<li>
+Before starting the server, start the <tt>CosNaming</tt> server (in its
+own process) using the following command:</li>
+
+<pre>&nbsp;&nbsp;&nbsp;&nbsp; tnameserv</pre>
+This uses the default port number of 900. If you want to use a different
+port number (for example, port 1050), use the ORBInitialPort modifier:
+<pre>&nbsp;&nbsp;&nbsp;&nbsp; tnameserv -ORBInitialPort 1050</pre>
+
+<li>
+When starting client and server applications, specify the following system
+properties:</li>
+
+<pre>&nbsp;&nbsp;&nbsp;&nbsp; java -Djava.naming.factory.initial=com.sun.jndi.cosnaming.CNCtxFactory
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -Djava.naming.provider.url=iiop://&lt;hostname>:900
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;appl_class></pre>
+This example uses the default name service port number of 900. If you specified
+a different port in step 7, you need to use the same port number in the
+provider URL here. The &lt;hostname> in the provider URL is the host name
+that was used to start the <tt>CosNaming</tt> server in step 7.<br><br>
+
+
+<li>
+If the client is an applet, specify the following properties in the applet
+tag:</li>
+
+<pre>&nbsp;&nbsp;&nbsp;&nbsp; java.naming.factory.initial=com.sun.jndi.cosnaming.CNCtxFactory
+&nbsp;&nbsp;&nbsp;&nbsp; java.naming.provider.url=iiop://&lt;hostname>:900</pre>
+This example uses the default name service port number of 900. If you specified
+a different port in step 7, you need to use the same port number in the
+provider URL here. The &lt;hostname> in the provider URL is the host name
+that was used to start the <tt>CosNaming</tt> server in step 7.</ol>
+
+<h2>
+<a NAME="Restrictions"></a>Restrictions When Running RMI Programs Over
+IIOP</h2>
+To make existing RMI programs run over IIOP, you need to observe the following
+restrictions.
+<ol>
+<li>
+Make sure all constant definitions in remote interfaces are of primitive
+types or String and evaluated at compile time.</li>
+
+<li>
+Don't use Java names that conflict with IDL mangled names generated by
+the Java to IDL mapping rules. See section 28.3.2 of the <i>Java Language
+to IDL Mapping</i> specification for the Java to IDL name mapping rules.</li>
+
+<li>
+Don't inherit the same method name into a remote interface more than once
+from different base remote interfaces.</li>
+
+<li>
+Be careful when using names that differ only in case. The use of a type
+name and a variable of that type whose name differs from the type name
+only in case is supported. Most other combinations of names that differ
+only in case are not supported.</li>
+
+<li>
+Don't depend on runtime sharing of object references to be preserved exactly
+when transmitting object references across IIOP. Runtime sharing of other
+objects is preserved correctly.</li>
+
+<li>
+Don't use the following features of RMI:</li>
+
+<ul>
+<li>
+<tt>RMISocketFactory</tt></li>
+
+<li>
+<tt>UnicastRemoteObject</tt></li>
+
+<li>
+<tt>Unreferenced</tt></li>
+
+<li>
+The DGC interfaces</li>
+</ul>
+</ol>
+
+<h2>
+<a NAME="HelloWorld"></a>Converting the RMI Hello World Program to RMI-IIOP</h2>
+In the following example you'll convert the <a href="../rmi/getstart.doc.html">RMI
+Hello World example</a> to RMI-IIOP. You will also convert RMI Hello World
+applet client to an application.
+<p>Here's the RMI Hello World players:
+<ul>
+<li>
+<tt>HelloImpl.java</tt> is the RMI server.</li>
+
+<li>
+<tt>Hello.java</tt> is the remote interface implemented by <tt>HelloImpl</tt>.</li>
+
+<li>
+<tt>HelloApplet.java</tt> is the RMI client.</li>
+
+<li>
+<tt>Hello.html</tt> loads <tt>HelloApplet</tt>.</li>
+</ul>
+The RMI Hello World example uses a development directory of <tt>$HOME/jdk1.1/mysrc/example/hello</tt>
+and a deployment directory of <tt>$HOME/public_html/codebase</tt>, where
+<tt>$HOME</tt>
+is your home directory. Though you don't have to, the following example
+assumes that you use these directories.
+<p>If you haven't already, go through the RMI Hello World example. Once
+you've completed this example, take the following steps.
+<p><b>Adapt the Implementation Class (Server) to RMI-IIOP:</b>
+<ol>
+<li>
+Import <tt>javax.rmi.server.PortableRemoteObject</tt> rather than <tt>javax.rmi.server.UnicastRemoteObject</tt>:</li>
+
+<pre>&nbsp;&nbsp;&nbsp;&nbsp; //Goodbye
+&nbsp;&nbsp;&nbsp;&nbsp; //import java.rmi.server.UnicastRemoteObject;
+
+&nbsp;&nbsp;&nbsp;&nbsp; //Hello
+&nbsp;&nbsp;&nbsp;&nbsp; import javax.rmi.PortableRemoteObject;</pre>
+
+<li>
+Import the JNDI naming package:</li>
+
+<pre>&nbsp;&nbsp;&nbsp;&nbsp; import javax.naming.*;</pre>
+
+<li>
+Make <tt>HelloImpl</tt> extend <tt>PortableRemoteObject</tt> rather than
+<tt>UnicastRemoteObject</tt>:</li>
+
+<pre>&nbsp;&nbsp;&nbsp;&nbsp; public class HelloImpl
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; extends PortableRemoteObject
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...</pre>
+
+<li>
+Use the JNDI registry, rather than the RMI registry, by adding the following
+code:</li>
+
+<pre>&nbsp;&nbsp;&nbsp;&nbsp; Context initialNamingContext = new InitialContext();</pre>
+This step provides an initial JNDI naming context (and will also need to
+be done in the client).
+<br>&nbsp;
+<li>
+Use JNDI <tt>rebind()</tt>, rather than the RMI version:</li>
+
+<p>Old code:
+<pre>&nbsp;&nbsp;&nbsp;&nbsp; HelloImpl obj = new HelloImpl("HelloServer");
+&nbsp;&nbsp;&nbsp;&nbsp; Naming.rebind("HelloServer", obj);</pre>
+New code:
+<pre>&nbsp;&nbsp;&nbsp;&nbsp; HelloImpl obj = new HelloImpl("HelloServer"); //unchanged
+&nbsp;&nbsp;&nbsp;&nbsp; initialNamingContext.rebind("HelloServer",obj);</pre>
+</ol>
+Here are the changes you need to make to <tt>HelloApplet.java</tt>:
+<ol>
+<li>
+Import the <tt>PortableRemoteObject</tt> package:</li>
+
+<pre>&nbsp;&nbsp;&nbsp;&nbsp; import javax.rmi.PortableRemoteObject;</pre>
+<!-- ORIGINAL STEP TWO
+ <li><b>(Current Release)</b> Create a JNDI (<code>javax.naming</code>)
+     initial naming context, and start the ORB explicitly:
+     <pre>
+     import java.util.*;
+     import javax.naming.*;
+     import org.omg.CORBA.ORB;
+     ...
+     Hashtable env = new Hashtable();
+     ORB orb = ORB.init(this, null);
+     env.put("java.naming.corba.orb", orb);
+     //The next two values will be specifiable
+     //By applet tag params in future releases
+     env.put("java.naming.factory.initial",
+             "com.sun.jndi.cosnaming.CNCtxFactory");
+     env.put("java.naming.provider.url", "iiop://&lt;hostname&gt;:900");
+     Context initialNamingContext = new InitialContext(env);
+     </pre>
+     <b>(Future Releases)</b> Create a JNDI initial naming context,
+     and pass <code>this</code> to the <code>CosNaming</code>
+     plugin:
+     <pre>
+     import java.util.*;
+     import javax.naming.*;
+     ...
+     Hashtable env = new Hashtable();
+     env.put("java.naming.corba.applet", this);
+     Context ic = new InitialContext(env);
+     </pre>
+--><!-- NEW STEP TWO -->
+<li>
+Create a JNDI initial naming context, and pass this to the CosNaming plugin:</li>
+
+<pre>&nbsp;&nbsp;&nbsp;&nbsp; import java.util.*;
+&nbsp;&nbsp;&nbsp;&nbsp; import javax.naming.*;
+&nbsp;&nbsp;&nbsp;&nbsp; ...
+&nbsp;&nbsp;&nbsp;&nbsp; Hashtable env = new Hashtable();
+&nbsp;&nbsp;&nbsp;&nbsp; env.put("java.naming.corba.applet", this);
+&nbsp;&nbsp;&nbsp;&nbsp; //The next two values will be specifiable
+&nbsp;&nbsp;&nbsp;&nbsp; //By applet tag params in future releases
+&nbsp;&nbsp;&nbsp;&nbsp; env.put("java.naming.factory.initial",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "com.sun.jndi.cosnaming.CNCtxFactory");
+&nbsp;&nbsp;&nbsp;&nbsp; env.put("java.naming.provider.url", "iiop://&lt;hostname>:900");
+&nbsp;&nbsp;&nbsp;&nbsp; Context ic = new InitialContext(env);</pre>
+
+<li>
+Use JNDI <tt>lookup()</tt>, rather than the RMI version, <i>AND</i> replace
+the Java remote interface cast with a call to <tt>javax.rmi.PortableRemoteObject.narrow()</tt>:</li>
+
+<p>Old code:
+<pre>&nbsp;&nbsp;&nbsp;&nbsp; import java.rmi.*;
+&nbsp;&nbsp;&nbsp;&nbsp; ...
+&nbsp;&nbsp;&nbsp;&nbsp; Hello obj = (Hello)Naming.lookup("//" +
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; getCodeBase().getHost() + "/HelloServer");</pre>
+New code:
+<pre>&nbsp;&nbsp;&nbsp;&nbsp; import javax.naming.*;
+&nbsp;&nbsp;&nbsp;&nbsp; ...
+&nbsp;&nbsp;&nbsp;&nbsp; Hello obj =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Hello)PortableRemoteObject.narrow(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; initialNamingContext.lookup("HelloServer"),
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Hello.class);</pre>
+</ol>
+<b>Specify Naming Properties in the Applet Tag</b>
+<p>Add the following properties to <tt>Hello.html</tt> applet tag:
+<blockquote>
+<pre>&lt;param name="java.naming.factory.initial" value="com.sun.jndi.cosnaming.CNCtxFactory">
+&lt;param name="java.naming.provider.url" value="iiop://&lt;hostname>:900"></pre>
+</blockquote>
+<p><b>Compile the Java Source Files</b>
+<blockquote>
+<pre>javac -d $HOME/public_html/codebase Hello.java HelloImpl.java HelloApplet.java</pre>
+</blockquote>
+<b>Generate the Stub and Tie Classes</b>
+<p>Make sure that your search path finds the <tt>rmic</tt> command in the
+<tt>$RMI_IIOP_HOME/bin</tt>
+directory.
+<blockquote>
+<pre>rmic -iiop -d $HOME/public_html/codebase examples.hello.HelloImpl</pre>
+</blockquote>
+This will generate the files <tt>Hello_Stub.class</tt> (the client-side
+proxy) and <tt>HelloImpl_Tie.class</tt> (the server-side proxy) in the
+<tt>$HOME/public_html/codebase/examples/hello</tt>
+directory.
+<p><b>Start the JNDI Name Server</b>
+<blockquote>
+<pre>tnameserv</pre>
+</blockquote>
+This starts the JNDI name server with the default port of 900. If you want
+to use a different port number (Solaris users must use a port above 1024),
+use a command line such as:
+<blockquote>
+<pre>tnameserv -ORBInitialPort 1050</pre>
+</blockquote>
+<p><b>Start the Hello Server</b>
+<blockquote>
+<pre>java -Djava.naming.factory.initial=com.sun.jndi.cosnaming.CNCtxFactory
+&nbsp;&nbsp;&nbsp;&nbsp; -Djava.naming.provider.url=iiop://&lt;hostname>:900
+&nbsp;&nbsp;&nbsp;&nbsp; examples.hello.HelloImpl</pre>
+</blockquote>
+<p><b>Start the Hello Client</b>
+<p>Use <tt>appletviewer</tt> to load <tt>Hello.html</tt>.
+<blockquote>
+<pre>appletviewer Hello.html</pre>
+</blockquote>
+As a reminder, here's what <tt>Hello.html</tt> looks like:
+<blockquote>
+<pre>&lt;html>
+&lt;title>Hello World&lt;/title>
+&lt;center> &lt;h1>Hello World&lt;/h1> &lt;/center>
+
+The message from the HelloServer is:
+&lt;p>
+&lt;applet
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; code="examples.hello.HelloApplet"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; width=500 height=120>
+
+&lt;/applet>
+&lt;/HTML></pre>
+</blockquote>
+If all goes according to plan, <tt>appletviewer</tt> will echo the <tt>HelloServer</tt>'s
+message.
+<h2>
+Converting the Client Applet to an Application</h2>
+Here's how to change the applet client to an application client:
+<p><b>Adapt the Client Application to RMI-IIOP:</b>
+<ol>
+<li>
+Convert <tt>HelloApplet</tt> to an application:</li>
+
+<ul>
+<li>
+Copy <tt>HelloApplet.java</tt> (the original RMI version) to <tt>HelloApp.java</tt>.</li>
+
+<li>
+Change the class name (for example, to <tt>HelloApp</tt>).</li>
+
+<li>
+Remove the <tt>extends Applet</tt> clause.</li>
+
+<li>
+Change <tt>init()</tt> to <tt>main()</tt>.</li>
+
+<li>
+Move <tt>String message ="";</tt>.</li>
+
+<li>
+Eliminate the <tt>paint()</tt> method.<br>
+<BR></li>
+</ul>
+
+<li>
+Use the JNDI registry, rather than the RMI registry:</li>
+
+<pre>&nbsp;&nbsp;&nbsp;&nbsp; import javax.naming.*;
+&nbsp;&nbsp;&nbsp;&nbsp; ...
+&nbsp;&nbsp;&nbsp;&nbsp; Context initialNamingContext = new InitialContext();</pre>
+
+<li>
+Use JNDI <tt>lookup()</tt>, rather than the RMI version, <i>AND</i> replace
+the Java remote interface cast with a call to <tt>javax.rmi.PortableRemoteObject.narrow()</tt>:</li>
+
+<p>Old code:
+<pre>&nbsp;&nbsp;&nbsp;&nbsp; import java.rmi.*;
+&nbsp;&nbsp;&nbsp;&nbsp; ...
+&nbsp;&nbsp;&nbsp;&nbsp; Hello obj = (Hello)Naming.lookup("//" +
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; getCodeBase().getHost() + "/HelloServer");</pre>
+New code:
+<pre>&nbsp;&nbsp;&nbsp;&nbsp; import javax.naming.*;
+&nbsp;&nbsp;&nbsp;&nbsp; ...
+&nbsp;&nbsp;&nbsp;&nbsp; Hello obj = (Hello)PortableRemoteObject.narrow(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; initialNamingContext.lookup("HelloServer"),
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Hello.class);</pre>
+The host and port will be designated when starting the server.</ol>
+<b>Compile the HelloApp Source</b>
+<blockquote>
+<pre>javac -d $HOME/public_html/codebase HelloApp.java</pre>
+</blockquote>
+You don't need to regenerate your stub and tie.
+<p><b>Start the Name Server and Hello Server</b>
+<p>Start these the same as in the applet example.
+<p><b>Start the Hello Application Client</b>
+<p>Here's how:
+<blockquote>
+<pre>java -Djava.naming.factory.initial=com.sun.jndi.cosnaming.CNCtxFactory
+&nbsp;&nbsp;&nbsp;&nbsp; -Djava.naming.provider.url=iiop://&lt;hostname>:900
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; examples.hello.HelloApp</pre>
+</blockquote>
+You'll see the server's message printed to the client console.
+<p><!-- OTHER THINGS YOU SHOULD KNOW -->
+<h2>
+<a NAME="OtherThings"></a>Other Things You Should Know</h2>
+
+<h3>
+Servers Need to be Thread Safe</h3>
+Since remote method invocation on the same remote object may execute concurrently,
+a remote object implementation needs to make sure its implementation is
+thread-safe.
+<h3>
+Hashtables with Identical Vector Keys</h3>
+When a hashtable containing identical vector keys is passed from a JDK
+1.1 RMI application to a Java 2 Platform-based RMI application (using either IIOP or
+JRMP), the identical keys are "coalesced" into one key because of Java 
+2 Platform deserialization rules. For example:
+<ol>
+<li>
+A 1.1 RMI application creates a hashtable.</li>
+
+<li>
+The application puts a value into the hashtable using a vector key A.</li>
+
+<li>
+The application puts another value into the hashtable using a vector key
+B. Vector B is structurally identical to vector A, but is a different object.</li>
+
+<li>
+The hashtable now has two entries with keys A and B.</li>
+
+<li>
+The 1.1 RMI application sends the hashtable, by value, to a 1.2 
+RMI application.</li>
+
+<li>
+The hashtable on the 1.2 side has one entry with key B. This is because
+the deserialization code for the hashtable uses 1.2 rules to populate it,
+and these rules compare vector keys by value instead of by object identity.</li>
+
+<li>
+If the hashtable is ever sent back across RMI from 1.2 to 1.1, it will
+still have one entry with key B.</li>
+</ol>
+
+<h3>
+Interoperating with Other ORBs</h3>
+RMI-IIOP will interoperate with other ORBS that support the CORBA 2.3 specification.
+It will not interoperate with older ORBs, because these are unable to handle
+the IIOP encodings for Objects By Value. This support is needed to send
+RMI value classes (including strings) over IIOP. At present, no other CORBA
+2.3 ORBs are commercially available, but it is expected that these will
+appear soon.
+<h3>
+Known Problems</h3>
+
+<ul>
+<li>
+JNDI 1.1 does not support <tt>java.naming.factory.initial=com.sun.jndi.cosnaming.CNCtxFactory</tt>
+as an Applet parameter.&nbsp; Instead, it must be explicitly passed as
+a property to the <font face="Courier New,Courier">InitialContext</font>
+constructor. This capability is supported in JNDI 1.2.</li>
+<p>
+<li>
+Port 900 is reserved on Solaris.&nbsp; You must use a port number greater
+than 1024 when running on Solaris.</li>
+<p>
+<li>
+On Solaris, you may experience an "out of file descriptors" problem when
+running RMI-IIOP applications.&nbsp; This may occur if you are using too
+many file descriptors, which can happen because each JAR file in the classpath
+consumes one file descriptor and the JDK 1.1.6 setup adds numerous JAR
+files to the classpath.&nbsp; Before running applications, set the file
+descriptor limit to a number greater than its default value of 64.&nbsp;
+For example, set the <font face="Courier New,Courier">ulimit</font> number
+to 90 or higher, as follows:</li>
+
+<pre>ulimit -n 90</pre>
+</ul>
+<hr>
+<center>RMI-IIOP FCS Release - version 1.00 -
+<br>Send your comments to
+<a href="mailto:rmi-iiop@sun.com">rmi-iiop@sun.com</a>.</center>
+
+<hr>
+</body>
+</html>

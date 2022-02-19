@@ -1,0 +1,176 @@
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Remote Method Invocation: 5 - Server Interfaces
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="rmiTOC.html">CONTENTS</a> | <a href="rmi-server.html">PREV</a>
+ | <a href="rmi-server3.html">NEXT</a> 
+<!-- /font --></td><td align=right><i>Java Remote Method Invocation</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="5112"><i>	5.1	</i> The <code>RemoteObject</code> Class
+</a></h2>
+
+
+<blockquote>
+<a name="4598"><!-- --></a>
+The <code>java.rmi.server.RemoteObject</code> class implements the <code>java.lang.Object</code> behavior for remote objects. The <code>hashCode</code> and <code>equals</code> methods are implemented to allow remote object references to be stored in hashtables and compared. The <code>equals</code> method returns <code>true</code> if two <code>Remote</code> objects refer to the same remote object. It compares the remote object references of the remote objects.<p>
+<a name="4599"><!-- --></a>
+The <code>toString</code> method returns a string describing the remote object. The contents and syntax of this string is implementation-specific and can vary.<p>
+<a name="4600"><!-- --></a>
+All of the other methods of <code>java.lang.Object</code> retain their original implementations.<p>
+</blockquote><blockquote><pre>package java.rmi.server;<p>
+public abstract class RemoteObject
+	implements java.rmi.Remote, java.io.Serializable
+{
+	protected transient RemoteRef ref;<p>
+	protected RemoteObject();
+	protected RemoteObject(RemoteRef ref);<p>
+	public RemoteRef getRef();
+	public static Remote toStub(java.rmi.Remote obj)
+		throws java.rmi.NoSuchObjectException;
+	public int hashCode();
+	public boolean equals(Object obj);
+	public String toString();
+}
+</pre></blockquote><blockquote>
+<a name="6967"><!-- --></a>
+Since the <code>RemoteObject</code> class is abstract, it cannot be instantiated. Therefore, one of <code>RemoteObject</code>&#39;s constructors must be called from a subclass implementation. The first <code>RemoteObject</code> constructor creates a <code>RemoteObject</code> with a <code>null</code> remote reference. The second <code>RemoteObject</code> constructor creates a <code>RemoteObject</code> with the given remote reference, <em>ref</em>.<p>
+<a name="6968"><!-- --></a>
+The <code>getRef</code> method returns the remote reference for the remote object.<p>
+<a name="6961"><!-- --></a>
+The <code>toStub</code> method returns a stub for the remote object, <em>obj</em>, passed as a parameter. This operation is only valid after the remote object implementation has been exported. If the stub for the remote object could not be found, then the method throws <code>NoSuchObjectException</code>.<p>
+</blockquote>
+<br>
+<h3>
+<a name="7908"><!-- --></a>
+<i>	5.1.1	</i> Object Methods Overridden by the <code>RemoteObject</code> Class
+</h3>
+
+<blockquote>
+<a name="7910"><!-- --></a>
+The default implementations in the <code>java.lang.Object</code> class for the <code>equals</code>, <code>hashCode</code>, and <code>toString</code> methods are not appropriate for remote objects. Therefore, the <code>RemoteObject</code> class provides implementations for these methods that have semantics more appropriate for remote objects.<p>
+</blockquote>
+<br>
+<h3>
+<a name="7911"><!-- --></a>
+<i>		</i> <code>equals</code> and <code>hashCode</code> methods
+</h3>
+
+<blockquote>
+<a name="7912"><!-- --></a>
+In order for a remote object to be used as a key in a hash table, the methods <code>equals</code> and <code>hashCode</code> need to be overridden in the remote object implementation. These methods are overridden by the class <code>java.rmi.server.RemoteObject</code>:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="7913"><!-- --></a>
+The <code>java.rmi.server.RemoteObject</code> class&#39;s implementation of the <code>equals</code> method determines whether two object references are equal, not whether the contents of the two objects are equal. This is because determining equality based on content requires a remote method invocation, and the signature of <code>equals</code> does not allow a remote exception to be thrown.
+</li>
+<li>
+<a name="7914"><!-- --></a>
+The <code>java.rmi.server.RemoteObject</code> class&#39;s implementation of the <code>hashCode</code> method returns the same value for all remote references that refer to the same underlying remote object (because references to the same object are considered equal).
+</li>
+</ul>
+</blockquote>
+
+<br>
+<h3>
+<a name="7915"><!-- --></a>
+<i>		</i> <code>toString</code> method
+</h3>
+
+<blockquote>
+<a name="7916"><!-- --></a>
+The <code>toString</code> method is defined to return a string which represents the remote reference of the object. The contents of the string are specific to the remote reference type. The current implementation for singleton (unicast) objects includes an object identifier and other information about the object that is specific to the transport layer (such as host name and port number).<p>
+</blockquote>
+<br>
+<h3>
+<a name="7917"><!-- --></a>
+<i>		</i> <code>clone</code> method
+</h3>
+
+<blockquote>
+<a name="7918"><!-- --></a>
+Objects are only clonable using the Java programming language&#39;s default mechanism if they support the <code>java.lang.Cloneable</code> interface. Stubs for remote objects generated by the <code>rmic</code> compiler are declared final and do not implement the <code>Cloneable</code> interface. Therefore, cloning a stub is not possible.<p>
+</blockquote>
+<br>
+<h3>
+<a name="7941"><!-- --></a>
+<i>	5.1.2	</i> Serialized Form
+</h3>
+
+<blockquote>
+<a name="7942"><!-- --></a>
+The <code>RemoteObject</code> class implements the special (private) <code>writeObject</code> and <code>readObject</code> methods called by the object serialization mechanism to handle serializing data to a <code>java.io.ObjectOutputStream</code>. <code>RemoteObject</code>&#39;s serialized form is written using the method:<p>
+</blockquote><blockquote><pre>private void writeObject(java.io.ObjectOutputStream out)
+	throws java.io.IOException, java.lang.ClassNotFoundException;
+</pre></blockquote>
+<blockquote>
+<ul><li>
+<a name="7975"><!-- --></a>
+If <code>RemoteObject</code>&#39;s remote reference field, <em>ref</em>, is <code>null</code>, then the method throws <code>java.rmi.MarshalException</code>.
+<li>
+<a name="7955"><!-- --></a>
+If the remote reference, <em>ref</em>, is non-<code>null</code>: <em>ref</em>&#39;s class is obtained via a call to its <code>getRefClass</code> method, which typically returns the non-package qualified name of the remote reference&#39;s class.
+<ul>
+<li>If the class name returned is non-<code>null</code>:
+<UL>
+<LI><em>ref</em>&#39;s class name is written to the stream, <em>out</em>, in UTF.
+<LI><em>ref</em>&#39;s <code>writeExternal</code> method is called passing it the stream, <em>out</em>, so that <em>ref</em> can write its external representation to the stream.
+</UL>
+<LI>If the class name returned by <code>ref.getRefClass</code> is <code>null</code>:<UL>
+<LI>
+the exception <code>java.rmi.MarshalException</code> is thrown.
+<a name="7999"><!-- --></a>
+</UL></UL></UL>
+<p>A <code>RemoteObject</code>&#39;s state is reconstructed from its serialized form using this method called by the <code>ObjectInputStream</code> during deserialization:<p>
+</blockquote><blockquote><pre>private void readObject(java.io.ObjectInputStream in) 
+	throws java.io.IOException, java.lang.ClassNotFoundException;
+</pre></blockquote>
+<blockquote>
+<ul><li>
+<a name="8009"><!-- --></a>
+First, the <em>ref</em>&#39;s class name, a UTF string, is read from the stream <em>in</em>.
+</li>
+<li>
+<a name="8019"><!-- --></a>
+Given the unqualified class name read from the stream:
+</li>
+<ul>
+<LI>The <em>ref</em>&#39;s full class name is constructed by concatenating the value of the string <code>java.rmi.server.RemoteRef.packagePrefix</code> and &#34;.&#34; with the class name read from the stream.
+
+<LI>An instance of the ref&#39;s class is created (from the full class name); if an instance cannot be created because of an <code>InstantiationException</code> or an <code>IllegalAccessException</code>, a <code>java.rmi.UnmarshalException</code> will be thrown.
+<LI>The new instance (which becomes the <em>ref</em> field) reads its external form from the stream, <em>in</em>.
+</ul></ul></ul>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="rmiTOC.html">CONTENTS</a> | <a href="rmi-server.html">PREV</a>
+ | <a href="rmi-server3.html">NEXT</a> 
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF=http://java.sun.com/products/jdk/1.3/docs/relnotes/SMICopyright.html>Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Susan Snyder -->
+<!-- Last updated: Monday November 15 11:11:27 1999 -->
+ 
+
+
+</body>
+</html>

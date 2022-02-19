@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Remote Method Invocation: 6 - Registry Interfaces	
+</title>
+</head>
+<body bgcolor="#ffffff">
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="rmiTOC.html">CONTENTS</a> | <a href="rmi-server12.html">PREV</a>
+ | <a href="rmi-registry2.html">NEXT</a> 
+<!-- /font --></td><td align=right><i>Java Remote Method Invocation</i></td>
+</tr></table>
+<br>
+<a name="1997"><!-- --></a>
+<h1>
+Registry Interfaces	
+</h1>
+<!--
+<hr size="1" width="100%" align="left" noshade>
+-->
+<br>
+<br>
+<br><a name="1998"><!-- --></a>
+<hr size="8" width="35%" align="left" noshade>
+<table border=0>
+<tr valign=bottom>
+<td valign=bottom>
+<br>
+<U><B><FONT FACE="ARIAL,HELVETICA,TIMES ROMAN">CHAPTER</FONT> 
+6 
+</B></U>
+</td>
+</tr>
+</table>
+<br>
+<h3>
+<blockquote></B>
+<a name="6493"><!-- --></a>
+The RMI system uses the <code>java.rmi.registry.Registry</code> interface and the <code>java.rmi.registry.LocateRegistry</code> class to provide a well-known bootstrap service for retrieving and registering objects by simple names. <p>
+<a name="6705"><!-- --></a>
+A <em>registry</em> is a remote object that maps names to remote objects. Any server process can support its own registry or a single registry can be used for a host.<p>
+<a name="6712"><!-- --></a>
+The methods of <code>LocateRegistry</code> are used to get a registry operating on a particular host or host and port. The methods of the <code>java.rmi.Naming</code> class makes calls to a remote object that implements the <code>Registry</code> interface using the appropriate <code>LocateRegistry.getRegistry</code> method.<p>
+</blockquote>
+<br>
+<h3>
+<a name="6513"><!-- --></a>
+<i>		</i> Topics:
+</h3>
+
+
+<blockquote>
+<ul><li>
+<a name="2678"><!-- --></a>
+<a href="rmi-registry2.html">The <code>Registry</code> Interface</a>
+</li>
+<li>
+<a name="6506"><!-- --></a>
+<a href="rmi-registry3.html">The <code>LocateRegistry</code> Class</a>
+</li>
+<li>
+<a name="6571"><!-- --></a>
+<a href="rmi-registry4.html">The <code>RegistryHandler</code> Interface</a>
+</li>
+</ul>
+</blockquote>
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="rmiTOC.html">CONTENTS</a> | <a href="rmi-server12.html">PREV</a>
+ | <a href="rmi-registry2.html">NEXT</a> 
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF=http://java.sun.com/products/jdk/1.3/docs/relnotes/SMICopyright.html>Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Susan Snyder -->
+<!-- Last updated: Monday November 08 04 11:11:27 1999 -->
+ 
+
+
+</body>
+</html>

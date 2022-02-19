@@ -1,0 +1,44 @@
+<HTML>
+<HEAD><TITLE>README for hello Example</TITLE></HEAD>
+<BODY>
+<H1><CENTER>Hello Example README</CENTER></H1>
+<HR>
+<P>
+</P>
+
+Note that these instructions use a slash (/) for path names.  
+For Windows 95 or NT, you should substitute a backslash (\).
+<H2>Steps for building the hello program</H2><BR>
+<UL>
+
+
+<LI> Run <TT>idltojava</TT> on the IDL interface
+to generate stubs and skeletons:
+<PRE>
+  idltojava hello.idl
+</PRE>
+<LI> Compile all the <TT>.java</TT> files
+<PRE>
+  javac *.java HelloAPP/*.java
+</PRE>
+</UL>
+<P> <BR>
+<P> <BR>
+<H2>Steps for running the hello program</H2><BR>
+<P>
+<UL>
+ <LI>Make sure the name server is running
+ <PRE>
+  tnameserv -ORBInitialPort 1050 &
+</PRE>
+<LI> Run the Hello Server
+<PRE>
+  java helloServer -ORBInitialPort 1050
+</PRE>
+<LI> Run the Hello Client from a different shell than the server
+<PRE>
+  java helloClient -ORBInitialPort 1050
+
+</PRE>
+</BODY>
+</HTML>

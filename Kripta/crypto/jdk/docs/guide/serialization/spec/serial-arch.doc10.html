@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 1 - System Architecture
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="serial-arch.doc9.html">PREV</a>
+ | <a href="serial-arch.doc11.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="4539"><i>	1.10	</i> The Serializable Interface
+</a></h2>
+
+<blockquote>
+<a name="4444"><!-- --></a>
+Object Serialization produces a stream with information about the Java<sup><font size="-2">TM</font></sup> classes for the objects which are being saved. For serializable objects, sufficient information is kept to restore those objects even if a different (but compatible) version of the implementation of the class is present. The <code>Serializable</code> interface is defined to identify classes which implement the serializable protocol:<p>
+<a name="4461"><!-- --></a>
+<pre>package java.io;
+
+public interface Serializable {};
+</pre>
+
+
+<a name="4425"><!-- --></a>
+A Serializable class must do the following:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="4426"><!-- --></a>
+Implement the <code>java.io.Serializable</code> interface
+</li>
+<li>
+<a name="5928"><!-- --></a>
+Identify the fields that should be serializable
+</li>
+</ul>
+</blockquote>
+<dl>
+<dd><a name="7084"><!-- --></a>
+(Use the <code>serialPersistentFields</code> member to explicitly declare them serializable or use the transient keyword to denote nonserializable fields.)
+<p>
+</dl>
+
+<blockquote>
+<ul><li>
+<a name="5929"><!-- --></a>
+Have access to the no-arg constructor of its first nonserializable superclass
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="7085"><!-- --></a>
+The class can optionally define the following methods:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="4428"><!-- --></a>
+A <code>writeObject</code> method to control what information is saved or to append additional information to the stream
+</li>
+<li>
+<a name="6300"><!-- --></a>
+A <code>readObject</code> method either to read the information written by the corresponding <code>writeObject</code> method or to update the state of the object after it has been restored
+</li>
+<li>
+<a name="6532"><!-- --></a>
+A <code>writeReplace</code> method to allow a class to nominate a replacement object to be written to the stream
+</li>
+</ul>
+</blockquote>
+<dl>
+<dd><a name="7086"><!-- --></a>
+(See <a href="output.doc5.html#5324">Section&#160;2.5, &#34;The writeReplace Method</a>&#34; for additional information.)
+<p>
+</dl>
+
+<blockquote>
+<ul><li>
+<a name="6533"><!-- --></a>
+A <code>readResolve</code> method to allow a class to designate a replacement object for the object just read from the stream
+</li>
+</ul>
+</blockquote>
+<dl>
+<dd><a name="7081"><!-- --></a>
+(See <a href="input.doc6.html#5903">Section&#160;3.6, &#34;The readResolve Method</a>&#34; for additional information.)
+<p>
+</dl>
+<blockquote>
+<a name="5895"><!-- --></a>
+<code>ObjectOutputStream</code> and <code>ObjectInputStream</code> allow the serializable classes on which they operate to evolve (allow changes to the classes that are compatible with the earlier versions of the classes). See <a href="version.doc5.html#6519">Section&#160;5.5, &#34;Compatible Java<sup><font size="-2">TM</font></sup> Type Evolution</a>&#34; for information about the mechanism which is used to allow compatible changes.<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="serial-arch.doc9.html">PREV</a>
+ | <a href="serial-arch.doc11.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:47:50 1999 -->
+ 
+
+
+</body>
+</html>

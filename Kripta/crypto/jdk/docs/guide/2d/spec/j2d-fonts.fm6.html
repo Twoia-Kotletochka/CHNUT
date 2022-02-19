@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API: 4 - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-fonts.fm5.html">PREV</a>
+ | <a href="j2d-image.fm.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="74065"><i>4.6	</i> Creating Font Derivations
+</a></h2>
+
+<blockquote>
+<a name="74066"><!-- --></a>
+Using the <kbd>Font.deriveFont</kbd> methods, you can create a new <kbd>Font</kbd> object with different attributes from an existing <kbd>Font</kbd> object. Often, a transform is applied to the existing <kbd>Font</kbd> to create a new derived <kbd>Font</k
+bd>. To do this, you:<p>
+</blockquote><blockquote><ol>
+<li>
+<a name="74067"><!-- --></a>
+Create a <kbd>Font</kbd> object., 
+</li>
+
+<li>
+<a name="74068"><!-- --></a>
+Create the <kbd>AffineTransform</kbd> you want to apply to the <kbd>Font</kbd>. 
+</li>
+
+<li>
+<a name="74069"><!-- --></a>
+Call <kbd>Font.deriveFont</kbd>, passing in the <kbd>AffineTransform</kbd>.
+</li>
+
+</ol></blockquote>
+<blockquote>
+<a name="74070"><!-- --></a>
+In this way, you could easily create a <kbd>Font</kbd> in a custom size or a skewed version of an existing <kbd>Font</kbd>.<p>
+<a name="74071"><!-- --></a>
+In the following code excerpt, an <kbd>AffineTransform</kbd> is applied to create a skewed version of the font Helvetica. The new derived font is then used to render a string.<p>
+</blockquote><blockquote><pre>	
+	// Create a transformation for the font.
+	AffineTransform fontAT = new AffineTransform();
+	fontAT.setToShear(-1.2, 0.0);
+	// Create a Font Object.
+	Font theFont = new Font("Helvetica", Font.PLAIN, 1);
+	// Derive a new font using the shear transform
+	theDerivedFont = theFont.deriveFont(fontAT);
+	// Add the derived font to the Graphics2D context
+	g2.setFont(theDerivedFont);
+	// Render a string using the derived font
+	g2.drawString(&#34;Java&#34;, 0.0f, 0.0f);
+</pre></blockquote><blockquote>
+<a name="74062"><!-- --></a>
+<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-fonts.fm5.html">PREV</a>
+ | <a href="j2d-image.fm.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Mon Nov 22 09:37:08 1999 -->
+ 
+
+
+</body>
+</html>

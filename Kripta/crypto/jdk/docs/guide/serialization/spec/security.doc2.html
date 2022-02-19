@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification:  - Security in Object Serialization
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="security.doc1.html">PREV</a>
+ | <a href="security.doc3.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="2630"><i>	A.2	</i> Design Goals
+</a></h2>
+
+<blockquote>
+<a name="2945"><!-- --></a>
+The goal for object serialization is to be as simple as possible and yet still be consistent with known security restrictions; the simpler the system is, the more likely it is to be secure. The following points summarize the security measures present in object serialization:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="3046"><!-- --></a>
+Only objects implementing the <code>java.io.Serializable</code> or <code>java.io.Externalizable</code> interfaces can be serialized.  Mechanisms are provided which can be used to prevent the serialization of specific fields (typically, those containing sensitive or unneeded data).
+</li>
+<li>
+<a name="2551"><!-- --></a>
+The serialization package cannot be used to recreate or reinitialize objects.  Deserializing a byte stream may result in the creation of new objects, but will not overwrite or modify the contents of existing objects.
+</li>
+<li>
+<a name="4166"><!-- --></a>
+Although deserializing an object may trigger downloading of code from a remote source, the downloaded code is restricted by all of the usual Java<sup><font size="-2">TM</font></sup> code verification and security mechanisms.  Classes loaded as a side-effect of deserialization are no more or less secure than those loaded in any other fashion.
+</li>
+</ul>
+</blockquote>
+
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="security.doc1.html">PREV</a>
+ | <a href="security.doc3.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:48:17 1999 -->
+ 
+
+
+</body>
+</html>

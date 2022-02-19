@@ -1,0 +1,383 @@
+<HTML>
+
+<HEAD>
+
+   <TITLE>Java IDL: Mapping IDL to Java</TITLE>
+
+<!-- Changed by: desoto, 1/30/98 -->
+
+   <X-SAS-WINDOW TOP=42 BOTTOM=477 LEFT=4 RIGHT=534>
+
+</HEAD>
+
+<BODY BGCOLOR="#EEEEFF">
+
+
+
+<H1 ALIGN=CENTER>Mapping IDL to Java</H1>
+
+<HR>
+
+
+
+<P>The tool <TT>idltojava</TT>, <a href="http://developer.eng.sun.com/developer/earlyAccess/jdk12/idltojava.html">downloadable from the IDL Compiler web site</a>, reads an OMG IDL interface and translates it,
+or maps it, to a Java interface. <TT>idltojava</TT>
+also creates stub, skeleton, helper, holder, and other files as necessary. 
+These <TT>.java</TT> files are generated from the IDL file
+according to the mapping specified in the OMG document
+<I>IDL/Java Language Mapping</I>.
+We have included four chapters of that document here for your
+convenience. (You can see the whole document at
+<I><A HREF="http://www.omg.org/library/schedule/Technology_Adoptions.htm">IDL 
+Java Mapping 1.0</A></I>). The four chapters included here give 
+the details about mapping OMG IDL to Java.  For just a basic summary of
+mapping IDL to Java, see <A href="#overview">IDL to Java 
+Overview</A> below.  
+
+
+<P>Chapters from the OMG specification <I>IDL/Java Language Mapping</I>: 
+
+
+
+<UL>
+
+	<LI><A HREF="idl.fm.html">Chapter 5, Mapping IDL to Java</A>
+
+	<LI><A HREF="pseudo.fm.html">Chapter 6, Mapping Pseudo-Objects to Java</A>
+
+	<LI><A HREF="server.fm.html">Chapter 7, Server-Side Mapping</A>
+
+	<LI><A HREF="jsoi.fm.html">Chapter 8, Java ORB Portability Interfaces</A>
+
+</UL>
+
+
+
+<P><HR>
+
+<B>Note:</B> Since only chapters 5 through 8 are included here, any links
+to other chapters in the full mapping specification will not work.
+
+<HR><P> 
+
+
+
+<A name="overview">
+
+<H2>IDL to Java Overview</H2></A>
+
+<P>
+CORBA objects are defined in OMG IDL (Object Management Group Interface
+Definition Language).  Before they can be used by a Java developer,
+their interfaces must be mapped to Java classes and interfaces.
+Java IDL includes a tool, idltojava, 
+that performs this mapping automatically.  
+</P>
+
+<P>
+This overview 
+shows the correspondence between OMG IDL constructs and Java
+constructs. Note that OMG
+IDL, as its name implies, defines interfaces.   Like Java interfaces,
+IDL interfaces contain no implementations for their operations (methods
+in Java).
+In other words, IDL interfaces define 
+only the signature for an operation (the name of the operation, the
+datatype of its return value, the datatypes of the parameters that
+it takes, and any exceptions that it raises).
+The implementations for these operations need to be supplied
+in Java classes written by a Java programmer.
+
+</P>
+
+
+
+<P>The following table lists the main constructs of IDL and the
+
+corresponding constructs in Java.</P>
+
+
+
+<P><TABLE BORDER=1 CELLSPACING=0 CELLPADDING=5 WIDTH="100%">
+
+   <TR>
+
+      <TH VALIGN=top>
+
+         <P ALIGN=LEFT>IDL Construct
+
+      </TH><TH VALIGN=top>
+
+         <P ALIGN=LEFT>Java Construct
+
+      </TH></TR>
+
+   <TR>
+
+      <TD>
+
+         <P>module
+
+      </TD><TD>
+
+         <P>package
+
+      </TD></TR>
+
+   <TR>
+
+      <TD>
+
+         <P>interface
+
+      </TD><TD>
+
+         <P>interface, helper class, holder class
+
+      </TD></TR>
+
+   <TR>
+
+      <TD>
+
+         <P>constant
+
+      </TD><TD>
+
+         <P>public static final
+
+      </TD></TR>
+
+   <TR>
+
+      <TD>
+
+         <P>boolean
+
+      </TD><TD>
+
+         <P>boolean
+
+      </TD></TR>
+
+   <TR>
+
+      <TD>
+
+         <P>char, wchar
+
+      </TD><TD>
+
+         <P>char
+
+      </TD></TR>
+
+   <TR>
+
+      <TD>
+
+         <P>octet
+
+      </TD><TD>
+
+         <P>byte
+
+      </TD></TR>
+
+   <TR>
+
+      <TD>
+
+         <P>string, wstring
+
+      </TD><TD>
+
+         <P>java.lang.String
+
+      </TD></TR>
+
+   <TR>
+
+      <TD>
+
+         <P>short, unsigned short
+
+      </TD><TD>
+
+         <P>short
+
+      </TD></TR>
+
+   <TR>
+
+      <TD>
+
+         <P>long, unsigned long
+
+      </TD><TD>
+
+         <P>int
+
+      </TD></TR>
+
+   <TR>
+
+      <TD>
+
+         <P>long long, unsigned long long
+
+      </TD><TD>
+
+         <P>long
+
+      </TD></TR>
+
+   <TR>
+
+      <TD>
+
+         <P>float
+
+      </TD><TD>
+
+         <P>float
+
+      </TD></TR>
+
+   <TR>
+
+      <TD>
+
+         <P>double
+
+      </TD><TD>
+
+         <P>double
+
+      </TD></TR>
+
+   <TR>
+
+      <TD>
+
+         <P>enum, struct, union
+
+      </TD><TD>
+
+         <P>class
+
+      </TD></TR>
+
+   <TR>
+
+      <TD>
+
+         <P>sequence, array
+
+      </TD><TD>
+
+         <P>array
+
+      </TD></TR>
+
+   <TR>
+
+      <TD>
+
+         <P>exception
+
+      </TD><TD>
+
+         <P>class
+
+      </TD></TR>
+
+   <TR>
+
+      <TD>
+
+         <P>readonly attribute
+
+      </TD><TD>
+
+         <P>method for accessing value of attrubite
+
+      </TD></TR>
+
+   <TR>
+
+      <TD>
+
+         <P>readwrite attribute
+
+      </TD><TD>
+
+         <P>methods for accessing and setting value of attribute
+
+      </TD></TR>
+
+   <TR>
+
+      <TD>
+
+         <P>operation
+
+      </TD><TD>
+
+         <P>method
+
+      </TD></TR>
+
+</TABLE></P>
+
+
+
+<P><HR>
+
+<B>Note:</B> When a CORBA operation takes a type that corresponds to a Java
+
+object type (a <TT>String</TT>, for example), it is illegal to pass a Java
+
+<TT>null</TT> as the parameter value. Instead, pass an empty version of the
+
+designated object type (for example, an empty <TT>String</TT> or
+an empty array). A Java <TT>null</TT> can be passed as a parameter only 
+when the type of the parameter is a CORBA object reference, in which case the
+<TT>null</TT> is interpreted as a <TT>nil</TT> CORBA object reference.
+
+<HR><P>
+
+
+
+
+
+<CENTER><P>
+
+
+<TABLE cellpadding=8 cellspacing=4>
+
+<TR>
+
+  <TD ALIGN=CENTER><A href="../index.html">Home</A></TD>
+
+</TR></TABLE>
+
+
+
+<HR><P><FONT SIZE="-2">
+
+   <A HREF="../../../relnotes/SMICopyright.html">Copyright &#169;</A> 1995-98
+
+   <A HREF="http://www.sun.com/">Sun Microsystems, Inc.</A>
+
+    All Rights Reserved.</FONT></P>
+
+</CENTER>
+
+
+
+
+
+</BODY>
+
+</HTML>

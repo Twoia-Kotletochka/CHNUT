@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 6 - Object Serialization Stream 
+Protocol
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="protocol.doc6.html">PREV</a>
+ | <a href="security.doc.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<br>
+<h3>
+<a name="10128"><!-- --></a>
+<i>	6.4.3	</i> Example
+</h3>
+
+<blockquote>
+<a name="8334"><!-- --></a>
+Consider the case of an original class and two instances in a linked list:<p>
+<a name="9963"><!-- --></a>
+<pre>class List implements java.io.Serializable {
+    int value;
+    List next;
+    public static void main(String[] args) {
+        try {
+            List list1 = new List();
+            List list2 = new List();
+            list1.value = 17;
+            list1.next = list2;
+            list2.value = 19;
+            list2.next = null;
+
+            ByteArrayOutputStream o = new ByteArrayOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(o);
+            out.writeObject(list1);
+            out.writeObject(list2);
+            out.flush();
+            ...
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+}
+</pre>
+
+
+<a name="9560"><!-- --></a>
+The resulting stream contains:<p>
+<a name="9983"><!-- --></a>
+<pre>00: ac ed 00 05 73 72 00 04 4c 69 73 74 69 c8 8a 15 &gt;....sr..Listi...&lt;
+</pre>
+
+
+<a name="9774"><!-- --></a>
+<pre>10: 40 16 ae 68 02 00 02 49 00 05 76 61 6c 75 65 4c &gt;Z......I..valueL&lt;
+</pre>
+
+
+<a name="9775"><!-- --></a>
+<pre>20: 00 04 6e 65 78 74 74 00 06 4c 4c 69 73 74 3b 78 &gt;..nextt..LList;x&lt;
+</pre>
+
+
+<a name="9776"><!-- --></a>
+<pre>30: 70 00 00 00 11 73 71 00 7e 00 00 00 00 00 13 70 &gt;p....sq.~......p&lt;
+</pre>
+
+
+<a name="9777"><!-- --></a>
+<pre>40: 71 00 7e 00 03                                  &gt;q.~..&lt;
+</pre>
+
+
+<a name="9754"><!-- --></a>
+<pre>
+</pre>
+
+
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="protocol.doc6.html">PREV</a>
+ | <a href="security.doc.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1998 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Thu Feb 19 15:31:58 1998 -->
+ 
+
+
+</body>
+</html>

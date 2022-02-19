@@ -1,0 +1,195 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+
+<HTML>
+
+<HEAD>
+
+     <TITLE>Improvements to Program Execution Speed</TITLE>
+
+</HEAD>
+
+
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" VLINK="#000077" ALINK="#FF0000">
+
+
+
+<TABLE BORDER="0" WIDTH="100%">
+
+<TR>
+
+<TD WIDTH="60">
+
+   <IMG SRC="../../images/javalogo52x88.gif" ALT="Java" BORDER=0 WIDTH=52 HEIGHT=88>
+
+</TD>
+
+
+
+<TD>
+
+<center>
+
+           <h1>Improvements to Program Execution Speed</h1>
+
+</center>
+
+</TD>
+
+
+
+<TD ALIGN=RIGHT VALIGN=TOP>
+
+   <font size="-1"><a href="../../index.html">Documentation Contents</a></font>
+
+</TD>
+
+</TR>
+
+</TABLE>
+
+
+
+<!-- Body text begins here -->
+
+
+
+<blockquote>
+The following are some of the changes made to improve 
+the program execution speed and general runtime performance of 
+the Java 2 SDK and Java 2 Runtime Environment. 
+Links to relevant bug reports on the BugParade web site are provided 
+were applicable for further information.
+<p>
+<ul>
+<li><b>Improved Performance for readUTF and writeUTF</b> - The 
+implementations of the <tt>readUTF</tt> and <tt>writeUTF</tt> methods 
+of <tt>DataInputStream</tt> and <tt>DataInputStream</tt>
+have been modified to improve performance. This is a fix for bug number 
+<a href="http://developer.java.sun.com/developer/bugParade/bugs/4219771.html">
+4219771</a> on the BugParade web site.
+<p>
+<li><b>Improved Performance of JScrollPane Painting</b> - 
+The implementation of JScrollPane has been improved so that it 
+does not cause excessive painting and screen flashing when 
+double buffering is not used.
+<p>
+<li><b>Improved JTable Performance</b> - The performance of the 
+JTable's column-handling functionality has been improved. 
+Previously, the performance of the operations of adding columns 
+or recalculating column widths did not scale well as the number 
+of columns became large. The implementation has been changed 
+to improve scalability.  This is a fix for bug number 
+<a href="http://developer.java.sun.com/developer/bugParade/bugs/4223642.html">
+4223642</a> on the BugParade web site.
+<p>
+<li><b>Paint Coalescing</b> - Painting performance has been 
+enhanced through the implementation of an improved paint coalescing 
+algorithm. Areas 
+that require repainting are coalesced into a single, 
+non-rectangular repaint area as they are posted to the 
+event queue. This has the effect batching repaints, 
+executing multiple repaints simultaneously in a manner 
+more efficient than in previous releases.  
+<p>
+<li><b>Frame Resizing</b> - Resizing of top-level frames has been 
+improved.
+<p>
+<li><b>Internal Frame Blitting</b> - By using <tt>Graphics.copyArea</tt> 
+calls, Swing's DefaultDesktopManager now needs to redraw far 
+less when frames are dragged.
+<p>
+<li><b>Performance Enhancements in <tt>BigIntenger</tt></b> -
+Class <tt>java.math.BigInteger</tt> has been reimplemented in pure 
+Java programming-language code.  Previously, <tt>BigInteger</tt>'s 
+implementation was based on the Plumb C library.  The new 
+implementation performs all standard operations much faster 
+than the old implementation. The speed-up realized in the new 
+implemenation can be as much as 5x or more, depending on the 
+operation being performed.
+
+<p>
+<li><b>Provision for Better-Performing Numeric Operations</b></a> - The 
+Java 2 Platform now contains two classes which provide API for 
+performing general numeric operations.  
+<ul>
+   <li><tt><a href=../../api/java/lang/StrictMath.html>java.lang.StrictMath</a></tt> - Class <tt>java.lang.StrictMath</tt> is a renaming of class 
+<tt>java.lang.Math</tt> from previous versions of the Java platform, 
+but otherwise retains the previous specification of <tt>Math</tt>. 
+In particular, it is defined to return bit-for-bit reproducible 
+results in all implementations.
+   <li><tt><a href=../../api/java/lang/Math.html>java.lang.Math</a></tt> - 
+Class <tt>java.lang.Math</tt> provides the same set of API as does 
+class <tt>StrictMath</tt>. However, unlike some of the numeric functions of 
+class <tt>StrictMath</tt>, all implementations of the equivalent functions 
+of class <tt>Math</tt> are not defined to return the bit-for-bit same results, 
+but can vary within specified constraints. 
+This relaxation permits better-performing implementations where strict
+reproducibility is not required.
+</ul>
+</ul>
+</blockquote>
+
+
+
+<!-- Body text ends here -->
+
+<!-- ============================================================== -->
+
+<HR SIZE=3 NOSHADE>
+
+
+
+<TABLE BORDER="0" WIDTH="100%">
+
+<TR VALIGN=TOP>
+
+
+
+<TD>
+
+<P><FONT SIZE="-2">
+
+   <A HREF="../../relnotes/SMICopyright.html">Copyright &#169;</A> 1999
+
+   <A HREF="http://www.sun.com/">Sun Microsystems, Inc.</A>
+
+    All Rights Reserved.</FONT></P>
+
+   <br>
+
+   <br>
+
+
+
+<FONT SIZE="-1">
+Please send comments to:
+<a href="mailto:jdk-comments@eng.sun.com">jdk-comments@eng.sun.com</a>
+</FONT>
+
+</TD>
+
+
+
+<TD ALIGN=RIGHT>
+
+   <IMG SRC="../../images/sunlogo64x30.gif" ALT="Sun" BORDER=0 WIDTH=64 HEIGHT=30>
+
+
+
+</TD>
+
+
+
+</TR>
+
+</TABLE>
+
+
+
+</BODY>
+
+</HTML>
+
+
+

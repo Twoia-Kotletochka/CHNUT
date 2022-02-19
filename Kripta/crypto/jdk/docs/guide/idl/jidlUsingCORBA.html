@@ -1,0 +1,343 @@
+<HTML>
+<HEAD>
+   <TITLE>Java IDL: Using CORBA</TITLE>
+<!-- Changed by: desoto, 1/30/98 -->
+   <X-SAS-WINDOW TOP=42 BOTTOM=477 LEFT=4 RIGHT=534>
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<H1 ALIGN=CENTER>Using CORBA and Java IDL</H1>
+<HR>
+
+<UL>
+<LI><A href="#first">About CORBA</A>
+<LI><A href="#second">About Java IDL</A>
+<LI><A href="#third">
+CORBA Concepts in a Nutshell</A>
+<LI><A href="#fourth">Defining and Implementing CORBA Objects</A>
+<LI><A href="#fifth">Client Implementation</A>
+<LI><A href="#sixth">Java IDL Transient Name Server</A>
+</UL>
+
+
+<A NAME="first">
+<H2>About CORBA</H2></A>
+
+
+<P>
+CORBA (Common Object Request Broker Architecture)
+is the standard distributed object architecture developed
+by the Object Management Group (OMG) consortium.  Since 1989
+the mission of the OMG has been the specification of an
+architecture for an open software bus, or Object Request Broker
+(ORB), on which object components written by different vendors
+can interoperate across networks and operating systems.
+This standard allows CORBA objects to invoke
+one another without knowing where the objects they access reside or in
+what language the requested objects are implemented. 
+The OMG-specified Interface Definition Language (IDL) is used to define
+the interfaces to CORBA objects.
+
+<P>CORBA objects
+differ from typical programming language objects in
+these ways:
+
+<UL>
+   <LI>CORBA objects can be located anywhere on a network.
+
+   <LI>CORBA objects can interoperate with objects
+   on other platforms. 
+ 
+   <LI>CORBA objects can be written in any programming language for which
+   there is a mapping from OMG IDL to that language.  (Mappings
+   currently specified include Java, C++, C, Smalltalk, COBOL, and Ada.)
+</UL>
+
+
+<A NAME="second"><H2>About Java IDL</H2></A> 
+Java IDL is an Object Request Broker provided with the Java 2 Platform. 
+Together with the <code>idltojava</code> compiler 
+(<a href="http://developer.javasoft.com/developer/earlyAccess/jdk12/idltojava.html">downloadable from the Java Developer
+Connection</a>), it can be used to define, implement, and access CORBA
+objects from the Java programming language. 
+Java IDL is compliant with the 
+<a href="http://www.omg.org/cgi-bin/doclist.pl">
+CORBA/IIOP 2.0 Specification</a> (orbos/97-02-25)
+and the 
+<a href="http://www.omg.org/library/schedule/IDL_to_Java_RFP.htm">
+IDL-to-Java Language Mapping</a> (orbos/98-01-06 Final).
+
+<P>
+The Java IDL ORB supports transient CORBA objects - objects whose lifetimes
+are limited by their server process's lifetime. Java IDL also provides a transient
+
+nameserver to organize objects into a tree-directory structure. The nameserver
+is compliant with the Naming Service Specification described in 
+<a href="http://www.omg.org/corba/csindx.htm">CORBAservices:
+Common Object Services Specification</a>. Transient objects and the nameserver
+are discussed later in this page. 
+
+<p>
+No interface repository is provided as part of Java IDL. An interface repository 
+is not required because under normal circumstances, clients have access to generated
+stub files.
+
+<a name="third">
+<h2>CORBA Concepts in a Nutshell</h2></a>
+
+<P>The concepts introduced in this section are more completely discussed
+in the <a href="http://www.omg.org/cgi-bin/doclist.pl">
+CORBA/IIOP 2.0 Specification</a>. 
+
+<P>
+The diagram below shows a method request sent from a client to a 
+CORBA object implementation in a server. A client is any code (perhaps itself
+a CORBA object) that invokes a
+method on a CORBA object. The servant is an instance of the object
+implementation -  the actual code and
+data that implements the CORBA object. 
+
+<P><center><IMG SRC="images/requestpath.gif" ALT="[requestpath image]"></center>
+
+<P>
+The client of a CORBA object has an object reference for the object
+and the client uses this object reference to issue method requests. 
+If the server object is remote, the object reference points to a 
+stub function, which uses the ORB machinery to forward invocations
+to the server object. The stub code uses the ORB to identify the 
+machine that runs the server object and asks that machine's ORB for
+a connection to the object's server. 
+When the stub code has the connection, it sends the object reference and
+parameters to the skeleton code linked to the destination object's 
+implementation. The skeleton code transforms the call and parameters into
+the required implementation-specific format and calls the object. Any 
+results or exceptions are returned along the same path.
+
+<P>The 
+client has no knowledge of the CORBA object's location, implementation details,
+nor which ORB is used to access the object. Different ORBs communicate via
+the OMG-specified Internet InterORB Protocol (IIOP). 
+<a href="http://www.omg.org/cgi-bin/doclist.pl">[CORBA/IIOP 2.0:ch 9,10]  
+</a>
+
+<P>
+A client may only invoke methods that are specified in the CORBA object's
+interface. 
+A CORBA object's interface is defined using the OMG Interface
+Definition Language (IDL) 
+<a href="http://www.omg.org/cgi-bin/doclist.pl">[CORBA/IIOP 2.0 ch3]</a>.  
+An interface defines an object type and
+specifies a set of named methods and parameters, as well as the exception
+types that these methods may return. An IDL compiler such as <code>
+idltojava</code> translates the CORBA object definitions into a specific
+programming language according to the appropriate OMG language
+mapping. Thus, the <code>idltojava</code> compiler translates IDL defintions
+into Java constructs according to the IDL-Java language mapping. 
+
+<P>
+The stub and skeleton files are generated by the <code>idltojava</code> 
+compiler for each
+object type. Stub files present the client with access to IDL-defined methods
+in the client programming language. The server skeleton files glue the object
+implementation to the ORB runtime. The ORB uses the skeletons to dispatch
+methods to the object implementation instances (servants).
+
+<a name="fourth"><h2>
+Defining and Implementing CORBA Objects
+</h2></a>
+
+<P>
+The goal in CORBA object development is the creation and registration of
+an <i>object server</i>, or simply <i>server</i>. A server is a program which
+contains the implementation of one or more object types and which has been
+registered with the ORB. For example, you might develop a desktop publishing
+server which implements a "Document" object type, a "Paragraph" object type, 
+and other related object types.
+
+<h3>  
+CORBA Object Interfaces
+</h3>
+
+<P>
+All CORBA objects support an IDL interface; the IDL
+interface defines an object type.
+An interface can inherit from one or more other interfaces. IDL
+syntax is very similar to that of Java or C++, and an IDL
+file is functionally
+the CORBA language-independent analog to a C++ header file.
+IDL is mapped into each programming language to provide
+access to object interfaces from that
+language. With Java IDL, these IDL interfaces
+can be translated to Java using the <code>idltojava</code> compiler. 
+For each IDL interface, <TT>idltojava</TT> generates
+a Java interface and the other <TT>.java</TT> files needed,
+including a client stub and a server skeleton.
+
+<P>
+An IDL interface declares a set of client accessible operations,
+exceptions, and typed attributes (values).
+Each operation has a signature that defines
+its name, parameters, result, and exceptions.
+A simple IDL interface that describes the classic "Hello
+World" program, follows.</P>
+
+<PRE>
+module HelloApp
+{
+  interface Hello
+  {
+    string sayHello();
+    };
+};
+</PRE>
+
+<P>
+An operation may raise an exception when an error condition arises. The type
+of the exception indicates the kind of error that was encountered. Clients
+must be prepared to handle defined exceptions and CORBA standard exceptions
+for each operation in addition to normal results.
+
+<h3>Java Language-based Implementation</h3>
+<p>
+Once the IDL interfaces have been defined and the <code>
+idltojava</code> compiler run on the <code>.idl</code> file,
+ <code>.java</code> files containing
+the method implementations may be written. The <code>.java</code>
+implementation files are then compiled and linked with the <code>idltojava</code>
+-generated <code>.java</code> files and the ORB library to create an
+object server.   
+<P>
+An object implementation defines the behavior for all the operations
+and attributes of the interface it supports. There may be multiple 
+implementations of an interface, each designed to emphasize a 
+specific time and space
+trade-off, for example. The implementation defines the behavior of the interface
+and object creation/destruction. 
+
+<P>
+Since only servers can create new CORBA objects, a <i>factory object</i>
+interface should be defined and implemented for each object type. For 
+example, if Document is an object type, a DocumentFactory object type
+with a create method should be defined and implemented as part
+of the server. (Note that "create" is not reserved; any method name may be
+used.) The implementation of the create method can then use
+<code>new</code> to create the object. For example:
+
+<PRE>
+  DocumentServant document  = new DocumentServant():
+  orb.connect(document); 
+</PRE> 
+
+<P>
+A <code>destroy</code> method may be defined and implemented on Document;
+or, the object may be intended to persist indefinitely. (Again, "destroy"
+is not reserved and any name may be used.)
+
+<p>
+The Java IDL ORB supports transient objects only - objects whose lifetime
+is limited by the server process lifetime. Although a transient object 
+dissapears when its server process stops running, the object may be 
+implemented to store
+its state in a file and to re-initialize itself
+from this file at creation time.   
+
+
+<a name="fifth">
+<h2>Client Implementation
+</h2></a>
+
+<p>
+Client code is linked with <code>idltojava</code>-generated .java
+files and the ORB library. Examples of application and applet clients
+are provided in the Hello World example.
+
+<p>
+Clients may only create CORBA objects via the published
+factory interfaces that the server provides.  
+Likewise, a client may only delete a CORBA object if that object publishes
+a destruction method. 
+Since a CORBA object may be shared by many clients around a
+network, only the object server is in a position to know when the object
+has become garbage.
+</P>
+
+<p>
+The client code's only way of issuing method requests on a CORBA object
+is via the object's object reference. The object reference is an opaque
+structure which identifies a CORBA object's host machine, the port on which
+the host server is listening for requests, and a pointer to the specific
+object in the process. Because Java IDL supports only transient objects,
+this object reference becomes invalid if the server process has stopped
+and restarted.
+
+<p>
+Clients typically obtain object references in the following ways: 
+
+<UL>
+   <LI>from a factory object. For example, the client could invoke a
+create method on DocumentFactory object in order to create a new Document.
+The DocumentFactory create method would return an object refererence 
+for Document to
+the client. 
+   <LI>from the nameservice. For example, the client could obtain an object
+reference for the DocumentFactory by issuing a request on the nameservice. 
+   <LI>From a string that was specially created from an object
+   reference
+</UL> 
+ 
+<P>Once an object reference is obtained, the client must <I>narrow</I> it
+to the appropriate type.
+IDL supports inheritance; the root of its hierarchy is
+<CODE>Object</CODE> in IDL, <CODE>org.omg.CORBA.Object</CODE> in
+Java. (<CODE>org.omg.CORBA.Object</CODE> is, of course, a subclass
+of <CODE>java.lang.Object</CODE>.) Some operations, notably name
+lookup and unstringifying, return an <CODE>org.omg.CORBA.Object</CODE>,
+which you narrow (using a helper class generated by the
+idltojava compiler) to the derived type you want the object to
+be. CORBA objects must be explicitly narrowed because the Java
+runtime cannot always know the exact type of a CORBA object. </P>
+
+<a name="sixth">
+<h2>Java IDL Transient Name Server</h2>
+</a>
+ 
+<P>
+The Java IDL Transient Nameservice is an object server provided with
+Java IDL. Use <code>tnameserv</code> at the command line prompt to start
+the Name Server. This object server conforms to the standard object
+implementation and invocation techniques described in the previous
+sections of this page. 
+
+<P>The Name Server stores object references by name in a tree
+structure similar to a file directory. 
+A client may lookup or <i>resolve</i>
+object references by name. Because the Name Server is an ordinary
+Java IDL transient server, the entire directory structure of names
+is lost each time <code>tnameserv</code> stops running. 
+
+<p>See
+<a href="jidlNaming.html">Naming Service</a> 
+for more information.
+
+<CENTER><P><HR>
+<A href="jidlDistApp.html">Distributed Application Concepts</A> | 
+Using CORBA | <A
+href="jidlGlossary.html">Glossary</A> 
+
+
+<TABLE cellpadding=8 cellspacing=4>
+<TR>
+  <TD ALIGN=CENTER><A href="index.html">
+Home</A></TD>
+</TR></TABLE>
+
+<HR><FONT
+SIZE="-2">
+<A HREF="http://www.sun.com/share/text/SMICopyright.html">Copyright
+&copy;</A></FONT><FONT SIZE="-2"> 1996-98 Sun Microsystems, Inc.,
+2550 Garcia Ave., Mtn. View, CA. 94043-1100 USA., All rights
+reserved.</FONT></P>
+</CENTER>
+
+</BODY>
+</HTML>

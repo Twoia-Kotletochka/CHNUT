@@ -1,0 +1,328 @@
+<HTML>
+<HEAD>
+   <TITLE>Java IDL: Developing Clients</TITLE>
+<!-- Changed by: vlc, 6/20/97 -->
+   <X-SAS-WINDOW TOP=42 BOTTOM=477 LEFT=4 RIGHT=534>
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<H1 ALIGN=CENTER>Developing Clients</H1>
+<HR>
+
+<P>Topics in this section include:
+<UL>
+<LI><A href="#orbsandinvocations">ORBs and Invocations</A>
+<LI><A href="#staticinvoke">Static Invocation</A>
+<LI><A href="#DynamicInvocation">Dynamic Invocation</A>
+<!--<LI><A href="#torque">Using Portable Stubs</A>-->
+<LI><A href="#otherorbs">Initializing Applets</A>
+</UL>
+
+
+
+<!--*******ORBS AND INVOCATIONS********-->
+
+<A name="orbsandinvocations">
+<H2>ORBs and Invocations</H3></A>
+
+<P>For a client to invoke a CORBA object operation, both the client
+and the server (the object implementation) must use a CORBA software
+component called an ORB (object request broker). ORBs are the common
+denominators that bridge the differences in location, platform, and
+programming language that can separate a client and a server. ORBs
+can contact each other across the network, can create and interpret
+object references (CORBA object handles), and can marshal parameters
+into and out of the format used by IIOP. In addition to enabling
+client/server communication, ORBs provide other services, but they
+are not described here.</P>
+
+<P>The two ways to invoke an operation on a CORBA object are: </P>
+
+<UL>
+   <LI><I><A HREF="#staticinvoke">Static invocation</A></I>, 
+   which is used most often and most resembles
+   conventional Java programming, is type-checked by the compiler.
+   But it can only be used for objects whose interface definitions
+   exist when the invoking client is compiled. <P>
+   
+   <LI><I><A HREF="#DynamicInvocation">Dynamic invocation</A></I> is more
+   flexible because clients can invoke objects they discover at
+   runtime. However, compile-time type-checking is impossible with
+   dynamic invocation. Although it's possible to type-check
+   parameters at runtime, doing so requires a CORBA Interface
+   Repository, which the current release of Java&nbsp;IDL does not
+   provide. 
+</UL>
+
+
+<!--*******STATIC INVOCATION********-->
+
+<A name="staticinvoke">
+<H2>Static Invocation</H2></A>
+
+<P>To make a static invocation on a CORBA object, a Java client
+needs an object reference to the servant that performs the operation. The 
+object reference has two important functions:</P>
+
+<UL>
+   <LI>It uniquely identifies the servant, wherever it is located.<P>
+   
+   <LI>It implements the client stub interface, making the reference a local
+   proxy for the servant object.
+</UL>
+
+</P>Clients don't create object references but 
+<A HREF="jidlUsingCORBA.html#third">obtain them</A>, 
+typically from other objects such as factories or 
+<A href="jidlNaming.html">naming</A> contexts.
+
+<P>OMG IDL is the language in which CORBA object interfaces are
+defined. For each OMG IDL module, the idltojava compiler
+generates a Java package. For each interface <CODE>Foo</CODE> defined
+in an OMG IDL module, the generated package contains the following
+items of interest to the client programmer:</P>
+
+<UL>
+   <LI>A Java interface <CODE>Foo</CODE>, that defines methods 
+   corresponding to the OMG IDL operations. From the developer's point
+   of view, an object reference for a CORBA <CODE>Foo</CODE> object
+   implements this interface.<P>
+   
+   <LI>A Java class <CODE>FooHelper</CODE>, that defines auxiliary
+   methods, notably <CODE>narrow()</CODE>, which is the CORBA
+   counterpart of Java casting.<P>
+   
+   <LI>A Java class called <TT>FooHolder</TT>, that holds a public 
+   <TT>Foo</TT> member. Holders are
+   required for CORBA operations that take <TT>out</TT> or
+   <TT>inout</TT> arguments, which, unlike CORBA <TT>in</TT>
+   arguments, don't map directly to Java's pass-by-value semantics.
+</UL>
+
+<P>Here's a simple example from the point of view of a client.</P>
+
+<P><TABLE BORDER=1 CELLSPACING=0 CELLPADDING=4 WIDTH="100%">
+   <TR>
+      <TH>
+         <P ALIGN=LEFT>OMG IDL
+      </TH><TH>
+         <P ALIGN=LEFT>Generated Java
+      </TH></TR>
+   <TR>
+      <TD VALIGN=top>
+         <PRE>module Example {
+   interface Counter {
+      boolean increment (in long arg);
+   };
+};</PRE>
+      </TD><TD VALIGN=top>
+         <PRE>package Example;
+public interface Counter 
+   extends org.omg.CORBA.Object {
+   public boolean increment (int arg);
+}
+&nbsp;
+public class CounterHelper {
+   public static Counter narrow
+      (org.omg.CORBA.Object obj);
+   // ... 
+} 
+&nbsp;
+public final class CounterHolder {
+   // ... 
+}</PRE>
+      </TD></TR>
+</TABLE></P>
+
+<P>The following Java fragment shows the essentials of declaring and
+invoking an instance of this CORBA object:</P>
+
+<BLOCKQUOTE><PRE>import Example.*     // get the interface and helper 
+&nbsp;
+Counter anInstance = // <A HREF="jidlUsingCORBA.html#third">acquire a reference</A>
+&nbsp;
+boolean aResult; 
+int anArg = 10;
+&nbsp;
+aResult = anInstance.increment(anArg);</PRE></BLOCKQUOTE>
+
+<P>A <I>stub</I> adapts a client to its underlying ORB for a particular
+CORBA object type. The ORB knows how to marshal an argument, but not
+which arguments need marshaling for a particular method. The stub,
+being type-specific, knows which arguments need marshaling for each
+method. When a client invokes a stub method, the stub tells the
+client's ORB what to marshal, and then tells the ORB to invoke the
+CORBA object identified by the object reference. The client's ORB
+uses the object reference to determine which remote ORB should
+receive the invocation, passes the marshaled parameters over the
+network to that ORB, and waits for the result. (For those familiar
+with remote procedure calls, CORBA object invocation is similar.)
+</P>
+
+<P>A <I>skeleton</I> is an object server's analog of the client's stub.
+Skeletons are also generated by IDL compilers. When an ORB receives
+an invocation for one of its objects, processing is as follows:
+
+<OL>
+<LI>The ORB inspects the object reference to learn the identity of 
+the object's servant. 
+<LI>The ORB then invokes the appropriate skeleton, which tells the ORB 
+how to unmarshal the parameters.
+<LI>The ORB invokes the servant implementation of the
+operation requested by the client.
+<LI>The servant method returns a result to the skeleton. 
+<LI>The skeleton arranges marshaling with the server ORB.
+<LI>The server ORB returns the result to the client ORB. 
+<LI>The client ORB returns the result to the stub.
+<LI>The stub returns the result to the client.
+</OL>
+
+<P>To summarize, IIOP ORBs communicate CORBA object invocations
+across a network in a standardized form. All ORB
+operations are independent of the type of object being invoked and of 
+the language in which the client and server are written. It's the job
+of the stub and the skeleton to match clients and servers to their ORBs
+for a particular type of CORBA object.</P>
+
+
+<!--*******DYNAMIC INVOCATION********-->
+
+<A NAME="DynamicInvocation">
+<H2>Dynamic Invocation</H2></A>
+
+<P>CORBA dynamic invocation uses an object called a <I>request</I> to
+hold everything pertinent to an invocation: the object reference, the
+name of the operation, its parameters, and space for the result. The
+client builds a request object describing an operation, then calls
+the request's <CODE>invoke</CODE> method, which dispatches the
+request just as a stub would. When the invoke method returns, the
+result is available in the request object.</P>
+
+<P>The key to dynamic invocation is the ability of requests to hold
+self-describing data. This facility enables a request object to
+represent any invocation of any operation, regardless of its
+parameters. Each self-describing data element has a special type
+known in OMG IDL as <CODE>Any</CODE>. An <CODE>Any</CODE> consists of
+a typecode (whose values are defined by OMG IDL) and a value; the
+typecode specifies the type of the value.</P>
+
+<P>The following example shows the essentials of dynamic invocation.
+The CORBA object to be invoked has the following OMG IDL interface
+definition:</P>
+
+<PRE>
+import org.omg.CosNaming.*;
+import org.omg.CORBA.*;
+
+public class CounterClient {
+  public static void main(String args[]) {
+    try{
+      // create and initialize the ORB
+      ORB orb = ORB.init(args, null);
+
+      // get the root naming context
+      org.omg.CORBA.Object objRef = 
+		orb.resolve_initial_references("NameService");
+      NamingContext ncRef = NamingContextHelper.narrow(objRef);
+ 
+      // resolve the Object Reference in Naming
+      NameComponent nc = new NameComponent("Counter", "");
+      NameComponent path[] = {nc};
+      Counter counterRef = CounterHelper.narrow(ncRef.resolve(path));
+
+      System.out.println("Object Ref: " + orb.object_to_string(counterRef));
+
+      // Create a DII request and set the arguments and result
+      org.omg.CORBA.Request r = counterRef._request("increment");
+      r.set_return_type(orb.get_primitive_tc(org.omg.CORBA.TCKind.tk_long));
+      org.omg.CORBA.Any inc = r.add_in_arg();
+      inc.insert_long(1); // increment by 1
+
+      for (int i = 0; i < 10; i++) {
+        // call the Hello server object and print results
+	r.invoke();
+	java.lang.Exception ex = r.env().exception();
+        if (ex instanceof org.omg.CORBA.UnknownUserException) {
+          org.omg.CORBA.UnknownUserException userEx = 
+		  (org.omg.CORBA.UnknownUserException) ex;
+        }
+	
+	// extract the result
+        int result;
+	result = r.return_value().extract_long();
+	System.out.println("Counter: " + result);
+      }
+
+    } catch (Exception e) {
+      System.out.println("CounterClient : Exception: " + e) ;
+      e.printStackTrace(System.out);
+    }
+  }
+}
+</PRE>
+
+
+<!--****************INITIALIZING APPLETS**************-->
+
+<A name="otherorbs">
+<H2>Initializing Applets</H2></A>
+
+<P>Some web browsers have an ORB built directly into them.  This can cause
+problems if that ORB is not perfectly compliant. In this case, special steps 
+must be taken to initialize the Java&nbsp;IDL ORB specifically.  
+For example, because of 
+missing classes in the installed ORB in Netscape Communicator&nbsp;4.01, 
+an applet displayed in that browser must contain code similar to the
+following in its <TT>init()</TT> method:
+
+<PRE>
+    import java.util.Properties;
+    import org.omg.CORBA.*;
+
+    public class MyApplet extends java.applet.Applet {
+      public void init()
+      {
+        // Instantiate the Sun ORB, passing in this applet 
+        // so that the ORB can retrieve the applet properties.
+        Properties props = new Properties();
+        props.put("org.omg.CORBA.ORBClass", "com.sun.CORBA.iiop.ORB");
+        ORB orb = ORB.init(this, props);
+        ...
+      }
+    }
+&nbsp;</PRE>  
+
+
+<P><HR>
+<CENTER><P>
+Clients | <A href="jidlServers.html">Servers</A> | <A 
+href="jidlExceptions.html">Exceptions</A> | <A 
+href="jidlInitialization.html">Initialization</A> | <A 
+href="jidlNaming.html">Naming</A> 
+
+<TABLE cellpadding=8 cellspacing=4>
+<TR>
+  <TD ALIGN=CENTER><A href="index.html"><IMAGE 
+SRC="images/1top_lt.gif"><BR>Home</A></TD>
+  <TD ALIGN=CENTER><A href="fund.html"><IMAGE 
+SRC="images/2fundamentals_lt.gif"><BR>Fundamentals</A></TD>  
+  <TD ALIGN=CENTER><A href="program.html"><IMAGE 
+SRC="images/3programming_lt.gif"><BR>Programming</A></TD>  
+  <TD ALIGN=CENTER><A href="reference.html"><IMAGE 
+SRC="images/4ref_lt.gif"><BR>References</A></TD>  
+  <TD ALIGN=CENTER><A href="examples.html"><IMAGE 
+SRC="images/4ex_lt.gif"><BR>Tutorial</A>
+</TD>
+</TR></TABLE>
+
+<HR><FONT
+SIZE="-2">
+<A HREF="http://www.sun.com/share/text/SMICopyright.html">Copyright
+&copy;</A></FONT><FONT SIZE="-2"> 1996, 1997 Sun Microsystems, Inc.,
+2550 Garcia Ave., Mtn. View, CA. 94043-1100 USA., All rights
+reserved.</FONT></P>
+</CENTER>
+
+
+</BODY>
+</HTML>

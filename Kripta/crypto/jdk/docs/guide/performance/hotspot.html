@@ -1,0 +1,239 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+
+<HTML>
+
+<HEAD>
+
+     <TITLE>Java HotSpot(TM) Client and Server Virtual Machines</TITLE>
+
+</HEAD>
+
+
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" VLINK="#000077" ALINK="#FF0000">
+
+
+
+<TABLE BORDER="0" WIDTH="100%">
+
+<TR>
+
+<TD WIDTH="60">
+
+   <IMG SRC="../../images/javalogo52x88.gif" ALT="Java" BORDER=0 WIDTH=52 HEIGHT=88>
+
+</TD>
+
+
+
+<TD>
+
+<center>
+
+           <h1>The Java HotSpot<sup><font size=-2>TM</font></sup> Client and Server Virtual Machines</h1>
+
+</center>
+
+</TD>
+
+
+
+<TD ALIGN=RIGHT VALIGN=TOP>
+
+   <font size="-1"><a href="../../index.html">Documentation Contents</a></font>
+
+</TD>
+
+</TR>
+
+</TABLE>
+
+
+
+<!-- Body text begins here -->
+
+
+
+<blockquote>
+Two implementations of the Java virtual machine are available for 
+J2SE 1.3:
+<blockquote>
+<a href="#client">Java HotSpot<sup><font size=-2>TM</font></sup> Client VM</a> 
+<br><a href="#server"><a href="#server">Java HotSpot Server VM</a> 
+</blockquote>
+The Solaris and Linux versions of J2SE 1.3 
+ship with both VM implementations.  The Win32 version of J2SE 1.3 
+contains only the Java HotSpot Client VM.  The Java HotSpot Server VM 
+for Win32 platforms is available as a separate download from the 
+<a href="http://java.sun.com/products/hotspot">Java HotSpot web site</a>.
+<p>
+Some features of Java HotSpot technology, common to both VM implementations, 
+are the following. 
+<ul>
+<li><em>Adaptive compiler</em> - Applications are launched using a standard interpreter, but the code is then analyzed 
+as it runs to detect performance bottlenecks, or "hot spots". 
+The Java HotSpot Client VM compiles those performance-critical portions of the code for a boost 
+in performance, while avoiding unnecessary compilation of seldom-used 
+code (most of the program). The Client VM also 
+uses the adaptive compiler to decide, on the fly, how best to optimize 
+compiled code with techniques such as in-lining. The runtime analysis 
+performed by the compiler allows it to eliminate guesswork in determining 
+which optimizations will yield the largest performance benefit.
+<p>
+<li><em>Improved memory allocation and garbage collection</em> - 
+The Java HotSpot Client VM allocates memory for objects 
+more quickly than the classic virtual machine. 
+The Client VM also  
+has a state-of-the-art garbage collector that is faster and 
+more efficient than the garbage collector of the classic VM.  
+<p>
+<li><em>Thread synchronization</em> - The Java programming language 
+allows for use of multiple, concurrent paths of program execution 
+(called "threads").  The Java HotSpot Client VM provides a 
+leaner, speedier 
+thread-handling capability that is designed to scale readily for use 
+in large, shared-memory multiprocessor servers.  
+</ul>
+More information about Java HotSpot technology can be found in 
+<blockquote>
+<a href="http://java.sun.com/products/hotspot/whitepaper.html">Java 
+HotSpot Architeture white paper</a><br>
+<a href="http://java.sun.com/products/hotspot/docs/general/hs2.html">The Java HotSpot Server VM: The Solution for Reliable, Secure Performance for the Enterprise</a>
+</blockquote>
+<a name="client">
+<h3>The Java HotSpot Client VM</h3></a>
+The Java HotSpot Client Virtual Machine<b>*</b> serves as a replacement for both 
+the "classic" virtual machine and the Just-in-time (JIT) compilers used by 
+previous versions of the Java 2 SDK to offer improved runtime performance 
+for applications and applets.  The Java HotSpot Client VM has 
+been specially tuned to reduce application start-up time and memory 
+footprint, making it particulary well suited for client environments. 
+<p>
+On all platforms, the Java application launcher (the <tt>java</tt> utility) 
+will use Java HotSpot Client VM by default when launching applications.  
+For more information, see
+<ul>
+<li><a href="../../tooldocs/win32/java.html">Java application 
+launcher reference page</a>
+<li><a href="../../tooldocs/win32/appletviewer.html">Appletviewer 
+reference page</a>
+</ul>
+<p>
+<a name="server">
+<h3>Java HotSpot Server VM</h3></a>
+The Java HotSpot Server VM is similar to the Java HotSpot Client VM, 
+except that it has been specially tuned to maximize peak operating speed. 
+It is intended for running long-running server applications, for which 
+having the fastest possible operating speed is generally more important 
+than having the fastest possible start-up time.
+<p>
+The Solaris and Linux versions of J2SE 1.3 ship with the Java HotSpot 
+Server VM pre-installed.  The Java HotSpot Server VM for Win32 platforms 
+is available as a separate download from the 
+<a href="http://java.sun.com/products/hotspot">Java HotSpot web site</a>. 
+<p>
+To invoke the Java HotSpot Server VM rather than the default Java HotSpot 
+Client VM, use the <tt>-server</tt> option of the Java application launcher. 
+For example:
+<blockquote><pre>
+java -server MyApp
+</pre></blockquote>
+</blockquote>
+
+
+
+<!-- Body text ends here -->
+
+<!-- ============================================================== -->
+<B>*As used on this web site, the terms "Java virtual machine" or "JVM" 
+mean a virtual machine for the Java platform.</B>
+<HR SIZE=3 NOSHADE>
+
+
+
+<TABLE BORDER="0" WIDTH="100%">
+
+<TR VALIGN=TOP>
+
+
+
+<TD>
+
+<P><FONT SIZE="-2">
+
+   <A HREF="../../relnotes/SMICopyright.html">Copyright &#169;</A> 1999, 2000
+
+   <A HREF="http://www.sun.com/">Sun Microsystems, Inc.</A>
+
+    All Rights Reserved.</FONT></P>
+
+   <br>
+
+   <br>
+
+
+
+<FONT SIZE="-1">
+Please send comments to:
+<a href="mailto:jdk-comments@eng.sun.com">jdk-comments@eng.sun.com</a>
+</FONT>
+
+</TD>
+
+
+
+<TD ALIGN=RIGHT>
+
+   <IMG SRC="../../images/sunlogo64x30.gif" ALT="Sun" BORDER=0 WIDTH=64 HEIGHT=30>
+
+
+
+</TD>
+
+
+
+</TR>
+
+</TABLE>
+
+<pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+
+</BODY>
+
+</HTML>
+
+
+

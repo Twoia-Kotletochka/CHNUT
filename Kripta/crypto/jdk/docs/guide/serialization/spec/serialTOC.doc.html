@@ -1,0 +1,357 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification:  - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="changelog.doc.html">PREV</a>
+ | <a href="serial-arch.doc.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+<a name="1322"><!-- --></a>
+<center><h1> Table of Contents</h1></center>
+<hr><p>
+<dl>
+<dt></dt>
+<dd><br>
+<a href="serial-arch.doc.html">
+<b><font size="+2">
+	1	 
+System Architecture</font></b></a>
+<dl>
+<dt></dt>
+<dd>
+<b>	1.1	 
+<a href="serial-arch.doc1.html">Overview</a>
+</b>
+
+<dd>
+<b>	1.2	 
+<a href="serial-arch.doc2.html#4176">Writing to an Object Stream</a>
+</b>
+
+<dd>
+<b>	1.3	 
+<a href="serial-arch.doc3.html#4188">Reading from an Object Stream</a>
+</b>
+
+<dd>
+<b>	1.4	 
+<a href="serial-arch.doc4.html#962">Object Streams as Containers</a>
+</b>
+
+<dd>
+<b>	1.5	 
+<a href="serial-arch.doc5.html#6250">Defining Serializable Fields for a Class</a>
+</b>
+
+<dd>
+<b>	1.6	 
+<a href="serial-arch.doc6.html#5251">Documenting Serializable Fields and Data for a Class</a>
+</b>
+
+<dd>
+<b>	1.7	 
+<a href="serial-arch.doc7.html#5253">Accessing Serializable Fields of a Class</a>
+</b>
+
+<dd>
+<b>	1.8	 
+<a href="serial-arch.doc8.html#4542">The ObjectOutput Interface</a>
+</b>
+
+<dd>
+<b>	1.9	 
+<a href="serial-arch.doc9.html#4548">The ObjectInput Interface</a>
+</b>
+
+<dd>
+<b>	1.10	 
+<a href="serial-arch.doc10.html#4539">The Serializable Interface</a>
+</b>
+
+<dd>
+<b>	1.11	 
+<a href="serial-arch.doc11.html#4333">The Externalizable Interface</a>
+</b>
+
+<dd>
+<b>	1.12	 
+<a href="serial-arch.doc12.html#6469">Protecting Sensitive Information</a>
+</b>
+
+</dl>
+<dd><br>
+<a href="output.doc.html">
+<b><font size="+2">
+	2	 
+Object Output Classes</font></b></a>
+<dl>
+<dt></dt>
+<dd>
+<b>	2.1	 
+<a href="output.doc1.html#933">The ObjectOutputStream Class</a>
+</b>
+
+<dd>
+<b>	2.2	 
+<a href="output.doc2.html#5068">The ObjectOutputStream.PutField Class</a>
+</b>
+
+<dd>
+<b>	2.3	 
+<a href="output.doc3.html#861">The writeObject Method</a>
+</b>
+
+<dd>
+<b>	2.4	 
+<a href="output.doc4.html#3146">The writeExternal Method</a>
+</b>
+
+<dd>
+<b>	2.5	 
+<a href="output.doc5.html#5324">The writeReplace Method</a>
+</b>
+
+<dd>
+<b>	2.6	 
+<a href="output.doc6.html#4787">The useProtocolVersion Method</a>
+</b>
+
+</dl>
+<dd><br>
+<a href="input.doc.html">
+<b><font size="+2">
+	3	 
+Object Input Classes</font></b></a>
+<dl>
+<dt></dt>
+<dd>
+<b>	3.1	 
+<a href="input.doc1.html#961">The ObjectInputStream Class</a>
+</b>
+
+<dd>
+<b>	3.2	 
+<a href="input.doc2.html#4936">The ObjectInputStream.GetField Class</a>
+</b>
+
+<dd>
+<b>	3.3	 
+<a href="input.doc3.html#3403">The ObjectInputValidation Interface</a>
+</b>
+
+<dd>
+<b>	3.4	 
+<a href="input.doc4.html#2971">The readObject Method</a>
+</b>
+
+<dd>
+<b>	3.5	 
+<a href="input.doc5.html#6014">The readExternal Method</a>
+</b>
+
+<dd>
+<b>	3.6	 
+<a href="input.doc6.html#5903">The readResolve Method</a>
+</b>
+
+</dl>
+<dd><br>
+<a href="class.doc.html">
+<b><font size="+2">
+	4	 
+Class Descriptors</font></b></a>
+<dl>
+<dt></dt>
+<dd>
+<b>	4.1	 
+<a href="class.doc1.html#5082">The ObjectStreamClass Class</a>
+</b>
+
+<dd>
+<b>	4.2	 
+<a href="class.doc2.html#5419">Dynamic Proxy Class Descriptors</a>
+</b>
+
+<dd>
+<b>	4.3	 
+<a href="class.doc3.html#5421">Serialized Form</a>
+</b>
+
+<dd>
+<b>	4.4	 
+<a href="class.doc4.html#3127">The ObjectStreamField Class</a>
+</b>
+
+<dd>
+<b>	4.5	 
+<a href="class.doc5.html#5023">Inspecting Serializable Classes</a>
+</b>
+
+<dd>
+<b>	4.6	 
+<a href="class.doc6.html#4100">Stream Unique Identifiers</a>
+</b>
+
+</dl>
+<dd><br>
+<a href="version.doc.html">
+<b><font size="+2">
+	5	 
+Versioning of Serializable Objects</font></b></a>
+<dl>
+<dt></dt>
+<dd>
+<b>	5.1	 
+<a href="version.doc1.html">Overview</a>
+</b>
+
+<dd>
+<b>	5.2	 
+<a href="version.doc2.html">Goals</a>
+</b>
+
+<dd>
+<b>	5.3	 
+<a href="version.doc3.html">Assumptions</a>
+</b>
+
+<dd>
+<b>	5.4	 
+<a href="version.doc4.html#4602">Who's Responsible for Versioning of Streams</a>
+</b>
+
+<dd>
+<b>	5.5	 
+<a href="version.doc5.html#6519">Compatible Java<sup><font size="-2">TM</font></sup> Type Evolution</a>
+</b>
+
+<dd>
+<b>	5.6	 
+<a href="version.doc6.html#6678">Type Changes Affecting Serialization</a>
+</b>
+
+</dl>
+<dd><br>
+<a href="protocol.doc.html">
+<b><font size="+2">
+	6	 
+Object Serialization Stream Protocol</font></b></a>
+<dl>
+<dt></dt>
+<dd>
+<b>	6.1	 
+<a href="protocol.doc1.html">Overview</a>
+</b>
+
+<dd>
+<b>	6.2	 
+<a href="protocol.doc2.html#8299">Stream Elements</a>
+</b>
+
+<dd>
+<b>	6.3	 
+<a href="protocol.doc3.html#5849">Stream Protocol Versions</a>
+</b>
+
+<dd>
+<b>	6.4	 
+<a href="protocol.doc4.html#10258">Grammar for the Stream Format</a>
+</b>
+
+</dl>
+<dd><br>
+<a href="security.doc.html">
+<b><font size="+2">
+	A	 
+Security in Object Serialization</font></b></a>
+<dl>
+<dt></dt>
+<dd>
+<b>	A.1	 
+<a href="security.doc1.html">Overview</a>
+</b>
+
+<dd>
+<b>	A.2	 
+<a href="security.doc2.html#2630">Design Goals</a>
+</b>
+
+<dd>
+<b>	A.3	 
+<a href="security.doc3.html#4169">Security Issues</a>
+</b>
+
+<dd>
+<b>	A.4	 
+<a href="security.doc4.html#4214">Preventing Serialization of Sensitive Data</a>
+</b>
+
+<dd>
+<b>	A.5	 
+<a href="security.doc5.html#4229">Writing Class-Specific Serializing Methods</a>
+</b>
+
+<dd>
+<b>	A.6	 
+<a href="security.doc6.html#4271">Guarding Unshared Deserialized Objects</a>
+</b>
+
+<dd>
+<b>	A.7	 
+<a href="security.doc7.html#4324">Preventing Overwriting of Externalizable Objects</a>
+</b>
+
+<dd>
+<b>	A.8	 
+<a href="security.doc8.html#4346">Encrypting a Bytestream</a>
+</b>
+
+</dl>
+<dd><br>
+<a href="exceptions.doc.html">
+<b><font size="+2">
+	B	 
+Exceptions In Object Serialization</font></b></a><dd><br>
+<a href="examples.doc.html">
+<b><font size="+2">
+	C	 
+Example of Serializable Fields</font></b></a>
+<dl>
+<dt></dt>
+<dd>
+<b>	C.1	 
+<a href="examples.doc1.html#4420">	Example Alternate Implementation of <tt>java.io.File</tt></a>
+</b>
+
+</dl>
+</dl>
+
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="changelog.doc.html">PREV</a>
+ | <a href="serial-arch.doc.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:47:46 1999 -->
+ 
+
+
+</body>
+</html>

@@ -1,0 +1,205 @@
+<HTML>
+
+<TITLE>Font Overview</TITLE>
+
+<BODY BGCOLOR="#FFFFFF" TEXT=#000000 LINK=#0000ff VLINK=#000077 ALINK=#ff0000>
+
+<hr>
+<center>
+<h1>Font Overview</h1>
+</center>
+
+<hr>
+<h3>Contents</h3>
+<blockquote><b>
+<a href=#fonts>Physical Fonts and Logical Fonts</a><br>
+<a href=#props>The font.properties Files</a><br>
+<a href=#location>Location of Physical Fonts</a><br>
+<a href=#adding>Adding Fonts</a>
+</b></blockquote>
+<p>
+<a name=fonts>
+<h3>Physical Fonts and Logical Fonts</h3></a>
+<blockquote>
+There are two types of fonts -- <em>physical</em> fonts and 
+<em>logical</em> fonts.  Physical fonts are the actual font 
+libraries consisting of, for example, TrueType or PostScript 
+Type 1 fonts.  The physical fonts may be Time, Helvetica, 
+Courier, or any number of other fonts, including 
+international fonts.  For more information, see 
+<a href=physicalfont.html><b>Physical Fonts</b></a>.
+<p>
+Logical fonts are the five font types that have been recognized 
+by the Java platform since version 1.0: Serif, Sans-serif, 
+Monospaced, Dialog, and DialogInput. These logical fonts are 
+not actual font libraries that are installed anywhere on your 
+system.  They are merely font-type names recognized 
+by the Java runtime which must be mapped to some physical 
+font that is installed on your system.  In addition to the 
+five logical font types, the Java runtime recognizes four 
+logical font styles: plain, bold, italic, and bolditalic.
+</blockquote>
+<a name=props>
+<h3>The font.properties Files</h3></a>
+<blockquote>
+The mapping of logical font types (and styles) to physical fonts 
+is handled by the font.properties files. The font.properties files 
+are located in the <tt>jre/lib</tt> directory of the Java 2 SDK 
+or the <tt>lib</tt> directory of the Java 2 Runtime Environment. 
+Because the physical fonts available will depend on the 
+operating system and the locale, the SDK and Runtime Environments 
+come with a variety of font.properties files for different 
+locales and (in the case of the Solaris operating system) for 
+different operating system versions.
+<p>
+When an application or applet wants to invoke a font by using 
+a logical name such as Serif or Monospace, the runtime environment 
+looks up in the font.properties file the physical font that is 
+mapped to that logical name and then loads and uses that physical 
+font. For example, on both Solaris 2.6/2.7 and Microsoft Windows 
+operating systems, the font.properties file maps the 
+Serif logical font to the Times New Roman physical font.  This 
+means that the following two constructors would create the same 
+font:
+<blockquote><pre>
+new Font("Serif", Font.PLAIN, 12)  // Logical font name is mapped 
+                                   // to Times New Roman by 
+                                   // font.properties file
+
+new Font("Times New Roman", Font.PLAIN, 12) // Physical font is 
+                                            // invoked directly; 
+                                            // no need for mapping
+</pre></blockquote>
+Here we see that the first (String) parameter in the Font constructor 
+can be either a logical font type or the family 
+name of a physical font.  Available font family names may be obtained 
+by using the <a href="../../api/java/awt/GraphicsEnvironment.html#getAvailableFontFamily
+Names()"><code>getAvailableFontFamilyNames</code></a> method of 
+class <tt>java.awt.Graphdics Environment</tt>. 
+</blockquote>
+
+<a name=location>
+<h3>Location of Physical Fonts</h3></a>
+<blockquote>
+Physical font files can be installed in either an operating system's 
+standard location for fonts or in the <tt>jre/lib/fonts</tt> library 
+of the Java 2 SDK (or in the <tt>lib/fonts</tt> directory of the 
+Java 2 Runtime Environment).  Fonts in either the operating system's 
+standard location or in the <tt>lib/font</tt> directory will be 
+on the Java runtime's "font path" and can be used by applications 
+and applets. 
+</blockquote>
+
+<a name=adding>
+<h3>Adding Fonts</h3></a>
+<blockquote>
+The following TrueType fonts come already installed in the Java 2 
+SDK's <tt>jre/lib/font</tt> directory.
+<blockquote><pre>
+LucidaBrightDemiBold.ttf
+LucidaBrightDemiItalic.ttf
+LucidaBrightItalic.ttf
+LucidaBrightRegular.ttf
+LucidaSansDemiBold.ttf
+LucidaSansDemiOblique.ttf
+LucidaSansOblique.ttf
+LucidaSansRegular.ttf
+LucidaTypewriterBold.ttf
+LucidaTypewriterBoldOblique.ttf
+LucidaTypewriterOblique.ttf
+LucidaTypewriterRegular.ttf
+</pre></blockquote>
+
+In addition, many are fonts pre-installed on Microsoft Windows and 
+Solaris operating systems.  Other fonts can be easily added.  
+The additional fonts may be installed by the operating system so 
+that they are placed in the operating system's standard font location. 
+For example, Asian fonts are available for Win32 systems from 
+Microsoft's web site and on the Windows NT 4.0 installation CD-ROM.  
+The Win32 operating systems will install these fonts in the 
+standard location for fonts.  These fonts can then be found by the 
+Java runtime.
+<p>
+Another option for installing fonts is for the user to place the 
+fonts directory in the SDK's <tt>jre/lib/font</tt> directory 
+(or the Runtime Environment's <tt>lib/font</tt> directory).  Fonts 
+located there will also be found by the Java runtime.  
+Files placed in <tt>jre/lib/font</tt> directory must be Unicode 
+encoded TrueType fonts.
+<p>
+It is not necessary to edit the font.properties files after 
+you have added new fonts to your system.  You can invoke the 
+new font directly by using its font family name. 
+You would need to edit the font.properties files only in the 
+situation in which you wanted to map one of the logical 
+font types (Serif, Sans-serif, Monospace, Dialog, and 
+DialogInput) to a new font, or if you want to make some locale-specific 
+mapping.  For information on editing the font.proprerties files, see 
+<a href=fontprop.html><b>Editing the font.properites Files</b></a>
+</blockquote>
+<!-- ============================================================== -->
+
+<HR SIZE=3 NOSHADE>
+
+
+
+<TABLE BORDER="0" WIDTH="100%">
+
+<TR VALIGN=TOP>
+
+
+
+<TD>
+
+<P><FONT SIZE="-2">
+
+   <A HREF="../../relnotes/SMICopyright.html">Copyright</A> &#169; 2000
+
+   <A HREF="http://www.sun.com/">Sun Microsystems, Inc.</A>
+
+    All Rights Reserved.</FONT></P>
+
+</TD>
+
+
+
+<TD ALIGN=RIGHT>
+
+   <IMG SRC="../../images/sunlogo64x30.gif" ALT="Sun" BORDER=0 WIDTH=64 HEIGHT=30>
+
+   <BR>
+
+   <FONT SIZE="+1">
+
+   <i>Java Software</i>
+
+   </FONT>
+
+</TD>
+
+</TR>
+
+</TABLE>
+<pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</BODY>
+</HTML>
+

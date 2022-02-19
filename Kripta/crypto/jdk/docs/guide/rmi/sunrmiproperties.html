@@ -1,0 +1,269 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML EXPERIMENTAL 970324//EN">
+<HTML>
+<HEAD>
+<META NAME="GENERATOR" CONTENT="Adobe FrameMaker 5.5/HTML Export Filter">
+<TITLE>sun.rmi Properties</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#ffffff"><center><h1><b><code>sun.rmi</code> Properties</b></h1></center>
+<p><br>
+<hr>
+<p>
+WARNING: The properties described here are not supported, can change at
+any time, and only exist in certain implementations of RMI from Sun
+Microsystems<sup><font size=-2>TM</font></sup>. These properties are
+not part of the RMI public API and are documented in this FAQ as a
+debugging aid only.
+</b>
+<p>
+<hr>
+<p>
+<b>Please Note</b>: Unless otherwise stated, any output from these
+properties is sent to <code>System.err</code>. Each of the properties
+that have names ending in "<code>.logLevel</code>" have possible values
+of "<code>SILENT</code>", "<code>BRIEF</code>", and
+"<code>VERBOSE</code>". These values are case insensitive and may be
+abbreviated as a string containing the first <i>n</i> letters, where
+<i>n</i> is greater than or equal to 1.  If not specified, these
+properties have a default value of "<code>SILENT</code>".  Logging
+messages are sent to <code>System.err</code>. For instance, if a
+property is said to send output to the "transport" log, this means that
+logging messages are sent to a <code>LogStream</code> returned by
+<code>java.rmi.server.LogStream.log("transport")</code>, which sends
+messages to <code>System.err</code>, unless you've set it to something
+else.
+<p>
+<hr>
+<h2>Properties that can be set on <code>rmid</code></h2>
+
+<blockquote>
+<dl>
+<b><code>sun.rmi.activation.execTimeout</b></code> (1.2 and later)</dt> 
+	<dd> The value of this property represents the time (in
+	milliseconds) that the activation system will wait for a
+	spawned activation group to start up.  Setting this property
+	gives you the ability to shorten or lengthen the maximum time
+	that <code>rmid</code> will wait for an activation group to
+	start up. The default value is 30000 milliseconds (30
+	seconds).</dd>
+<p>
+<dt><b><code>sun.rmi.activation.snapshotInterval</b></code> (1.2 and
+later)</dt>
+	<dd> This property controls the number of updates for which the
+	activation system will wait before it serializes a snapshot of
+	its state to the <code>rmid</code> log file on disk. An
+	"update" refers to a persistent change in the state of the
+	activation system (for example, the registration of an
+	<code>Activatable</code> object) since the last snapshot was
+	taken. Changing the value of this property can be used to make
+	<code>rmid</code> re-start more quickly (by taking snapshots of
+	the log more often) or to make <code>rmid</code> more efficient
+	(by taking snapshots of the log less often). The value of this
+	property is a positive integer value.  The default value is
+	200.</dd>
+<p>
+<dt><b><code>sun.rmi.log.debug</b></code> (1.2 and later)</dt> 
+	<dd> If this value is <code>true</code>, details of
+	<code>rmid</code>'s logging activity are sent to
+	<code>System.err</code>.</dd>
+<p>
+<dt><b><code>sun.rmi.rmid.maxstartgroup</b></code> (1.2 and later)</dt> 
+	<dd> The value of this property represents the maximum number
+	of activation group VMs that <code>rmid</code> will allow to be in the
+	"spawning but not yet active" state simultaneously.  If more
+	VMs need to be started, they will queue up until one of the
+	current spawn attempts either succeeds or times out.  Note that
+	this property does not limit the maximum number of active VMs;
+	it is intended to smooth out sudden spikes of activity to avoid
+	reaching operating system limits. While setting the value of
+	this property to a lower number may result in a longer start-up
+	time for <code>rmid</code>, and setting the value to a higher
+	number could shorten the start-up time, setting this value too
+	high can crash <code>rmid</code>, because your system may run
+	out of resources. The default value is 3. </dd>
+
+<p>
+<dt><b><code>sun.rmi.server.activation.debugExec</b></code> (1.2 and later)</dt>
+	<dd> If this value is <code>true</code>, the activation system
+	will print out debugging information to the command line that
+	is used for spawning activation groups.  By default, the value
+	is <code>false</code>, so debugging information is not
+	printed.</dd>
+<p>
+</dl>
+</blockquote>
+
+<h2>Properties that are useful to set on JVMs<sup><font
+size=-2>*</font></sup> that export remote objects </h2>
+
+
+<blockquote>
+<dl>
+<dt><b><code>sun.rmi.dgc.checkInterval</b></code> (1.1 and later)</dt> 
+	<dd> The value of this property represents (in milliseconds)
+	how often the RMI runtime checks for expired DGC leases.  The
+	default value is 300000 milliseconds (5 minutes).</dd>
+<p>
+<dt><b><code>sun.rmi.dgc.logLevel</b></code> (1.1 and later)</dt> 
+	<dd> This property controls the logging of incoming and
+	outgoing calls related to DGC lease granting, renewing, and
+	expiration.  It sends output to the "dgc" log.</dd>
+
+<p>
+<dt><b><code>sun.rmi.dgc.server.gcInterval</b></code> (1.2 and later)</dt> 
+	<dd> When it is necessary to ensure that unreachable remote
+	objects are unexported and garbage collected in a timely
+	fashion, the value of this property represents the maximum
+	interval (in milliseconds) that the RMI runtime will allow
+	between garbage collections of the local heap. The default
+	value is 60000 milliseconds (60 seconds).</dd>
+<p>
+<dt><b><code>sun.rmi.loader.logLevel</b></code> (1.2 and later)</dt> 
+	<dd> This property controls the logging of each class name and
+	codebase, whenever the RMI runtime attempts to load a class as
+	a result of unmarshalling either an argument or return value.
+	Please note that the codebase that is printed is the
+	<i>annotated</i> codebase, but may not necessarily be the
+	actual codebase from which the class gets loaded; the RMI class
+	loader defers the class loading to the current thread's context
+	class loader, which may load the class from the CLASSPATH,
+	rather than the annotated codebase. This property sends output
+	to the "loader" log.</dd>
+<p>
+<a name="et"></a>
+<dt><b><code>sun.rmi.server.exceptionTrace</b></code> (1.2 and later)</dt> 
+	<dd> This property controls the output of server-side stack
+	traces from exceptions and errors that are thrown by
+	dispatched, incoming remote calls.  If this value is
+	<code>true</code>, exception stack traces will be printed. By
+	default (<code>false</code>), exception and error stack traces
+	are not printed.</dd>
+<p>
+<dt><b><code>sun.rmi.transport.logLevel</b></code> (1.1 and later)</dt> 
+	<dd> This property controls detailed logging throughout the
+	transport layer.  It sends output to the "transport" log.</dd>
+<p>
+<dt><b><code>sun.rmi.transport.tcp.localHostNameTimeOut</b></code> (1.1.7 and later)</dt> 
+	<dd> The value of this property represents the time (in
+	milliseconds) that the RMI runtime will wait to obtain a fully
+	qualified domain name for the local host. The default value is
+	10000 milliseconds (10 seconds).</dd>
+<p>
+<dt><b><code>sun.rmi.transport.tcp.logLevel</b></code> (1.1 and later)</dt> 
+	<dd> This property provides detailed logging for the
+	TCP-specific transport sub-layer.  It sends output to the "tcp"
+	log.</dd>
+<p>
+<a name=readTimeout></a>
+<dt><b><code>sun.rmi.transport.tcp.readTimeout</b></code> (1.2.2 and later)</dt>
+	<dd> The value of this property represents the time (in
+	milliseconds) used as an idle timeout for incoming RMI-TCP
+	connections. The value is passed to
+	<code>java.net.Socket.setSoTimeout</code>. This property is
+	used only for cases where a client has not dropped an unused
+	connection as it should (see <a href="#connectionTimeout"><i>
+	<code>sun.rmi.transport.connectionTimeout</b></a></i></code>). The
+	default value is 2*3600*1000 milliseconds (2 hours).</dd>
+
+</blockquote>
+</dl>
+
+<h2>Properties that are useful to set on JVMs that make remote method
+calls</h2>
+<blockquote>
+<dl>
+<dt><b><code>sun.rmi.dgc.cleanInterval</b></code> (1.1 and later)</dt> 
+	<dd> The value of this property represents the maximum length
+	of time (in milliseconds) that the RMI runtime will wait before
+	retrying a failed DGC "clean" call. The default value is 180000
+	milliseconds (3 minutes).</dd>
+<p>
+<dt><b><code>sun.rmi.dgc.client.gcInterval</b></code> (1.2 and later) 
+	<dd>When it is necessary to ensure that DGC clean calls for
+	unreachable remote references are delivered in a timely
+	fashion, the value of this property represents the maximum
+	interval (in milliseconds) that the RMI runtime will allow
+	between garbage collections of the local heap.  The default
+	value is 60000 milliseconds (60 seconds).</dd>
+<p>
+<dt><b><code>sun.rmi.loader.logLevel</b></code> (1.2 and later)</dt> 
+	<dd> This property controls the logging of each class name and
+	codebase, whenever the RMI runtime attempts to load a class as
+	a result of unmarshalling either an argument or return value.
+	Please note that the codebase that is printed is the
+	<i>annotated</i> codebase, but may not necessarily be the
+	actual codebase from which the class gets loaded; the RMI class
+	loader defers the class loading to the current thread's context
+	class loader, which may load the class from the CLASSPATH,
+	rather than the annotated codebase. This property sends output
+	to the "loader" log.</dd>
+<p>
+<dt><b><code>sun.rmi.server.logLevel</b></code> (1.1 and later)</dt> 
+	<dd> This property controls the logging of information related
+	to outgoing calls, including some connection-reuse
+	information.  It sends output to the "transport" log.</dd>
+<p>
+<a name="connectionTimeout"></a>
+<dt><b><code>sun.rmi.transport.connectionTimeout</b></code> (1.1.6 and later)</dt>
+	<dd> The value of this property represents the period (in
+	milliseconds) for which RMI socket connections may reside in an
+	"unused" state, before the RMI runtime will allow those
+	connections to be freed (closed). The default value is 15000
+	milliseconds (15 seconds). See also <a href="#readTimeout">
+	<i><code>sun.rmi.transport.tcp.readTimeout</b></a></code></i>.</dd>
+<p>
+<dt><b><code>sun.rmi.transport.logLevel</b></code> (1.1 and later)</dt> 
+	<dd> This property controls detailed logging throughout the
+	transport layer.  It sends output to the "transport" log.</dd>
+<p>
+<dt><b><code>sun.rmi.transport.proxy.connectTimeout</b></code> (1.1 and later)</dt> 
+	<dd> The value of this property represents the maximum length
+	of time (in milliseconds) that the RMI runtime will wait for a
+	connection attempt (<code>createSocket</code>) to complete,
+	before attempting to contact the server using HTTP. This
+	property is only used when the <code>http.proxyHost</code>
+	property is set and the value of
+	<code>java.rmi.server.disableHttp</code> is <code>false</code>.
+	The default value is 15000 milliseconds (15 seconds).</dd>
+<p>
+<dt><b><code>sun.rmi.transport.proxy.logLevel</b></code> (1.1 and later)</dt>
+	<dd> This property controls the logging of events
+	(<code>createSocket</code> and <code>createServerSocket</code>)
+	when the default <code>RMISocketFactory</code> class is used.
+	This type of logging is likely to be useful for applications
+	that use RMI over HTTP. Events in custom socket factories are
+	not logged by this property.  It sends some messages to the
+	"proxy" log, and others to the "transport" log.</dd>
+<p>
+<dt><b><code>sun.rmi.transport.tcp.logLevel</b></code> (1.1 and later)</dt> 
+	<dd> This property provides detailed logging for the
+	TCP-specific transport sub-layer.  It sends output to the "tcp"
+	log.</dd>
+
+</blockquote>
+</dl>
+We are very interested in knowing whether this information is useful.
+Please send any comments or suggestions to: <A
+HREF="mailto:rmi-comments@java.sun.com"><code>rmi-comments@java.sun.com</code></A>,
+with a subject of "sun.rmi properties FAQ".
+<p>
+
+<B>*As used on this web site, the terms "Java(TM) virtual machine" or "JVM" 
+	mean a virtual machine for the Java platform.</B>
+
+
+<!-- Body text ends here -->
+<!-- ============================================================== -->
+<HR SIZE=3 NOSHADE>
+<TABLE BORDER=0 WIDTH="100%" >
+<TR VALIGN=TOP>
+<TD><FONT SIZE=-2><A HREF="../../relnotes/SMICopyright.html">Copyright &copy;</A>
+2000 <A HREF="http://www.sun.com/">Sun Microsystems, Inc.</A> All Rights
+Reserved.</FONT>&nbsp;
+<BR><FONT SIZE=-1>Please send comments to: <A HREF="mailto:rmi-comments@java.sun.com"><code>rmi-comments@java.sun.com</code></A>&nbsp;</FONT></TD>
+
+<TD ALIGN=RIGHT><IMG SRC="../../images/sunlogo64x30.gif" ALT="Sun" BORDER=0 HEIGHT=30 WIDTH=64>&nbsp;
+</TR>
+</TABLE>
+</BODY>
+</HTML>

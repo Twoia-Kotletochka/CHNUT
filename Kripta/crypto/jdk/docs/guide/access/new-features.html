@@ -1,0 +1,291 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+
+<HTML>
+
+<HEAD>
+
+     <TITLE>Accessibility - New Features</TITLE>
+
+</HEAD>
+
+
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" VLINK="#000077" ALINK="#FF0000">
+
+
+
+<TABLE BORDER="0" WIDTH="100%">
+
+<TR>
+
+<TD WIDTH="60">
+
+
+
+   <IMG SRC="../../images/javalogo52x88.gif" ALT="Java" BORDER=0 WIDTH=52 HEIGHT=88>
+
+
+
+</TD>
+
+
+
+<TD>
+
+<center>
+
+           <h1>Accessibility</h1>
+<h3>New Features in the Java<sup><font size=-2>TM</font></sup> 2 Platform, v1.3</h3>
+
+</center>
+
+</TD>
+
+
+
+<TD ALIGN=RIGHT VALIGN=TOP>
+
+   <font size="-1"><a href="../../index.html">Java 2 SDK Contents</a></font>
+
+</TD>
+
+</TR>
+
+</TABLE>
+
+
+
+<!-- Body text begins here -->
+
+
+
+
+<blockquote>
+<h3>Contents</h3>
+<a href="#api">API Enhancements</a><br>
+<a href="#icon">Accessible Icon</a><br>
+<a href="#relation">Accessible Relation and Accessible Relation Set</a><br>
+<a href="#table">Accessible Table</a><br>
+<a href="#model">Accessible Table Model Change</a><br>
+<a href="#lightweight">AWT Accessibility Support for Lightweight Components</a><br>
+<a href="#applet">Accessible Applet</a><br>
+<a href="#robot">AWT Robot</a><br>
+
+<a name=api>
+<h3>API Enhancements</h3></a>
+
+The following new classes and interfaces have been added to the 
+Java<sup><font size=-2>TM</font></sup> Accessibility API in version 1.3 
+of the Java 2 Platform:
+<ul><b>
+<li><a href="../../api/javax/accessibility/AccessibleIcon.html">javax.accessibility.AccessibleIcon</a>
+<li><a href="../../api/javax/accessibility/AccessibleRelation.html">javax.accessibility.AccessibleRelation</a>
+<li><a href="../../api/javax/accessibility/AccessibleRelationSet.html">javax.accessibility.AccessibleRelationSet</a>
+<li><a href="../../api/javax/accessibility/AccessibleTable.html">javax.accessibility.AccessibleTable</a>
+<li><a href="../../api/javax/accessibility/AccessibleTableModelChange.html">javax.accessibility.AccessibleTableModelChange</a>
+</b></ul>
+In addition, <b><a href="../../api/javax/accessibility/AccessibleContext.html">javax.accessibility.AccessibleContext</a></b> was updated to reflect the new 
+classes and interfaces.
+
+<a name=icon>
+<h3>Accessible Icon</h3></a>
+
+<a href="../../api/javax/accessibility/AccessibleIcon.html"><b>AccessibleIcon</b></a> provides information about an icon's description and dimension. It 
+also allows these properties to be set by the application developer. 
+This feature is implemented by Swing icons.
+<p>
+
+<a name=relation>
+<h3>Accessible Relation and Accessible Relation Set</h3></a>
+
+<a href="../../api/javax/accessibility/AccessibleRelation.html"><b>AccessibleRelation</b></a> and <a href="../../api/javax/accessibility/AccessibleRelationSet.html"><b>AccessibleRelationSet</b></a> provide information about the ways user
+interface objects are related to each other. Each relation is captured in an
+AccessibleRelation object, and the full set of relations that any given user
+interface object is involved in are expressed in that object's
+AccessibleRelationSet.
+<p>
+Unlike most of the rest of the Accessibility
+API, there is currently no built-in support for having AccessibleRelations
+set automatically by Swing. This means that even if a programmer is doing
+nothing out of the ordinary - using
+standard components in standard ways - the AccessibleRelation information
+will have to be specifically included by the programmer.
+<p>
+The only exception to this is if the programmer uses the
+<a href="../../api/javax/swing/JLabel.html#setLabelFor(java.awt.Component)"><b>JLabel.setLabelFor()</b></a> method to link a label to the thing it 
+labels. This will cause an accessible relationship to be created.
+
+<a name=table>
+<h3>Accessible Table</h3></a>
+
+<a href="../../api/javax/accessibility/AccessibleTable.html"><b>AccessibleTable</b></a> provides information about tables, and is implemented by
+Swing's <a href="../../api/javax/swing/JTable.AccessibleJTable.html"><b>JTable.AccessibleJTable</b></a> class. It allows a range of table-specific 
+attributes to be identified adn manipulated.  Such properties include 
+text selections, the first and last row and column of the table, 
+its total number of rows and columns, the text of its captions and 
+headers, and other descriptions about its contents and format. As in 
+the AccessibleIcon interface, these kinds of properties (descriptions, 
+captions, and headers) can be set or modified by users and developers.
+
+<a name=model>
+<h3>Accessible Table Model Change</h3></a>
+
+<a href="../../api/javax/accessibility/AccessibleTableModelChange.html"><b>AccessibleTableModelChange</b></a> is a helper class which
+encapsulates a change to the model of a table. Such changes can inlcude 
+insertions, deletions, and data updates.
+
+<a name=lightweight>
+<h3>AWT Accessibililty Support for Lightweight Components</h3></a>
+
+The core accessibility support which was provided in the Java 2
+Platform has been moved up the inheritance tree. This means that it is not only
+present in Swing components, it is also part of all lightweight AWT
+components.
+<p>
+Prior to version 1.3 of the Java 2 Platform, if a developer wished to create an accessible custom
+component, s/he had two options.
+<ul>
+<li>To extend one of the Swing components.
+<li>To extend one of the AWT components--a task that involved more work.
+</ul>
+<p>
+Now that accessibility support has been included in both AWT Component and
+AWT Container, the task of implementing the accessibility API on 
+non-Swing components is easier.
+<p>
+It is important to note that this accessibility support has not yet been
+incorporated into AWTList, some portions of AWT Text, AWT Menu, and AWT
+Combobox/Popup Menu. In addition, further work needs to be done in areas
+where the modification of native code is required. For the present, the
+necessary API is there, but it returns a <tt>null</tt> value. It is hoped that
+support for "heavyweight" components will be integrated into subsequent
+versions of the Java 2 Platform.
+
+<a name=applet>
+<h3>Accessible Applet</h3></a>
+
+This work is similar to the changes made for the AWT accessibility support
+described above.
+
+<a name=robot>
+<h3>AWT Robot</h3></a>
+
+The AWT's new <a href=../../api/java/awt/Robot.html>Robot</a> class provides 
+a way to insert keystrokes and mouse events at the system
+level. This feature enhances accessibility because it allows the physical
+on-screen mouse cursor to be moved. This enables screen magnification
+software for native environments to recognize and respond to mouse movements
+that could not previously be identified by assistive technologies outside of
+the virtual machine.
+<p>
+It is important to note that, although this improves overall accessibility,
+it is not a comprehensive solution. For instance, the AWT Robot does not
+allow native assistive technologies to track the focus or the caret.
+
+</blockquote>
+
+
+
+<!-- ============================================================== -->
+
+
+
+<HR SIZE=3 NOSHADE>
+
+
+
+<TABLE BORDER="0" WIDTH="100%">
+
+<TR VALIGN=TOP>
+
+
+
+<TD>
+
+<P><FONT SIZE="-2">
+
+   <A HREF="../../relnotes/SMICopyright.html">Copyright &#169;</A> 1999
+
+   <A HREF="http://www.sun.com/">Sun Microsystems, Inc.</A>
+
+    All Rights Reserved.</FONT></P>
+
+   <FONT SIZE="-1">
+
+   Please send comments to: <a href="mailto:access@sun.com">access@sun.com</a> 
+
+   </FONT>
+
+</TD>
+
+
+
+<TD ALIGN=RIGHT>
+
+   <IMG SRC="../../images/sunlogo64x30.gif" ALT="Sun" BORDER=0 WIDTH=64 HEIGHT=30>
+
+   <BR>
+
+   <FONT SIZE="+1">
+
+   <i>Java Software</i>
+
+   </FONT>
+
+</TD>
+
+
+
+</TR>
+
+</TABLE>
+<pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+
+
+</BODY>
+
+</HTML>
+
+
+

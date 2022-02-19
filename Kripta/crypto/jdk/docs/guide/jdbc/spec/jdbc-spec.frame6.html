@@ -1,0 +1,293 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title></title>
+</head>
+<body bgcolor=#ffffff>
+
+<table width=600><tr>
+<td><font size=-1>
+<a href="jdbc-spec.frame.html">Contents</a>  | <a href="jdbc-spec.frame5.html">Prev</a>  | <a href="jdbc-spec.frame7.html">Next</a>
+</font></td><td align=right><i>JDBC<sup><font size=-2>TM</font></sup> Guide: Getting Started</i></td>
+</tr></table>
+<hr>
+<br>
+ 
+
+<a name="20470"></a>
+<h2>	6	 Database connections</h2>
+
+<a name="4691"></a>
+For the full interface descriptions see the Java interfaces in Chapter <a href="jdbc-spec.frame13.html#4165">13</a>.
+<p>
+
+<a name="4698"></a>
+<h3>6.1 	  &nbsp; &nbsp; Opening a connection</h3>
+<a name="4694"></a>
+When you want to access a database, you may obtain a java.sql.Connection object from the 
+JDBC management layer's java.sql.DriverManager.getConnection method.
+<p>
+<a name="16343"></a>
+The DriverManager.getConnection method takes a URL string as an argument. The JDBC 
+management layer will attempt to locate a driver that can connect to the database represented 
+by the URL. The JDBC management layer does this by asking each driver in turn (see Section 
+<a href="jdbc-spec.frame6.html#16326">6.2</a> below) if it can connect to the given URL.<a href="#25398"><sup>1</sup></a> Drivers should examine the URL to see if it 
+specifies a subprotocol that they support (see Section <a href="jdbc-spec.frame6.html#16290">6.3</a> below), and if so, they should attempt 
+to connect to the specified database. If they succeed in establishing a connection, then they 
+should return an appropriate java.sql.Connection object.
+<p>
+<a name="16314"></a>
+From the java.sql.Connection object it is possible to obtain java.sql.Statement, java.sql.PreparedStatement
+, and java.sql.CallableStatement objects that can be used to execute SQL statement
+s.
+<p>
+<a name="8410"></a>
+We also permit applications to bypass the JDBC management layer during connection open 
+and explicitly select and use a particular driver.
+<p>
+
+<a name="16326"></a>
+<h3>6.2 	  &nbsp; &nbsp; Choosing between drivers</h3>
+<a name="16330"></a>
+It may sometimes be the case that several JDBC drivers are capable of connecting to a given 
+URL. For example, when connecting to a given remote database it might be possible to use either
+a JDBC-ODBC bridge driver, or a JDBC to generic network protocol driver, or to use a 
+driver supplied by the database vendor.
+<p>
+<a name="16331"></a>
+JDBC allows users to specify a driver list by setting a Java property "jdbc.drivers". If this property
+is defined,then it should be a colon separated list of driver class names, such as "acme.wonder.Driver
+:foobaz.openNet.Driver:vendor.OurDriver".
+<p>
+<a name="16358"></a>
+When searching for a driver, JDBC will use the first driver it finds that can successfully connect 
+to the given URL. It will first try to use each of the drivers specified in the sql.drivers list, in 
+the order given. It will then proceed to try to use each loaded driver in the order in which the 
+drivers were loaded. It will skip any drivers which are untrusted code, unless they have been 
+loaded from the same source as the code that is trying to open the connection (see the security 
+discussion in Section <a href="jdbc-spec.frame5.html#4985">5</a>).
+<p>
+
+<a name="16290"></a>
+<h3>6.3 	  &nbsp; &nbsp; URLs</h3>
+
+<a name="8149"></a>
+<h4>	6.3.1	 Goals for JDBC database naming</h4>
+<a name="16549"></a>
+We need to provide a way of naming databases so that application writers can specify which 
+database they wish to connect to.
+<p>
+<a name="16427"></a>
+We would like this JDBC naming mechanism to have the following properties:
+<p>
+<a name="16428"></a>
+<li>Different drivers can use different schemes for naming databases. For example, a 
+JDBC-ODBC bridge driver may support simple ODBC style data source names, 
+whereas a network protocol driver may need to know additional information so it can 
+discover which hostname and port to connect to.
+
+<a name="16441"></a>
+<li>If a user downloads an applet that wants to talk to a given database then we would like 
+to be able to open a database connection without requiring the user to do any system 
+administration chores. Thus for example, we want to avoid requiring an analogue of the 
+human-administered ODBC data source tables on the client machines. This implies that 
+it should be possible to encode any necessary connection information in the JDBC 
+name.
+
+<a name="16461"></a>
+<li>We would like to allow a level of indirection in the JDBC name, so that the initial name 
+may be resolved via some network naming system in order to locate the database. This 
+will allow system administrators to avoid specifying particular hosts as part of the 
+JDBC name. However, since there are a number of different network name services 
+(such as NIS, DCE, etc.) we do not wish to mandate that any particular network 
+nameserver is used.
+
+
+<a name="16429"></a>
+<h4>	6.3.2	 URL syntax</h4>
+<a name="16550"></a>
+Fortunately the World Wide Web has already standardized on a naming system that supports 
+all of these properties. This is the Uniform Resource Locator (URL) mechanism. So we propose
+to use URLs for JDBC naming, and merely recommend some conventions for structuring 
+JDBC URLs.
+<p>
+<a name="16555"></a>
+We recommend that JDBC URL's be structured as:
+<p>
+<a name="16556"></a>
+			jdbc:&lt;subprotocol&gt;:&lt;subname&gt;
+<p>
+<a name="16557"></a>
+where a subprotocol names a particular kind of database connectivity mechanism that may be 
+supported by one or more drivers. The contents and syntax of the subname will depend on the 
+subprotocol.
+<p>
+<a name="16562"></a>
+If you are specifying a network address as part of your subname, we recommend following the 
+standard URL naming convention of "//hostname:port/subsubname" for the subname. The subsubname
+can have arbitrary internal syntax. 
+<p>
+
+<a name="16551"></a>
+<h4>	6.3.3	 Example URLs</h4>
+<a name="16506"></a>
+For example, in order to access a database through a JDBC-ODBC bridge, one might use a 
+URL like:
+<p>
+<a name="16507"></a>
+			jdbc:odbc:fred
+<p>
+<a name="16508"></a>
+In this example the subprotocol is "odbc" and the subname is a local ODBC data source name 
+"fred". A JDBC-ODBC driver can check for URLs that have subprotocol "odbc" and then use 
+the subname in an ODBC SQLConnect.
+<p>
+<a name="16509"></a>
+If you are using some generic database connectivity protocol "dbnet" to talk to a database listener
+, you might have a URL like:
+<p>
+<a name="16529"></a>
+			jdbc:dbnet://wombat:356/fred
+<p>
+<a name="30804"></a>
+In this example the URL specifies that we should use the "dbnet" protocol to connect to port 
+356 on host wombat and then present the subsubname "fred" to that port to locate the final database.
+
+<p>
+<a name="16530"></a>
+If you wish to use some network name service to provide a level of indirection in database 
+names, then we recommend using the name of the naming service as the subprotocol. So for 
+example one might have a URL like:
+<p>
+<a name="16531"></a>
+			jdbc:dcenaming:accounts-payable
+<p>
+<a name="16583"></a>
+In this example, the URL specifies that we should use the local DCE naming service to resolve 
+the database name "accounts-payable" into a more specific name that can be used to connect 
+to the real database. In some situations, it might be appropriate to provide a pseudo driver that 
+performed a name lookup via a network name server and then used the resulting information 
+to locate the real driver and do the real connection open.
+<p>
+
+<a name="16584"></a>
+<h4>	6.3.4	 Drivers can choose a syntax and ignore other URLs.</h4>
+<a name="16919"></a>
+In summary, the JDBC URL mechanism is intended to provide a framework so that different 
+drivers can use different naming systems that are appropriate to their needs. Each driver need 
+only understand a single URL naming syntax, and can happily reject any other URLs that it 
+encounters.
+<p>
+
+<a name="11833"></a>
+<h4>	6.3.5	 Registering subprotocol names</h4>
+<a name="11834"></a>
+JavaSoft will act as an informal registry for JDBC sub-protocol names. Send mail to jdbc@wombat.eng.sun.com
+to reserve a sub-protocol name.
+<p>
+
+<a name="25343"></a>
+<h4>	6.3.6	 The "odbc" subprotocol</h4>
+<a name="25352"></a>
+The "odbc" subprotocol has been reserved for URLs that specify ODBC style Data Source 
+Names. For this subprotocol we specify a URL syntax that allows arbitrary attribute values to 
+be specified after the data source name.
+<p>
+<a name="25356"></a>
+The full odbc subprotocol URL syntax is:
+<p>
+<pre><code>jdbc:odbc:&lt;<em>data-source-name</em>&gt;[;&lt;<em>attribute-name</em>&gt;=&lt;<em>attribute-value</em>&gt;]*
+</code></pre>
+<a name="25359"></a>
+Thus valid jdbc:odbc names include:
+<p>
+<pre><code>jdbc:odbc:qeor7
+</code></pre>
+<pre><code>jdbc:odbc:wombat
+</code></pre>
+<pre><code>jdbc:odbc:wombat;CacheSize=20;ExtensionCase=LOWER
+</code></pre>
+<pre><code>jdbc:odbc:qeora;UID=kgh;PWD=fooey
+</code></pre>
+<pre><code>
+</code></pre>
+
+<a name="25353"></a>
+<h3>6.4 	  &nbsp; &nbsp; Connection arguments</h3>
+<a name="16925"></a>
+When opening a connection, you can pass in a java.util.Properties object. This object is a property
+set that maps between tag strings and value strings. Two conventional properties are "user" 
+and "password". Particular drivers may specify and use other properties.
+<p>
+<a name="16935"></a>
+In order to allow applets to access databases in a generic way, we recommend that as much connection
+information as possible be encoded as part of the URL and that driver writers minimize 
+their use of property sets.
+<p>
+
+<a name="16922"></a>
+<h3>6.5 	  &nbsp; &nbsp; Multiple connections</h3>
+<a name="16913"></a>
+A single application can maintain multiple database connections to one or more databases, using
+one or more drivers.
+<p>
+
+<a name="4731"></a>
+<h3>6.6 	  &nbsp; &nbsp; Registering drivers</h3>
+<a name="4732"></a>
+The JDBC management layer needs to know which database drivers are available. We provide 
+two ways of doing this.
+<p>
+<a name="4736"></a>
+First, when the JDBC java.sql.DriverManager class initializes it will look for a "sql.drivers" 
+property in the system properties. If the property exists it should consist of a colon-separated 
+list of driver class names. Each of the named classes should implement the java.sql.Driver interface.
+The DriverManager class will attempt to load each named Driver class.
+<p>
+<a name="20304"></a>
+Second, a programmer can explicitly load a driver class using the standard Class.forName 
+method. For example, to load the acme.db.Driver class you might do:
+<p>
+<pre><code>Class.forName("acme.db.Driver");
+</code></pre>
+<pre><code>
+</code></pre>
+<a name="20296"></a>
+In both cases it is the responsibility of each newly loaded Driver class to register itself with the 
+DriverManager, using the DriverManager.registerDriver method. This will allow the DriverManager
+to use the driver when it is attempting to make database connections.
+<p>
+<a name="4751"></a>
+For security reasons the JDBC management layer will keep track of which class loader provided
+which driver and when opening connections it will only use drivers that come from the local 
+filesystem or from the same classloader as the code issuing the getConnection request.
+<p>
+
+
+<br>
+<hr> 
+<font size=-1>
+<a href="jdbc-spec.frame.html">Contents</a>  | <a href="jdbc-spec.frame5.html">Prev</a>  | <a href="jdbc-spec.frame7.html">Next</a>
+</font>
+<hr>
+
+<sup>1</sup><a name="25398"></a>
+ At first glance this may seem inefficient, but keep in mind that this requires only a few procedure calls and string 
+comparisons per connection since it is unlikely that dozens of drivers will concurrently be loaded.
+<p>
+
+
+<address>
+<a href="mailto:jdbc@wombat.eng.sun.com">jdbc@wombat.eng.sun.com</a>
+or
+<a href="mailto:jdbc-odbc@wombat.eng.sun.com">jdbc-odbc@wombat.eng.sun.com</a>
+</address>
+
+<a href="../../../relnotes/SMICopyright.html">
+<font size=-1><i>Copyright &#169; 1996, 1997 Sun Microsystems, Inc.   All rights reserved.</i></font>
+</a>
+
+<!-- HTML generated by Suzette Pelouch on April 10, 1998 -->
+
+</body>
+</html>

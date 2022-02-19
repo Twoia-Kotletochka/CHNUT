@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Remote Method Invocation: 6 - Registry Interfaces
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="rmiTOC.html">CONTENTS</a> | <a href="rmi-registry3.html">PREV</a>
+ | <a href="rmi-activation.html">NEXT</a> 
+<!-- /font --></td><td align=right><i>Java Remote Method Invocation</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="5112"><i>	6.3	</i> The <code>RegistryHandler</code> Interface
+</a></h2>
+
+
+<blockquote>
+<blockquote><hr noshade size="1">
+<b><a name="6700">Note - </a></b>The <code>RegistryHandler</code> interface is deprecated as of the Java 2 SDK, Standard Edition, v1.2. In JDK1.1, it was only used internally by the RMI implementation and was not for application use. 
+<hr noshade size="1">
+</blockquote>
+</blockquote>
+<blockquote><pre>package java.rmi.registry;
+
+public interface RegistryHandler {<p>
+	Registry registryStub(String host, int port)
+		throws java.rmi.RemoteException, 
+		java.rmi.UnknownHostException;
+	Registry registryImpl(int port) 
+		throws java.rmi.RemoteException;
+}
+</pre></blockquote><blockquote>
+<a name="6567"><!-- --></a>
+The method <code>registryStub</code> returns a stub for contacting a remote registry on the specified host and port.<p>
+<a name="6568"><!-- --></a>
+The method <code>registryImpl</code> constructs and exports a registry on the specified port. The port must be nonzero.<p>
+<a name="3444"><!-- --></a>
+<p>
+</blockquote>
+
+</ul>
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="rmiTOC.html">CONTENTS</a> | <a href="rmi-registry3.html">PREV</a>
+ | <a href="rmi-activation.html">NEXT</a> 
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF=http://java.sun.com/products/jdk/1.3/docs/relnotes/SMICopyright.html>Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Susan Snyder -->
+<!-- Last updated: Monday November 15 11:11:27 1999 -->
+ 
+
+
+</body>
+</html>

@@ -1,0 +1,395 @@
+<html><head><title></title></head>
+<body bgcolor=#ffffff>
+ 
+<a href="title.fm.html">[Top]</a> <a href="title.fm.html">[Prev]</a> <a href="preface.fm.html">[Next]</a> <a href="javasoundIX.fm.html">[Bottom]</a>
+<hr><br>
+ 
+<a name="1600"> </a>
+<h2>Contents</h2>
+<a href="preface.fm.html#1003196">
+<H2> Preface	</H2>
+</a><dl>
+<a href="preface.fm.html#1005242">
+<dd> Who this Guide Is For		
+</a><a href="preface.fm.html#1005255">
+<dd> What this Guide Describes		
+</a><a href="preface.fm.html#1005263">
+<dd> For More Information		
+</a></dl>
+<a href="chapter1.fm.html#113008">
+<H2> Chapter 1 Introduction to the Java Sound API	</H2>
+</a><dl>
+<a href="chapter1.fm.html#111810">
+<dd> Design Goals		
+</a><dl>
+<a href="chapter1.fm.html#111814">
+<dd>  Who is the Java Sound API For?	
+</a><a href="chapter1.fm.html#111823">
+<dd>  How Does the Java Sound API Relate to Other Interfaces?	
+</a></dl>
+<a href="chapter1.fm.html#111831">
+<dd> Packages		
+</a>
+<a href="chapter1.fm.html#111847">
+<dd> Sampled Audio		
+</a><dl>
+<a href="chapter1.fm.html#111849">
+<dd>  What Is Sampled Audio?	
+</a><a href="chapter1.fm.html#112759">
+<dd>  Audio Configurations	
+</a></dl>
+<a href="chapter1.fm.html#111877">
+<dd> MIDI		
+</a><dl>
+<a href="chapter1.fm.html#111880">
+<dd>  What Is MIDI?	
+</a><a href="chapter1.fm.html#112483">
+<dd>  MIDI Configurations	
+</a></dl>
+<a href="chapter1.fm.html#111901">
+<dd> Service Provider Interfaces		
+</a></dl>
+
+<H2> Part I: Sampled Audio	</H2>
+<a href="chapter2.fm.html#">
+<H2> Chapter 2 Overview of the Sampled Package	</H2>
+</a><dl>
+<a href="chapter2.fm.html#112324">
+<dd> Design Goals		
+</a><dl>
+<a href="chapter2.fm.html#112328">
+<dd>  A Focus on Data Transport	
+</a><a href="chapter2.fm.html#112334">
+<dd>  Buffered and Unbuffered Handling of Audio	
+</a></dl>
+<a href="chapter2.fm.html#112344">
+<dd> The Essentials: Format, Mixer, and Line		
+</a><dl>
+<a href="chapter2.fm.html#112348">
+<dd>  What Is Formatted Audio Data?	
+</a><a href="chapter2.fm.html#112387">
+<dd>  What Is a Mixer?	
+</a><a href="chapter2.fm.html#113943">
+<dd>  What Is a Line?	
+</a><a href="chapter2.fm.html#112421">
+<dd>  Lines in an Audio-output Configuration	
+</a><a href="chapter2.fm.html#112435">
+<dd>  Lines in an Audio-input Configuration	
+</a><a href="chapter2.fm.html#112445">
+<dd>  The Line Interface Hierarchy	
+</a></dl>
+</dl>
+<a href="chapter3.fm.html#116294">
+<H2> Chapter 3 Accessing Audio System Resources	</H2>
+</a><dl>
+<a href="chapter3.fm.html#113101">
+<dd> The AudioSystem Class		
+</a><a href="chapter3.fm.html#113123">
+<dd> Information Objects		
+</a><a href="chapter3.fm.html#113128">
+<dd> Getting a Mixer		
+</a><a href="chapter3.fm.html#113154">
+<dd> Getting a Line of a Desired Type		
+</a><dl>
+<a href="chapter3.fm.html#113159">
+<dd>  Getting a Line Directly from the AudioSystem	
+</a><a href="chapter3.fm.html#113208">
+<dd>  Getting a Line from a Mixer	
+</a></dl>
+<a href="chapter3.fm.html#113216">
+<dd> Selecting Input and Output Ports		
+</a><a href="chapter3.fm.html#113223">
+<dd> Permission to Use Audio Resources		
+</a></dl>
+<a href="chapter4.fm.html#117589"></a><a href="chapter4.fm.html#113594"></a><a href="chapter4.fm.html#117589">
+<H2> Chapter 4 Playing Back Audio	</H2>
+</a><dl>
+<a href="chapter4.fm.html#113609">
+<dd> Using a Clip		
+</a><dl>
+<a href="chapter4.fm.html#113613">
+<dd>  Setting Up the Clip for Playback	
+</a><a href="chapter4.fm.html#113626">
+<dd>  Starting and Stopping Playback	
+</a></dl>
+<a href="chapter4.fm.html#113634">
+<dd> Using a SourceDataLine		
+</a><dl>
+<a href="chapter4.fm.html#116365">
+<dd>  Setting Up the SourceDataLine for Playback	
+</a><a href="chapter4.fm.html#113663">
+<dd>  Starting and Stopping Playback	
+</a></dl>
+<a href="chapter4.fm.html#113711">
+<dd> Monitoring a Line's Status		
+</a><a href="chapter4.fm.html#113725">
+<dd> Synchronizing Playback on Multiple Lines		
+</a><a href="chapter4.fm.html#113736">
+<dd> Processing the Outgoing Audio		
+</a></dl>
+<a href="chapter5.fm.html#116032">
+<H2> Chapter 5 Capturing Audio	</H2>
+</a><dl>
+<a href="chapter5.fm.html#113969">
+<dd> Setting Up a TargetDataLine		
+</a><a href="chapter5.fm.html#115741">
+<dd> Reading the Data from the TargetDataLine		
+</a><a href="chapter5.fm.html#114432">
+<dd> Monitoring the Line's Status		
+</a><a href="chapter5.fm.html#114049">
+<dd> Processing the Incoming Audio		
+</a></dl>
+<a href="chapter6.fm.html#118405">
+<H2> Chapter 6 Processing Audio with Controls	</H2>
+</a><dl>
+<a href="chapter6.fm.html#114180">
+<dd> Introduction to Controls		
+</a><a href="chapter6.fm.html#117862">
+<dd> Getting a Line that Has the Desired Controls		
+</a><a href="chapter6.fm.html#114255">
+<dd> Getting the Controls from the Line		
+</a><a href="chapter6.fm.html#116401">
+<dd> Using a Control to Change the Audio Signal		
+</a><dl>
+<a href="chapter6.fm.html#114284">
+<dd>  Controlling a Line's Mute State	
+</a><a href="chapter6.fm.html#114292">
+<dd>  Changing a Line's Volume	
+</a><a href="chapter6.fm.html#114300">
+<dd>  Selecting among Various Reverberation Presets	
+</a></dl>
+<a href="chapter6.fm.html#114326">
+<dd> Manipulating the Audio Data Directly		
+</a></dl>
+<a href="chapter7.fm.html#120455">
+<H2>  Chapter 7 Using Files and Format Converters	</H2>
+</a><dl>
+<a href="chapter7.fm.html#114527">
+<dd> Reading Sound Files		
+</a><a href="chapter7.fm.html#114602">
+<dd> Writing Sound Files		
+</a><a href="chapter7.fm.html#114640">
+<dd> Converting File and Data Formats		
+</a><dl>
+<a href="chapter7.fm.html#114644">
+<dd>  Converting from One File Format to Another	
+</a><a href="chapter7.fm.html#114718">
+<dd>  Converting Audio between Different Data Formats	
+</a><a href="chapter7.fm.html#114777">
+<dd>  Learning What Conversions Are Available	
+</a></dl>
+</dl>
+<H2> Part II:  MIDI	</H2>
+<a href="chapter8.fm.html#118768"></a><a href="chapter8.fm.html#120028"></a><a href="chapter8.fm.html#118768">
+<H2> Chapter 8 Overview of the MIDI Package	</H2>
+</a><dl>
+<a href="chapter8.fm.html#118774">
+<dd> A MIDI Refresher: Wires and Files		
+</a><dl>
+<a href="chapter8.fm.html#118791">
+<dd>  Streaming Data in the MIDI Wire Protocol	
+</a><a href="chapter8.fm.html#119349">
+<dd>  Sequenced Data in Standard MIDI Files	
+</a></dl>
+<a href="chapter8.fm.html#118810">
+<dd> The Java Sound API's Representation of MIDI Data		
+</a><dl>
+<a href="chapter8.fm.html#119522">
+<dd>  MIDI Messages	
+</a><a href="chapter8.fm.html#118823">
+<dd>  MIDI Events	
+</a><a href="chapter8.fm.html#118829">
+<dd>  Sequences and Tracks	
+</a></dl>
+<a href="chapter8.fm.html#118842">
+<dd> The Java Sound API's Representation of MIDI Devices		
+</a><dl>
+<a href="chapter8.fm.html#118846">
+<dd>  The MidiDevice Interface	
+</a><a href="chapter8.fm.html#118852">
+<dd>  Transmitters and Receivers	
+</a><a href="chapter8.fm.html#118858">
+<dd>  Sequencers	
+</a><a href="chapter8.fm.html#118862">
+<dd>  Synthesizers	
+</a></dl>
+</dl>
+<a href="chapter9.fm.html#121398">
+<H2> Chapter 9 Accessing MIDI System Resources	</H2>
+</a><dl>
+<a href="chapter9.fm.html#119711">
+<dd> The MidiSystem Class		
+</a><a href="chapter9.fm.html#119749">
+<dd> Obtaining Default Devices		
+</a><a href="chapter9.fm.html#119787">
+<dd> Learning What Devices Are Installed		
+</a><a href="chapter9.fm.html#119833">
+<dd> Obtaining a Desired Device		
+</a><a href="chapter9.fm.html#119891">
+<dd> Opening Devices		
+</a></dl>
+<a href="chapter10.fm.html#122908">
+<H2> Chapter 10 Transmitting and Receiving MIDI Messages	</H2>
+</a><dl>
+<a href="chapter10.fm.html#121435">
+<dd> Understanding Devices, Transmitters, and Receivers		
+</a><a href="chapter10.fm.html#120477">
+<dd> Sending a Message to a Receiver without <br>      Using a Transmitter		
+</a><a href="chapter10.fm.html#120507">
+<dd> Understanding Time Stamps		
+</a><dl>
+<a href="chapter10.fm.html#120517">
+<dd>  Time Stamps on Messages Sent to Devices	
+</a></dl>
+<a href="chapter10.fm.html#122132">
+<dd> Connecting Transmitters to Receivers		
+</a><dl>
+<a href="chapter10.fm.html#120544">
+<dd>  Connecting to a Single Device	
+</a><a href="chapter10.fm.html#120569">
+<dd>  Connecting to More than One Device	
+</a><a href="chapter10.fm.html#120605">
+<dd>  Closing Connections	
+</a></dl>
+</dl>
+<a href="chapter11.fm.html#123738">
+<H2> Chapter 11 Playing, Recording, and Editing <br>      MIDI Sequences	</H2>
+</a><dl>
+<a href="chapter11.fm.html#120890">
+<dd> Introduction to Sequencers		
+</a><dl>
+<a href="chapter11.fm.html#124535">
+<dd>  When to Use a Sequencer	
+</a></dl>
+<a href="chapter11.fm.html#124542">
+<dd> Understanding Sequence Data		
+</a><dl>
+<a href="chapter11.fm.html#124544">
+<dd>  Sequences and Tracks	
+</a><a href="chapter11.fm.html#124548">
+<dd>  MidiEvents and Ticks	
+</a></dl>
+<a href="chapter11.fm.html#124591">
+<dd> Overview of Sequencer Methods		
+</a><a href="chapter11.fm.html#124598">
+<dd> Obtaining a Sequencer		
+</a><a href="chapter11.fm.html#124620">
+<dd> Loading a Sequence		
+</a><a href="chapter11.fm.html#124643">
+<dd> Playing a Sequence		
+</a><a href="chapter11.fm.html#124654">
+<dd> Recording and Saving Sequences		
+</a><a href="chapter11.fm.html#124674">
+<dd> Editing a Sequence		
+</a><a href="chapter11.fm.html#124684">
+<dd> Using Advanced Sequencer Features		
+</a><dl>
+<a href="chapter11.fm.html#124686">
+<dd>  Moving to an Arbitrary Position in the Sequence	
+</a><a href="chapter11.fm.html#124696">
+<dd>  Changing the Playback Speed	
+</a><a href="chapter11.fm.html#124704">
+<dd>  Muting or Soloing Individual <br>      Tracks in the Sequence	
+</a><a href="chapter11.fm.html#124721">
+<dd>  Synchronizing with Other MIDI Devices	
+</a><a href="chapter11.fm.html#124725">
+<dd>  Specifying Special Event Listeners	
+</a></dl>
+</dl>
+<a href="chapter12.fm.html#124082">
+<H2> Chapter 12 Synthesizing Sound	</H2>
+</a><dl>
+<a href="chapter12.fm.html#121742">
+<dd> Understanding MIDI Synthesis		
+</a><dl>
+<a href="chapter12.fm.html#121747">
+<dd>  Instruments	
+</a><a href="chapter12.fm.html#121755">
+<dd>  Channels	
+</a><a href="chapter12.fm.html#121767">
+<dd>  Soundbanks and Patches	
+</a><a href="chapter12.fm.html#121777">
+<dd>  Voices	
+</a></dl>
+<a href="chapter12.fm.html#121793">
+<dd> Managing Instruments and Soundbanks		
+</a><dl>
+<a href="chapter12.fm.html#121803">
+<dd>  Learning What Instruments Are Loaded	
+</a><a href="chapter12.fm.html#121824">
+<dd>  Loading Different Instruments	
+</a><a href="chapter12.fm.html#121858">
+<dd>  Unloading Instruments	
+</a><a href="chapter12.fm.html#123435">
+<dd>  Accessing Soundbank Resources	
+</a></dl>
+<a href="chapter12.fm.html#123441">
+<dd> Querying the Synthesizer's Capabilities and <br>      Current State		
+</a><a href="chapter12.fm.html#121890">
+<dd> Using Channels		
+</a><dl>
+<a href="chapter12.fm.html#121894">
+<dd>  Controlling the Synthesizer without <br>      Using a Sequencer	
+</a><a href="chapter12.fm.html#121937">
+<dd>  Getting a Channel's Current State	
+</a><a href="chapter12.fm.html#121953">
+<dd>  Muting and Soloing a Channel	
+</a></dl>
+<a href="chapter12.fm.html#121964">
+<dd> Permission to Play Synthesized Sound		
+</a></dl>
+<H2> Part III: Service Provider Interfaces	</H2>
+<a href="chapter13.fm.html#123623">
+<H2> Chapter 13 Introduction to the Service Provider Interfaces	</H2>
+</a><dl>
+<a href="chapter13.fm.html#122209">
+<dd> What Are Services?		
+</a><a href="chapter13.fm.html#122226">
+<dd> How Services Work		
+</a><a href="chapter13.fm.html#122254">
+<dd> How Providers Prepare New Services		
+</a><a href="chapter13.fm.html#122309">
+<dd> How Users Install New Services		
+</a></dl>
+<a href="chapter14.fm.html#118153"></a><a href="chapter14.fm.html#121450">
+<H2> Chapter 14 Providing Sampled-Audio Services	</H2>
+</a><dl>
+<a href="chapter14.fm.html#118164">
+<dd> Introduction		
+</a><a href="chapter14.fm.html#118177">
+<dd> Providing Audio File-Writing Services		
+</a><a href="chapter14.fm.html#118201">
+<dd> Providing Audio File-Reading Services		
+</a><a href="chapter14.fm.html#118208">
+<dd> Providing Format-Conversion Services		
+</a><a href="chapter14.fm.html#120618">
+<dd> Providing New Types of Mixers		
+</a></dl>
+<a href="chapter15.fm.html#122550"></a><a href="chapter15.fm.html#125306">
+<H2> Chapter 15 Providing MIDI Services	</H2>
+</a><dl>
+<a href="chapter15.fm.html#122553">
+<dd> Introduction		
+</a><a href="chapter15.fm.html#122566">
+<dd> Providing MIDI File-Writing Services		
+</a><a href="chapter15.fm.html#122592">
+<dd> Providing MIDI File-Reading Services		
+</a><a href="chapter15.fm.html#122598">
+<dd> Providing Particular MIDI Devices		
+</a><a href="chapter15.fm.html#122605">
+<dd> Providing Soundbank File-Reading Services		
+</a></dl>
+<a href="javasoundIX.fm.html#199">
+<H2> Index	</H2>
+</a>
+<hr><br>
+ 
+<a href="title.fm.html">[Top]</a> <a href="title.fm.html">[Prev]</a> <a href="preface.fm.html">[Next]</a> <a href="javasoundIX.fm.html">[Bottom]</a>
+<hr><br>
+ 
+
+
+<i><a href="../../../relnotes/SMICopyright.html">Copyright</a> &#169; 2000, Sun Microsystems Inc.   All rights
+reserved.</i>
+</body>
+</html>

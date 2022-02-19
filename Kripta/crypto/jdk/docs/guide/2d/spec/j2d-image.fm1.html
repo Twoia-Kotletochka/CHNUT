@@ -1,0 +1,577 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API: 5 - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-image.fm.html">PREV</a>
+ | <a href="j2d-image.fm2.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="62520"><i>5.1	</i> Interfaces and Classes
+</a></h2>
+
+<blockquote>
+<a name="69754"><!-- --></a>
+The immediate mode imaging APIs in the Java 2D<sup>TM</sup> API can be grouped into six categories: interfaces, image data classes, image operation classes, sample model classes, color model classes, and exceptions.<p>
+</blockquote>
+<br>
+<h3>
+<a name="69751"><!-- --></a>
+<i>5.1.1	</i> Imaging Interfaces
+</h3>
+
+<blockquote>
+<a name="65180"><!-- --></a>
+
+
+<br><br>
+<Table Border="1" Cellpadding="5">
+<caption></caption>
+
+<tr><th><a name="62752"><!-- --></a>
+<blockquote><hr noshade size="1"><b>Interface</b> 
+<hr noshade size="1"></blockquote>
+</th><th><a name="62754"><!-- --></a>
+<blockquote><hr noshade size="1"><b>Description</b> 
+<hr noshade size="1"></blockquote>
+</th></tr>
+<tr><td><a name="62784"><!-- --></a>
+<p><code>BufferedImageOp</code>
+
+</td><td><a name="62971"><!-- --></a>
+<p>Describes single-input/single-output operations performed on <code>BufferedImage</code> objects. Implemented by <code>AffineTransformOp</code>, <code>ColorConvertOp</code>, <code>ConvolveOp</code>, <code>LookupOp</code>, and <code>RescaleOp</code>.
+
+</td></tr>
+<tr><td><a name="62916"><!-- --></a>
+<p><code>RasterOp </code>
+
+</td><td><a name="62975"><!-- --></a>
+<p>Defines single-input/single-output operations performed on <code>Raster</code> objects. Implemented by <code>AffineTransformOp</code>, <code>BandCombineOp</code>, <code>ColorConvertOp</code>, <code>ConvolveOp</code>, <code>LookupOp</code>, and <code>RescaleOp</code>.
+
+</td></tr>
+<tr><td><a name="64598"><!-- --></a>
+<p><code>RenderedImage </code>
+
+</td><td><a name="64600"><!-- --></a>
+<p>Defines a common protocol for objects that contain or can produce image data in the form of <code>Rasters</code>. 
+
+</td></tr>
+<tr><td><a name="64640"><!-- --></a>
+<p><code>WritableRenderedImage </code>
+
+</td><td><a name="64642"><!-- --></a>
+<p>Extends: <code>RenderedImage</code>
+
+<a name="64643"><!-- --></a>
+<p>Defines a common protocol for objects that contain or can produce image data in the form of <code>Rasters</code> which can be modified.
+
+</td></tr>
+<tr><td><a name="64651"><!-- --></a>
+<p><code>TileObserver </code>
+
+</td><td><a name="64656"><!-- --></a>
+<p>Defines a protocol for objects that want to be notified when the modification state of a <code>WritableRenderedImage</code> changes. 
+
+</td></tr>
+
+</Table>
+ 
+<Table>
+<tr><td></td>
+</tr>
+</Table><p>
+<p>
+</blockquote>
+<br>
+<h3>
+<a name="64405"><!-- --></a>
+<i>5.1.2	</i> Image Data Classes
+</h3>
+
+<blockquote>
+<a name="68794"><!-- --></a>
+
+
+<br><br>
+<Table Border="1" Cellpadding="5">
+<caption></caption>
+
+<tr><td><a name="68733"><!-- --></a>
+<blockquote><hr noshade size="1"><b>Class</b> 
+<hr noshade size="1"></blockquote>
+</td><td><a name="68735"><!-- --></a>
+<blockquote><hr noshade size="1"><b>Description</b> 
+<hr noshade size="1"></blockquote>
+</td></tr>
+<tr><td><a name="68737"><!-- --></a>
+<p><code>BufferedImage</code>
+
+</td><td><a name="68739"><!-- --></a>
+<p>Extends: <code>Image</code>
+
+<a name="68740"><!-- --></a>
+<p>Implements: <code>WriteableRenderedImage</code>
+
+<a name="68741"><!-- --></a>
+<p>An image with an accessible data buffer. A <code>BufferedImage</code> has a <code>ColorModel</code> and a <code>Raster</code> of image data.
+
+</td></tr>
+<tr><td><a name="68743"><!-- --></a>
+<p><code>ByteLookupTable</code>
+
+</td><td><a name="68745"><!-- --></a>
+<p>Extends: <code>LookupTable</code>
+
+<a name="68746"><!-- --></a>
+<p>A <code>LookupTable</code> that contains byte data. 
+
+</td></tr>
+<tr><td><a name="68748"><!-- --></a>
+<p><code>DataBuffer </code>
+
+</td><td><a name="68750"><!-- --></a>
+<p>Wraps one or more data arrays holding pixel data. Each data array is called a <em>bank</em>.
+
+</td></tr>
+<tr><td><a name="68752"><!-- --></a>
+<p><code>DataBufferByte </code>
+
+</td><td><a name="68754"><!-- --></a>
+<p>Extends: <code>DataBuffer</code> (Final)
+
+<a name="68755"><!-- --></a>
+<p>A data buffer that stores bytes of data. (Used in Java Advanced Imaging API)
+
+</td></tr>
+<tr><td><a name="68757"><!-- --></a>
+<p><code>DataBufferInt </code>
+
+</td><td><a name="68759"><!-- --></a>
+<p>Extends: <code>DataBuffer</code> (Final)<code>)</code>
+
+<a name="68760"><!-- --></a>
+<p>A data buffer that stores integer data.(Used in Java Advanced Imaging API)
+
+</td></tr>
+<tr><td><a name="68762"><!-- --></a>
+<p><code>DataBufferShort </code>
+
+</td><td><a name="68764"><!-- --></a>
+<p>Extends: <code>DataBuffer</code> (Final)
+
+<a name="68765"><!-- --></a>
+<p>A data buffer that stores short data.(Used in Java Advanced Imaging API)
+
+</td></tr>
+<tr><td><a name="68767"><!-- --></a>
+<p><code>DataBufferUShort </code>
+
+</td><td><a name="68769"><!-- --></a>
+<p>Extends: <code>DataBuffer </code>(Final)
+
+<a name="68770"><!-- --></a>
+<p>A data buffer that stores unsigned short data.
+
+</td></tr>
+<tr><td><a name="68772"><!-- --></a>
+<p><code>Kernel</code>
+
+</td><td><a name="68774"><!-- --></a>
+<p>A matrix that describes how an input pixel and its surrounding pixels affect the value of an output pixel in a <code>ConvolveOp</code> filtering operation.
+
+</td></tr>
+<tr><td><a name="68776"><!-- --></a>
+<p><code>LookupTable</code>
+
+</td><td><a name="68778"><!-- --></a>
+<p>Extends: <code>Object</code>
+
+<a name="68779"><!-- --></a>
+<p>A table that maps values from single-banded pixel data to color values. 
+
+</td></tr>
+<tr><td><a name="68781"><!-- --></a>
+<p><code>Raster </code>
+
+</td><td><a name="68783"><!-- --></a>
+<p>A rectangular array of pixels from which you can retrieve image data. A <code>Raster</code> contains a <code>DataBuffer</code> and a <code>SampleModel</code>. 
+
+</td></tr>
+<tr><td><a name="68785"><!-- --></a>
+<p><code>ShortLookupTable</code>
+
+</td><td><a name="68787"><!-- --></a>
+<p>Extends: <code>LookupTable</code>
+
+<a name="68788"><!-- --></a>
+<p>A lookup table that contains short data. 
+
+</td></tr>
+<tr><td><a name="68790"><!-- --></a>
+<p><code>WritableRaster </code>
+
+</td><td><a name="68792"><!-- --></a>
+<p>Extends: <code>Raster</code>
+
+<a name="68793"><!-- --></a>
+<p>A <code>Raster</code> that you can modify.
+
+</td></tr>
+
+</Table>
+ 
+<Table>
+<tr><td></td>
+</tr>
+</Table><p>
+<p>
+</blockquote>
+<br>
+<h3>
+<a name="68832"><!-- --></a>
+<i>5.1.3	</i> Image Operation Classes
+</h3>
+
+<blockquote>
+<a name="65263"><!-- --></a>
+
+
+<br><br>
+<Table Border="1" Cellpadding="5">
+<caption></caption>
+
+<tr><th><a name="65265"><!-- --></a>
+<blockquote><hr noshade size="1"><b>Class</b> 
+<hr noshade size="1"></blockquote>
+</th><th><a name="65267"><!-- --></a>
+<blockquote><hr noshade size="1"><b>Description</b> 
+<hr noshade size="1"></blockquote>
+</th></tr>
+<tr><td><a name="64417"><!-- --></a>
+<p><code>AffineTransformOp</code>
+
+</td><td><a name="64788"><!-- --></a>
+<p>Implements: <code>BufferedImageOp</code>, <code>RasterOp</code>
+
+<a name="64817"><!-- --></a>
+<p>A class that defines an affine transform to perform a linear mapping from 2D coordinates in a source <code>Image</code> or <code>Raster</code> to 2D coordinates in the destination image or <code>Raster</code>. This class can perform either bilinear or nearest neighbor affine transform operations. 
+
+</td></tr>
+<tr><td><a name="64421"><!-- --></a>
+<p><code>BandCombineOp</code>
+
+</td><td><a name="64821"><!-- --></a>
+<p>Implements: <code>RasterOp</code>
+
+<a name="64825"><!-- --></a>
+<p>Using a specified matrix, this operation performs an arbitrary linear combination of bands in a <code>Raster</code>.
+
+</td></tr>
+<tr><td><a name="68838"><!-- --></a>
+<p><code>BufferedImageFilter</code>
+
+</td><td><a name="68840"><!-- --></a>
+<p>Extends: <code>ImageFilter</code>
+
+<a name="68841"><!-- --></a>
+<p>An <code>ImageFilter</code> that provides a simple means of using a <kbd>BufferedImageOp</kbd> (a single-source/single-destination image operator) to filter a <code>BufferedImage</code> or <code>Raster</code>.
+
+</td></tr>
+<tr><td><a name="64429"><!-- --></a>
+<p><code>ColorConvertOp</code>
+
+</td><td><a name="64848"><!-- --></a>
+<p>Implements: <code>BufferedImageOp</code>, <code>RasterOp</code>
+
+<a name="64850"><!-- --></a>
+<p>Performs a pixel-by-pixel color conversion of the data in the source image.
+
+</td></tr>
+<tr><td><a name="64433"><!-- --></a>
+<p><code>ConvolveOp</code>
+
+</td><td><a name="68443"><!-- --></a>
+<p>Implements: <code>BufferedImageOp</code>, <code>RasterOp</code>
+
+<a name="64857"><!-- --></a>
+<p>Uses a <code>Kernel</code> to perform a convolution on the source image. A convolution is a spatial operation where the pixels surrounding the input pixel are multiplied by a kernel value to generate the value of the output pixel. The <code>Kernel</code> mathematically defines the relationship between the pixels in the immediate neighborhood of the input pixel and the output pixel. 
+
+</td></tr>
+<tr><td><a name="64441"><!-- --></a>
+<p><code>LookupOp</code>
+
+</td><td><a name="64882"><!-- --></a>
+<p>Implements: <code>BufferedImageOp</code>, <code>RasterOp</code>
+
+<a name="64879"><!-- --></a>
+<p>Performs a lookup operation from the source to the destination. For <code>Rasters</code>, the lookup operates on sample values. For <code>BufferedImages</code>, the lookup operates on color and alpha components. 
+
+</td></tr>
+<tr><td><a name="64449"><!-- --></a>
+<p><code>RescaleOp</code>
+
+</td><td><a name="64912"><!-- --></a>
+<p>Implements: <code>BufferedImageOp</code>, <code>RasterOp</code>
+
+<a name="64914"><!-- --></a>
+<p>Performs a pixel-by-pixel rescaling of the data in the source image by multiplying each pixel value by a scale factor and then adding an offset. 
+
+</td></tr>
+
+</Table>
+ 
+<Table>
+<tr><td></td>
+</tr>
+</Table><p>
+<p>
+</blockquote>
+<br>
+<h3>
+<a name="64487"><!-- --></a>
+<i>5.1.4	</i> Sample Model Classes
+</h3>
+
+<blockquote>
+<a name="65271"><!-- --></a>
+
+
+<br><br>
+<Table Border="1" Cellpadding="5">
+<caption></caption>
+
+<tr><th><a name="65273"><!-- --></a>
+<blockquote><hr noshade size="1"><b>Class</b> 
+<hr noshade size="1"></blockquote>
+</th><th><a name="65275"><!-- --></a>
+<blockquote><hr noshade size="1"><b>Description</b> 
+<hr noshade size="1"></blockquote>
+</th></tr>
+<tr><td><a name="64468"><!-- --></a>
+<p><code>BandedSampleModel </code>
+
+</td><td><a name="64958"><!-- --></a>
+<p>Extends: <code>ComponentSampleModel</code> (Final)
+
+<a name="64963"><!-- --></a>
+<p>Provides access to image data stored with like samples stored as bands in separate banks of a <kbd>DataBuffer</kbd>. A pixel consists of one sample from each band.
+
+</td></tr>
+<tr><td><a name="64472"><!-- --></a>
+<p><code>ComponentSampleModel </code>
+
+</td><td><a name="64982"><!-- --></a>
+<p>Extends: <code>SampleModel</code>
+
+<a name="64992"><!-- --></a>
+<p>Provides access to image data stored with each sample of a pixel residing in a separate element of a <code>DataBuffer</code>. Different types of pixel interleaving are supported.
+
+</td></tr>
+<tr><td><a name="68449"><!-- --></a>
+<p><code>MultiPixelPackedSampleModel </code>
+
+</td><td><a name="68451"><!-- --></a>
+<p>Extends: <code>SampleModel</code>
+
+<a name="68452"><!-- --></a>
+<p>Provides access to image data stored with multiple one-sample pixels packed into one element of a <code>DataBuffer</code>. 
+
+</td></tr>
+<tr><td><a name="64476"><!-- --></a>
+<p><code>PixelInterleavedSampleModel </code>
+
+</td><td><a name="64984"><!-- --></a>
+<p>Extends: <code>ComponentSampleModel</code>
+
+<a name="68568"><!-- --></a>
+<p>Provides access to image data stored with the sample data for each pixel in adjacent elements of the data array, and all elements in a single bank of a <code>DataBuffer</code>. 
+
+</td></tr>
+<tr><td><a name="64480"><!-- --></a>
+<p><code>SampleModel </code>
+
+</td><td><a name="65042"><!-- --></a>
+<p>An abstract class that defines a mechanism for extracting sample data from an image without knowing how the underlying data is stored in a <code>DataBuffer</code>.
+
+</td></tr>
+<tr><td><a name="64484"><!-- --></a>
+<p><code>SinglePixelPackedSampleModel </code>
+
+</td><td><a name="64988"><!-- --></a>
+<p>Extends: <code>SampleModel</code>
+
+<a name="68911"><!-- --></a>
+<p>Provides access to image data stored with all the samples belonging to an individual pixel packed into one element of a <code>DataBuffer</code>. 
+
+</td></tr>
+
+</Table>
+ 
+<Table>
+<tr><td></td>
+</tr>
+</Table><p>
+<p>
+</blockquote>
+<br>
+<h3>
+<a name="64040"><!-- --></a>
+<i>5.1.5	</i> Color Model Classes
+</h3>
+
+<blockquote>
+<a name="69804"><!-- --></a>
+
+
+<br><br>
+<Table Border="1" Cellpadding="5">
+<caption></caption>
+
+<tr><th><a name="65281"><!-- --></a>
+<blockquote><hr noshade size="1"><b>Class</b> 
+<hr noshade size="1"></blockquote>
+</th><th><a name="65283"><!-- --></a>
+<blockquote><hr noshade size="1"><b>Description</b> 
+<hr noshade size="1"></blockquote>
+</th></tr>
+<tr><td><a name="64227"><!-- --></a>
+<p><code>ColorModel</code>
+
+</td><td><a name="64229"><!-- --></a>
+<p>Implements: <code>Transparency</code>
+
+<a name="65085"><!-- --></a>
+<p>JDK1.1 class. An abstract class that defines methods for translating from image pixel values to color components such as red, green, and blue. 
+
+</td></tr>
+<tr><td><a name="64236"><!-- --></a>
+<p><code>ComponentColorModel</code>
+
+</td><td><a name="64238"><!-- --></a>
+<p>Extends: <code>ColorModel</code>
+
+<a name="65105"><!-- --></a>
+<p>A <code>ColorModel</code> that can handle an arbitrary <code>ColorSpace</code> and an array of color components to match the <code>ColorSpace</code>. This class can be used to represent most color models on most types of <code>GraphicsDevices</code>. 
+
+</td></tr>
+<tr><td><a name="64244"><!-- --></a>
+<p><code>DirectColorModel</code>
+
+</td><td><a name="65098"><!-- --></a>
+<p>Extends: <code>PackedColorModel</code>
+
+<a name="65118"><!-- --></a>
+<p>JDK1.1 class. A <code>ColorModel</code> that represents pixel values that have RGB color components embedded directly in the bits of the pixel. This color model is similar to an X11 TrueColor visual. The default RGB <code>ColorModel</code> returned by <code>ColorModel</code><kbd>.</kbd><code>getRGBdefault</code> is a <code>DirectColorModel</code>.
+
+</td></tr>
+<tr><td><a name="64260"><!-- --></a>
+<p><code>IndexColorModel</code>
+
+</td><td><a name="65100"><!-- --></a>
+<p>Extends: <code>ColorModel</code>
+
+<a name="65145"><!-- --></a>
+<p>JDK1.1 class. A <code>ColorModel</code> that represents pixel values that are indices into a fixed color map in the sRGB<code> ColorSpace</code>.
+
+</td></tr>
+<tr><td><a name="64264"><!-- --></a>
+<p><code>PackedColorModel</code>
+
+</td><td><a name="65102"><!-- --></a>
+<p>Extends: <code>ColorModel</code>
+
+<a name="65160"><!-- --></a>
+<p>An abstract <kbd>ColorModel</kbd> that represents pixel values that have color components embedded directly in the bits of a pixel. <code>DirectColorModel</code> extends <code>PackedColorModel</code> to support pixels that contain RGB color components. 
+
+</td></tr>
+
+</Table>
+ 
+<Table>
+<tr><td></td>
+</tr>
+</Table><p>
+<p>
+</blockquote>
+<br>
+<h3>
+<a name="68512"><!-- --></a>
+<i>5.1.6	</i> Exception Classes
+</h3>
+
+<blockquote>
+<a name="69810"><!-- --></a>
+
+
+<br><br>
+<Table Border="1" Cellpadding="5">
+<caption></caption>
+
+<tr><th><a name="68484"><!-- --></a>
+<blockquote><hr noshade size="1"><b>Class</b> 
+<hr noshade size="1"></blockquote>
+</th><th><a name="68486"><!-- --></a>
+<blockquote><hr noshade size="1"><b>Description</b> 
+<hr noshade size="1"></blockquote>
+</th></tr>
+<tr><td><a name="68488"><!-- --></a>
+<p><code>ImagingOpException</code>
+
+</td><td><a name="68490"><!-- --></a>
+<p>Extends: <kbd>RuntimeException</kbd>
+
+<a name="68491"><!-- --></a>
+<p>Thrown if one of the BufferedImageOp or RasterOp filter methods can&#39;t process the image.
+
+</td></tr>
+<tr><td><a name="68493"><!-- --></a>
+<p><code>RasterFormatException</code>
+
+</td><td><a name="68495"><!-- --></a>
+<p>Extends: <kbd>RuntimeException</kbd>
+
+<a name="68496"><!-- --></a>
+<p>Thrown if there is invalid layout information in the Raster.
+
+</td></tr>
+
+</Table>
+ 
+<Table>
+<tr><td></td>
+</tr>
+</Table><p>
+<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-image.fm.html">PREV</a>
+ | <a href="j2d-image.fm2.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Mon Nov 22 09:37:15 1999 -->
+ 
+
+
+</body>
+</html>

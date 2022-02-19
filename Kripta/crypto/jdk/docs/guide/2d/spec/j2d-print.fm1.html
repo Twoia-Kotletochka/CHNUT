@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API: 7 - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-print.fm.html">PREV</a>
+ | <a href="j2d-print.fm2.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="418393"><i>7.1	</i> Interfaces and Classes
+
+<br><br>
+<Table Border="1" Cellpadding="5">
+<caption></caption>
+
+<tr><th><a name="418427"><!-- --></a>
+<blockquote><hr noshade size="1"><b>Interface</b> 
+<hr noshade size="1"></blockquote>
+</th><th><a name="418429"><!-- --></a>
+<blockquote><hr noshade size="1"><b>Description</b> 
+<hr noshade size="1"></blockquote>
+</th></tr>
+<tr><td><a name="418415"><!-- --></a>
+<p><code>Printable</code>
+
+</td><td><a name="418441"><!-- --></a>
+<p>The <code>Printable</code> interface is implemented by each <em>page painter</em>, the application class(es) called by the printing system to render a page. The system calls the page painter&#39;s <code>print</code> method to request that a page be rendered.
+
+</td></tr>
+<tr><td><a name="418411"><!-- --></a>
+<p><code>Pageable</code>
+
+</td><td><a name="418449"><!-- --></a>
+<p>The <code>Pageable</code> interface is implemented by a document that is to be printed by the printing system. Through the <code>Pageable</code> methods, the system can determine the number of pages in the document, the format to use for each page, and the page painter to use to render each page.
+
+</td></tr>
+<tr><td><a name="418407"><!-- --></a>
+<p><code>PrinterGraphics</code>
+
+</td><td><a name="418457"><!-- --></a>
+<p>The <code>Graphics2D</code> objects that a page painter uses to render a page implement the <code>PrinterGraphics</code> interface. This enables an application to get the <code>PrinterJob</code> object that is controlling the printing.
+
+</td></tr>
+
+</Table>
+ 
+<Table>
+<tr><td></td>
+</tr>
+</Table><p>
+
+</a></h2>
+
+<blockquote>
+<a name="417944"><!-- --></a>
+
+
+<br><br>
+<Table Border="1" Cellpadding="5">
+<caption></caption>
+
+<tr><th><a name="418472"><!-- --></a>
+<blockquote><hr noshade size="1"><b>Class</b> 
+<hr noshade size="1"></blockquote>
+</th><th><a name="418474"><!-- --></a>
+<blockquote><hr noshade size="1"><b>Description</b> 
+<hr noshade size="1"></blockquote>
+</th></tr>
+<tr><td><a name="418476"><!-- --></a>
+<p><code>Book</code>
+
+</td><td><a name="418478"><!-- --></a>
+<p>Implements: <code>Pageable</code>
+
+<a name="418510"><!-- --></a>
+<p>Represents a document in which pages can have different page formats and page painters. This class uses the <code>Pageable</code> interface to interact with a <code>PrinterJob</code>.
+
+</td></tr>
+<tr><td><a name="418485"><!-- --></a>
+<p><code>PageFormat</code>
+
+</td><td><a name="418516"><!-- --></a>
+<p>Describes the size and orientation of a page to be printed, as well as the <code>Paper</code> used to print it. For example, <em>portrait</em> and <em>landscape</em> paper orientations are represented by <code>PageFormat</code>.
+
+</td></tr>
+<tr><td><a name="418489"><!-- --></a>
+<p><code>Paper</code>
+
+</td><td><a name="418524"><!-- --></a>
+<p>Describes the physical characteristics of a piece of paper.
+
+</td></tr>
+<tr><td><a name="418493"><!-- --></a>
+<p><code>PrinterJob</code>
+
+</td><td><a name="418532"><!-- --></a>
+<p>The principal class that controls printing. The application calls <code>PrinterJob</code> methods to set up a job, display a print dialog to the user (optional), and to print the pages in the job.
+
+</td></tr>
+
+</Table>
+ 
+<Table>
+<tr><td></td>
+</tr>
+</Table><p>
+<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-print.fm.html">PREV</a>
+ | <a href="j2d-print.fm2.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Mon Nov 22 09:37:25 1999 -->
+ 
+
+
+</body>
+</html>

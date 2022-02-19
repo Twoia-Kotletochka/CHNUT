@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API: 6 - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-image.fm8.html">PREV</a>
+ | <a href="j2d-color.fm1.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+<a name="60754"><!-- --></a>
+<hr size="8" width="35%" align="left" noshade>
+
+<table border=0>
+<tr valign=bottom>
+<td valign=bottom>
+<br>
+<U><B><FONT FACE="ARIAL,HELVETICA,TIMES ROMAN">CHAPTER</FONT> 
+6 
+</B></U>
+</td>
+</tr>
+</table>
+
+<a name="61757"><!-- --> </a>
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tr valign="top">
+<td align="left">
+<h1><FONT SIZE=+4>
+Color
+</font></h1>
+</td>
+</tr>
+</table>
+<blockquote>
+<a name="61777"><!-- --></a>
+Color imaging is one of the fundamental components of any graphics system, and it is often a source of great complexity in the imaging model. The Java 2D<sup>TM</sup> API provides support for high-quality color output that is easy to use and allows advanced clients to make sophisticated use of color. <p>
+<a name="62572"><!-- --></a>
+The key color management classes in the Java 2D API are <kbd>ColorSpace, Color</kbd>, <kbd>ColorModel</kbd>:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="62615"><!-- --></a>
+A<kbd> ColorSpace</kbd> represents a system for measuring colors, typically using three separate numerical values or components. The <kbd>ColorSpace</kbd> class contains methods for converting between the color space and two standard color spaces, <kbd>CIEXYZ</kbd> and RGB.
+</li>
+<li>
+<a name="62573"><!-- --></a>
+A<kbd> Color</kbd> is a fixed color, defined in terms of its components in a particular <kbd>ColorSpace</kbd>. To draw a <kbd>Shape</kbd> in a color, such as red, you pass a <kbd>Color</kbd> object representing that color to the <kbd>Graphics2D</kbd> context. <kbd>Color</kbd> is defined in the <kbd>java.awt</kbd> 
+package. 
+</li>
+<li>
+<a name="62602"><!-- --></a>
+A<kbd> ColorModel</kbd> describes a particular way that pixel values are mapped to colors. A <kbd>ColorModel</kbd> is typically associated with an <kbd>Image</kbd> or <kbd>BufferedImage</kbd> and provides the information necessary to correctly interpret the pixel values. <kbd>ColorModel</kbd> is defined in the
+ <kbd>java.awt.image</kbd> package. 
+</li>
+</ul>
+</blockquote>
+
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-image.fm8.html">PREV</a>
+ | <a href="j2d-color.fm1.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Mon Nov 22 09:37:20 1999 -->
+ 
+
+
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 1 - System Architecture
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="serial-arch.doc5.html">PREV</a>
+ | <a href="serial-arch.doc7.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="5251"><i>	1.6	</i> Documenting Serializable Fields and Data for a Class
+</a></h2>
+
+<blockquote>
+<a name="6925"><!-- --></a>
+It is important to document the serializable state of a class to enable interoperability with alternative implementations of a Serializable class and to document class evolution. Documenting a serializable field gives one a final opportunity to review whether or not the field should be serializable. The serialization javadoc tags, <code>@serial</code>, <code>@serialField</code>, and <code>@serialData</code>, provide a way to document the serialized form for a Serializable class within the source code.<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="6812"><!-- --></a>
+The <code>@serial</code> tag should be placed in the javadoc comment for a default serializable field. The syntax is as follows:<code>@serial</code> <em>field-description</em>The optional <em>field-description</em> describes the meaning of the field and its acceptable values. The <em>field-description</em> can span multiple lines. When a field is added after the initial release, a <em>@since</em> tag indicates the version the field was added. The <em>field-description</em> for <code>@serial</code> provides serialization-specific documentation and is appended to the javadoc comment for the field within the serialized form documentation. 
+</li>
+<li>
+<a name="6813"><!-- --></a>
+The <code>@serialField</code> tag is used to document an <code>ObjectStreamField</code> component of a <code>serialPersistentFields</code> array. One of these tags should be used for each <code>ObjectStreamField</code> component. The syntax is as follows:<code>@serialField</code> <em>field-name field-type field-description</em>
+</li>
+<li>
+<a name="6814"><!-- --></a>
+The <code>@serialData</code> tag describes the sequences and types of data written or read. The tag describes the sequence and type of optional data written by <code>writeObject</code> or all data written by the <code>Externalizable.writeExternal</code> method. The syntax is as follows:<code>@serialData</code> <em>data-description</em>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="6835"><!-- --></a>
+The javadoc application recognizes the serialization javadoc tags and generates a specification for each Serializable and Externalizable class. See <a href="examples.doc1.html#4420">Section&#160;C.1, &#34;Example Alternate Implementation of java.io.File</a>&#34; for an example that uses these tags.<p>
+<a name="6836"><!-- --></a>
+When a class is declared Serializable, the serializable state of the object is defined by serializable fields (by name and type) plus optional data. Optional data can only be written explicitly by the <code>writeObject</code> method of a <code>Serializable</code> class. Optional data can be read by the <code>Serializable</code> class&#39; <code>readObject</code> method or serialization will skip unread optional data. <p>
+<a name="6834"><!-- --></a>
+When a class is declared Externalizable, the data that is written to the stream by the class itself defines the serialized state. The class must specify the order, types, and meaning of each datum that is written to the stream. The class must handle its own evolution, so that it can continue to read data written by and write data that can be read by previous versions. The class must coordinate with the superclass when saving and restoring data. The location of the superclasses data in the stream must be specified.<p>
+<a name="6915"><!-- --></a>
+The designer of a Serializable class must ensure that the information saved for the class is appropriate for persistence and follows the serialization-specified rules for interoperability and evolution. Class evolution is explained in greater detail in <a href="version.doc.html#9420">Chapter&#160;5</a>, &#34;Versioning of Serializable Objects.&#34; <p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="serial-arch.doc5.html">PREV</a>
+ | <a href="serial-arch.doc7.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:47:50 1999 -->
+ 
+
+
+</body>
+</html>

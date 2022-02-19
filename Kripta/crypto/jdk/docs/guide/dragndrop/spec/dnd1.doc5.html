@@ -1,0 +1,519 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Drag and Drop: API</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="dnd1TOC.doc.html">CONTENTS</a> | <a href="dnd1.doc4.html">PREV</a>
+ | <a href="dnd1.doc6.html">NEXT</a> <!-- | <a href="dnd1.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Drag and Drop</i></td>
+</tr></table>
+<br>
+ 
+
+<br>
+<h3>
+<a name="923985"><!-- --></a>
+<i>2.3  </i> Drag Source
+</h3>
+
+<blockquote>
+<a name="919379"><!-- --></a>
+The <em>DragSource</em> is the entity responsible for the initiation of the Drag and Drop operation:<p>
+</blockquote>
+<br>
+<a name="921901"><!-- --></a>
+<h4><i>2.3.1   The <em>DragSource</em> definition
+</i></h4>
+
+<blockquote>
+<a name="920316"><!-- --></a>
+The <em>DragSource</em> and associated constant interfaces are defined as follows:<p>
+<a name="922609"><!-- --></a>
+The <em>DnDConstants</em> class defines the operations that may be applied to the subject of the transfer:<p>
+</blockquote><blockquote><pre>
+public final class java.awt.dnd.DnDConstants {
+	public static int ACTION_NONE					= 	0x0;
+	public static int ACTION_COPY					=	 0x1;
+	public static int ACTION_MOVE					=	 0x2;
+	public static int ACTION_COPY_OR_MOVE					= ACTION_COPY | 		                                             
+ACTION_MOVE;
+	public static int ACTION_REFERENCE = 0x40000000;
+}
+
+public class java.awt.dnd.DragSource {
+
+     public static Cursor     DefaultCopyDrop;
+     public static Cursor     DefaultMoveDrop;
+     public static Cursor     DefaultLinkDrop;
+
+     public static Cursor     DefaultCopyNoDrop;
+     public static Cursor     DefaultMoveNoDrop;
+     public static Cursor     DefaultLinkNoDrop;
+
+	public static DragSource getDefaultDragSource();
+
+	public static boolean isDragImageSupported();
+
+	public void
+		  startDrag(DragGestureEvent    trigger,
+				  Cursor			 dragCursor,
+				  Image			 dragImage,
+				  Point			 dragImageOffset,
+				  Transferable 			 transferable,
+			 	  DragSourceListener			 dsl,
+			       FlavorMap           fm)
+		  throws InvalidDnDOperationException;
+
+	protected DragSourceContext
+		createDragSourceContext(
+			DragSourceContextPeer dscp,
+			DragGestureEvent      trigger,
+			Cursor                dragCursor,
+			Image                 dragImage,
+  			Point                 dragImageOffset,
+			Transferable          transferable,
+			DragSourceListener    dsl
+		);
+
+	public FlavorMap getFlavorMap();
+
+     public DragGestureRecongizer
+         createDragGestureRecognizer(
+              Class               abstractRecognizerClass,
+              Component           c,
+              int                 srcActions,
+              DragGestureListener dgl
+     );
+
+     public DragGestureRecongizer
+         createDefaultDragGestureRecognizer(
+              Component           c,
+              int                 srcActions,
+              DragGestureListener dgl
+     );
+}
+
+
+</pre></blockquote><blockquote>
+<a name="921249"><!-- --></a>
+The <em>DragSource</em> may be used in a number of scenarios:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="921278"><!-- --></a>
+1 default instance per JVM<B>*</B> for the lifetime of that JVM. (defined by this spec)
+</li>
+<li>
+<a name="921283"><!-- --></a>
+1 instance per class of potential Drag Initiator object (e.g <em>TextField</em>). [implementation dependent]
+</li>
+<li>
+<a name="921280"><!-- --></a>
+1 per instance of a particular <em>Component</em>, or application specific object associated with a <em>Component</em> instance in the GUI. [implementation dependent]
+</li>
+<li>
+<a name="921758"><!-- --></a>
+some other arbitrary association. [implementation dependent]
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="921257"><!-- --></a>
+ A controlling object, shall obtain a <em>DragSource</em> instance prior to a users gesture, effecting an associated <em>Component</em>, in order to process the operation. Once obtained a <em>DragGestureRecognizer</em> should be obtained and used to associate the <em>DragSource</em> with a <em>Component</em>.<p>
+<a name="921539"><!-- --></a>
+The initial interpretation of the users gesture, and the subsequent starting of the Drag operation are the responsibility of the implementing <em>Component</em>, this is usually implemented by a <em>DragGestureRecognizer</em>.<p>
+<a name="921231"><!-- --></a>
+When a gesture occurs, the <em>DragSource</em>&#39;s <em>startDrag()</em> method shall be invoked in order to cause processing of the users navigational gestures and delivery of Drag and Drop protocol notifications. A DragSource shall only permit a single Drag and Drop operation to be current at any one time, and shall reject any further <em>startDrag()</em> requests by throwing an <em>IllegalDnDOperationException</em> until such time as the extant operation is complete.<p>
+<a name="921950"><!-- --></a>
+In order to start a drag operation the caller of the <em>startDrag</em>() method shall provide the following parameters:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="921951"><!-- --></a>
+The <em>DragGestureEvent</em> for the gesture.
+</li>
+<li>
+<a name="923905"><!-- --></a>
+A <em>Cursor</em> representing the initial &#34;Drag Over&#34; feedback for the operation(s) specified. (This shall be a <em>Cursor</em> that provides &#34;No Drop&#34; visual feedback to the user).
+</li>
+<li>
+<a name="921967"><!-- --></a>
+An (optional) <em>Image</em> to visually represent the item, or item(s) that are the subject(s) of the operation.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="921969"><!-- --></a>
+On platforms that can support this feature, a &#34;Drag&#34; image may be associated with the operation to enhance the fidelity of the &#34;Drag Over&#34; feedback. This image would typically be a small &#34;iconic&#34; representation of the object, or objects being dragged, and would be rendered by the underlying system, tracking the movement of, and coincident with, but typically in addition to the <em>Cursor</em> animation.<p>
+<a name="921968"><!-- --></a>
+Where this facility is not available, or where the image is not of a suitable type to be rendered by the underlying system, this parameter is ignored and only <em>Cursor</em> &#34;Drag Over&#34; animation results, so applications should not depend upon this feature. The presence of the facility on a particular platform may be tested by invoking the static method <em>isDragImageSupported()</em>.<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="921959"><!-- --></a>
+Where an <em>Image</em> is provided; a <em>Point</em> (in the co-ordinate space of the <em>Component) </em>specifying the initial origin of that <em>Image</em> relative to the co-ordinates of the &#34;hotspot&#34; of the drag &#34;Cursor&#34;, in the co-ordinate space of the <em>Component</em>, at the time of the initial gesture, for the purposes of initiating a correctly positioned &#34;Drag Over&#34; animation of that <em>Image</em> relative to that &#34;hotspot&#34;.
+</li>
+<li>
+<a name="921960"><!-- --></a>
+A <em>Transferable</em> that describes the various <em>DataFlavor</em>(s) that represent the subject(s) of any subsequent data transfer that may result from a successful Drop.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="920395"><!-- --></a>
+The <em>Transferable </em>instance associated with the <em>DragSource</em> at the start of the Drag operation, represents the object(s) or data that are the operand(s), or the subject(s), of the Drag and Drop operation, that is the information that will subsequently be passed from the <em>DragSource</em> to the <em>DropTarget </em>as a result of a successful Drop on the <em>Component</em> associated with that <em>DropTarget</em>.<p>
+<a name="920667"><!-- --></a>
+Note that multiple (collections) of either homogeneous, or heterogeneous, objects may be subject of a Drag and Drop operation, by creating a container object, that is the subject of the transfer, and implements <em>Transferable</em>. However it should be noted that since none of the targeted native platforms systems support a standard mechanism for describing and thus transferring such collections it is not possible to implement such transfers in a transparent, or platform portable fashion.<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="922007"><!-- --></a>
+A <em>DragSourceListener</em> instance, which will subsequently receive events notifying it of changes in the state of the ongoing operation in order to provide the &#34;Drag Over&#34; feedback to the user.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="922002"><!-- --></a>
+As stated above, the primary role of the <em>startDrag</em>() method is to initiate a Drag on behalf of the user. In order to accomplish this, the <em>startDrag</em>() method must create a <em>DragSourceContext</em> instance to track the operation itself, and more importantly it must initiate the operation itself in the underlying platform implementation. In order to accomplish this, the <em>DragSource</em> must first obtain a <em>DragSourceContextPeer</em> from the underlying system (usually via an invocation of <em>java.awt.Toolkit.createDragSourceContextPeer()</em> method) and subsequently associate this newly created <em>DragSourceContextPeer</em> (which provides a platform independent interface to the underlying systems capabilities) with a <em>DragSourceContext</em>.The <em>startDrag</em>() method invokes the <em>createDragSourceContext</em>() method to instantiate an appropriate <em>DragSourceContext</em> and associate the <em>DragSourceContextPeer with that.</em><p>
+<a name="925502"><!-- --></a>
+If the Drag and Drop System is unable to initiate a Drag operation for some reason the <em>startDrag</em>() method shall throw a <em>java.awt.dnd.InvalidDnDOperationException</em> to signal such a condition. Typically this exception is thrown when the underlying platform system is either not in a state to initiate a Drag, or the parameters specified are invalid.<p>
+<a name="925503"><!-- --></a>
+Note that during the Drag neither the set of operations the source exposed at the start of the Drag operation may change for the duration of the operation, in other words the operation(s) and are constant for the duration of the operation with respect to the <em>DragSource</em>.<p>
+<a name="922594"><!-- --></a>
+The <em>getFlavorMap</em>() method is used by the underlying system to obtain a <em>FlavorMap</em> object in order to map the <em>DataFlavors</em> exposed by the <em>Transferable</em> to data type names of the underlying DnD platform. [see later for details of the <em>FlavorMap</em>]<p>
+<a name="925511"><!-- --></a>
+A &#34;private&#34; <em>FlavorMap</em> may be provided to the <em>startDrag()</em> method of the <em>DragSource</em>, or null, in which case the &#34;default&#34; <em>FlavorMap</em> for that <em>DragSource</em> class or instance is used.<p>
+</blockquote>
+<br>
+<a name="920428"><!-- --></a>
+<h4><i>2.3.2   The <em>DragSourceContext</em> Definition
+</i></h4>
+
+<blockquote>
+<a name="921985"><!-- --></a>
+As a result of a <em>DragSource</em>&#39;s <em>startDrag</em>() method being successfully invoked an instance of the <em>DragSourceContext</em> class is created. This instance is responsible for tracking the state of the operation on behalf of the <em>DragSource</em> and dispatching state changes to the <em>DragSourceListener</em>.<p>
+<a name="920319"><!-- --></a>
+The <em>DragSourceContext</em> class is defined as follows:<p>
+</blockquote><blockquote><pre>
+public class DragSourceContext implements DragSourceListener 
+{
+	protected DragSourceContext(
+				DragSourceContextPeer	dscp,
+				DragGestureEvent      trigger,
+				Cursor			dragCursor,
+				Image			dragImage,
+				Point			dragOffset,
+				Transferable		transferable,
+				DragSourceListener		dsl		
+	);
+
+	public DragSource			 getDragSource();
+
+	public Component		 getComponent();
+
+	public DragGestureEvent				getTrigger();
+
+	public Image	 getDragImage();
+	public Point	 getDragImageOffset();
+
+     public void transferablesFlavorsChanged();
+
+	public int getSourceActions();
+
+	public Cursor getCursor();
+	pbulic void   setCursor(Cursor Cursor) 
+				   throws InvalidDnDOperationException;
+
+	public void 
+		addDragSourceListener(DragSourceListener dsl)
+		    throws TooManyListenersException;
+
+	public void 
+		removeDragSourceListener(DragSourceListener dsl);
+
+     protected updateCurrentCursor(int dropOperation,
+                                   int targetActions,
+                                   int status
+     );
+
+    // values for status parameter above.
+
+    protected static final int DEFAULT = 0;
+    protected static final int ENTER   = 1;
+    protected static final int OVER    = 2;
+    protected static final int CHANGED = 3;
+
+    protected boolean cursorDirty;
+ }
+
+
+</pre></blockquote><blockquote>
+<a name="922082"><!-- --></a>
+Note that the <em>DragSourceContext</em> itself implements <em>DragSourceListener</em>, this is to allow the platform peer, the <em>DragSourceContextPeer</em> instance, created by the <em>DragSource</em>, to notify the <em>DragSourceContext</em> of changes in state in the ongoing operation, and thus allows the <em>DragSourceContext</em> to interpose itself between the platform and the <em>DragSourceListener</em> provided by the initiator of the operation.<p>
+<a name="919840"><!-- --></a>
+The state machine the platform exposes, with respect to the source, or initiator of the Drag and Drop operation is detailed below:<p>
+<a name="919609"><!-- --></a>
+<p><img src="dnd1.doc.anc.gif"><p>
+<a name="919509"><!-- --></a>
+Notifications of changes in state with respect to the initiator during a Drag and Drop operation, as illustrated above, are delivered from the <em>DragSourceContextPeer, </em>to the appropriate <em>DragSourceContext</em>, which delegates notifications, via a unicast JavaBeans compliant <em>EventListener</em> subinterface, to an arbitrary object that implements <em>DragSourceListener</em> registered with the <em>DragSource</em> via <em>startDrag</em>().<p>
+<a name="919728"><!-- --></a>
+The primary responsibility of the <em>DragSourceListener</em> is to monitor the progress of the users navigation during the Drag and Drop operation and provide the &#34;Drag-Over&#34; effects feedback to the user. Typically this is accomplished via changes to the &#34;Drag Cursor&#34;.<p>
+<a name="919761"><!-- --></a>
+Every Drag operation has 2 logical cursor states (Drag Cursors) associated with it:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="922064"><!-- --></a>
+ The Drop <em>Cursor</em>, the cursor displayed when dragging over a valid <em>DropTarget</em>. 
+</li>
+<li>
+<a name="922070"><!-- --></a>
+The NoDrop <em>Cursor</em>, the cursor displayed when dragging over everything else (the initial state of the cursor at the start of a Drag).
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="922631"><!-- --></a>
+The state of the <em>Cursor</em> may be modified by calling the <em>setCursor</em>() method of the <em>DragSourceContext</em>.<p>
+<a name="925558"><!-- --></a>
+<p>
+<a name="925559"><!-- --></a>
+<p>
+<a name="925560"><!-- --></a>
+<p>
+<a name="925561"><!-- --></a>
+<p>
+</blockquote>
+<br>
+<a name="920315"><!-- --></a>
+<h4><i>2.3.3   The <em>DragSourceListener</em> Definition
+</i></h4>
+
+<blockquote>
+<a name="919799"><!-- --></a>
+The <em>DragSourceListener</em> interface is defined as follows:<p>
+</blockquote><blockquote><pre>
+public interface java.awt.dnd.DragSourceListener
+	extends java.util.EventListener {
+	void dragEnter					(DragSourceDragEvent dsde);
+	void dragOver					(DragSourceDragEvent dsde);
+	void dropActionChanged (DragSourceDragEvent dsde);
+	void dragExit					(DragSourceEvent     dse);
+	void dragDropEnd					(DragSourceDropEvent dsde);
+}
+
+</pre></blockquote><blockquote>
+<a name="925637"><!-- --></a>
+<p>
+<a name="925638"><!-- --></a>
+As the drag operation progresses, the <em>DragSourceListener&#39;</em>s <em>dragEnter()</em>, <em>dragOver()</em>, and <em>dragExit()</em> methods shall be invoked as a result of the users navigation of the logical &#34;Drag&#34; cursor&#39;s location intersecting the geometry of GUI <em>Component(s)</em> with associated <em>DropTarget(s)</em>. [See below for details of the <em>DropTarget&#39;s</em> protocol interactions].<p>
+<a name="922100"><!-- --></a>
+The <em>DragSourceListener</em>&#39;s <em>dragEnter</em>() method is invoked when the following conditions are true:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="922101"><!-- --></a>
+The logical cursor&#39;s hotspot initially intersects a GUI <em>Component</em>&#39;s visible geometry.
+</li>
+<li>
+<a name="922104"><!-- --></a>
+That <em>Component</em> has an active <em>DropTarget</em> associated.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="922107"><!-- --></a>
+The <em>DropTarget</em>&#39;s registered <em>DropTargetListener</em> <em>dragEnter</em>() method is invoked and returns successfully.<p>
+<a name="922108"><!-- --></a>
+The registered <em>DropTargetListener </em>invokes the <em>DropTargetDragEvent</em>&#39;s <em>acceptDrag</em>() method to accept the Drag based upon interrogation of the source&#39;s potential Drop actions and available data types (<em>DataFlavors</em>).<p>
+<a name="922111"><!-- --></a>
+The <em>DragSourceListener&#39;s dragOver()</em> method is invoked when the following conditions are true:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="922117"><!-- --></a>
+The cursor&#39;s logical hotspot has moved but still intersects the visible geometry of the <em>Component</em> associated with the previous <em>dragEnter</em>() invocation.
+</li>
+<li>
+<a name="922121"><!-- --></a>
+That <em>Component</em> still has a <em>DropTarget</em> associated.
+</li>
+<li>
+<a name="922122"><!-- --></a>
+That <em>DropTarget</em> is still active.
+</li>
+<li>
+<a name="922123"><!-- --></a>
+The <em>DropTarget</em>&#39;s registered <em>DropTargetListener</em> <em>dragOver</em>() method is invoked and returns successfully.
+</li>
+<li>
+<a name="922183"><!-- --></a>
+The <em>DropTarget</em> does not reject the drag via <em>rejectDrag</em>().
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="922127"><!-- --></a>
+The <em>DragSourceListener</em>&#39;s <em>dragExit</em>() method is invoked when one of the following conditions is true:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="922132"><!-- --></a>
+The cursor&#39;s logical hotspot no longer intersects the visible geometry of the <em>Component</em> associated with the previous <em>dragEnter</em>() invocation.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="922196"><!-- --></a>
+Or:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="922197"><!-- --></a>
+The <em>Component</em> that the logical cursor&#39;s hotspot intersected that resulted in the previous <em>dragEnter</em>() invocation, no longer has an active <em>DropTarget</em> (or <em>DropTargetListener</em>) associated.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="922200"><!-- --></a>
+Or:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="922213"><!-- --></a>
+The current <em>DropTarget</em>&#39;s <em>DropTargetListener</em> has invoked <em>rejectDrag</em>() since the last <em>dragEnter</em>() or <em>dragOver</em>() invocation.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="922228"><!-- --></a>
+The <em>DragSourceListener&#39;s dropActionChanged()</em> method is invoked when the state of the input device(s), typically the mouse buttons or keyboard modifiers, that the user is interacting with in order to preform the Drag operation, changes.<p>
+<a name="922232"><!-- --></a>
+The <em>dragDropEnd()</em> method is invoked to signify that the operation is completed. The <em>getDropSuccess()</em> method of the <em>DragSourceDropEvent</em> can be used to determine the termination state. The <em>getDropAction</em>() method returns the operation that the <em>DropTarget</em> selected (via the <em>DropTargetDropEvent</em> <em>acceptDrop</em>() parameter) to apply to the Drop operation.<a href="#922238"><sup>1</sup></a><p>
+<a name="922236"><!-- --></a>
+Once this method is complete the current <em>DragSourceContext</em> and the associated resources are invalid.<p>
+</blockquote>
+<br>
+<a name="922136"><!-- --></a>
+<h4><i>2.3.4   The <em>DragSourceEvent</em> Definition
+</i></h4>
+
+<blockquote>
+<a name="922138"><!-- --></a>
+The <em>DragSourceEvent</em> class is the root <em>Event</em> class for all events pertaining to the DragSource, and is defined as follows:<p>
+</blockquote><blockquote><pre>
+public class   java.awt.dnd.DragSourceEvent
+	  extends java.util.EventObject {
+	public DragSourceEvent(DragSourceContext dsc);
+
+	public DragSourceContext getDragSourceContext();
+};
+
+
+</pre></blockquote><blockquote>
+<a name="922246"><!-- --></a>
+An instance of this event is passed to the <em>DragSourceListener</em> <em>dragExit</em>() method.<p>
+</blockquote>
+<br>
+<a name="922137"><!-- --></a>
+<h4><i>2.3.5   The <em>DragSourceDragEvent</em> Definition
+</i></h4>
+
+<blockquote>
+<a name="920327"><!-- --></a>
+The <em>DragSourceDragEvent</em> class is defined as follows:<p>
+</blockquote><blockquote><pre>
+
+public class java.awt.dnd.DragSourceDragEvent 
+	  extends DragSourceEvent {
+	public int getTargetActions();
+
+     public int getUserAction();
+
+	public int getGestureModifiers();
+
+	public boolean isDropTargetLocal();
+
+     public int getDropAction();
+}
+
+
+</pre></blockquote><blockquote>
+<a name="920332"><!-- --></a>
+An instance of the above class is passed to a <em>DragSourceListener&#39;s dragEnter(), dragOver(), </em>and<em> dragGestureChanged() </em>methods.<p>
+<a name="920364"><!-- --></a>
+The <em>getDragSourceContext</em>() method returns the <em>DragSourceContext</em> associated with the current Drag and Drop operation.<p>
+<a name="920365"><!-- --></a>
+The <em>getTargetActions() </em>method returns the drop actions, supported by, and returned from the current <em>DropTarget (</em>if any in the case of<em> dropActionChanged())</em>.<p>
+<a name="924126"><!-- --></a>
+The <em>getDropAction()</em> method returns the action that is currently selected by the users gesture.<p>
+<a name="924395"><!-- --></a>
+The <em>getTargetActions()</em> method returns the set of actions supported by the current <em>DropTarget</em>.<p>
+<a name="924398"><!-- --></a>
+The logical OR of these two results defines the actual effect of a Drop.<p>
+<a name="920367"><!-- --></a>
+The <em>getGestureModifiers()</em> returns the current state of the input device modifiers, usually the mouse buttons and keyboard modifiers, associated with the users gesture.<p>
+<a name="922247"><!-- --></a>
+The <em>isDropTargetLocal</em>() method returns true if the current <em>DropTarget</em> is contained within the same JVM as the <em>DragSource</em>, and false otherwise. This information can be useful to the implementor of the <em>DragSource</em>&#39;s <em>Transferable</em> in order to implement certain local optimizations.<p>
+</blockquote>
+<br>
+<a name="920366"><!-- --></a>
+<h4><i>2.3.6   The <em>DragSourceDropEvent</em> Definition
+</i></h4>
+
+<blockquote>
+<a name="920325"><!-- --></a>
+The <em>DragSourceDropEvent</em> class is defined as follows:<p>
+</blockquote><blockquote><pre>
+
+public public class java.awt.dnd.DragSourceDropEvent
+	  extends java.util.EventObject {
+
+	public DragSourceDropEvent(DragSourceContext dsc);
+	public DragSourceDropEvent(DragSourceContext dsc,
+						      int                action, 
+						      boolean            success);
+
+	public boolean getDropSuccess();
+
+	public int getDropAction();
+}
+
+</pre></blockquote><blockquote>
+<a name="920334"><!-- --></a>
+An instance of the above class is passed to a <em>DragSourceListener&#39;s dragDropEnd()</em> method. This event encapsulates the termination state of the Drag and Drop operation for the <em>DragSource</em>.<p>
+<a name="920344"><!-- --></a>
+If the Drop occurs, then the participating <em>DropTarget</em> will signal the success or failure of the data transfer via the <em>DropTargetContext&#39;s dropComplete()</em> method, this status is made available to the initiator via the <em>getDropSuccess()</em> method. The operation that the destination <em>DropTarget</em> selected to perform on the subject of the Drag (passed by the <em>DropTarget</em>&#39;s <em>acceptDrop</em>() method) is returned via the <em>getDropAction</em>() method.<p>
+<a name="922434"><!-- --></a>
+If the Drag operation was aborted for any reason prior to a Drop occurring, for example if the users ends the gesture outside a <em>DropTarget</em>, or if the <em>DropTarget</em> invokes <em>rejectDrop</em>(), the <em>isGetDropSuccess()</em> method will return false, otherwise true.<p>
+</blockquote>
+
+<P>
+<FONT SIZE="-1"><B>*As used on this web site, the terms "Java Virtual Machine" 
+or "JVM" mean a virtual machine for the Java platform.</B></FONT>
+<P>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="dnd1TOC.doc.html">CONTENTS</a> | <a href="dnd1.doc4.html">PREV</a>
+ | <a href="dnd1.doc6.html">NEXT</a> <!-- | <a href="dnd1.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997, 1998 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Doug Kramer -->
+<!-- Last updated: Thu Nov 19 14:12:35 1998 -->
+ 
+
+
+</body>
+</html>

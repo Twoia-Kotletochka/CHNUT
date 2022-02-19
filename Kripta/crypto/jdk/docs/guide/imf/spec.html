@@ -1,0 +1,487 @@
+<!--This file created by Claris Home Page version 2.0-->
+<HTML>
+<HEAD>
+   <TITLE>Input Method Framework Specification</TITLE>
+   <META NAME=GENERATOR CONTENT="Claris Home Page 2.0">
+</HEAD>
+<BODY BGCOLOR="#FFFFFF" VLINK="#000077">
+
+<P><TABLE BORDER=0 WIDTH="100%">
+   <TR>
+      <TD WIDTH=60>
+         <P><IMG SRC="../../images/javalogo52x88.gif" ALT="Java"
+         WIDTH=52 HEIGHT=88 BORDER=0 ALIGN=bottom>
+      </TD><TD>
+         <H1><CENTER>Input Method Framework Specification
+         </CENTER></H1>
+      </TD></TR>
+</TABLE><!-- Body text begins here --></P>
+
+<H2>Contents</H2>
+
+<OL>
+   <LI><A HREF="#Framework Architecture">Framework Architecture</A>
+   
+   <LI><A HREF="#Client Components">Client Components</A>
+   
+   <LI><A HREF="#Input Styles">Input Styles</A>
+   
+   <LI><A HREF="#Input Method Engines and Adapters">Input Method
+   Engines and Adapters</A>
+   
+   <LI><A HREF="#Context Management">Context Management</A>
+   
+   <LI><A HREF="#Information Flow Through the Framework">Information
+   Flow Through the Framework</A>
+</OL>
+
+<P>
+<HR>
+</P>
+
+<H2><A NAME="Framework Architecture"></A>1. Framework Architecture
+</H2>
+
+<P>The following picture shows the overall structure of the framework
+and its clients. Parts outlined in bold are integrated with the input
+method framework as part of the Java 2 platform; others can be
+developed and distributed separately by independent software vendors.
+</P>
+
+<P><CENTER><IMG SRC="framework.gif" WIDTH=382 HEIGHT=204
+ALIGN=bottom></CENTER></P>
+
+<P>The input method client API defines the classes and interfaces
+that text editing components can use to implement an integrated text
+input user interface. The AWT text components <CODE>TextArea</CODE>
+and <CODE>TextField</CODE> provide on-the-spot or over-the-spot
+composition, depending on implementation. The text components of the
+Swing user interface toolkit provide an integrated text input user
+interface. The context management manages communication paths between
+the text editing components and input methods. The input method
+engine SPI defines the interfaces that allow input method engines and
+adapters to be plugged into the framework. Input method engines can
+be implemented directly in the Java programming language using these
+interfaces. To use native input methods integrated with the host
+input method manager, an adapter translates information between the
+data models used by native input methods and the input method
+framework and provides the composition window. Adapters for other
+input systems, such as Java Speech or the Internet-Intranet Input
+Method Protocol (IIIMP), can also be implemented using this
+interface.</P>
+
+<P>
+<HR>
+</P>
+
+<H2><A NAME="Client Components"></A>2. Client Components</H2>
+
+<P>Every instance of the <CODE>Component</CODE> class is potentially
+a client of the input method framework. The framework distinguishes
+between four kinds of components:</P>
+
+<UL>
+   <LI><EM>Active clients</EM> are components whose
+   <CODE><A HREF="../../api/java/awt/Component.html#getInputMethodRequests()">getInputMethodRequests</A></CODE>
+   implementations return a non-null value. The framework assumes
+   that these components actively use the input method client API
+   and, in particular, provide an implementation of the
+   <CODE><A HREF="../../api/java/awt/event/InputMethodListener.html">InputMethodListener</A></CODE>
+   interface. These components are expected to handle events and
+   requests for information coming from the input method and draw
+   composed text that is sent to them.
+   
+   <LI><EM>Non-clients</EM> are components that have turned off input
+   method support using the
+   <CODE><A HREF="../../api/java/awt/Component.html#enableInputMethods(boolean)">enableInputMethods</A></CODE>
+   method.
+   
+   <LI><EM>Peered clients</EM> are peered text components (instances
+   of the <CODE>TextComponent</CODE> class). Their behavior is
+   implementation dependent, and their input method support may be
+   limited. In Sun's Java 2 runtime environment for Windows, peered
+   text components behave mostly like active clients. In Sun's Java 2
+   runtime environment for Solaris, peered text components can
+   receive input only from host input methods, and they do not
+   support the below-the-spot input style (see below).
+   
+   <LI><EM>Passive clients</EM> are all remaining components. The
+   framework assumes that passive clients don't use the input method
+   client API, but still need to receive text input from input
+   methods.
+</UL>
+
+<P>All four kinds of components may coexist in the same window. The
+input method framework, therefore, needs to determine the
+capabilities of components and adjust its behavior as the focus moves
+from one component to another.</P>
+
+<P>Client components are not responsible for drawing candidate lists
+or for user interface elements that control the input method's
+behavior. Depending on the platform, this responsibility rests with
+input methods, the host input method manager, or the input method
+framework.</P>
+
+<P>Input methods are not concerned with the differences between
+client components. They interact with them indirectly through the
+input method framework, which presents an interface similar to an
+active client and handles the differences internally.</P>
+
+<P>
+<HR>
+</P>
+
+<H2><A NAME="Input Styles"></A>3. Input Styles</H2>
+
+<P>The input method framework supports three input styles:</P>
+
+<UL>
+   <LI><EM>On-the-spot</EM> input, where the client component draws
+   the composed text in the context of the document that it will
+   eventually belong to, but in a style that indicates that the text
+   still needs to be converted or confirmed by the input method. This
+   is the default input style for active clients.
+   
+   <LI><EM>Below-the-spot</EM> input, where the composed text is
+   shown in a separate composition window that is automatically
+   positioned just below the insertion point where text will be
+   inserted after being committed. The window's location is
+   calculated first when the window is opened, then updated whenever
+   committed text has been dispatched to the client component. If
+   positioning the window below the insertion point would move it
+   partially or entirely off-screen, it is moved above the insertion
+   point. This input style may be selected for active clients as
+   described below.
+   
+   <LI><EM>Root-window</EM> input, where the composed text is shown
+   in a separate composition window that is not automatically
+   positioned. This input style is used for passive clients.
+</UL>
+
+<P>The framework chooses between on-the-spot and below-the-spot input
+for active clients based on a system property or an AWT property
+"java.awt.im.style". The system property can be defined from the
+command line (by the end user), the AWT property in a localized
+awt.properties file (by the localizer or a system administrator). If
+both are defined, the system property takes precedence. If the
+property's value is "below-the-spot", below-the-spot input is used,
+otherwise on-the-spot input.</P>
+
+<P>Support for below-the-spot input with native input methods is
+platform dependent. In Sun's Java 2 runtime environments, it is
+supported on Windows, but not on Solaris. Where it is not supported,
+on-the-spot input is used instead.</P>
+
+<P>The input style used for peered text components (instances of the
+<CODE>TextComponent</CODE> class) is implementation dependent and may
+not be any of the styles described above. In Sun's Java 2 runtime
+environment for Windows, below-the-spot input may be selected as
+described above, otherwise over-the-spot input is used, where
+composed text is drawn in a separate window covering the insertion
+point. In Sun's Java 2 runtime environment for Solaris, the input
+style depends on the input method.</P>
+
+<P>No input style is associated with non-clients.</P>
+
+<P>Input methods are not concerned with the differences between input
+styles. They interact with client components indirectly through the
+input method framework, which presents an interface assuming
+on-the-spot input and handles the differences internally.</P>
+
+<P>
+<HR>
+</P>
+
+<H2><A NAME="Input Method Engines and Adapters"></A>4. Input Method
+Engines and Adapters</H2>
+
+<P>The input method engine SPI enables the development of input
+methods in the Java programming language. Adapters for other input
+systems, such as Java Speech or the Internet-Intranet Input Method
+Protocol, can also be implemented using this interface. For
+information specific to the SPI, see the
+<A HREF="../../api/java/awt/im/spi/package-summary.html#package_specification">SPI
+package specification</A>.</P>
+
+<P>The SPI is also used for host input method adapters, which connect
+to native input methods integrated with the host input method
+managers, such as the Input Method Manager on Win32, the Text
+Services Manager on MacOS, and XIM on Solaris. The host input method
+adapter plays the role of an input method within the input method
+framework, and translates events and requests between the data models
+used by AWT and the input method framework on one side and the host's
+input method manager on the other side. It also cooperates with the
+input context in managing the composition window - for passive
+clients interacting host input methods, typically the root window
+provided by the host input method manager is used. The adapter passes
+on requests for particular input methods to the host, but users can
+also use the host's selection mechanism to select input methods.</P>
+
+<P>
+<HR>
+</P>
+
+<H2><A NAME="Context Management"></A>5. Context Management</H2>
+
+<P><CODE>InputContext</CODE> instances manage communication contexts
+between client components and input methods. The main task of an
+input context is to maintain the connection from the current client
+component to its current input method. It dispatches input events
+such as key and mouse events from the component to the current input
+method, and input method events from the input method to the client
+component. It also dispatches requests for information from the input
+method to the client component.</P>
+
+<P>Each <CODE>InputContext</CODE> instance provides its own text
+input environment, separate from all other input contexts. This
+allows applications to support multiple concurrent input operations.
+For example, in the middle of entering text into a document, a user
+can open a file dialog and enter a file name, without affecting the
+composition state of the text being entered into the document.</P>
+
+<P>By default, one <CODE>InputContext</CODE> instance is created per
+Window instance, and this input context is shared by all components
+within the window's containment hierarchy. If necessary, components
+can create private input contexts. A component that doesn't have its
+own input context uses the one used by its parent. An input context
+has at most one current client component, the component that
+currently has the focus. When switching to a new client component,
+the input context calls its
+<CODE><A HREF="../../api/java/awt/im/InputContext.html#endComposition()">endComposition</A></CODE>
+method to commit or cancel composed text for the previous client
+component.</P>
+
+<P>The input context creates an input method instance for each input
+method engine that its client components need to use. Separate input
+method instances are created for each input context instance. The
+instances are kept until the input context is disposed, so that the
+instances can keep information about the text that was entered in the
+window.</P>
+
+<P>The input context also handles input method selection and the
+composition window.</P>
+
+<H4><A NAME="Selecting Input Methods"></A>Selecting Input Methods
+</H4>
+
+<P>An input context has a current input method and a current locale.
+</P>
+
+<P>The input method framework provides two separate ways of selecting
+input methods and input locales:</P>
+
+<UL>
+   <LI>The method
+   <CODE><A HREF="../../api/java/awt/im/InputContext.html#selectInputMethod(java.util.Locale)">InputContext.selectInputMethod</A></CODE>
+   lets applications request an input method supporting a specified
+   locale.
+   
+   <LI>A user interface lets the user request an input method by
+   name, and specify the input locale. A selection made from the user
+   interface affects the currently active input context only.
+</UL>
+
+<P>The framework does not give preference to selections made either
+way, so the last successful selection made either way for an input
+context determines the current input method for an input context
+(note that <CODE>selectInputMethod</CODE> may fail if no available
+input method supports the requested locale).</P>
+
+<P>Before switching to a new input method, the input context calls
+the old input method's <CODE>endComposition</CODE> method. The input
+context retains the old input method instance and reuses it when the
+same input method is selected again for this input context at a later
+point.</P>
+
+<P><CODE>InputContext.selectInputMethod</CODE> looks for an input
+method supporting the specified locale using the results of the
+<CODE>InputMethodDescriptor.getAvailableLocales</CODE> methods of all
+installed input methods. If the user has previously selected an input
+method with the specified locale from the user interface, this input
+method is chosen. Otherwise it is implementation dependent which
+input method is chosen if multiple input methods support the
+specified locale.</P>
+
+<P>The user interface for selecting input methods is implementation
+dependent. It must provide the user with a list of all available
+input methods and let him/her select one of them. Where an input
+method supports multiple locales, the user interface also lets the
+user select the input locale (this facility may be omitted for host
+adapters if the host provides an alternative facility to select the
+input locale). Licensees developing Java runtime environments for
+their own platforms are encouraged to integrate the user interface
+with existing user interfaces for selecting keyboards or input
+methods.</P>
+
+<P>In Sun's Java 2 runtime environments for Windows and Solaris, the
+user interface consists of two parts: a "Select Input Method" menu
+item added to the Window menu in Motif or the System menu in Windows,
+and a pop-up menu brought up by this new menu item. The "Select Input
+Method" item is only shown if the Java runtime environment has more
+than one input method available or the input method supports multiple
+locales (the host input method adapter is treated as a single input
+method). The popup menu lists the available input methods, with
+supported locales of multi-locale input methods as submenus, and lets
+the user select from this list.</P>
+
+<H4><A NAME="Composition Window"></A>Composition Window</H4>
+
+<P>For passive clients and for active clients using below-the-spot
+input, the input method framework provides a composition window. The
+window is opened when the input method starts sending composed text;
+it is closed when all text is committed. At most one composition
+window is open at any time even if multiple compositions (using
+separate input contexts) are currently in progress.</P>
+
+<P>For below-the-spot input, the window is automatically positioned
+just below the insertion point where text will be inserted after
+being committed. The window's location is calculated first when the
+window is opened, then updated whenever committed text has been
+dispatched to the client component. If positioning the window below
+the insertion point would move it partially or entirely off-screen,
+it is moved above the insertion point.</P>
+
+<P>
+<HR>
+</P>
+
+<H2><A NAME="Information Flow Through the Framework"></A>6.
+Information Flow Through the Framework</H2>
+
+<P>The framework provides two mechanisms to communicate information
+between the current client component and the current input method:
+</P>
+
+<UL>
+   <LI>AWT events are used to pass information about user actions to
+   the input method, and to notify the component of changes in the
+   input text. This provides a programming interface that's
+   consistent with other input operations. However,
+   <CODE>InputMethodEvents</CODE> are typically dispatched
+   synchronously to the component's methods, while other AWT events
+   are dispatched asynchronously through the event queue.
+   
+   <LI>The <CODE>InputMethodRequests</CODE> interface defines methods
+   that an input method can call to request information from the
+   client component. This invocation is synchronous.
+</UL>
+
+<P>Both event dispatching and calling
+<CODE>InputMethodRequests</CODE> methods are done indirectly through
+the input context. This lets the input context redirect information
+to a composition window if necessary. The composition window provides
+a full implementation of an active client, and so the input method
+can always assume it is interacting with an active client.</P>
+
+<P>The following sections show the flow of events through the input
+method framework and explain the associated handling of input method
+requests. Four alternatives are described, depending on the kind of
+client component and the selected input style. All diagrams assume an
+input method implemented in the Java programming language using the
+input method engine SPI. Event flows for peered text components or
+native input methods are implementation dependent, may vary
+substantially, and are not shown.</P>
+
+<H4>Active Clients With On-the-Spot Input</H4>
+
+<P><CENTER><IMG SRC="eventflow-active-ots.gif" WIDTH=427 HEIGHT=247
+ALIGN=bottom></CENTER></P>
+
+<P>Input events such as <CODE>KeyEvent</CODE> and
+<CODE>MouseEvent</CODE> are sent to the current input method through
+the <CODE>InputContext</CODE> object. If the input method uses the
+event for text composition, it marks the event consumed and generates
+an input method event to the component. The client component must
+have registered an <CODE>InputMethodListener</CODE> so it can handle
+<CODE>InputMethodEvent</CODE>s coming from the input method and
+receive composed and committed text.</P>
+
+<P><CODE>InputMethodRequests</CODE> calls from the input method are
+forwarded to the object returned by the client component's
+<CODE><A HREF="../../api/java/awt/Component.html#getInputMethodRequests()">getInputMethodRequests</A></CODE>
+method.</P>
+
+<H4>Active Clients With Below-the-Spot Input</H4>
+
+<H4><CENTER><IMG SRC="eventflow-active-bts.gif" WIDTH=427 HEIGHT=247
+ALIGN=bottom></CENTER></H4>
+
+<P>Input events such as <CODE>KeyEvent</CODE> and
+<CODE>MouseEvent</CODE> are sent to the current input method through
+the <CODE>InputContext</CODE> object. If the input method uses the
+event for text composition, it marks the event consumed and generates
+an input method event. Since below-the-spot input is selected, the
+event is redirected to the composition window, which handles it. When
+text is committed (partially or entirely), the composition window
+generates a new input method event holding the committed text for the
+client component. The client component must have registered an
+<CODE>InputMethodListener</CODE> so it can handle
+<CODE>InputMethodEvent</CODE>s, which in this case come from the
+composition window and only contain committed text.</P>
+
+<P><CODE>InputMethodRequests</CODE> calls from the input method that
+relate to the display of composed text (<CODE>getTextLocation</CODE>,
+<CODE>getLocationOffset</CODE>) are handled by the composition
+window; all others are forwarded to the object returned by the client
+component's
+<CODE><A HREF="../../api/java/awt/Component.html#getInputMethodRequests()">getInputMethodRequests</A></CODE>
+method. The composition window uses the client component's
+<CODE>getTextLocation</CODE> implementation to position itself.</P>
+
+<H4>Passive Clients</H4>
+
+<P><CENTER><IMG SRC="eventflow-passive.gif" WIDTH=427 HEIGHT=247
+ALIGN=bottom></CENTER></P>
+
+<P>Input events such as <CODE>KeyEvent</CODE> and
+<CODE>MouseEvent</CODE> are sent to the current input method through
+the <CODE>InputContext</CODE> object. If the input method uses the
+event for text composition, it marks the event consumed and generates
+an input method event. The event is redirected to the composition
+window, which handles it. When text is committed, the composition
+window translates it into key events for the actual client's key
+event listener. Only KEY_TYPED events are sent.</P>
+
+<P><CODE>InputMethodRequests</CODE> calls from the input method are
+handled by the composition window. Calls hat relate to the display of
+composed text (<CODE>getTextLocation</CODE>,
+<CODE>getLocationOffset</CODE>) are handled based on information
+about the composed text being displayed. All other calls are handled
+at all times based on the assumption that composition has just
+started and there's no committed text, because the composition window
+does not have access to text in the client component.</P>
+
+<H4>Non-Clients</H4>
+
+<P><CENTER><IMG SRC="eventflow-non.gif" WIDTH=427 HEIGHT=67
+ALIGN=bottom></CENTER></P>
+
+<P>Events for non-clients do not go to the input context. All events
+go straight to the component's listeners (here, the key listener).
+</P>
+
+<P><!-- Body text ends here --><!-- ============================================================== -->
+<HR SIZE="3" NOSHADE>
+<TABLE BORDER=0 WIDTH="100%">
+   <TR>
+      <TD VALIGN=top>
+         <P><FONT
+         SIZE="-2"><A HREF="../../relnotes/SMICopyright.html">Copyright
+         &copy;</A></FONT><FONT SIZE="-2"> 1995-99 </FONT><FONT
+         SIZE="-2"><A HREF="http://www.sun.com/">Sun Microsystems,
+         Inc.</A></FONT><FONT SIZE="-2"> All Rights Reserved.</FONT>
+         </P>
+         
+         <P><FONT SIZE="-1">Please send comments to: </FONT><FONT
+         SIZE="-1"><A HREF="mailto:java-intl@java.sun.com">java-intl@java.sun.com</A></FONT><FONT
+         SIZE="-1"> </FONT>
+      </TD><TD VALIGN=top align=RIGHT>
+         <P ALIGN=RIGHT><IMG SRC="../../images/sunlogo64x30.gif"
+         ALT="Sun" WIDTH=64 HEIGHT=30 BORDER=0 ALIGN=bottom><BR>
+         
+         <I><FONT SIZE="+1">Java Software</FONT></I><FONT SIZE="+1">
+         </FONT>
+      </TD></TR>
+</TABLE></P>
+</BODY>
+</HTML>

@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 1 - System Architecture
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="serial-arch.doc1.html">PREV</a>
+ | <a href="serial-arch.doc3.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="4176"><i>	1.2	</i> Writing to an Object Stream
+</a></h2>
+
+<blockquote>
+<a name="4177"><!-- --></a>
+Writing objects and primitives to a stream is a straightforward process. For example:<p>
+<a name="4178"><!-- --></a>
+<pre>// Serialize today&#39;s date to a file.
+    FileOutputStream f = new FileOutputStream("tmp");
+    ObjectOutput&#160;s&#160;=&#160;new&#160;ObjectOutputStream(f);
+    s.writeObject("Today");
+    s.writeObject(new Date());
+    s.flush();
+</pre>
+
+
+<a name="4179"><!-- --></a>
+First an <code>OutputStream</code>, in this case a <code>FileOutputStream</code>, is needed to receive the bytes. Then an <code>ObjectOutputStream</code> is created that writes to the <code>FileOutputStream</code>. Next, the string &#34;Today&#34; and a Date object are written to the stream. More generally, objects are written with the <code>writeObject</code> method and primitives are written to the stream with the methods of <code>DataOutput</code>.<p>
+<a name="4184"><!-- --></a>
+The <code><a href="output.doc3.html#1038">writeObject</a></code> method (see <a href="output.doc3.html#861">Section&#160;2.3, &#34;The writeObject Method</a>&#34;) serializes the specified object and traverses its references to other objects in the object graph recursively to create a complete serialized representation of the graph. Within a stream, the first reference to any object results in the object being serialized or externalized and the assignment of a handle for that object. Subsequent references to that object are encoded as the handle. Using object handles preserves sharing and circular references that occur naturally in object graphs. Subsequent references to an object use only the handle allowing a very compact representation.<p>
+<a name="4185"><!-- --></a>
+Special handling is required for objects of type <code>Class</code>, <code>ObjectStreamClass</code>, <code>String</code>, and arrays. Other objects must implement either the <code>Serializable</code> or the <code>Externalizable</code> interface to be saved in or restored from a stream. <p>
+<a name="5809"><!-- --></a>
+Primitive data types are written to the stream with the methods in the <code>DataOutput</code> interface, such as <code>writeInt</code>, <code>writeFloat</code>, or <code>writeUTF</code>. Individual bytes and arrays of bytes are written with the methods of <code>OutputStream</code>. Except for serializable fields, primitive data is written to the stream in block-data records, with each record prefixed by a marker and an indication of the number of bytes in the record. <p>
+<a name="5817"><!-- --></a>
+<code>ObjectOutputStream</code> can be extended to customize the information about classes in the stream or to replace objects to be serialized. Refer to the <code>annotateClass</code> and <code>replaceObject</code> method descriptions for details.<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="serial-arch.doc1.html">PREV</a>
+ | <a href="serial-arch.doc3.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:47:50 1999 -->
+ 
+
+
+</body>
+</html>

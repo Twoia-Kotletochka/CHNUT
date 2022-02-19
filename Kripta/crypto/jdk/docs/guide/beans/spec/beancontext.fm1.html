@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Extensible Runtime Containment and Services Protocol for JavaBeans:  - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="beancontextTOC.fm.html">CONTENTS</a> | <a href="beancontextTOC.fm.html">PREV</a>
+ | <a href="beancontext.fm3.html">NEXT</a> 
+<!-- /font --></td><td align=right><i>Extensible Runtime Containment and Services Protocol for JavaBeans</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="916002"><i>1.0  </i> Introduction.
+</a></h2>
+
+<blockquote>
+<a name="916293"><!-- --></a>
+Currently the JavaBeans specification (Version 1.0) contains neither conventions describing a hierarchy or logical structure of JavaBeans, nor conventions for those JavaBeans to rendezvous with, or obtain arbitrary services or facilities from, the execution environment within which the JavaBean was instantiated.<p>
+<a name="916686"><!-- --></a>
+It is desirable to both provide a logical, traversable, hierarchy of JavaBeans, and further to provide a general mechanism whereby an object instantiating an arbitrary JavaBean can offer that JavaBean a variety of services, or interpose itself between the underlying system service and the JavaBean, in a conventional fashion.<p>
+<a name="916294"><!-- --></a>
+In other component models there exists the concept of a relationship between a Component and its environment, or Container, wherein a newly instantiated Component is provided with a reference to its Container or Embedding Context.<p>
+<a name="916610"><!-- --></a>
+The Container, or Embedding Context not only establishes the hierarchy or logical structure, but its also acts as a service provider that Components may interrogate in order to determine, and subsequently employ, the services provided by their Context.<p>
+<a name="916323"><!-- --></a>
+This proposal defines such a protocol that supports extensible mechanisms that:<p>
+</blockquote><blockquote>
+<ul><li>
+Introduce an abstraction for the environment, or context, in which a JavaBean logically functions during its lifecycle, that is a hierarchy or structure of JavaBeans.
+
+<li>
+Enable the dynamic addition of arbitrary services to a JavaBean&#39;s environment.
+
+<li>
+Provide a single service discovery mechanism through which JavaBeans may interrogate their environment in order both to ascertain the availability of particular services and to subsequently employ those services.
+
+<li>
+Provide a simple mechanism to propagate an Environment to a JavaBean.
+
+<li>
+Provide better support for JavaBeans that are also Applets.
+
+</ul>
+</ul>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="beancontextTOC.fm.html">CONTENTS</a> | <a href="beancontextTOC.fm.html">PREV</a>
+ | <a href="beancontext.fm3.html">NEXT</a> 
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1998-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Thu Dec 03 12:39:43 1998-1999 -->
+ 
+
+
+</body>
+</html>

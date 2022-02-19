@@ -1,0 +1,206 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API: 5 - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-image.fm7.html">PREV</a>
+ | <a href="j2d-color.fm.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="63208"><i>5.8	</i> Image Processing and Enhancement
+</a></h2>
+
+<blockquote>
+<a name="61818"><!-- --></a>
+The image package provides a pair of interfaces that define operations on <kbd>BufferedImage</kbd> and <kbd>Raster</kbd> objects: <kbd>BufferedImageOp</kbd> and <kbd>RasterOp</kbd>. <p>
+<a name="69607"><!-- --></a>
+The classes that implement these interfaces include <kbd>AffineTransformOp</kbd>, <kbd>BandCombineOp, ColorConvertOp, ConvolveOp</kbd>, <kbd>LookupOp, RescaleOp</kbd>. These classes can be used to geometrically transform, blur, sharpen, enhance contrast, 
+
+threshold, and color correct images. <p>
+<a name="72067"><!-- --></a>
+<a href="j2d-image.fm8.html#72082">Figure&#160;5-4</a> illustrates edge detection and enhancement, an operation that emphasizes sharp changes in intensity within an image. Edge detection is commonly used in medical imaging and mapping applications. Edge d
+
+etection is used to increase the contrast between adjacent structures in an image, allowing the viewer to discriminate greater detail.<p>
+</blockquote><blockquote><pre><p><center><img src="j2d-image.fm.anc1.gif"></center>
+</pre></blockquote>
+<blockquote><p>
+<a name="72082"><!-- --></a>
+<b>Figure 5-4	</b> Edge detection and enhancement
+
+</p>
+</blockquote><blockquote>
+<a name="72085"><!-- --></a>
+The following code illustrates edge detection:<p>
+</blockquote><blockquote><pre>
+	float[] elements = { 0.0f, -1.0f, 0.0f,
+                    -1.0f, 4.f, -1.0f,
+                    0.0f, -1.0f, 0.0f};
+	...
+
+	BufferedImage bimg = new 
+	BufferedImage(bw,bh,BufferedImage.TYPE_INT_RGB);
+	Kernel kernel = new Kernel(3, 3, elements);
+	ConvolveOp cop = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP,
+                                null);
+	cop.filter(bi,bimg);
+</pre></blockquote><blockquote>
+<a name="71959"><!-- --></a>
+<a href="j2d-image.fm8.html#67831">Figure&#160;5-5</a> demonstrates lookup table manipulation. A lookup operation can be used to alter individual components of a pixel.<p><center><img src="j2d-image.fm.anc2.gif"></center><p>
+</blockquote>
+<blockquote><p>
+<a name="67831"><!-- --></a>
+<b>Figure 5-5	</b> Lookup-table Manipulation
+
+</p>
+</blockquote><blockquote>
+<a name="72086"><!-- --></a>
+The following code demonstrates Lookup-table manipulation:<p>
+</blockquote><blockquote><pre>	
+	byte reverse[] = new byte[256];
+   	for (int j=0; j&lt;200; j++){ 
+       		reverse[j]=(byte)(256-j); 
+	}	
+   	ByteLookupTable blut=new ByteLookupTable(0, reverse); 
+   	LookupOp lop = new LookupOp(blut, null); 
+   	lop.filter(bi,bimg);  
+</pre></blockquote><blockquote>
+<a name="72032"><!-- --></a>
+<a href="j2d-image.fm8.html#72115">Figure&#160;5-6</a> illustrates rescaling. Rescaling can increase or decrease the intensity of all points. Rescaling can be used to increase the dynamic range of an otherwise neutral image, bringing out detail in a regio
+
+n that appears neutral or flat. <p>
+<a name="72114"><!-- --></a>
+<p><center><img src="j2d-image.fm.ancA6.gif"></center><p>
+</blockquote>
+<blockquote><p>
+<a name="72115"><!-- --></a>
+<b>Figure 5-6	</b> Rescaling
+
+</p>
+</blockquote><blockquote>
+<a name="72128"><!-- --></a>
+The following code snippet illustrates rescaling:<p>
+</blockquote><blockquote><pre>	
+	RescaleOp rop = new RescaleOp(1.5f, 1.0f, null);
+	rop.filter(bi,bimg);
+</pre></blockquote>
+<br>
+<h3>
+<a name="61900"><!-- --></a>
+<i>5.8.1	</i> Using an Image Processing Operation
+</h3>
+
+<blockquote>
+<a name="72236"><!-- --></a>
+Convolution is the process that underlies most spatial filtering algorithms. Convolution is the process of weighting or averaging the value of each pixel in an image with the values of neighboring pixels.This allows each output pixel to be affected by the
+
+ immediate neighborhood in a way that can be mathematically specified with a kernel. <a href="j2d-image.fm8.html#72247">Figure&#160;5-7</a> illustrates Convolution.<p>
+<a name="72256"><!-- --></a>
+<p><center><img src="j2d-image.fm.anc8.gif"></center><p>
+</blockquote>
+<blockquote><p>
+<a name="72247"><!-- --></a>
+<b>Figure 5-7	</b> Blurring with Convolution
+
+</p>
+</blockquote><blockquote>
+<a name="72257"><!-- --></a>
+The following code fragment illustrates how to use one of the image processing classes, <kbd>ConvolveOp</kbd>. In this example, each pixel in the source image is averaged equally with the eight pixels that surround it.<p>
+</blockquote><blockquote><pre>
+	float weight = 1.0f/9.0f;
+	float[] elements = new float[9]; // create 2D array
+
+	// fill the array with nine equal elements
+	for (i = 0; i &lt; 9; i++) {
+   	   elements[i] = weight;
+	}
+	// use the array of elements as argument to create a Kernel
+	private Kernel myKernel = new Kernel(3, 3, elements);
+	public ConvolveOp simpleBlur = new ConvolveOp(myKernel);
+
+	// sourceImage and destImage are instances of BufferedImage
+	simpleBlur.filter(sourceImage,&#160;destImage) // blur the image
+</pre></blockquote><blockquote>
+<a name="61906"><!-- --></a>
+The variable simpleBlur contains a new instance of <kbd>ConvolveOp</kbd> that implements a blur operation on a <kbd>BufferedImage </kbd>or a <kbd>Raster</kbd>. Suppose that sourceImage and destImage are two instances of <kbd>BufferedImage</kbd>. When you 
+
+call <kbd>filter</kbd>, the core method of the <kbd>ConvolveOp</kbd> class, it sets the value of each pixel in the destination image by averaging the corresponding pixel in the source image with the eight pixels that surround it.<p>
+<a name="69780"><!-- --></a>
+The convolution kernel in this example could be represented by the following matrix, with elements specified to four significant figures:<p><center><img src="j2d-image.fm.anc3.gif"></center><p>
+<a name="72275"><!-- --></a>
+When an image is convolved, the value of each pixel in the destination image is calculated by using the kernel as a set of weights to average the pixel&#39;s value with the values of surrounding pixels. This operation is performed on each channel of the i
+
+mage. <p>
+<a name="61912"><!-- --></a>
+The following formula shows how the weights in the kernel are associated with the pixels in the source image when the convolution is performed. Each value in the kernel is tied to a spatial position in the image. <p><center><img src="j2d-image.fm.anc4.gif
+
+"></center><p>
+<a name="61916"><!-- --></a>
+The value of a destination pixel is the sum of the products of the weights in the kernel multiplied by the value of the corresponding source pixel. For many simple operations, the kernel is a matrix that is square and symmetric, and the sum of its weights
+
+ adds up to one.<a href="#61919"><sup>1</sup></a><p>
+<a name="61920"><!-- --></a>
+The convolution kernel in this example is relatively simple. It weights each pixel from the source image equally. By choosing a kernel that weights the source image at a higher or lower level, a program can increase or decrease the intensity of the destin
+
+ation image. The <kbd>Kernel</kbd> object, which is set in the <kbd>ConvolveOp</kbd> constructor, determines the type of filtering that is performed. By setting other values, you can perform other types of convolutions, including blurring (such as Gaussia
+
+n blur, radial blur, and motion blur), sharpening, and smoothing operations. <a href="j2d-image.fm8.html#72165">Figure&#160;5-8</a> illustrates sharpening using Convolution.<p>
+<a name="72156"><!-- --></a>
+<p><center><img src="j2d-image.fm.anc9.gif"></center><p>
+</blockquote>
+<blockquote><p>
+<a name="72165"><!-- --></a>
+<b>Figure 5-8	</b> Sharpening with Convolution
+
+</p>
+</blockquote><blockquote>
+<a name="72302"><!-- --></a>
+The following code snippet illustrates sharpening with Convolution:<p>
+</blockquote><blockquote><pre>
+	float[] elements = { 0.0f, -1.0f, 0.0f,
+                    -1.0f,  5.f, -1.0f,
+                     0.0f, -1.0f,  0.0f};
+	...
+
+	Kernel kernel = new Kernel(3,3,elements);
+	ConvolveOp cop = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);
+	cop.filter(bi,bimg);
+</pre></blockquote><blockquote>
+<a name="67839"><!-- --></a>
+<p>
+</blockquote>
+<font size="-1">
+<a name="61919">
+1. If the sum of the weights in the matrix is one, the intensity of
+the destination image is unchanged from the source.
+</font>
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-image.fm7.html">PREV</a>
+ | <a href="j2d-color.fm.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Mon Nov 22 09:37:15 1999 -->
+ 
+
+
+</body>
+</html>

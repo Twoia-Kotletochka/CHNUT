@@ -1,0 +1,150 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Remote Method Invocation:  - Exceptions In RMI
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="rmiTOC.html">CONTENTS</a> | <a href="rmi-exceptions.html">PREV</a>
+ | <a href="rmi-exceptions3.html">NEXT</a> 
+<!-- /font --></td><td align=right><i>Java Remote Method Invocation</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="5112"><i>	A.1	</i> Exceptions During Remote Object Export
+</a></h2>
+
+<blockquote>
+<a name="5102"><!-- --></a>
+<blockquote>
+<a name="4677"><!-- --></a>
+When a remote object class is created that extends <code>UnicastRemoteObject</code>, the object is exported, meaning it can receive calls from external Java virtual machines and can be passed in an RMI call as either a parameter or return value. An object can either be exported on an anonymous port or on a specified port. For objects not extended from <code>UnicastRemoteObject</code>, the <code>java.rmi.server.UnicastRemoteObject.exportObject</code> method is used to explicitly export the object.
+
+<br><br>
+<Table Border="1" Cellpadding="5">
+<caption></caption>
+
+<tr><td><a name="4310"><!-- --></a>
+<b>Exception</b><br>
+
+</td><td><a name="4312"><!-- --></a>
+<b>Context</b><br>
+
+</td></tr>
+<tr valign="top"><td><a name="4314"><!-- --></a>
+<p><code>java.rmi.StubNotFoundException</code>
+
+<a name="4315"><!-- --></a>
+<p>
+
+</td>
+<td><dl>
+<a name="4317"><!-- --></a>
+<p>Class of stub not found.
+<p>
+</dl>
+<dl>
+<a name="5024"><!-- --></a><p>
+<p>Name collision with class of same name as stub causes one of these errors:
+</dl>
+<a name="5099"><!-- --></a>
+<dd><li>Stub can&#39;t be instantiated</li>
+
+<p>
+<a name="5100"><!-- --></a>
+<dd><li>Stub not of correct class</li>
+</p>
+
+
+<dl>
+<a name="5027"><!-- --></a><p>
+<p> Bad URL due to wrong codebase.
+<a name="5030"><!-- --></a><p>
+<p>Stub not of correct class.
+</dl>
+</td>
+</tr>
+<tr valign="top"><td><a name="4319"><!-- --></a>
+<p><code>java.rmi.server.SkeletonNotFoundException</code>
+
+<a name="5107"><!-- --></a>
+<p><em><p>note: this exception is deprecated as of </em>Java 2 SDK, Standard Edition, v1.2
+
+</td>
+<td><dl>
+<a name="4321"><!-- --></a>
+<p>Class of skeleton not found.
+<p>
+</dl>
+<dl>
+<a name="5033"><!-- --></a><p>
+<p>Name collision with class of same name as skeleton causes one of these errors:
+</dl>
+<a name="5090"><!-- --></a>
+<dd><li>Skeleton can&#39;t be instantiated</li>
+</p>
+
+
+<p>
+<a name="5091"><!-- --></a>
+<dd><li>Skeleton not of correct class</li>
+</p>
+
+
+<dl>
+<a name="5042"><!-- --></a><p>
+<p>Bad URL due to wrong codebase.
+<a name="5045"><!-- --></a><p>
+<p>Skeleton not of correct class.
+</dl>
+</td>
+</tr>
+<tr valign="top"><td><a name="4323"><!-- --></a>
+<p><code>java.rmi.server.ExportException</code>
+
+</td>
+<td><a name="4325"><!-- --></a>
+<p>The port is in use by another VM.
+
+</td>
+</tr>
+
+</Table>
+ 
+<Table>
+<tr><td></td>
+</tr>
+</Table><p>
+<p>
+</blockquote>
+
+</ul>
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="rmiTOC.html">CONTENTS</a> | <a href="rmi-exceptions.html">PREV</a>
+ | <a href="rmi-exceptions3.html">NEXT</a> 
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF=http://java.sun.com/products/jdk/1.3/docs/relnotes/SMICopyright.html>Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Susan Snyder -->
+<!-- Last updated: Wednesday November 10 04 11:11:27 1999 -->
+ 
+
+
+</body>
+</html>

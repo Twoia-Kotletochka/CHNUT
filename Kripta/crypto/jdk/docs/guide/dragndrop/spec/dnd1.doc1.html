@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Drag and Drop: Requirements</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="dnd1TOC.doc.html">CONTENTS</a> | <a href="dnd1.doc.html">PREV</a>
+ | <a href="dnd1.doc2.html">NEXT</a> <!-- | <a href="dnd1.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Drag and Drop</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="921295"><i>1.0  </i> Requirements
+</a></h2>
+
+<blockquote>
+<a name="919268"><!-- --></a>
+This specification is based upon an (incomplete) earlier work undertaken in 1996 to specify a Uniform Data Transfer Mechanism, Clipboard, and Drag and Drop facilities for AWT.<p>
+<a name="919321"><!-- --></a>
+The AWT implementation in JDK1.1 introduced the Uniform Data Transfer Mechanism and the Clipboard protocol. This specification defines the API for the Drag and Drop facilities for the Java<sup><font size=-2>TM</font></sup> 2 Platform based upon, but extending these 1.1 UDT API&#39;s.<p>
+<a name="919311"><!-- --></a>
+The primary requirements that this specification addresses, are:<p>
+</blockquote><a name="919266"><!-- --></a>
+<TABLE BORDER=0 WIDTH="100%">
+<TR ALIGN=LEFT>
+<TD WIDTH="8%" ALIGN="LEFT" >&nbsp;</TD>
+<TD WIDTH="3%" ALIGN="LEFT" VALIGN="BASELINE"><strong>1.	</strong></TD>
+<TD WIDTH="89%" ALIGN="LEFT" VALIGN="BASELINE">	 Provision of a platform independent Drag and Drop facility for Java GUI clients implemented through AWT and JFC classes. </TD>
+</TR>
+</TABLE>
+<blockquote>
+<a name="919334"><!-- --></a>
+ <p>
+</blockquote><a name="919275"><!-- --></a>
+<TABLE BORDER=0 WIDTH="100%">
+<TR ALIGN=LEFT>
+<TD WIDTH="8%" ALIGN="LEFT" >&nbsp;</TD>
+<TD WIDTH="3%" ALIGN="LEFT" VALIGN="BASELINE"><strong>2.	</strong></TD>
+<TD WIDTH="89%" ALIGN="LEFT" VALIGN="BASELINE"> Integration with platform dependent Drag and Drop facilities, permitting Java clients to be able to participate in DnD operation with native applications using: </TD>
+</TR>
+</TABLE>
+<blockquote>
+<a name="919310"><!-- --></a>
+     <p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="919292"><!-- --></a>
+ OLE (Win32) DnD
+</li>
+<li>
+<a name="919293"><!-- --></a>
+ CDE/Motif dynamic protocol
+</li>
+<li>
+<a name="919294"><!-- --></a>
+ MacOS
+</li>
+<li>
+<a name="925473"><!-- --></a>
+ OS/2
+</li>
+</ul>
+</blockquote>
+<a name="920129"><!-- --></a>
+<TABLE BORDER=0 WIDTH="100%">
+<TR ALIGN=LEFT>
+<TD WIDTH="8%" ALIGN="LEFT" >&nbsp;</TD>
+<TD WIDTH="3%" ALIGN="LEFT" VALIGN="BASELINE"><strong>3.	</strong></TD>
+<TD WIDTH="89%" ALIGN="LEFT" VALIGN="BASELINE"> Support for 100% pure JavaOS/Java implementation.</TD>
+</TR>
+</TABLE>
+<a name="919276"><!-- --></a>
+<TABLE BORDER=0 WIDTH="100%">
+<TR ALIGN=LEFT>
+<TD WIDTH="8%" ALIGN="LEFT" >&nbsp;</TD>
+<TD WIDTH="3%" ALIGN="LEFT" VALIGN="BASELINE"><strong>4.	</strong></TD>
+<TD WIDTH="89%" ALIGN="LEFT" VALIGN="BASELINE"> Leverages the existing <em>java.awt.datatransfer.*</em> package to enable the transfer of</TD>
+</TR>
+</TABLE>
+<blockquote>
+<a name="919312"><!-- --></a>
+ data, described by an extensible data type system based on the MIME standard.<p>
+</blockquote><a name="919352"><!-- --></a>
+<TABLE BORDER=0 WIDTH="100%">
+<TR ALIGN=LEFT>
+<TD WIDTH="8%" ALIGN="LEFT" >&nbsp;</TD>
+<TD WIDTH="3%" ALIGN="LEFT" VALIGN="BASELINE"><strong>5.	</strong></TD>
+<TD WIDTH="89%" ALIGN="LEFT" VALIGN="BASELINE"> Does not preclude the use of &#34;accessibility&#34; features where available.</TD>
+</TR>
+</TABLE>
+<a name="922595"><!-- --></a>
+<TABLE BORDER=0 WIDTH="100%">
+<TR ALIGN=LEFT>
+<TD WIDTH="8%" ALIGN="LEFT" >&nbsp;</TD>
+<TD WIDTH="3%" ALIGN="LEFT" VALIGN="BASELINE"><strong>6.	</strong></TD>
+<TD WIDTH="89%" ALIGN="LEFT" VALIGN="BASELINE"> Extensible to support diverse input devices.</TD>
+</TR>
+</TABLE>
+<blockquote>
+<a name="919331"><!-- --></a>
+The specification derives from the previous work mentioned above, but incorporates significant differences from that original work as a result of the advent of the JavaBeans event model, Lightweight (JFC) Components, and an increasing understanding of the cross-platform integration and interoperability issues.<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="dnd1TOC.doc.html">CONTENTS</a> | <a href="dnd1.doc.html">PREV</a>
+ | <a href="dnd1.doc2.html">NEXT</a> <!-- | <a href="dnd1.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997, 1998 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Doug Kramer -->
+<!-- Last updated: Thu Nov 19 14:12:35 1998 -->
+ 
+
+
+</body>
+</html>

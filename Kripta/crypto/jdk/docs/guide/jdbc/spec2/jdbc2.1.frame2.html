@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title></title>
+</head>
+<body bgcolor=#ffffff>
+
+<table width=100%><tr>
+<td><font size=-1>
+<a href="jdbc2.1.frame.html">Contents</a>  | <a href="jdbc2.1.frame1.html">Prev</a>  | <a href="jdbc2.1.frame3.html">Next</a>
+</font></td><td align=right><i>JDBC<sup><font size=-2>TM</font></sup> Guide: Getting Started</i></td>
+</tr></table>
+<hr>
+<br>
+ 
+
+<a name="207560"></a>
+<h2>	2	 Goals</h2>
+
+<a name="281669"></a>
+This section outlines the main goals for the JDBC API. 
+<p>
+
+<a name="282517"></a>
+<h3>2.1 	  &nbsp; &nbsp; Leverage the strengths of the JDBC 1.0 and Java platform APIs</h3>
+<a name="282518"></a>
+One of the important strengths of the JDBC 1.0 API is that it is relatively easy to use. 
+This ease-of-use is in some respects due to the Java programming language, which 
+gives JDBC technology a "hi-level" flavor, despite the fact that it is a call-level interface.
+For example, users of the JDBC 1.0 API aren't required to understand low-level 
+memory-management details, or byte-alignment, or data alignment details when transferring
+data to and from the database. 
+<p>
+<a name="282527"></a>
+Despite being easy to use, the JDBC API gives developers using the Java programming 
+language access to a powerful set of database capabilities. JDBC technology can be 
+used to build sophisticated, real-world applications. The JDBC API must continue to 
+strike the proper balance between ease-of-use and providing a rich set of functionality.
+<p>
+
+<a name="282613"></a>
+<h3>2.2 	  &nbsp; &nbsp; Maintain compatibility with existing applications and drivers</h3>
+<a name="282614"></a>
+Existing JDBC drivers and the Java programming language applications that use them 
+shall continue to work-unchanged-in an implementation of the Java virtual machine 
+that supports the JDBC 2.1 API. Applications that don't use any of the new features of 
+the JDBC 2.1 API do not require any changes to continue running. It should be straightforward
+for existing applications to migrate to the new JDBC API. 
+<p>
+
+<a name="282577"></a>
+<h3>2.3 	  &nbsp; &nbsp; Keep pace with the Java platform</h3>
+<a name="282578"></a>
+The Java platform has matured since the first release of the JDBC API. Some of the new 
+Java platform APIs that are important for the JDBC API are: the Java Transaction Service
+(JTS), the Java Naming and Directory Interface<sup><font size="-2">TM</font></sup> (JNDI), JavaBeans<sup><font size="-2">TM</font></sup>, Enterprise
+JavaBeans<sup><font size="-2">TM</font></sup>(EJB), and internationalization. The JDBC API must leverage these 
+other Java platform APIs and support them well.
+<p>
+
+<a name="282602"></a>
+<h3>2.4 	  &nbsp; &nbsp; JavaBeans</h3>
+<a name="282603"></a>
+The most important new Java platform API for the JDBC API is the JavaBeans API. 
+When the JDBC API was first released there was no component model for the Java platform
+. The JDBC API should provide a foundation for developers creating data-aware 
+components written to the JavaBeans architecture (JavaBeans components). The JDBC 
+API is a good place to provide this standard component foundation since data access is 
+a ubiquitous aspect of most applications. A new RowSet type has been added to the 
+JDBC Optional Package API to meet this goal. Chapter <a href="jdbc2.1.frame4.html#283844">4</a> discusses the differences between
+the core JDBC 2.1 and JDBC 2.0 Optional Package APIs.
+<p>
+
+<a name="282572"></a>
+<h3>2.5 	  &nbsp; &nbsp; Advanced Database Features</h3>
+<a name="282516"></a>
+There are some important features provided by databases that are not supported by the 
+JDBC 1.0 API, like scrollable cursors and advanced data types, such as Binary Large 
+OBjects (BLOBS). The JDBC 2.1 core API must support these advanced features.
+<p>
+<a name="288212"></a>
+The JDBC API should provide a framework that allows developers to access instances 
+of user-defined data types that are stored in a database. The JDBC 2.1 core API supports 
+both databases that provide storage for Java programming language objects (Java objects)
+, and databases that store SQL99 structured types.
+<p>
+<a name="301890"></a>
+The JDBC API should provide some basic support for access to non-SQL tabular data, 
+such as data stored in files. The JDBC Optional Package API provides some limited 
+support for tabular data. See Chapter <a href="jdbc2.1.frame4.html#283844">4</a> for a discussion of the differences between the 
+core JDBC 2.1 and JDBC 2.0 Optional Package APIs.
+<p>
+<a name="288226"></a>
+
+<p>
+
+
+<br>
+<hr> 
+<font size=-1>
+<a href="jdbc2.1.frame.html">Contents</a>  | <a href="jdbc2.1.frame1.html">Prev</a>  | <a href="jdbc2.1.frame3.html">Next</a>
+</font>
+<hr>
+
+
+
+<address>
+<a href="mailto:jdbc@eng.sun.com">jdbc@eng.sun.com</a>
+or
+<a href="mailto:jdbc-business@eng.sun.com">jdbc-business@eng.sun.com</a>
+</address>
+
+<i><a href="../../../relnotes/SMICopyright.html">
+Copyright</a> &#169; 1996-1999 Sun Microsystems, Inc.   All rights reserved.</i>
+
+
+<!-- HTML generated by Suzette Pelouch on December 01, 1999 -->
+
+</body>
+</html>

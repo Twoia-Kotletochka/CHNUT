@@ -1,0 +1,608 @@
+<!DOCTYPE HTML PUBLIC "-//SoftQuad//DTD HoTMetaL PRO 4.0::19971010::extensions to HTML 4.0//EN"
+ "hmpro4.dtd">
+
+<HTML>
+  
+  <HEAD>
+    <META NAME="GENERATOR" 
+    CONTENT="Mozilla/4.03 [en] (X11; I; SunOS 5.5.1 sun4u) [Netscape]">
+    <TITLE>Versioning Specification</TITLE>
+  </HEAD>
+  
+  <BODY BGCOLOR="#FFFFFF">
+    
+    <P><A HREF="./VersioningTOC.html">CONTENTS</A> |
+      <A HREF="./VersioningTOC.html">PREV</A></P>
+    <HR WIDTH="100%" ALIGN="LEFT" COLOR="#0000A0" SIZE="4" NOSHADE="NOSHADE">
+    
+    <P ALIGN="CENTER"><B><FONT SIZE="+3"><FONT COLOR="#000000">Java<SUP><FONT SIZE="-3">TM</FONT></SUP>
+      Product Versioning Specification</FONT> </FONT></B>
+      <BR>
+      <BR>November 30, 1998</P>
+    <HR ALIGN="LEFT" WIDTH="100%" COLOR="#0000A0" SIZE="4" NOSHADE="NOSHADE">
+    <BLOCKQUOTE>
+      
+      <P>Evolution in open distributed systems needs to be managed carefully
+        because correct operation depends on a number of dependencies between
+        packages. Changes within a distributed system can have a significant
+        impact on many groups of individuals, including users, support
+        organizations, web administrators, and developers. Packages within a
+        distributed system need to operate correctly with only partial knowledge
+        about the state of the whole system. The difficulty level increases
+        because the packages of the system must be able to evolve at different
+        rates. Evolution in such a system is made possible by explicitly
+        managing the dependencies between the packages using techniques of
+        object oriented design to govern how individual packages evolve. The
+        Java language defines packages that are a natural for the consistent
+        unit of update, packages that expose only public interfaces and that
+        consume only public interfaces of other classes.</P></BLOCKQUOTE>
+    
+    <H2><A NAME="Introduction"></A><U>Introduction</U></H2>
+    
+    <BLOCKQUOTE>
+      
+      <P>In any system, support must be provided for the system to evolve over
+        time. Most existing systems have conventions and mechanisms that specify
+        how change is accommodated. These systems have been based on the model
+        where software programs are installed on a computer. Typically,
+        developers specify what versions of other packages are required and the
+        installation process verifies and configures the system. </P>
+      
+      <P>In open distributed systems, however, the static assumptions of
+        existing systems do not work. Evolution is more difficult because it is
+        not possible to control how or when packages change. Correct operation
+        depends on a greater number of dependencies between packages. There is a
+        real need for an updated set of conventions and mechanisms which specify
+        how packages of a system should evolve so that the goal of an open
+        reliable scalable distributed system can be achieved. </P>
+      
+      <P>This document specifies the following: </P>
+      <UL>
+        <LI>How classes, resources, and files that make up a Java package are
+          versioned. Packages define a consistent unit that can be developed,
+          packaged, verified, updated, and distributed. Per package manifest
+          information identifies the contents of the package.</LI>
+        <LI>Products are distributed by putting packages into archive files.
+          Archives include a manifest, to identify the product version and
+          packages it contains.</LI>
+        <LI>The standards and conventions used by developers and administrators
+          to build and deploy products that operate reliably as their packages
+          and the packages they depend on are upgraded.</LI>
+      </UL></BLOCKQUOTE>
+    
+    <H2><A NAME="Requirements"></A><U>Requirements</U></H2>
+    
+    <BLOCKQUOTE>
+      
+      <P>Changes within a distributed system have a significant impact on the
+        following groups: </P>
+      <UL>
+        <LI><A HREF="#EndUsers">End Users</A></LI>
+        <LI><A HREF="#ProductSupportOrganizations">Product Support
+            Organizations</A></LI>
+        <LI><A HREF="#Webmasters-and-Administrators">Webmasters and
+            Administrators</A></LI>
+        <LI><A HREF="#ProductDevelopers">Product Developers</A></LI>
+      </UL>
+      
+      <P>Each group has different requirements on network-deployed products
+        that evolve over time. </P></BLOCKQUOTE>
+    
+    <H3><A NAME="EndUsers"></A>End Users</H3>
+    
+    <BLOCKQUOTE>
+      
+      <P>End users need to feel confident that Java-based products will become
+        increasingly reliable and compatible over time. Their reluctance to
+        upgrade must be addressed by building confidence in the &quot;Write
+        Once, Run Anywhere&quot; philosophy. With Java, it should no longer be
+        the norm that users will complain &quot;If I upgrade, it will break
+        something&quot; or &quot;I won't be able to read or write data that
+        others can use.&quot; </P>
+      <UL>
+        <LI>Users need to know that upgrading will neither break other programs
+          nor will it obsolete existing data or produce data unusable by others.</LI>
+        <LI>At the simplest level, users want to know if the features they need
+          are in the product version they have and what version to ask for to
+          get particular features.</LI>
+        <LI>More knowledgeable users keep track of what bugs are associated
+          with a specific product version, so they can work around them or avoid
+          them.</LI>
+      </UL></BLOCKQUOTE>
+    
+    <H3><A NAME="ProductSupportOrganizations"></A>Product Support
+    Organizations</H3>
+    
+    <BLOCKQUOTE>
+      
+      <P>Product support organizations rely on being able to correctly and
+        easily identify the product that is being used, the environment in which
+        it is being used, and the integrity of the product packaging. </P>
+      <UL>
+        <LI>Databases of known problems and solutions are indexed by product
+          identification information.</LI>
+        <LI>The interoperation of products and packages can introduce new kinds
+          of problems and require all of the packages in a system to be
+          identified. Problems can originate from public interfaces that are
+          under-specified, from implementations that do not conform to the
+          specification, or from clients that use implementation-specific
+          details that are not part of the specification.</LI>
+      </UL></BLOCKQUOTE>
+    
+    <H3><A NAME="Webmasters-and-Administrators"></A>Webmasters and
+    Administrators</H3>
+    
+    <BLOCKQUOTE>
+      
+      <P>Webmasters, administrators, and service providers need a reliable and
+        supportable way in which to deploy applications for their clients via
+        the web or network filesystems. </P>
+      <UL>
+        <LI>The staff of these organizations must be able to support their
+          sites, identifying problems with specific packages and interactions
+          between packages.</LI>
+        <LI>Site configuration must be able to support the scaling up of sites
+          with automated site management tools.</LI>
+        <LI>Installing updating packages must not present a risk to the
+          correction operation of existing packages or active users.</LI>
+      </UL></BLOCKQUOTE>
+    
+    <H3><A NAME="ProductDevelopers"></A>Product Developers</H3>
+    
+    <BLOCKQUOTE>
+      
+      <P>Product developers need to know how to write and deploy applications
+        and libraries that satisfy the requirements of users, administrators,
+        and support personnel. They must be able to make products and packages
+        that can do the following: </P>
+      <UL>
+        <LI>Operate correctly in the open dynamic environment of the web</LI>
+        <LI>Be upgraded without breaking compatibility with clients</LI>
+        <LI>Take advantage of upgrades in the packages on which they rely</LI>
+        <LI>Take advantage of their packages' dynamic extensions</LI>
+        <LI>Identify the packages they rely on for reporting of problems</LI>
+        <LI>Be packaged to support the needs of users, webmasters, and support
+          organizations</LI>
+        <LI>Have known packages and combinations that satisfy the auditing and
+          security requirements appropriate for the application and organization</LI>
+      </UL></BLOCKQUOTE>
+    
+    <H2><A NAME="ProblemsOfEvolution"></A><U>Problems of Evolution in
+    Distributed Systems</U></H2>
+    
+    <BLOCKQUOTE>
+      
+      <P>Problems can occur in open distributed systems when packages evolve
+        and are frequently updated. If the specified behavior inherent in the
+        use of public interfaces is not maintained, the system can fail in
+        unexpected ways. Open systems are comprised of many packages from
+        different companies and organizations. These organizations operate
+        asynchronously, introducing and upgrading their products according to
+        their own schedules. Distribution of upgraded products takes time and
+        adoption is not universal. </P>
+      
+      <P>In Java, the components of local and distributed systems rely on the
+        public interfaces and contracts for the behavior of other packages.
+        Those packages will themselves evolve over time. In order for a package
+        to operate correctly, packages that it depends upon must continue to
+        provide the expected behavior even if those packages have been updated.
+      </P>
+      
+      <P>Only partial consistency is possible in distributed systems, since it
+        is impossible to have knowledge of the entire state of the system. Each
+        process and each package of the system has its own partial view of the
+        current state of the system, accumulated incrementally by requesting
+        information from other parts of the distributed system. Each piece of
+        information, whether from an applet that was started, a class that was
+        loaded, a remote method invoked, or a web page retrieved, must be
+        treated carefully so that it can be used consistently with the rest of
+        that partial view. </P>
+      
+      <P>Several types of errors can result from inconsistencies in the classes
+        that are loaded: class verification errors, classes compute incorrectly
+        but without recognizable errors, or user requested functions that
+        exhibit arbitrary failures. </P>
+      
+      <P>These problems can occur in the following typical scenarios: </P>
+      <UL>
+        <LI>A running applet has loaded only some of its classes when the web
+          server is updated with a newer version. When the applet incrementally
+          loads additional classes, these classes could be inconsistent with
+          ones that have already been loaded.</LI>
+        <LI>An application using libraries from multiple websites has loaded
+          only some of the classes it needs. If the libraries are updated, there
+          is a potential for incompatibilities that either the applet or the
+          user needs to detect.</LI>
+        <LI>A running application or applet makes an RMI call that returns an
+          object which the class needs to be loaded. The class that is loaded
+          could be inconsistent with other already loaded classes.</LI>
+        <LI>A running application or applet makes a RMI call that returns an
+          object that is for a newer or an older version of the class.</LI>
+        <LI>Bugs exist in a library. If the clients have worked around the bug,
+          a cascade of problems could be introduced when the bug is fixed.</LI>
+      </UL>
+      
+      <P>These problems cannot be prevented or solved directly because they
+        arise out of inconsistencies between dynamically loaded packages that
+        are not under the control of a single system administrator and so cannot
+        be addressed by current configuration management techniques. </P></BLOCKQUOTE>
+    
+    <H2><A NAME="DesignForEvolution"></A><U>Design for Evolution</U></H2>
+    
+    <BLOCKQUOTE>
+      
+      <P>The key to dealing with these problems and meeting the requirements
+        stated above is the careful design of the packages and packaging of the
+        system so that they may be updated, distributed, and loaded in
+        consistent units. Typical to mass produced products is the notion of the
+        field replaceable unit. It is the smallest unit of a product that can be
+        identified with a specification, a supplier, can be distributed and
+        redistributed, and can be replaced if faulty. This same model is used
+        for software distribution, products have a name, a version number,
+        adhere to one or more specifications, are distributed on the network or
+        CD-ROM and its problems can be reported to support organizations. These
+        packages are the smallest unit that can be distributed, used, validated
+        and replaced or upgraded when necessary. Packages can be assembled with
+        other packages and each package can still be identified, verified, and
+        distributed. </P>
+      
+      <P>The Java language-based package mechanism fits well with the idea of a
+        replaceable unit. Java packages expose only public interfaces and use
+        only the public interfaces of other packages. The Java<FONT SIZE="-3"><SUP>TM</SUP></FONT>
+        Language Specification defines the approaches for compatible evolution
+        of packages. </P></BLOCKQUOTE>
+    
+    <H3><A NAME="JLSonBackwardCompatibility"></A>Java Language Specification
+    on Backwards Compatibility</H3>
+    
+    <BLOCKQUOTE>
+      
+      <P>The Java Language Specification lays the groundwork for developing
+        packages that can be expected to evolve gracefully over time. It defines
+        how classes can change and still be backward compatible with other
+        classes previously compiled and distributed. Essential to robust
+        evolution is the stability of the public, protected, and package
+        interfaces and behavior as the implementations evolve. It defines &quot;compatible&quot;
+        changes as &quot;those changes that do not change existing interfaces or
+        behavior.&quot; Thus, if a class defines a method, and the method had a
+        particular behavior, that same contract must be supported by the all
+        later evolutions of the class. Detailed rules are given in
+        <A HREF="http://java.sun.com/docs/books/jls/html/13.doc.html">Chapter 13</A>
+        of the Java<FONT SIZE="-3"><SUP>TM</SUP></FONT> Language
+        Specification. One additional incompatible change has been added: it is
+        incompatible to add methods to a public interface. </P>
+      
+      <P>Although incompatible changes are not permitted, new or similar
+        functionality can always be added in new or existing interfaces or
+        classes. </P>
+      
+      <P>By choosing the Java package as the unit of update, the package and
+        private methods of the classes can change, thereby allowing flexibility
+        in the implementation of the package while the public and protected
+        classes and methods maintain the external interfaces and semantics. </P></BLOCKQUOTE>
+    
+    <H3><A NAME="OSSonBackwardCompatibility"></A>Object Serialization
+    Specification on Backwards Compatibility</H3>
+    
+    <BLOCKQUOTE>
+      
+      <P>Robust persistent storage and robust communication between the
+        components is important to distributed systems. Components must be able
+        to maintain persistent storage as they evolve, being able to evolve
+        classes and yet have them read data previously written to storage.
+        Components in a distributed system evolve at different rates and must
+        still be able to communicate reliably. </P>
+      
+      <P>Adhering to the compatibility requirements of object serialization
+        allows newer and older versions to communicate in a predictable and
+        consistent way. The details are in
+        <A HREF="../../../guide/serialization/spec/version.doc5.html">Chapter
+          5</A> of the Java<FONT SIZE="-3"><SUP>TM</SUP></FONT> Object
+        Serialization Specification. </P></BLOCKQUOTE>
+    
+    <H2><A NAME="PackageVersionSpecification"></A><U>Package Version
+    Specification</U></H2>
+    
+    <BLOCKQUOTE>
+      
+      <P>There are several categories of artifacts that need to be identified
+        including specifications, implementation, the Java Virtual Machine and
+        Java Runtime Environment. </P></BLOCKQUOTE>
+    
+    <H3><A NAME="SpecificationVersioning"></A>Specification Versioning</H3>
+    
+    <BLOCKQUOTE>
+      
+      <P>Open systems are based on the idea that a specification may have
+        multiple implementations. Specifications evolve under the auspices of an
+        organization or company. It is highly undesirable if a specification has
+        multiple incompatible versions. Each version of a specification or
+        implementation must evolve only into a single subsequent version. The
+        philosophy of requiring specifications to be backward compatible allows
+        specifications to be identified as supersets of the previous
+        specification. Since there is a single sequence of version
+        specifications they can meaningfully be identified by version numbers
+        with specific semantics that imply the ordering. Specification version
+        numbers use a Dewey decimal notation consisting of numbers separated by
+        periods. </P>
+      
+      <P>A specification is identified by the: </P>
+      <UL>
+        <LI>Owner of the specification</LI>
+        <LI>Name of the Specification</LI>
+        <LI>Version number - <I>major</I>.<I>minor</I>.<I>micro</I>
+          
+          <P><I>Major</I> version numbers identify significant functional
+            changes.
+            <BR><I>Minor</I> version numbers identify smaller extensions to
+            the functionality.
+            <BR><I>Micro</I> versions are even finer grained versions.
+            <BR>
+            <BR>These version numbers are ordered with larger numbers
+            specifying additions to the specification. </P></LI>
+      </UL></BLOCKQUOTE>
+    
+    <H3><A NAME="VirtualMachineVersioning"></A>Virtual Machine Versioning</H3>
+    
+    <BLOCKQUOTE>
+      
+      <P>An implementation of the Java Virtual Machine should be identify both
+        the specification and the implementation. These properties should be
+        added to those already available using <TT>java.lang.System.getProperties</TT>.</P>
+      <BLOCKQUOTE>
+        <TABLE WIDTH="100%">
+          <TR>
+            <TD WIDTH="316"><CODE>java.vm.specification.version</CODE></TD>
+            <TD WIDTH="357">i.e. 1.3</TD>
+          </TR>
+          <TR>
+            <TD WIDTH="316"><CODE>java.vm.specification.vendor</CODE></TD>
+            <TD WIDTH="357">i.e. Sun Microsystems Inc.</TD>
+          </TR>
+          <TR>
+            <TD WIDTH="316"><CODE>java.vm.specification.name</CODE></TD>
+            <TD WIDTH="357">i.e. Java<FONT SIZE="-3"><SUP>TM</SUP></FONT>
+            Virtual Machine Specification</TD>
+          </TR>
+          <TR>
+            <TD WIDTH="316"><CODE>java.vm.version</CODE></TD>
+            <TD WIDTH="357">i.e. Solaris 5.5 Native 1.0 build32</TD>
+          </TR>
+          <TR>
+            <TD WIDTH="316"><CODE>java.vm.vendor</CODE></TD>
+            <TD WIDTH="357">i.e. Sun Microsystems Inc.</TD>
+          </TR>
+          <TR>
+            <TD WIDTH="316"><CODE>java.vm.name</CODE></TD>
+            <TD WIDTH="357">i.e. Solaris 5.x JVM</TD>
+          </TR>
+        </TABLE></BLOCKQUOTE>
+      
+      <P>These properties are accessed using the method <TT>java.lang.System.getProperty</TT>
+        and each returns a string. </P></BLOCKQUOTE>
+    
+    <H3><A NAME="VersionIDofJavaRuntime"></A>Version Identification of the
+    Java Runtime</H3>
+    
+    <BLOCKQUOTE>
+      
+      <P>The requirement to identify the Java<FONT SIZE="-3"><SUP>TM</SUP></FONT>
+        Runtime is already partially met via the properties specified by the
+        <I>Java<FONT SIZE="-3"><SUP>TM</SUP></FONT> Language Specification</I>,
+        &#167;20.18.7 using<TT>java.lang.System.getProperties</TT>. </P>
+      <BLOCKQUOTE>
+        <TABLE WIDTH="100%">
+          <TR>
+            <TD WIDTH="314"><CODE>java.version</CODE></TD>
+            <TD WIDTH="352">i.e. Solaris 1.3</TD>
+          </TR>
+          <TR>
+            <TD WIDTH="314"><CODE>java.vendor</CODE></TD>
+            <TD WIDTH="352">i.e. Sun Microsystems Inc.</TD>
+          </TR>
+        </TABLE></BLOCKQUOTE>
+      
+      <P>Currently these identify the implementation of the Java<FONT SIZE="-3"><SUP>TM</SUP></FONT>
+        runtime and the core classes that are available. These properties do not
+        identify the <I>Java<FONT SIZE="-3"><SUP>TM</SUP></FONT> Language
+        Specification</I> version that this JDK<FONT SIZE="-3"><SUP>TM</SUP></FONT>
+        implements. </P>
+      
+      <P>The following additional properties are needed to identify the version
+        of the Java<FONT SIZE="-3"><SUP>TM</SUP></FONT> Runtime Environment
+        specification to which this implementation adheres: </P>
+      <BLOCKQUOTE>
+        <TABLE WIDTH="100%">
+          <TR>
+            <TD WIDTH="316"><CODE>java.specification.version</CODE></TD>
+            <TD WIDTH="344"> i.e. 1.1</TD>
+          </TR>
+          <TR>
+            <TD WIDTH="316"><CODE>java.specification.name</CODE></TD>
+            <TD WIDTH="344">i.e. <I>Java<FONT SIZE="-3"><SUP>TM</SUP></FONT>
+            Language Specification</I></TD>
+          </TR>
+          <TR>
+            <TD WIDTH="316"><CODE>java.specification.vendor</CODE></TD>
+            <TD WIDTH="344">i.e. Sun Microsystems Inc.</TD>
+          </TR>
+        </TABLE></BLOCKQUOTE>
+      
+      <P>These properties are accessed using the method <CODE>java.lang.System.getProperty</CODE>
+        and return their values as strings. </P></BLOCKQUOTE>
+    
+    <H3><A NAME="PackageVersioning"></A>Package Versioning</H3>
+    
+    <BLOCKQUOTE>
+      
+      <P>Each Java<FONT SIZE="-3"><SUP>TM</SUP></FONT> package consists of
+        class files and optional resource files. The information needed to
+        identify the contents of the package is stored with the package
+        contents. </P>
+      
+      <P>This specification applies to all packages, regardless of whether they
+        are developed as a core package distributed with a Java<FONT SIZE="-3"><SUP>TM</SUP></FONT>
+        Runtime, a standard extension, an applet or application package. </P>
+      
+      <P>Unlike version numbers for specifications, version information for
+        implementations cannot be used to identify the package as being backward
+        compatible with earlier versions. Package version numbers are present to
+        identify differences between the specification and the implementation,
+        i.e. bugs. New versions of implementations are specifically produced to
+        remove (undesirable or incorrect) behavior and thus are intended not to
+        be backward compatible. Therefore, package version strings can have any
+        unique value and can only be compared for equality. For a complete
+        explanation of this rationale, see
+        <A HREF="#RationaleLimitingImplVersionNumbers">Rationale for Limiting
+          Implementation Version Numbers to Identity</A>. </P>
+      
+      <P>The following attribute names are defined for a package. The value of
+        each attribute is a string:</P></BLOCKQUOTE>
+    <BLOCKQUOTE>
+      <TABLE WIDTH="100%">
+        <TR>
+          <TD WIDTH="135">Implementation-Title</TD>
+          <TD WIDTH="303">Title of the package</TD>
+        </TR>
+        <TR>
+          <TD WIDTH="135">Implementation-Version</TD>
+          <TD WIDTH="303">Version number</TD>
+        </TR>
+        <TR>
+          <TD WIDTH="135">Implementation-Vendor</TD>
+          <TD WIDTH="303">Vendors company or organization</TD>
+        </TR>
+        <TR>
+          <TD WIDTH="135">Specification-Title</TD>
+          <TD WIDTH="303">Title of the specification</TD>
+        </TR>
+        <TR>
+          <TD WIDTH="135">Specification-Version</TD>
+          <TD WIDTH="303">Version number</TD>
+        </TR>
+        <TR>
+          <TD WIDTH="135">Specification-Vendor</TD>
+          <TD WIDTH="303">Vendors company or organization</TD>
+        </TR>
+      </TABLE> </BLOCKQUOTE>
+    <BLOCKQUOTE>
+      
+      <P>These attributes are stored in the manifest and retrieved by programs
+        using the <CODE>java.lang.Package</CODE> API described below. </P>
+      
+      <H3><A NAME="JARManifestFormat"></A>JAR Manifest Format</H3>
+      
+      <P>The current manifest format is extended to allow the specification of
+        the attributes for package versioning information. A manifest entry
+        should be created for each Java<FONT SIZE="-3"><SUP>TM</SUP></FONT>
+        package. The name of the entry will be the directory within the archive
+        that contains the package's class and resource files. For example: </P>
+
+<blockquote><PRE>
+Manifest-version: 1.0
+Name: java/util/
+Specification-Title: Java Utility Classes 
+Specification-Version: 1.3
+Specification-Vendor: Sun Microsystems Inc. 
+Implementation-Title: java.util
+Implementation-Version: build57&quot; 
+Implementation-Vendor: SunMicrosystems. Inc.
+</PRE></blockquote>
+      <P>To insert these attributes in the manifest, create a prototype
+        manifest file and use JarTool's <TT>-m</TT> switch to merge the
+        attributes into the manifest when the manifest is built. JarTool will be
+        extended to browse and set the versioning attributes in the manifest.
+      </P></BLOCKQUOTE>
+    
+    <H3><A NAME="HowUsersKnow"></A>How Users Know What is Running</H3>
+    
+    <BLOCKQUOTE>
+      
+      <P>When bugs occur, users must be able to report the identities of the
+        packages in use. The application, applet, or browser must be able to
+        expose the available information to the user, either on demand or when
+        an error occurs. Available APIs can report the following information:
+      </P>
+      <UL>
+        <LI>What packages are loaded?
+          
+          <P>The <TT>package.getPackages</TT> method returns a list of the
+            active packages. </P></LI>
+        <LI>What are the package versions?
+          
+          <P>The <TT>java.lang.Package</TT> methods allow the attributes for
+            names and versions to be examined, as listed in
+            <A HREF="#PackageVersioning">Package Versioning</A>.</P></LI>
+        <LI>What version of the Java<FONT SIZE="-3"><SUP>TM</SUP></FONT>
+          Runtime is active?
+          
+          <P>The <TT>System.getProperties</TT> method can be used to get the
+            properties of this virtual machine, as listed in
+            <A HREF="#VersionIDofJavaRuntime">Version Identification of the
+              Java<FONT SIZE="-3"><SUP>TM</SUP></FONT> Runtime</A>.</P></LI>
+        <LI>What version of the Java<FONT SIZE="-3"><SUP>TM</SUP></FONT> VM
+          is active?
+          
+          <P>The <TT>System.getProperties</TT> method can be used to get the
+            properties of this virtual machine, as listed in
+            <A HREF="#VirtualMachineVersioning">Virtual Machine Versioning</A>.
+          </P></LI>
+      </UL></BLOCKQUOTE>
+    
+    <H3><A NAME="RationaleLimitingImplVersionNumbers"></A>Rationale for
+    Limiting Implementation Version Numbers to Identity</H3>
+    
+    <BLOCKQUOTE>
+      
+      <P>Implementations evolve independently over time to fix bugs, to improve
+        performance, or to add new functions that are called for by more recent
+        revisions of the specifications. Packages implement specifications and
+        must identify which version of each specification they implement.
+        Interactions occur between packages through their public and protected
+        interfaces and classes only. The <I>public</I> API and behavior must
+        remain stable over time, so changes can be allowed in the implementation
+        of one package without affecting the behavior of another package. </P>
+      
+      <P>If the classes of a package always faithfully implemented the
+        specification, it would be sufficient just to identify the
+        specification. Since in the real world this rarely happens, packages
+        need to identify themselves so that bugs can be reported against the
+        packages that may have contributed to the problem. </P>
+      
+      <P>There is a significant tendency to try to attach some significance to
+        version identifiers of implementations. If the purpose is to allow the
+        tracking of bugs then a unique number is sufficient. It is also
+        sufficient for a client package to workaround a bug in a particular
+        version of a vendors package since that version can be tested for and
+        the bug avoided. </P>
+      
+      <P>However, many additional problems can occur when one package attempts
+        to work around bugs in other packages. They need to identify behavior
+        that is not part of the specification and may try to use behavior that
+        is only part of one implementation. Such implementation specific
+        behavior cannot be relied upon to be in any particular version other
+        than the one(s) seen and tested by the developer. </P>
+      
+      <P>A bug first appears in some version of a vendors package and may or
+        may not continue to be a problem in subsequent versions. If the client
+        of the buggy package uses a workaround based on version numbers, it
+        could correctly work around the bug in the specific version. Now, if the
+        buggy package was fixed, how would the client package know whether the
+        bug was fixed or not? If it assumed that higher versions still contained
+        the bug, it would still try to work around the bug. The workaround
+        itself might not work correctly with the non-buggy package. This could
+        cause a cascade of bugs caused by fixing a bug. Only the developer,
+        through testing with a new version, can determine whether or not the
+        workaround for a bug is still necessary or whether it will cause
+        problems with the correctly behaving package. The developer only knows
+        that the bug exists in a particular individual versions. </P></BLOCKQUOTE>
+    <HR ALIGN="LEFT" WIDTH="100%" COLOR="#0000A0" SIZE="4" NOSHADE="NOSHADE">
+    
+    <P><A HREF="./VersioningTOC.html">CONTENTS</A> |
+      <A HREF="./VersioningTOC.html">PREV</A></P>
+    <HR ALIGN="LEFT" WIDTH="100%" COLOR="#0000A0" SIZE="4" NOSHADE="NOSHADE">
+    
+    <P><I><A HREF="SMICopyright.html">Copyright</A> &copy; 1998 Sun
+      Microsystems, Inc. All Rights Reserved.</I></P>
+  </BODY>
+</HTML>

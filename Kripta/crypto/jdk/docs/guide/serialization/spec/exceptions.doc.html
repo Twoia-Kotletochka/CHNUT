@@ -1,0 +1,262 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification:  - Exceptions In Object Serialization		
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="security.doc8.html">PREV</a>
+ | <a href="examples.doc.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+<a name="3601"><!-- --></a>
+<h1>
+Exceptions In Object Serialization		
+</h1>
+<!--
+<hr size="1" width="100%" align="left" noshade>
+-->
+<br>
+<br>
+<br><a name="3616"><!-- --></a>
+<hr size="8" width="35%" align="left" noshade>
+
+<table border=0>
+<tr valign=bottom>
+<td valign=bottom>
+<U><h1><FONT FACE="ARIAL,HELVETICA,TIMES ROMAN" SIZE=-1>APPENDIX</FONT>
+B 
+</h1></U>
+</td>
+</tr>
+</table>
+
+<blockquote>
+<a name="3526"><!-- --></a>
+	All exceptions thrown by serialization classes are subclasses of <code>ObjectStreamException</code> which is a subclass of <code>IOException</code>.
+
+<br><br>
+<Table Border="1" Cellpadding="5">
+<caption></caption>
+
+<tr><td><a name="4249"><!-- --></a>
+<b>Exception</b><br>
+
+</td><td><a name="4251"><!-- --></a>
+<b>Description</b><br>
+
+</td></tr>
+<tr valign="bottom"><td><a name="4253"><!-- --></a>
+<p><code>ObjectStreamException</code>
+
+</td>
+<td><a name="4255"><!-- --></a>
+<p>Superclass of all serialization exceptions.
+
+</td>
+</tr>
+<tr valign="bottom"><td><a name="4257"><!-- --></a>
+<p><code>InvalidClassException</code>
+
+</td>
+<td><a name="4259"><!-- --></a>
+<p>Thrown when a class cannot be used to restore objects for any of these reasons:
+
+<p>
+<li>
+<a name="4288"><!-- --></a>
+The class does not match the serial version of the class in the stream.
+</li></p>
+
+
+<p>
+<li>
+<a name="4293"><!-- --></a>
+The class contains fields with invalid primitive data types.
+</li></p>
+
+
+<p>
+<li>
+<a name="4296"><!-- --></a>
+The <code>Externalizable</code> class does not have a public no-arg constructor.
+</li></p>
+
+
+<p>
+<li>
+<a name="4342"><!-- --></a>
+The <code>Serializable</code> class can not access the no-arg constructor of its closest non-Serializable superclass.
+</li></p>
+
+
+</td>
+</tr>
+<tr valign="bottom"><td><a name="4261"><!-- --></a>
+<p><code>NotSerializableException</code>
+
+</td>
+<td><a name="4263"><!-- --></a>
+<p>Thrown by a <code>readObject</code> or <code>writeObject</code> method to terminate serialization or deserialization.
+
+</td>
+</tr>
+<tr valign="bottom"><td><a name="4265"><!-- --></a>
+<p><code>StreamCorruptedException</code>
+
+</td>
+<td><a name="4267"><!-- --></a>
+<p>Thrown:
+
+<p>
+<li>
+<a name="4335"><!-- --></a>
+If the stream header is invalid.
+</li></p>
+
+
+<p>
+<li>
+<a name="4327"><!-- --></a>
+If control information not found. 
+</li></p>
+
+
+<p>
+<li>
+<a name="4333"><!-- --></a>
+If control information is invalid.
+</li></p>
+
+
+<p>
+<li>
+<a name="4334"><!-- --></a>
+JDK<sup><font size="-2">TM</font></sup> 1.1.5 or less attempts to call <code>readExternal</code> on a <em>PROTOCOL_VERSION_2</em> stream.
+</li></p>
+
+
+</td>
+</tr>
+<tr valign="bottom"><td><a name="4269"><!-- --></a>
+<p><code>NotActiveException</code>
+
+</td>
+<td><a name="4271"><!-- --></a>
+<p>Thrown if <code>writeObject</code> state is invalid within the following <code>ObjectOutputStream</code> methods:
+
+<p>
+<li>
+<a name="4363"><!-- --></a>
+<code>defaultWriteObject</code>
+</li></p>
+
+
+<p>
+<li>
+<a name="4364"><!-- --></a>
+<code>putFields</code>
+</li></p>
+
+
+<p>
+<li>
+<a name="4359"><!-- --></a>
+<code>writeFields</code>
+</li></p>
+
+
+<a name="4370"><!-- --></a>
+<p>
+
+<a name="4365"><!-- --></a>
+<p>Thrown if <code>readObject</code> state is invalid within the following <code>ObjectInputStream</code> methods:
+
+<p>
+<li>
+<a name="4369"><!-- --></a>
+<code>defaultReadObject</code>
+</li></p>
+
+
+<p>
+<li>
+<a name="4367"><!-- --></a>
+<code>readFields</code>
+</li></p>
+
+
+<p>
+<li>
+<a name="4368"><!-- --></a>
+<code>registerValidation</code>
+</li></p>
+
+
+</td>
+</tr>
+<tr valign="bottom"><td><a name="4273"><!-- --></a>
+<p><code>InvalidObjectException</code>
+
+</td>
+<td><a name="4275"><!-- --></a>
+<p>Thrown when a restored object cannot be made valid.
+
+</td>
+</tr>
+<tr valign="bottom"><td><a name="4277"><!-- --></a>
+<p><code>OptionalDataException</code>
+
+</td>
+<td><a name="4279"><!-- --></a>
+<p>Thrown by <code>readObject</code> when there is primitive data in the stream and an object is expected. The length field of the exception indicates the number of bytes that are available in the current block.
+
+</td>
+</tr>
+<tr valign="bottom"><td><a name="4281"><!-- --></a>
+<p><code>WriteAbortedException</code>
+
+</td>
+<td><a name="4283"><!-- --></a>
+<p>Thrown when reading a stream terminated by an exception that occurred while the stream was being written.
+
+</td>
+</tr>
+
+</Table>
+ 
+<Table>
+<tr><td></td>
+</tr>
+</Table><p>
+<p>
+<a name="4242"><!-- --></a>
+<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="security.doc8.html">PREV</a>
+ | <a href="examples.doc.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:48:20 1999 -->
+ 
+
+
+</body>
+</html>

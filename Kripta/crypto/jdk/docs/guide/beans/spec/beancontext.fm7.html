@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Extensible Runtime Containment and Services Protocol for JavaBeans:  - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="beancontextTOC.fm.html">CONTENTS</a> | <a href="beancontext.fm6.html">PREV</a>
+ | <a href="beancontext.fm8.html">NEXT</a> 
+<!-- /font --></td><td align=right><i>Extensible Runtime Containment and Services Protocol for JavaBeans</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="916944"><i>5.0  </i> Standard/Suggested Conventions for BeanContext Services
+</a></h2>
+
+
+<br>
+<a name="916806"><!-- --></a>
+<h4><i>5.0.1   BeanContexts that support InfoBus.
+</i></h4>
+
+<blockquote>
+<a name="919684"><!-- --></a>
+The InfoBus technology is a standard extension package that is intended to facilitate the rendezvous and exchange of dynamic self describing data, based upon a publish and subscribe abstraction, between JavaBean Components within a single Java Virtual Machine<B>*</B>.<p>
+<a name="919685"><!-- --></a>
+A <em>BeanContext</em> that exposes an <em>InfoBus</em> to its nested <em>BeanContextChild</em> shall do so by exposing a service via the <em>hasService</em>() and <em>getService</em>() methods of type <em>javax.infobus.InfoBus.</em> <p>
+<a name="919734"><!-- --></a>
+Thus <em>BeanContextChild</em> implementations may locate a common <em>InfoBus</em> implementation for their current <em>BeanContext</em> by using this mechanism to rendezvous with that <em>InfoBus</em> instance. <p>
+<a name="920853"><!-- --></a>
+The Infobus 1.2 specification shall define a convenience mechanism provided by the <em>InfoBus</em> class to simplify the discovery mechanism for <em>BeanContextChild</em> instances nested within a particular instance of <em>BeanContextServices</em>.<p>
+</blockquote>
+<br>
+<a name="919683"><!-- --></a>
+<h4><i>5.0.2   BeanContexts that support printing
+</i></h4>
+
+<blockquote>
+<a name="916925"><!-- --></a>
+A <em>BeanContext</em> that wishes to expose printing facilities to its descendants may delegate a reference of (sub)type <em>java.awt.PrintJob</em>.<p>
+<a name="920856"><!-- --></a>
+As the Java Network Printing Interface evolves additional specifications will be provided to expose it&#39;s facilities via the services mechanism.<p>
+</blockquote>
+<br>
+<a name="916934"><!-- --></a>
+<h4><i>5.0.3   BeanContext Design/Runtime mode support.
+</i></h4>
+
+<blockquote>
+<a name="916957"><!-- --></a>
+JavaBeans support the concepts of &#34;design&#34;-mode, when JavaBeans are being manipulated and composed by a developer in an Application Builder or IDE, and &#34;Run&#34;-mode, when the resulting JavaBeans are instantiated at runtime as part of an <em>Applet</em>, Application or some other executable abstraction.<p>
+<a name="916960"><!-- --></a>
+In the first version of the specification, the &#34;mode&#34; or state, that is &#34;design&#34;-time or &#34;run&#34;-time was a JVM<B>*</B> global attribute. This is insufficient since, for example, in an Application Builder environment, there may be JavaBeans that function, in &#34;run&#34;-mode, as part of the Application Builder environment itself, as well as the JavaBeans that function, in &#34;design&#34;-mode, under construction by the developer using the Application Builder to compose an application.<p>
+<a name="916961"><!-- --></a>
+Therefore we require the ability to scope this &#34;mode&#34; at a granularity below that of JVM global.<p>
+<a name="916962"><!-- --></a>
+The <em>BeanContext </em>abstraction, as a &#34;Container&#34; or &#34;Context&#34; for one or more JavaBeans provides appropriate mechanism to better scope this &#34;mode&#34;.<p>
+<a name="916966"><!-- --></a>
+Thus <em>BeanContext</em>&#39;s that wish to expose and propagate this &#34;mode&#34; to its descendants may delegate a reference of type <em>java.beans.DesignMode</em>:<p>
+</blockquote>
+<blockquote><pre>
+public interface java.beans.DesignMode {
+	void    setDesignTime(boolean isDesignTime);
+	boolean isDesignTime();
+}
+</pre></blockquote><blockquote>
+<a name="916977"><!-- --></a>
+Additionally, <em>BeanContext</em>s delegating such a reference shall be required to fire the appropriate <em>java.beans.propertyChangeEvent,</em> with propertyName = &#34;designTime&#34;, with the appropriate values for <em>oldValue</em> and <em>newValue,</em> when the &#34;mode&#34; changes value.<p>
+<a name="917788"><!-- --></a>
+Note that it is illegal for instances of <em>BeanContextChild</em> to call <em>setDesignTime()</em> on instances of <em>BeanContext </em>that they are nested within.<p>
+</blockquote>
+<br>
+<a name="917054"><!-- --></a>
+<h4><i>5.0.4   BeanContext Visibility support.
+</i></h4>
+
+<blockquote>
+<a name="917055"><!-- --></a>
+JavaBeans with associated presentation, or GUI, may be instantiated in environments where the ability to present that GUI is either not physically possible (when the hardware is not present), or is not appropriate under the current conditions (running in a server context instead of a client).<p>
+<a name="917056"><!-- --></a>
+The first version of the JavaBeans Specification introduced the <em>java.beans.Visibility</em> interface in order to provide a mechanism for JavaBeans to have their &#34;visible&#34; state, or ability to render a GUI, controlled from their environment.<p>
+<a name="917035"><!-- --></a>
+<em>BeanContext</em>s that wish to enforce a particular policy regarding the ability of their children to present GUI, shall use the <em>java.beans.Visibility</em> interface to control their children.<p>
+</blockquote>
+<br>
+<a name="917487"><!-- --></a>
+<h4><i>5.0.5   Determining Locale from a BeanContext
+</i></h4>
+
+<blockquote>
+<a name="917488"><!-- --></a>
+<em>BeanContext</em>s may have a locale associated with them, in order to associate and propagate this important attribute across the JavaBeans nested therein.<p>
+<a name="918652"><!-- --></a>
+Therefore, <em>BeanContext</em>s, shall be required to fire the appropriate<em> java.beans.PropertyChangeEvent</em>, with propertyName = &#34;locale&#34;, <em>oldValue</em> = the reference to the previous value of the <em>Locale</em> delegate, and <em>newValue</em> = the reference to the new value of the <em>Locale </em>delegate, in order to notify its Listeners of any change in <em>Locale</em>.<p>
+<a name="917536"><!-- --></a>
+Setting and getting the value of the <em>Locale</em> on the <em>BeanContext</em> is implementation dependent.<p>
+</blockquote>
+
+<P>
+<FONT SIZE="-1"><B>*As used on this web site, the terms "Java Virtual Machine" 
+or "JVM" mean a virtual machine for the Java platform.</B></FONT>
+<P>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="beancontextTOC.fm.html">CONTENTS</a> | <a href="beancontext.fm6.html">PREV</a>
+ | <a href="beancontext.fm8.html">NEXT</a> 
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1998-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Thu Dec 03 12:39:43 1998-1999 -->
+ 
+
+
+</body>
+</html>

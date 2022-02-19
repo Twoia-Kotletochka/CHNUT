@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API: 5 - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-image.fm6.html">PREV</a>
+ | <a href="j2d-image.fm8.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="67775"><i>5.7	</i> ColorModels and Color Data
+</a></h2>
+
+<blockquote>
+<a name="67781"><!-- --></a>
+In addition to the <kbd>Raster</kbd> object for managing image data, the <kbd>BufferedImage</kbd> class includes a <kbd>ColorModel</kbd> for interpreting that data as color pixel values. The abstract <kbd>ColorModel</kbd> class defines methods for turning an image&#39;s pixel data into a color value in its associated <kbd>ColorSpace</kbd>. <p>
+<a name="69584"><!-- --></a>
+The <kbd>java.awt.image</kbd> package provides four types of color models:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="67777"><!-- --></a>
+<kbd>PackedColorModel</kbd>&#45;&#45;An abstract <kbd>ColorModel</kbd> that represents pixel values that have color components embedded directly in the bits of an integer pixel. A <kbd>DirectColorModel</kbd> is a subclass of <kbd>PackedColorModel</kbd>.
+</li>
+<li>
+<a name="63444"><!-- --></a>
+<kbd>DirectColorModel</kbd>&#45;&#45;a <kbd>ColorModel</kbd> that represents pixel values that have RGB color components embedded directly in the bits of the pixel itself. <kbd>DirectColorModel</kbd> model is similar to an X11 TrueColor visual.
+</li>
+<li>
+<a name="67801"><!-- --></a>
+<kbd>ComponentColorModel</kbd>&#45;&#45;a <kbd>ColorModel</kbd> that can handle an arbitrary <kbd>ColorSpace</kbd> and an array of color components to match the <kbd>ColorSpace</kbd>. 
+</li>
+<li>
+<a name="67802"><!-- --></a>
+<kbd>IndexColorModel</kbd>&#45;&#45;a <kbd>ColorModel</kbd> that represents pixel values that are indices into a fixed color map in the sRGB color space.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="67788"><!-- --></a>
+<kbd>ComponentColorModel</kbd> and <kbd>PackedColorModel</kbd> are new in the Java<sup>TM</sup> 2 SDK software release.<p>
+<a name="67061"><!-- --></a>
+Based on data in the <kbd>DataBuffer</kbd>, the <kbd>SampleModel</kbd> provides the <kbd>ColorModel</kbd> with a pixel, which the <kbd>ColorModel</kbd> then interprets as a color. <p>
+</blockquote>
+<br>
+<h3>
+<a name="65329"><!-- --></a>
+<i>5.7.1	</i> Lookup Table
+</h3>
+
+<blockquote>
+<a name="67100"><!-- --></a>
+A lookup table contains data for one or more channels or image components; for example, separate arrays for R, G, and B. The <kbd>java.awt.image</kbd> package defines two types of lookup tables that extend the abstract <kbd>LookupTable</kbd> class, one that contains byte data and one that contains short data (<kbd>ByteLookupTable</kbd> and <kbd>ShortLookupData</kbd>).<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-image.fm6.html">PREV</a>
+ | <a href="j2d-image.fm8.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Mon Nov 22 09:37:15 1999 -->
+ 
+
+
+</body>
+</html>

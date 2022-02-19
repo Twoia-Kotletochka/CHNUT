@@ -1,0 +1,394 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title> </title>
+</head>
+<body bgcolor=#ffffff>
+
+<table width=600><tr>
+<td><a href="jniTOC.doc.html">Contents</a> | <a href="functions.doc.html">Prev</a> | Next </td><td align=right><i>Java Native Interface Specification
+</i></td>
+</tr></table>
+
+<hr><br>
+ 
+<h1><a name="15899"></a>
+<strong> 5 - The Invocation API
+ </strong></h1>
+<hr><p><a name="1057"></a>
+The Invocation API allows software vendors to load the Java VM<B>*</B> into an 
+arbitrary native application. Vendors can deliver Java-enabled applications 
+without having to link with the Java VM source code.
+<p><a name="499"></a>
+This chapter begins with an overview of the Invocation API. This is followed 
+by reference pages for all Invocation API functions.
+<p>
+To enhance the embeddability of the Java VM, the Invocation API is
+extended in JDK 1.1.2 in a few minor ways.
+
+<p><hr align=left><a name="15926"></a>
+<h1> Overview
+</h1>
+<a name="954"></a>
+The following code example illustrates how to use functions in the Invocation 
+API. In this example, the C++ code creates a Java VM and invokes a static 
+method, called <code>Main.test</code>. For clarity, we omit error checking.
+<p><pre>        #include &lt;jni.h&gt;       /* where everything is defined */
+    
+        ...
+    
+        JavaVM *jvm;       /* denotes a Java VM */
+        JNIEnv *env;       /* pointer to native method interface */
+    
+        JDK1_1InitArgs vm_args; /* JDK 1.1 VM initialization arguments */
+   
+        vm_args.version = 0x00010001; /* New in 1.1.2: VM version */
+        /* Get the default initialization arguments and set the class 
+         * path */
+        JNI_GetDefaultJavaVMInitArgs(&amp;vm_args);
+        vm_args.classpath = ...;
+    
+        /* load and initialize a Java VM, return a JNI interface 
+         * pointer in env */
+        JNI_CreateJavaVM(&amp;jvm, &amp;env, &amp;vm_args);
+    
+        /* invoke the Main.test method using the JNI */
+        jclass cls = env-&gt;FindClass("Main");
+        jmethodID mid = env-&gt;GetStaticMethodID(cls, "test", "(I)V");
+        env-&gt;CallStaticVoidMethod(cls, mid, 100);
+    
+        /* We are done. */
+        jvm-&gt;DestroyJavaVM();
+</pre><a name="980"></a>
+This example uses three functions in the API. The Invocation API allows a 
+native application to use the JNI interface pointer to access VM features. The 
+design is similar to Netscape's JRI Embedding Interface.
+<p><br><a name="15956"></a>
+<h2>		 Creating the VM
+</h2>
+<a name="1045"></a>
+The <code>JNI_CreateJavaVM()</code> function loads and initializes a Java VM and 
+returns a pointer to the JNI interface pointer. The thread that called 
+<code>JNI_CreateJavaVM()</code> is considered to be the <em>main thread</em>.
+<p><br><a name="1060"></a>
+<h2>		 Attaching to the VM
+</h2>
+<a name="15965"></a>
+The JNI interface pointer (<code>JNIEnv</code>) is valid only in the current thread. Should 
+another thread need to access the Java VM, it must first call 
+<code>AttachCurrentThread()</code> to attach itself to the VM and obtain a JNI interface 
+pointer. Once attached to the VM, a native thread works just like an ordinary 
+Java thread running inside a native method. The native thread remains 
+attached to the VM until it calls <code>DetachCurrentThread()</code> to detach itself. 
+<p><br><a name="16553"></a>
+<h2>		 Unloading the VM
+</h2>
+<a name="548"></a>
+The main thread cannot detach itself from the VM. Instead, it must call 
+<code>DestroyJavaVM()</code> to unload the entire VM.
+<p>
+The VM waits until the main thread is the only user thread before it
+actually unloads. User threads include both Java threads and attached
+native threads. This restriction exists because a Java thread or
+attached native thread may be holding system resources, such as locks,
+windows, and so on. The VM cannot automatically free these
+resources. By restricting the main thread to be the only running
+thread when the VM is unloaded, the burden of releasing system
+resources held by arbitrary threads is on the programmer.
+
+<p><hr align=left><a name="16554"></a>
+<h1> Initialization Structures
+</h1>
+<a name="16529"></a>
+<p>
+Different Java VM implementation will likely require different
+initialization arguments. It is difficult to come up with a standard
+initialization structure suitable for all present and future Java
+VMs. As a compromise, we reserve the first field
+(<code>version</code>) to identify the content of the initialization
+structure. Native applications embedding JDK 1.1.2 must set the
+version field to <code>0x00010001</code>. VM implementations are
+encouraged to use the same initialization structure as JDK, although
+other implementations may choose to ignore some of the initialization
+arguments supported by JDK.
+
+<p>
+Version numbers <code>0x80000000</code> to <code>0xFFFFFFFF</code> are
+reserved, and should not be recognized by any VM implementation.
+
+<p>
+The following code shows the structure used to initialize the Java VM
+in JDK 1.1.2.
+
+
+<p><pre>    typedef struct JavaVMInitArgs {
+       /* The first two fields were reserved in JDK 1.1, and
+          formally introduced in JDK 1.1.2. */
+       /* Java VM version */
+        jint version;
+
+       /* System properties. */
+        char **properties;
+    
+       /* whether to check the Java source files are newer than 
+        * compiled class files. */
+        jint checkSource;
+    
+       /* maximum native stack size of Java-created threads. */
+        jint nativeStackSize;
+    
+       /* maximum Java stack size. */
+        jint javaStackSize;
+    
+       /* initial heap size. */
+        jint minHeapSize;
+    
+       /* maximum heap size. */
+        jint maxHeapSize;
+    
+       /* controls whether Java byte code should be verified:
+        * 0 -- none, 1 -- remotely loaded code, 2 -- all code. */
+        jint verifyMode;
+    
+       /* the local directory path for class loading. */
+        const char *classpath;
+    
+       /* a hook for a function that redirects all VM messages. */
+        jint (*vfprintf)(FILE *fp, const char *format, 
+                         va_list args);
+    
+       /* a VM exit hook. */
+        void (*exit)(jint code);
+    
+       /* a VM abort hook. */
+        void (*abort)();
+    
+       /* whether to enable class GC. */
+        jint enableClassGC;
+    
+       /* whether GC messages will appear. */
+        jint enableVerboseGC;
+    
+       /* whether asynchronous GC is allowed. */
+        jint disableAsyncGC;
+
+       /* Three reserved fields. */ 
+        jint reserved0;
+        jint reserved1;
+        jint reserved2;
+    } JDK1_1InitArgs;
+</pre><a name="738"></a>
+In JDK 1.1.2, the initialization structure provides hooks so that a native 
+application can redirect VM messages and obtain control when the VM 
+terminates.
+<p><a name="886"></a>
+The structure below is passed as an argument when a native thread attaches to 
+a Java VM in JDK 1.1.2. In actuality, no arguments are required for a native 
+thread to attach to the JDK 1.1.2. The <code>JDK1_1AttachArgs</code> structure consists 
+only of a padding slot for those C compilers that do not permit empty 
+structures.
+<p><pre>    typedef struct JDK1_1AttachArgs {
+       /*
+        * JDK 1.1 does not need any arguments to attach a
+        * native thread. The padding is here to satisfy the C
+        * compiler which does not permit empty structures.
+        */
+        void *__padding;
+    } JDK1_1AttachArgs;
+</pre><hr align=left><a name="756"></a>
+<h1> Invocation API Functions
+</h1>
+<a name="16292"></a>
+The <code>JavaVM</code> type is a pointer to the Invocation API function table. The 
+following code example shows this function table.
+<p><pre>    typedef const struct JNIInvokeInterface *JavaVM;
+    
+    const struct JNIInvokeInterface ... = {
+        NULL,
+        NULL,
+        NULL,
+    
+        DestroyJavaVM,
+        AttachCurrentThread,
+        DetachCurrentThread,
+    };
+</pre><a name="16293"></a>
+Note that three Invocation API functions, 
+<code>JNI_GetDefaultJavaVMInitArgs()</code>, JNI_GetCreatedJavaVMs(), and 
+<code>JNI_CreateJavaVM()</code>, are not part of the JavaVM function table. These 
+functions can be used without a preexisting <code>JavaVM</code> structure.
+<p><br><a name="16064"></a>
+<h2>		 JNI_GetDefaultJavaVMInitArgs
+</h2>
+<a name="16312"></a>
+<code>jint JNI_GetDefaultJavaVMInitArgs(void *vm_args);
+</code><p><a name="16317"></a>
+
+Returns a default configuration for the Java VM. Before calling this
+function, native code must set the <code>vm_args->version</code> field
+to the JNI version it expects the VM to support. In JDK 1.1.2,
+<code>vm_args->version</code> must be set to
+<code>0x00010001</code>. 
+
+(JDK 1.1 did not require the native code to set the version field. For
+backward compatibility, JDK 1.1.2 assumes that the requested version
+is 0x00010001 if the version field is not set. Future versions of JDK
+will require the version field to be set to an appropriate value.)
+
+After this function returns,
+<code>vm_args->version</code> will be set to the actual JNI version
+the VM supports.
+
+<p><a name="869"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="16324"></a>
+<code>vm_args</code>: a pointer to a <code>VM-specific initialization</code> structure in to which the 
+default arguments are filled.
+
+<h4>RETURNS:</h4>
+Returns "0" if the requested version is supported; returns a negative number if the requested version is not supported. 
+
+
+<p><br><a name="633"></a>
+<h2>		 JNI_GetCreatedJavaVMs
+</h2>
+<a name="634"></a>
+<code>jint JNI_GetCreatedJavaVMs(JavaVM **vmBuf, jsize bufLen,<br>
+     jsize *nVMs);
+</code><p><a name="635"></a>
+Returns all Java VMs that have been created. Pointers to VMs are written in the 
+buffer vmBuf in the order they are created. At most bufLen number of entries 
+will be written. The total number of created VMs is returned in *nVMs.
+<p><a name="636"></a>
+JDK 1.1 does not support creating more than one VM in a single process.
+<p><a name="637"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="638"></a>
+<code>vmBuf</code>: pointer to the buffer where the VM structures will be placed.
+<p><a name="639"></a>
+<code>bufLen</code>: the length of the buffer.
+<p><a name="640"></a>
+<code>nVMs</code>: a pointer to an integer.
+<p><a name="641"></a>
+<h4> RETURNS:
+</h4>
+<a name="642"></a>
+Returns "0" on success; returns a negative number on failure.
+<p><br><a name="16334"></a>
+<h2>		 JNI_CreateJavaVM
+</h2>
+<a name="16331"></a>
+<code>jint JNI_CreateJavaVM(JavaVM **p_vm, JNIEnv **p_env,<br>
+     void *vm_args);
+</code><p><a name="16339"></a>
+Loads and initializes a Java VM. The current thread becomes the main thread. 
+Sets the <code>env</code> argument to the JNI interface pointer of the main thread.
+<p><a name="16345"></a>
+JDK 1.1.2 does not support creating more than one VM in a single process. The version field in vm_args must be set to <code>0x00010001</code>.
+<p><a name="16351"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="16356"></a>
+<code>p_vm</code>: pointer to the location where the resulting VM structure will be placed.
+<p><a name="16358"></a>
+<code>p_env</code>: pointer to the location where the JNI interface pointer for the main 
+thread will be placed.
+<p><a name="16360"></a>
+<code>vm_args</code>: Java VM initialization arguments.
+<p><a name="16085"></a>
+<h4> RETURNS:
+</h4>
+<a name="711"></a>
+Returns "0" on success; returns a negative number on failure.
+<p><br><a name="16089"></a>
+<h2>		 DestroyJavaVM
+</h2>
+<a name="16384"></a>
+<code>jint DestroyJavaVM(JavaVM *vm);
+</code><p><a name="16381"></a>
+Unloads a Java VM and reclaims its resources. Only the main thread can 
+unload the VM. The main thread must be the only remaining user thread when 
+it calls <code>DestroyJavaVM()</code>.
+<p><a name="16386"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="16387"></a>
+<code>vm</code>: the Java VM that will be destroyed.
+<p><a name="16390"></a>
+<h4> RETURNS:
+</h4>
+<a name="715"></a>
+Returns "0" on success; returns a negative number on failure.
+<p><a name="628"></a>
+JDK 1.1.2 does not support unloading the VM.
+<p><br><a name="16436"></a>
+<h2>		 AttachCurrentThread
+</h2>
+<a name="16433"></a>
+<code>jint AttachCurrentThread(JavaVM *vm, JNIEnv **p_env,<br>
+     void *thr_args);
+</code><p><a name="16441"></a>
+Attaches the current thread to a Java VM. Returns a JNI interface pointer in the 
+<code>JNIEnv</code> argument.
+<p><a name="987"></a>
+Trying to attach a thread that is already attached is a no-op.
+<p><a name="988"></a>
+A native thread cannot be attached simultaneously to two Java VMs.
+<p><a name="989"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="16456"></a>
+<code>vm</code>: the VM to which the current thread will be attached.
+<p><a name="16457"></a>
+<code>p_env</code>: pointer to the location where the JNI interface pointer of the current 
+thread will be placed.
+<p><a name="16458"></a>
+<code>thr_args</code>: VM-specific thread attachment arguments.
+<p><a name="16459"></a>
+<h4> RETURNS:
+</h4>
+<a name="721"></a>
+Returns "0" on success; returns a negative number on failure.
+<p><br><a name="16108"></a>
+<h2>		 DetachCurrentThread
+</h2>
+<a name="16468"></a>
+<code>jint DetachCurrentThread(JavaVM *vm);
+</code><p><a name="16111"></a>
+Detaches the current thread from a Java VM. All Java monitors held by this 
+thread are released. All Java threads waiting for this thread to die are notified.
+<p><a name="16115"></a>
+The main thread, which is the thread that created the Java VM, cannot be 
+detached from the VM. Instead, the main thread must call 
+<code>JNI_DestroyJavaVM()</code> to unload the entire VM.
+<p><a name="16491"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="16492"></a>
+<code>vm</code>: the VM from which the current thread will be detached.
+<p><a name="16495"></a>
+<h4> RETURNS:
+</h4>
+<a name="725"></a>
+Returns "0" on success; returns a negative number on failure.
+<p><a name="15891"></a>
+
+<P>
+<FONT SIZE="-1"><B>*As used on this web site, the term "Java VM" 
+means a virtual machine for the Java platform.</B></FONT>
+<P>
+
+
+<hr>
+<!-- This inserts footnotes--><p>
+<a href="jniTOC.doc.html">Contents</a> | <a href="functions.doc.html">Prev</a> | Next 
+<p>
+<font size=-1>Java Native Interface Specification (HTML generated by dkramer on March 15, 1997)<br>
+<i><a href="copyright.doc.html">Copyright &#169 1996, 1997 Sun Microsystems, Inc.</a>
+All rights reserved</i>
+<br>
+Please send any comments or corrections to <a href="mailto:jni@java.sun.com">jni@java.sun.com</a>
+</font>
+</body></html>

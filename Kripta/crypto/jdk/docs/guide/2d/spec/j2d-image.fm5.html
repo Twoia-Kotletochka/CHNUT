@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API: 5 - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-image.fm4.html">PREV</a>
+ | <a href="j2d-image.fm6.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="69487"><i>5.5	</i> Image Data and DataBuffers
+</a></h2>
+
+<blockquote>
+<a name="66743"><!-- --></a>
+The <kbd>DataBuffer</kbd> belonging to a <kbd>Raster</kbd> represents an array of image data. When you create a <kbd>Raster</kbd> directly or through the <kbd>BufferedImage</kbd> constructors, you specify a width and height in pixels, along with a <kbd>SampleModel</kbd> for the image data. This information is used to create a <kbd>DataBuffer</kbd> of the appropriate data type and size. <p>
+<a name="66745"><!-- --></a>
+There are three subclasses of <kbd>DataBuffer</kbd>, each representing a different type of data element: <p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="69504"><!-- --></a>
+<kbd>DataBufferByte</kbd> (represents 8-bit values) 
+</li>
+<li>
+<a name="69505"><!-- --></a>
+<kbd>DataBufferInt</kbd> (represents 32-bit values) 
+</li>
+<li>
+<a name="69508"><!-- --></a>
+<kbd>DataBufferShort</kbd> (represents 16-bit values) 
+</li>
+<li>
+<a name="69512"><!-- --></a>
+<kbd>DataBufferUShort</kbd> (represents unsigned short values) 
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="66749"><!-- --></a>
+As defined earlier, elements are the discrete members of the array of the data buffer, and components or samples are the discrete values that together make up a pixel. There can be various mappings between a particular type of element in a <kbd>DataBuffer</kbd> and a particular type of pixel represented by a <kbd>SampleModel</kbd>. It is the responsibility of the various <kbd>SampleModel</kbd> subclasses to implement that mapping and provide a way to get specific pixels from a specific <kbd>DataBuffer</kbd>. <p>
+<a name="66755"><!-- --></a>
+<kbd>DataBuffer</kbd> constructors provide ways to create buffers of a specific size and a specific number of banks. <p>
+<a name="66772"><!-- --></a>
+While you can access image data in a <kbd>DataBuffer</kbd> directly, it&#39;s generally easier and more convenient to do so through the methods of the <kbd>Raster</kbd> and <kbd>WritableRaster</kbd> classes. <p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-image.fm4.html">PREV</a>
+ | <a href="j2d-image.fm6.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Mon Nov 22 09:37:15 1999 -->
+ 
+
+
+</body>
+</html>

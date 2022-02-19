@@ -1,0 +1,235 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title></title>
+</head>
+<body bgcolor=#ffffff>
+
+<table width=100%><tr>
+<td><font size=-1>
+<a href="jdbc2.1.frame.html">Contents</a>  | <a href="jdbc2.1.frame3.html">Prev</a>  | <a href="jdbc2.1.frame5.html">Next</a>
+</font></td><td align=right><i>JDBC<sup><font size=-2>TM</font></sup> Guide: Getting Started</i></td>
+</tr></table>
+<hr>
+<br>
+ 
+
+<a name="283844"></a>
+<h2>	4	 What's Actually Changed</h2>
+
+<a name="284123"></a>
+This chapter describes the practical differences between the JDBC 1.0 and JDBC 2.0 
+APIs.
+<p>
+
+<a name="284117"></a>
+<h3>4.1 	  &nbsp; &nbsp; A New Package</h3>
+<a name="284122"></a>
+The JDBC API has been factored into two complementary components. The first component
+ is API that is core to the Java platform (the <em>core JDBC 2.1 API </em>) and comprises 
+the updated contents of the <code>java.sql</code> package. This document contains the specification
+for the core JDBC 2.1 API. The second component, termed the<em> JDBC 2.0 Optional 
+Package API</em>, comprises the contents of a new package, <code>javax.sql</code>, which as its name 
+implies will be delivered as an optional package to the Java platform (formerly Java 
+Standard Extension). The JDBC 2.0 Optional Package API is described in a separate 
+document.
+<p>
+<a name="287861"></a>
+The <code>java.sql</code> package contains all of the additions that have been made to the existing 
+interfaces and classes, in addition to a few new classes and interfaces. The new<code> javax.sql
+</code> package has been introduced to contain the parts of the JDBC API which are 
+closely related to other pieces of the Java platform that are themselves Optional Packages
+, such as the Java Naming and Directory Interface (JNDI), and the Java Transaction 
+Service (JTS). In addition, some advanced features that are easily separable from the 
+core JDBC API, such as connection pooling and rowsets, have also been added to <code>javax.sql
+</code>. Putting these advanced facilities into an optional package instead of into core 
+will help keep the core JDBC API small and focused. 
+<p>
+<a name="287881"></a>
+Since optional packages are downloadable, it will always be possible to deploy an application
+which uses the features in the JDBC Optional Package that will "run anywhere
+," since if an optional package isn't installed on a client machine, it can be 
+downloaded along with the application that uses it.
+<p>
+
+<a name="284120"></a>
+<h3>4.2 	  &nbsp; &nbsp; Changes to Classes and Interfaces</h3>
+<a name="284134"></a>
+The list below contains all of the JDBC 2.1 API core classes and interfaces. Interfaces 
+and classes that are new are listed in bold type. All of the interfaces and classes present 
+in the JDBC 1.0 API are also present in the core JDBC 2.1 API, however, some of the 
+JDBC 1.0 technology interfaces have gained additional methods. The interfaces that 
+contain new methods are listed in italics and those that have not changed are in normal 
+type.
+<p>
+<a name="287890"></a>
+
+<p>
+<a name="299645"></a>
+	java.sql.Array
+<p>
+<a name="287893"></a>
+<b>	java.sql.BatchUpdateException</b>
+<p>
+<a name="299648"></a>
+<b>	java.sql.Blob</b>
+<p>
+<a name="286004"></a>
+	<em>java.sql.CallableStatement
+</em><p>
+<a name="299649"></a>
+<b>	java.sql.Clob</b>
+<p>
+<a name="284056"></a>
+	<i>java.sql.Connection</i>
+<p>
+<a name="287835"></a>
+<i>	java.sql.DatabaseMetaData</i>
+<p>
+<a name="287837"></a>
+	java.sql.DataTruncation
+<p>
+<a name="287838"></a>
+	<em>java.sql.Date
+</em><p>
+<a name="284059"></a>
+	java.sql.Driver
+<p>
+<a name="284060"></a>
+	<em>java.sql.DriverManager
+</em><p>
+<a name="284061"></a>
+	java.sql.DriverPropertyInfo
+<p>
+<a name="284062"></a>
+	<em>java.sql.PreparedStatement
+</em><p>
+<a name="299650"></a>
+<b>	java.sql.Ref</b>
+<p>
+<a name="284063"></a>
+	java.sql.ResultSet
+</em><p>
+<a name="284108"></a>
+<i>	java.sql.ResultSetMetaData</i>
+<p>
+<a name="299651"></a>
+<b>	java.sql.SQLData</b>
+<p>
+<a name="284093"></a>
+	java.sql.SQLException
+<p>
+<a name="299656"></a>
+	<strong>java.sql.SQLInput
+</strong><p>
+<a name="299657"></a>
+<b>	java.sql.SQLOutput	</b>
+<p>
+<a name="284072"></a>
+	java.sql.SQLWarning
+<p>
+<a name="284066"></a>
+	<em>java.sql.Statement
+</em><p>
+<a name="299658"></a>
+<b>	java.sql.Struct</b>
+<p>
+<a name="284067"></a>
+	<em>java.sql.Time
+</em><p>
+<a name="284068"></a>
+	<em>java.sql.Timestamp
+</em><p>
+<a name="284069"></a>
+<i>	java.sql.Types</i>
+<p>
+<a name="299577"></a>
+
+<p>
+<a name="299578"></a>
+The separate core JDBC 2.1 API documentation contains the Java programming language
+definitions of the <code>java.sql</code> interfaces and classes listed above. The figure below 
+shows the more important core interfaces and their relationships. The important relationships
+between interfaces have not changed with the introduction of the new JDBC 
+API.
+<p>
+<a name="288184"></a>
+<br><br><img src="jdbc2.1.frame.anc2.gif"><br>
+<p>
+<a name="287995"></a>
+
+<p>
+<a name="300855"></a>
+The list below contains the classes and interfaces that comprise the <code>javax.sql</code> package.
+A detailed specification of these new types is contained in a separate document.
+<p>
+<a name="287945"></a>
+	javax.sql.ConnectionEvent
+<p>
+<a name="287966"></a>
+	javax.sql.ConnectionEventListener
+<p>
+<a name="287968"></a>
+	javax.sql.ConnectionPoolDataSurce
+<p>
+<a name="287929"></a>
+	javax.sql.DataSource
+<p>
+<a name="287971"></a>
+	javax.sql.PooledConnection
+<p>
+<a name="287931"></a>
+	javax.sql.RowSet
+<p>
+<a name="287932"></a>
+	javax.sql.RowSetEvent
+<p>
+<a name="303750"></a>
+	javax.sql.RowSetInternal
+<p>
+<a name="287933"></a>
+	javax.sql.RowSetListenerl
+<p>
+<a name="287934"></a>
+	javax.sql.RowSetMetaData
+<p>
+<a name="287935"></a>
+	javax.sql.RowSetReader
+<p>
+<a name="287936"></a>
+	javax.sql.RowSetWriter
+<p>
+<a name="287974"></a>
+	javax.sql.XAConnection
+<p>
+<a name="287975"></a>
+	javax.sql.XADataSource
+<p>
+<a name="287924"></a>
+
+<p>
+
+
+<br>
+<hr> 
+<font size=-1>
+<a href="jdbc2.1.frame.html">Contents</a>  | <a href="jdbc2.1.frame3.html">Prev</a>  | <a href="jdbc2.1.frame5.html">Next</a>
+</font>
+<hr>
+
+
+
+<address>
+<a href="mailto:jdbc@eng.sun.com">jdbc@eng.sun.com</a>
+or
+<a href="mailto:jdbc-business@eng.sun.com">jdbc-business@eng.sun.com</a>
+</address>
+
+<i><a href="../../../relnotes/SMICopyright.html">
+Copyright</a> &#169; 1996-1999 Sun Microsystems, Inc.   All rights reserved.</i>
+
+
+<!-- HTML generated by Suzette Pelouch on December 01, 1999 -->
+
+</body>
+</html>

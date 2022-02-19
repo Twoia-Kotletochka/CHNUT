@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 3 - Object Input Classes
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="input.doc3.html">PREV</a>
+ | <a href="input.doc5.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="2971"><i>	3.4	</i> The readObject Method
+</a></h2>
+
+<blockquote>
+<a name="4567"><!-- --></a>
+For serializable objects, the <code>readObject</code> method allows a class to control the deserialization of its own fields. Here is its signature:<p>
+<a name="1081"><!-- --></a>
+<pre>    private void readObject(ObjectInputStream stream)
+        throws IOException, ClassNotFoundException;
+</pre>
+
+
+<a name="4580"><!-- --></a>
+Each subclass of a serializable object may define its own <code>readObject</code> method. If a class does not implement the method, the default serialization provided by <code>defaultReadObject</code> will be used. When implemented, the class is only responsible for restoring its own fields, not those of its supertypes or subtypes.<p>
+<a name="4581"><!-- --></a>
+The <code>readObject</code> method of the class, if implemented, is responsible for restoring the state of the class. The values of every field of the object whether transient or not, static or not are set to the default value for the fields type. The <code>defaultReadObject</code> method should be called before reading any optional data written by the corresponding <code>writeObject</code> method. If the <code>readObject</code> method of the class attempts to read more data than is present in the optional part of the stream for this class, the stream will throw an EOFException. The responsibility for the format, structure, and versioning of the optional data lies completely with the class. The <code>@serialData</code> javadoc tag within the javadoc comment for the <code>readObject</code> method should be used to document the format and structure of the optional data.<p>
+<a name="4600"><!-- --></a>
+If the class being restored is not present in the stream being read, its fields are initialized to the appropriate default values.<p>
+<a name="5150"><!-- --></a>
+Reading an object from the <code>ObjectInputStream</code> is analogous to creating a new object. Just as a new object&#39;s constructors are invoked in the order from the superclass to the subclass, an object being read from a stream is deserialized from superclass to subclass. The <code>readObject</code> or <code>defaultReadObject</code> method is called instead of the constructor for each <code>Serializable</code> subclass during deserialization. <p>
+<a name="6012"><!-- --></a>
+One last similarity between a constructor and a <code>readObject</code> method is that both provide the opportunity to invoke a method on an object that is not fully constructed. Any overridable (neither private, static nor final) method called while an object is being constructed can potentially be overridden by a subclass. Methods called during the construction phase of an object are resolved by the actual type of the object, not the type currently being initialized by either its constructor or <code>readObject</code> method. Therefore, calling an overridable method from within a <code>readObject</code> method may result in the unintentional invocation of a subclass method before the superclass has been fully initialized.<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="input.doc3.html">PREV</a>
+ | <a href="input.doc5.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:47:59 1999 -->
+ 
+
+
+</body>
+</html>

@@ -1,0 +1,567 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+    <title>Command Line Changes</title>
+</head>
+
+<body bgcolor="white">
+
+<TABLE BORDER="0" WIDTH="100%">
+<TR>
+<TD>
+<center>
+<h1>Command Line Changes<br>between JDK<sup><font size=-1>TM</font></sup> 1.1 
+Tools and Java<sup><font size=-1>TM</font></sup> 2 SDK Tools</h1>
+</center>
+</TD>
+
+<TD ALIGN=RIGHT VALIGN=TOP>
+<font size="-1"><a href="../tools.html">SDK Tools</a></font>
+</TD>
+</TR>
+</TABLE>
+<blockquote>
+This file summarizes changes some changes to the way the Java 2 SDK's 
+tools work as compared to the tools that ship with the JDK 1.1.x software. 
+The changes described here are <em>not</em> changes between versions 
+1.2 and 1.3 of the Java 2 SDK.
+</blockquote>
+<h3>Contents</h3>
+<ul>
+
+<li><a href="#intro">Introduction</a>
+<li><a href="#java-home">Changes to <tt>java.home</tt> Property</a>
+<li><a href="#clspath">Changes to <code>CLASSPATH</code> and 
+                       <code>-classpath</code></a>
+<li><a href="#searchpaths">New Class Search Paths</a>
+<li><a href="#bootcp">New Options to Search for Boot Classes: 
+                       <code>-Xbootclasspath</code>, 
+                       <code>-bootclasspath</code></a>
+<li><a href="#oldjava"><code>oldjava</code></a>
+<li><a href="#applets">Appletviewer No Longer Uses <code>CLASSPATH</code></a>
+<li><a href="#nonstd">Standard vs. Non-standard Options</a>
+<li><a href="#srcpath">New Option to Search for Source Files: <code>-sourcepath</code></a>
+
+</ul>
+
+<a name="intro">
+<h3>Introduction</h3>
+</a>
+
+<blockquote>
+
+<p>
+This document summarizes a few important changes in command line options
+between JDK1.1 and Java 2 SDK tools.  Its target audience is those already familiar
+with the command line options of JDK1.1 tools.
+
+<p>
+Please note that every effort has been made to keep the options in the 
+Java 2 SDK tools backwards compatible with the options in JDK1.1, where possible.  The purpose
+of this document is to provide you with a quick overview of what has changed,
+and to outline the motivation behind the changes.  We hope that understanding
+our motivations will help you better use the new features.
+
+<p>
+Throughout this document we use the term "Java platform classes"
+to refer to classes that belong to the Java platform, as specified
+in the <a href="../../api/">Java API Specification</a>, 
+such as <codej>ava.lang.String</code>.  These reside in 
+<code>classes.zip</code> or <code>rt.jar</code>.  We also use
+the term "class path" to refer to the search path set by 
+<code>CLASSPATH</code> and <code>-classpath</code>. 
+
+
+</blockquote>
+
+<a name="java-home">
+<h3>Changes to the <tt>java.home</tt> Property</h3>
+<blockquote>
+In the Java 2 Platform, the value of the <tt>java.home</tt> property 
+is the directory that houses the runtime environment. For the Java 2 
+SDK, this is the <tt>jdk1.3\jre</tt> directory.  In the case of the 
+Java 2 Runtime Environment, it is the top-level directory, usually 
+<tt>C:\Program Files\JavaSoft\JRE\1.3</tt>.
+<p>
+In JDK 1.1.x software, the <tt>java.home</tt> property value referred 
+to the installation directory.
+</blockquote>
+
+
+<a name="clspath">
+<h3>Changes to <code>CLASSPATH</code> and <code>-classpath</code></h3>
+</a>
+
+<blockquote>
+
+<p>
+The class path has a default value and can be set by <code>-classpath</code> 
+or <code>CLASSPATH</code>.  In 1.1, it worked as follows:
+<ul>
+
+<li> <b>Class path default</b> - The default value of the class path was (1) the path where Java
+platform classes resided (<code>classes.zip</code> or 
+<code>rt.jar</code>), and (2) the current working directory (".", 
+read as "dot").
+
+<li> <b><code>CLASSPATH</code></B> - If the environment variable <code>CLASSPATH</code> was set, then
+the class path would (1) continue to contain <code>classes.zip</code> or
+<code>rt.jar</code> just the like default plus (2) the newly set
+value instead of the current working directory.  [See Note 1]
+
+<li> <b><code>-classpath</code></b> - If the option <code>-classpath &lt;path&gt;</code> was used, then
+<code>&lt;path&gt;</code> had to explicitly contain both (1)
+<code>classes.zip</code> or <code>rt.jar</code> <i>and</i> 
+(2) application classes.
+
+</ul>
+
+This behavior for <code>-classpath</code> was unfortunate because
+it meant users had to spell out the path to <code>classes.zip</code>:
+
+<pre>
+    C:> java -classpath C:\jdk-path\lib\classes.zip;\app\classes Application
+</pre>
+
+We say unfortunate because this is inherently error-prone; the onus is
+on the user to ensure that the <code>java</code> command and the
+<code>classes.zip</code> were from the same JDK version.  We ourselves
+have spent time debugging problems where a 1.1.4 <code>java</code> was
+trying to run 1.1.3 <code>classes.zip</code>, and this does not work
+because the native methods do not match.
+
+<p>
+The good news is that the <code>-classpath</code> option as used in 
+the Java 2 SDK tools has taken on the same meaning as the <code>CLASSPATH</code> 
+environment variable in the Java 2 SDK, so you can now conveniently omit 
+having to spell out the path to Java platform classes:
+
+<pre>
+    C:> java -classpath C:\app\classes Application
+</pre>
+
+<p>
+Some developers like to temporarily modify individual Java platform classes 
+such as <code>java\util\Vector.class</code>, for purposes such as 
+adding <code>println</code> statements to understand how the class 
+works.  In the Java 2 SDK, these users would not be able to use the <code>-classpath</code> 
+option to set the path to Java platform classes, as was possible in 1.1.  
+For such uses, the <a href="#bootcp"><code>-Xbootclasspath</code></a> 
+option must be used in the Java 2 SDK.
+
+<p>
+<b>Note 1</b> - Contrary to the bulleted statement above, we have seen
+users explicitly placing the path to <code>classes.zip</code> in their
+<code>CLASSPATH</code> environment variable, though this was not at
+all required.
+
+</blockquote>
+
+<a name="searchpaths">
+<h3>New Class Search Paths</h3>
+</a>
+
+<blockquote>
+
+<p>
+The <a href="#clspath">earlier section</a> showed that in JDK1.1,
+there was <i>one</i> search path used to find classes; its value could
+be set either through the <code>-classpath</code> option or the
+<code>CLASSPATH</code> environment variable.
+
+<p>
+In the Java 2 SDK, there are <i>three</i> search paths that are used to find
+classes:
+
+<ol>
+
+<li> The first place where <code>java</code> looks for classes is the
+<b><i>bootstrap classpath</i></b>.  The value of this path can be
+examined by calling
+<code>System.getProperty("sun.boot.class.path")</code>.  Note that the
+prefix "<code>sun.</code>" shows that, at least for now, this property
+is specific to Sun's implementation.
+
+<li> The second place where <code>java</code> looks for classes is the
+<b><i>extension directories</i></b>.  The list of directories can be
+examined by calling <code>System.getProperty("java.ext.dirs")</code>.
+
+<li> The third and last place where <code>java</code> looks for
+classes is the <b><i>application classpath</i></b>.  The value of this
+path can be examined by calling
+<code>System.getProperty("java.class.path")</code>.
+
+</ol>
+
+<p>
+For a discussion of the new "extension directories" feature 
+mentioned in item 2, refer to 
+<a href="javac.html#crosscomp-options">javac</a> and
+<a href="../../guide/extensions/index.html">The
+Extensions Framework</a> documentation.
+
+<p>
+With the Java 2 SDK tools, the argument you specify with the
+<code>-classpath</code> option is the value of the <i>application
+classpath</i>; it should contain the path to classes that constitute
+your application.  The <i>bootstrap classpath</i> contains the path to
+Java platform classes that are contained in a file named 
+<code>rt.jar</code>.  This is discussed in the next section.
+
+</blockquote>
+
+<a name="bootcp">
+<h3>New Options to Search for Boot Classes: 
+<code>-Xbootclasspath</code>, <code>-bootclasspath</code></h3>
+</a>
+
+<blockquote>
+
+<blockquote>
+NOTE - For a description of what the leading "X" means
+in an option, see <a href="#nonstd">Standard vs. Non-standard
+Options</a>.
+</blockquote>
+
+<b><code>-Xbootclasspath</code></b> - 
+As mentioned, the <i>bootstrap classpath</i> contains the path to
+Java platform classes that are contained in <code>rt.jar</code>.  
+If you need to override the location where Java platform classes 
+are found, you must use the
+<a href="java.html#nonstandard"><code>-Xbootclasspath</code></a> 
+option -- this is a big change from 1.1 where <code>-classpath</code> 
+provided this functionality.  Consider this example:
+
+<pre>
+    C:> java -Xbootclasspath:C:\my\bootclasses;C:\jre\lib\rt.jar MyApplication 
+</pre>
+
+<p>
+In this example, the <code>java</code> command searches
+the paths provided by <code>-Xbootclasspath</code> 
+to find the Java platform classes.
+It first searches the directory <code>C:\my\bootclasses</code>
+before searching through <code>rt.jar</code>.  If you wanted 
+to add debugging statements to <code>java\util\Vector.class</code>, 
+you would place the modified class file under
+<code>C:\my\bootclasses</code>.  This modified version would be 
+found first, the search would then stop and this version would 
+be loaded.
+
+<p>
+<b><code>-bootclasspath</code></b> - 
+In addition, <code>javac</code> supports a similar option
+<a href="javac.html#crosscomp-options"><code>-bootclasspath</code></a> 
+which can be used to change the platform classes you are 
+compiling against.  This is most useful if you need to
+take advantage of the bug fixes in the Java 2 SDK's javac to compile a 1.1
+application.  Please refer to that option for detailed 
+instructions on how to do this.
+
+<p>
+Here are some relevant notes for both options:
+
+  <ul>
+
+  <li><b>Avoid overriding Java platform classes</b> - 
+  The Java 2 Runtime Environment's re-distribution license does not allow replacing parts
+  of <code>rt.jar</code>.  So the <code>-Xbootclasspath</code> option
+  may <i>not</i> be used override parts of <code>rt.jar</code> when
+  you are re-distributing the Runtime Environment with an application.  When
+  re-distributing, if there is a need to place your application on the
+  bootclasspath, we recommend using the
+  <a href="#oldjava"><code>oldjava</code></a> command.  If you are not
+  using <code>oldjava</code>, then make sure that unmodified
+  <code>rt.jar</code> and (the optional) <code>i18n.jar</code>, are
+  placed first on -Xbootclasspath before your application classes.
+  For example:
+
+   <pre>
+    <font color=red># If app needs to be deployed on -Xbootclasspath, then use: </font>
+    C:> java -Xbootclasspath:C:\jre\lib\rt.jar;C:\app\classes Application
+
+    <font color=red># instead of accidentally overriding rt.jar:</font>
+    C:> java -Xbootclasspath:C:\app\classes;C:\jre\lib\rt.jar Application
+   </pre>
+
+  <a name="implsearch"></a>
+  <li><b>Our implementation of class path searching</b> - 
+  The discerning reader is bound to ask "How are all these paths
+  tied together by the implementation of <code>java</code>?"  We'll
+  resist the temptatation to say, "the answer is beyond the scope of
+  this document," but instead present a short version of the story.
+
+  <p>
+  The Java 2 Platform introduced the notion of a <i>parent</i> classloader.  A
+  well-behaved classloader in the Java 2 Platform always checks to see if its parent
+  can load the class before it uses its own mechanisms (such as paths
+  it might have been asked to look at) to locate a class. 
+
+  <p>
+  The Java runtime has three classloaders, where a 
+  parent classloader is shown above its child:
+
+<pre>
+      bootstrap classloader
+               |
+      extension classloader
+               |
+     application classloader
+</pre>
+
+  The bootstrap classloader searches for classes only on the 
+  bootclasspath and on no other path.  Likewise, the extension
+  classloader searches in the extensions loaded from extdirs,
+  and the application classloader searches only on the application
+  class path.
+
+  <p>
+  Say, you launch your application with the following command line:
+
+<pre>
+   C:> java -classpath C:\my\classes MyApplication
+</pre>
+
+  This command causes a sequence of steps, giving each classloader
+  in turn a chance to load the application classes.  First, the 
+  <code>java</code> command asks the application classloader 
+  (the one that uses the <code>-classpath</code> value) to load
+  <code>MyApplication</code>.  However, rather than trying to load 
+  this class, the application classloader asks its parent, the
+  extension classloader, to load the class, which in turn, 
+  likewise asks its parent, the bootstrap classloader, to load the
+  class. The bootstrap classloader is built into the virtual machine 
+  and has no parent; it attempts to load the class from the 
+  bootstrap classpath.  Since the bootstrap classloader will not
+  find <code>MyApplication</code> (we did not use 
+  <code>-Xbootclasspath</code> to disturb the default path),
+  it allows the extension classloader to try to load the class,
+  which also will not find the class (since we did not use
+  <code>-Djava.ext.dirs</code> options to disturb the default 
+  path). Finally, the application classloader ends up finding
+  and loading <code>C:\my\classes\MyApplication.class</code>.
+
+  <p>
+  It is such parenting that produces the order "<i>bootstrap
+  first, extensions next, applications last</i>" when searching for
+  classes.  For more information we again refer you to the 
+  <a href="../../guide/extensions/index.html">The
+  Extensions Framework</a> documentation.
+
+  </ul>
+
+</blockquote>
+
+<a name="oldjava">
+<h3><code>oldjava</code></h3>
+</a>
+
+<blockquote>
+
+<a href="java.html#oldjava">oldjava</a>
+
+</blockquote>
+
+<a name="applets">
+<h3>Appletviewer No Longer Uses <code>CLASSPATH</code></h3>
+</a>
+
+<blockquote>
+
+<p>
+In the Java 2 SDK, <code>appletviewer</code> ignores your
+<code>CLASSPATH</code> environment setting (which it did not
+ignore in 1.1).  Though this sounds like a
+drastic change, this is the semantics you really want when testing 
+your applets.
+
+<p>
+Let us consider an example that worked in JDK 1.1, but will not
+work with the Java 2 SDK.  Say you placed your <code>.html</code> file in a
+place different from your <code>.class</code> files.  In JDK 1.1, you
+could set your <code>CLASSPATH</code> at the <code>.class</code>
+files, and <code>appletviewer</code> would pick them up.
+
+<pre>
+   <font color=red># Foo.class and foo.html are in different directories.</font>
+   C:> dir \home\user\htmls \home\user\classes
+   C:\home\user\classes:
+   Foo.class
+     
+   C:\home\user\htmls:
+   foo.html
+
+   <font color=red># Foo.class is NOT in applet's codebase:</font>
+   C:> type \home\user\htmls\foo.html
+   &lt;applet code=Foo height=100 width=100>&lt;/applet>
+
+   <font color=red># Can an applet use a class outside its codebase?</font>
+   C:> set CLASSPATH=C:\home\user\classes
+
+   <font color=red># Works in 1.1.</font>
+   C:> appletviewer \home\user\htmls\foo.html
+
+   <font color=red># ClassNotFoundException with the Java 2 SDK!</font>
+   C:> appletviewer \home\user\htmls\foo.html
+</pre>
+
+<p>Why did we change what looks like reasonable behavior?  Look more
+closely.  When an applet runs in a browser which does not honor
+<code>CLASSPATH</code> the way JDK's <code>appletviewer</code> does,
+you have the same problem that you have when using the Java 2 SDK.  The classes
+referred to by an applet must be either:
+
+<ul>
+      <li>Java platform classes (such as 
+        <code>java.lang.String</code>) which
+	are present in a browser, or,
+      <li>classes that can be downloaded from the applet's
+	<code>codebase</code>.
+</ul>
+
+You cannot, and should not, expect a user of your applet to set
+their <code>CLASSPATH</code>, and even if they did, their browser
+might choose to ignore it.  Consequently, <code>appletviewer</code> 
+now does the same thing that a browser would.
+
+<p>
+One nice thing about 1.1 <code>appletviewer</code> honoring
+<code>CLASSPATH</code> was that you could grab a third party library
+(say a <code>mailx.jar</code> providing some email related
+functionality), place it on your <code>CLASSPATH</code> and your
+applet could refer to the classes in <code>mailx.jar</code>.  In order
+to get the same convenience in the Java 2 SDK, we recommend the use of 
+<a href="../../guide/extensions/index.html">The
+Extensions Framework</a>, which, unlike <code>CLASSPATH</code>, is a
+deployment solution.  (<code>CLASSPATH</code> is only a
+<i>development</i> time solution.)
+
+</blockquote>
+
+<a name="nonstd">
+<h3>Standard vs. Non-standard Options</h3>
+</a>
+
+<blockquote>
+
+<p>
+In the Java 2 SDK tools, some options are prefixed with <code>-X</code> whereas
+others are not. In 1.1, if you needed to set the startup heap size of
+the virtual machine to 10MB, you would say:
+
+<pre>
+    C:> java -ms10m Application
+</pre>
+
+<p>
+In the Java 2 SDK, you should express the same option with a
+<code>-X</code>.
+
+<pre>
+    C:> java -Xms10m Application
+</pre>
+
+<p>
+The motivation here, as you probably guessed, is that the Java 2 SDK tools
+distinguishe between options that can apply to all virtual machines,
+as opposed to options that are specific to a particular virtual
+machine's implementation.  We expect all virtual machines will allow
+setting a classpath, but we can't expect all virtual machines to
+support initial heap size.
+
+<p>
+In the long run, as more compiler and virtual machine vendors
+support the same standard options, replacing a compiler won't require
+any changes to your makefiles, or replacing a virtual machine for a
+server application you launched through a script will need no
+modifications to the script.
+
+<p>
+Note however that for backwards compatibility, the Java 2 SDK's
+<code>java</code> launcher internally translates <code>-ms10m</code>
+to <code>-Xms10m</code>, so you could still use the old
+<code>-ms10m</code> option, but we recommend that you do use the newer
+syntax.
+
+<p>
+For the current list of standard options, please type:
+
+<pre>
+    C:> java -help
+    C:> javac -help
+</pre>
+
+<p>
+For the current list of non-standard options, please type:
+
+<pre>
+    C:> java -X
+    C:> javac -X
+</pre>
+
+<p>
+A note to vendors -- this separation of command line options into
+standard and non-standard ones is orthogonal to, and bears no relation
+with, conformance requirements.  As stated earlier, we just hope that
+users' lives will be eased in the long run if standard options 
+become a de facto standard for options that makes sense.
+
+</blockquote>
+
+<a name="srcpath">
+<h3>New Option to Search for Source Files: <code>-sourcepath</code> </h3>
+</a>
+
+<blockquote>
+
+In 1.1, <code>javac</code> and <code>javadoc</code> would find both
+source files and class files in the paths specified in the
+<code>CLASSPATH</code> environment variable.  For example, suppose you
+compiled <code>foo\bar\FooBar.java</code> and the class
+<code>FooBar</code> relied on a <code>Helper</code> class, then javac
+would attempt to find the source file <code>Helper.java</code> in your
+CLASSPATH:
+
+<pre>
+    C:> dir \tmp\foo\bar\*.java
+    \tmp\foo\bar\FooBar.java   \tmp\foo\bar\Helper.java
+
+    <font color=red># Error because javac can't find Helper.class or Helper.java</font>
+    C:> javac \tmp\foo\bar\FooBar.java
+    \tmp\foo\bar\FooBar.java:3: Superclass foo.bar.Helper of ... not found.
+
+    C:> set CLASSPATH=\tmp
+
+    <font color=red># Works because javac snooped in CLASSPATH for source files</font>
+    C:> javac \tmp\foo\bar\FooBar.java
+</pre>
+         
+In the Java 2 SDK, these tools still look in <code>CLASSPATH</code> for source
+files unless the <code>-sourcepath &lt;path&gt;</code> option is 
+included -- then it looks only in <code>&lt;path&gt;</code> for 
+source files, and the <code>CLASSPATH</code> is not searched 
+for source files:
+
+<pre>
+    C:> set CLASSPATH=\tmp
+
+    <font color=red># This still works with the Java 2 SDK: </font>
+    C:> javac \tmp\foo\bar\FooBar.java
+
+    <font color=red># But it doesn't work if you use -sourcepath</font>
+    C:> javac -sourcepath . \tmp\foo\bar\FooBar.java
+    \tmp\foo\bar\FooBar.java:3: Superclass foo.bar.Helper ... not found.
+</pre>
+
+</blockquote>
+
+<br>
+
+<hr>
+<font size="-1">
+
+</font>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+</body>
+</html>

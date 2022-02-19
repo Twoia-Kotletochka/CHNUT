@@ -1,0 +1,125 @@
+====================================================================
+How to set-up a secure RMI client/server scenario using secure sockets
+from Phaos Technology:
+
+====================================================================
+
+1. Ensure that you are running JDK1.2beta4, or a later version of
+   the Java Development Kit.
+
+2. Download and install the evaluation version of the SSLava Toolkit
+   API from Phaos' website:
+
+	http://www.phaos.com/
+
+3. Make sure that the following classes are installed in a single
+   directory (eg: the example's code/server directory) on the machine
+   you plan to use to run the example RMI server and are reachable by
+   an "http://" URL:
+
+	* All classes required by the crysec and crysec.SSL packages
+	  of the SSLava Toolkit (this includes the "crysec" and "hal"
+	  class subdirectories of SSLava)
+  	* The applet class itself
+	* The RMI interface and stub classes
+
+   The server's java.rmi.server.codebase property will be set to be
+   the URL which points to this code location.
+
+   In addition, when you run the example application client from a
+   machine other than the server host, you need to make sure that the
+   application client has access to a local copy of the SSLava
+   libraries.
+
+   The example applet client is written so that the secure socket
+   factory classes are downloaded to it.  This behavior would likely
+   be necessary in a commercial deployment of RMI over SSL.  For this
+   reason, all the example classes, except the server implementation,
+   need to be installed in a location from where they can be
+   downloaded by the applet client program.
+
+4. Run the example by performing the following steps:
+
+   * Ensure that the SSLava toolkit classes are located in a directory
+     that can be reached by the server's CLASSPATH environment
+     variable.
+
+   * Compile all source (*.java) files that came with this example.
+     In order to perform this step, you will need to ensure that when
+     you run javac your CLASSPATH contains the directory indicated by
+     the URL from step 3 (this requirement will hold for running the
+     server as well).
+
+   * Ensure that the server certificate files for SSLava are located
+     in the example code/server directory; you need to copy
+     server-cert.der and ca-cert.der from the test directory of the
+     unzipped SSLava toolkit, to the server's directory.
+
+     Start the server by running the following command in the example
+     code/server directory on the http server from which clients will
+     download example classes:
+
+java  -Djava.rmi.server.codebase=
+ http://<rmiWebServerHost>/<installLocation>/code/server/
+ -Djava.security.policy=../all.policy SSLHelloImpl
+
+     "rmiWebServerHost", refers to the machine from which
+     clients will download example classes.  If you are running your
+     RMI client in an applet, "rmiWebServerHost" must also refer to
+     the machine on which you run the example RMI server.
+
+     "installLocation" indicates the URL alias that corresponds to the
+     phaosrmi directory of this example.
+
+     You will need to set the java.rmi.server.codebase property on the
+     RMI server to the URL described in step 3.  You must also ensure
+     that the directory indicated by this URL can be found in the
+     server's CLASSPATH.
+
+   * Run the client as either an applet or an application:
+
+     If your client is an applet, make sure you modify index.html so
+     that the applet codebase URL is the same as the value of the
+     java.rmi.server.codebase property on the server.
+
+     Run the applet from the example code/applet directory using the
+     command:
+
+appletviewer -J-Djava.class.path= index.html
+
+     If your client is an application, run it from the example
+     code/client directory using the command:
+
+java -Djava.security.policy=../all.policy SSLHelloClient <rmiServerHost>
+
+     Where "rmiServerHost" is the name of the machine on which the
+     SSLHelloImpl program is running.
+
+     Allow a few seconds for the applet to load completely.
+
+5. This example merely shows how to use Phaos' SSL sockets in RMI.
+   For deployment of applets, it is recommended that you sign your
+   class files so that users may trust downloaded client socket
+   factories and applet code.
+
+6. Although this example exclusively makes use of HTTP URLs, RMI is
+   capable of using file URLs to perform all of the functionality
+   used in this example.
+
+7. If you have further questions:
+
+   * Regarding how to set up and use RMI applications, please see:
+ 
+     http://java.sun.com:80/products/jdk/1.2/docs/guide/rmi/index.html      
+
+     The "Getting Started" tutorial on this page provides a complete
+     set of instructions on how to set up and configure RMI
+     applications.
+
+   * About using the Phaos SSLava toolkit API, send email to:
+ 
+     tech@phaos.com 
+
+     or visit:
+
+     http://www.phaos.com/support/support2.htm

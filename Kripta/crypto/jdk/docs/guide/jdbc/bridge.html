@@ -1,0 +1,103 @@
+<html>
+<head>
+<title>JDBC-ODBC Bridge Enhancements</title>
+</head>
+
+<BODY BGCOLOR="#FFFFFF" TEXT=#000000 LINK=#0000ff VLINK=#000077 ALINK=#ff0000>
+
+
+<table width=100%>
+<tr>
+<td width=60>
+	<img src=../../images/javalogo52x88.gif>
+</td>
+<td align=center>
+
+           <h1>JDBC<sup><font size=-1>TM</font></sup>-ODBC Bridge
+	   Enhancements</h1>
+</td>
+<td align=right valign=top>
+    <font size=-1><a href="../../index.html">Documentation Contents</a>
+    <br>
+    <a href="">JDBC</a></font>
+</td>
+</tr>
+</table>
+<p>
+The JDBC-ODBC Bridge allows Java programs to use JDBC with many existing
+ODBC drivers. The Bridge is itself a JDBC driver defined in the class
+<code>sun.jdbc.odbc.JdbcOdbcDriver</code>. The Bridge defines the JDBC
+subprotocol <code>odbc</code>.
+<h2>Status of the JDBC-ODBC Bridge</h2>
+<p>
+The JDBC-ODBC Bridge should be considered a transitional solution. Javasoft
+and Intersolv are working to make the Bridge more reliable and robust, but
+they do not consider it a supported product. In the near future,
+development of pure-Java JDBC Drivers will make the JDBC-ODBC Bridge
+unnecessary.
+<h2>Why not just use ODBC?</h2>
+<p>
+The JDBC-ODBC Bridge offers several advantages over "naked" ODBC.
+<ul>
+	<li>
+	The ODBC API is strongly oriented toward C/C++ programmers. The
+	JDBC-ODBC Bridge makes it unnecessary for the Java programmer to
+	deal with non-Java concepts.
+	<p><li>
+	The ODBC API is extremely complex and intermingles high-level
+	and low-level functions. The JDBC-ODBC Bridge allows the
+	programmer to rely on the JDBC API, which is relatively simple
+	and easy to learn.
+	<p><li>
+	The JDBC-ODBC Bridge lets a program deal with ODBC through a
+	standardized JDBC interface. That helps a program avoid being tied
+	to ODBC when a better solution comes along.
+</ul>
+<h2>Why use ODBC at all?</h2>
+<p>
+The Java programmer's ideal is "Pure Java": no native code, no
+platform-dependent features.
+But you may need to begin your development effort right away, without
+waiting for your DBMS to offer a Java-only JDBC Driver.
+Partly-native Drivers, such as the JDBC-ODBC Bridge, let you create
+programs that easily adapt to Pure Java drivers as they become available.
+<h2>What's new with the JDBC-ODBC Bridge?</h2>
+<ul>
+	<li>
+	The Bridge has been re-implemented using the Java Native Interface
+	API, for improved performance and stability.
+	<p><li>
+	A <code>jdbc:odbc:</code> connection can now have a
+	<code>charSet</code> property, to specify a Character Encoding
+	Scheme other than the client default. For possible values, see
+	the <a href=http://java.sun.com/products/jdk/1.1/intl/html/intlspec.doc7.html#20888>
+	JDK 1.1 Internationalizaton specification</a>
+	on the Javasoft Web Site.
+	<p><li>
+	The Bridge now assumes that ODBC drivers are able to handle
+	multi-threaded access. This will improve performance. If you need
+	to use multi-threading and your ODBC package does not support it,
+	your client program will have to implement locking.
+</ul>
+
+
+
+<p>
+<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<HR SIZE=3 NOSHADE>
+
+<IMG SRC="../../images/javalogo52x88.gif" ALIGN=RIGHT>
+
+<FONT SIZE=-2>
+<A HREF="../../relnotes/SMICopyright.html">Copyright &#169;</A> 1996-97
+<A HREF="http://www.sun.com/">Sun Microsystems, Inc.</A>
+All Rights Reserved.</FONT>
+
+<br><br>
+<FONT SIZE=-1>
+Please send comments to: <a href="mailto:jdbc@wombat.eng.sun.com">jdbc@wombat.eng.sun.com</a> or <a href="mailto:jdbc-odbc@wombat.eng.sun.com">jdbc-odbc@wombat.eng.sun.com</a> 
+</FONT>
+
+
+</BODY>
+</HTML>

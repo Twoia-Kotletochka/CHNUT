@@ -1,0 +1,489 @@
+<html>
+
+<head>
+
+<title>New Features in Java 2D</title>
+
+</head>
+
+<BODY BGCOLOR="#FFFFFF" TEXT=#000000 LINK=#0000ff VLINK=#000077 ALINK=#ff0000>
+
+
+
+<TABLE BORDER="0" WIDTH="100%">
+
+<TR>
+
+<TD WIDTH=60>
+
+   <IMG SRC="../../images/javalogo52x88.gif" ALT="Java" BORDER=0 WIDTH=52 HEIGHT=88>
+
+</TD>
+
+
+
+<TD>
+
+<center>
+
+           <h1>New Java 2D<font size=4><sup>TM</sup></font>
+	 Features in the 
+<br>
+	Java<font size=4><sup>TM</sup></font> 2 SDK, v1.3 </h1>
+
+</center>
+
+</TD>
+
+
+
+<TD ALIGN=RIGHT VALIGN=TOP>
+
+   <font size=-1><a href="../../index.html">Documentation Contents</a></font>
+
+</TD>
+
+</TR>
+
+</TABLE>
+
+
+<!-- Body text begins here -->
+<blockquote>
+Although the Java 2 SDK, v1.3 is an
+upgrade release, several significant features have been added to 
+the Java 2D<sup><font size=-1>TM</font></sup> API in this release,
+including:
+<p>
+<blockquote>
+<center>
+<table border=0 width=80%>
+<tr>
+<td><a href="#MM">Multiple monitor support</a></td>
+<td><a href="#PE">Palette entry validity checking</td>
+</tr>
+<tr>
+<td><a href="#PG">PNG support</td>
+<td><a href="#GT">Access to a ColorModel's transfer type</td>
+</tr>
+<tr><td><a href="#DF">Dynamic font loading</td>
+<td><a href="#IC">New ICC Profile Tags</td>
+</tr>
+<tr>
+<td><a href="#SO"><tt>BasicStroke</tt> pixel-adjustment hint</td>
+<td><a href="#TM">Improved paragraph balancing and hyphenation</td>
+</tr>
+<tr><td><a href="#QC">Equation-solving methods</td>
+<td><a href="#BB">Precise bounding box calculations</td>
+</tr>
+</table>
+</center>
+</blockquote>
+
+<HR SIZE=3 NOSHADE>
+<ul>
+<li>  <b><a name="MM">Multiple Monitor Support</b>
+<blockquote>
+	You can now render on
+	multiple screens by creating <tt>Frame</tt>, <tt>JFrame</tt>, 
+	<tt>Window</tt>, or <tt>JWindow</tt> objects with the 
+	<tt>GraphicsConfiguration</tt> of the target
+	<tt>GraphicsDevice</tt>.
+	<p>
+    	The new <tt>Frame</tt> constructor, 
+	<a href=
+	"../../api/java/awt/Frame.html#Frame(java.awt.GraphicsConfiguration)">
+	<tt>Frame(GraphicsConfiguration)</tt></a>, 
+	enables creation of a <tt>Frame</tt> object on a different 
+	screen device.
+	<p>
+	The new <tt>Window</tt> constructor, 
+	<tt><a href=
+"../../api/java/awt/Window.html#Window(java.awt.Window, java.awt.GraphicsConfiguration)">
+	Window(Window, GraphicsConfiguration)</a></tt>, 
+	constructs a new invisible window with the specified window as its
+	owner and the <tt>GraphicsConfiguration</tt> of a screen device.
+	<p>
+        The new <tt>GraphicsConfiguration</tt> 
+	<a href=
+	"../../api/java/awt/GraphicsConfiguration.html#getBounds()">
+	<tt>getBounds</tt></a> method
+	returns the bounds of the <tt>GraphicsConfiguration</tt> 
+	in device coordinates.  If you have a virtual device, then the
+	device coordinates returned from <tt>getBounds</tt> are 
+	virtual device coordinates.
+	<p>
+	Finally, the new <tt>Component</tt> <a href=
+	"../../api/java/awt/Component.html#getGraphicsConfiguration()">
+	<tt>getGraphicsConfiguration</tt></a> method 
+	returns the <tt>GraphicsConfiguration</tt> with which the 
+	<tt>Component</tt> was created.
+	<p>
+	In a virtual device configuration consisting of more than
+	one physical screen device, the <tt>GraphicsConfiguration</tt>
+	objects' coordinates are relative to the virtual coordinate
+	system.  For this reason, virtual coordinates must be used when
+	calling the <tt>setLocation</tt> method of a <tt>Frame</tt> or
+	<tt>Window</tt>.  Similarly, calling <tt>getBounds</tt>
+	of a <tt>GraphicsConfiguration</tt> in a virtual device 
+	environment returns virtual device coordinates.
+<p>
+	The following code sample creates a 
+	<tt>JFrame</tt> object for each <tt>GraphicsConfiguration</tt>
+	on each screen device in the <tt>GraphicsEnvironment</tt>.
+	It offsets the coordinates of the intended location of
+	the <tt>JFrame</tt> with the bounds of 
+	the <tt>GraphicsConfiguration</tt> to ensure that the 
+	<tt>JFrame</tt> appears on the screen of the specified
+	<tt>GraphicsConfiguration</tt>.
+	<pre>
+        GraphicsEnvironment ge = GraphicsEnvironment.
+                                 getLocalGraphicsEnvironment();
+        GraphicsDevice[] gs = ge.getScreenDevices();
+        for (int j = 0; j < gs.length; j++) { 
+            GraphicsDevice gd = gs[j];
+            GraphicsConfiguration[] gc = gd.getConfigurations();
+            for (int i=0; i < gc.length; i++) {
+                    JFrame f = new JFrame(gs[j].getDefaultConfiguration());
+                    Canvas c = new Canvas(gc[i]);
+                    Rectangle gcBounds = gc[i].getBounds();
+                    int xoffs = gcBounds.x;
+                    int yoffs = gcBounds.y;
+                    f.getContentPane().add(c);
+                    f.setSize(300, 150);
+                    f.setLocation((i*50)+xoffs, (i*60)+yoffs);
+                    f.show();
+	    }
+	}
+	</pre>
+	If the bounds of a <tt>GraphicsConfiguration</tt> is not
+	taken into account in this sample, a <tt>JFrame</tt> 
+	would appear at location (i*50, i*60) on the primary screen, 
+	which might be different than the screen of the specified 
+	<tt>GraphicsConfiguration</tt>.
+	<p>
+	For more information on how the Java 2D API supports
+	multi-screen environments, see <a href="spec/j2d-awt.fm6.html">
+	Rendering in a Multi-Screen Environment</a> in the 
+	<a href="spec/j2d-title.fm.html">Programmer's Guide to the 
+	Java 2D API</a>.
+</blockquote>
+
+<li>  <b><a name="PG">PNG Support</b>
+
+<blockquote>
+<P>
+	The PNG (Portable Network Graphics) format is a flexible,
+	extensible, non-proprietary file format
+	that represents lossless and portable storage of raster images.  
+	PNG supports grayscale, indexed-color, and truecolor images and an
+	optional alpha channel.
+<p>	PNG images are loaded and drawn the same way as GIF and JPEG
+	images in the Java 2D<sup><font size="-2">TM</font></sup> API.
+</blockquote>
+
+<li> <b><a name="DF">Dynamic font loading</b>
+<blockquote>
+	The new method
+        <a href=
+	"../../api/java/awt/Font.html#createFont(int, java.io.InputStream)">
+        <tt>Font.createFont(int, InputStream)</tt></a> provides
+        the ability to add fonts to the 
+	Java<font size="-2"><sup>TM</sup></font> 2 Virtual Machine<b>*</b> 
+	(JVM)
+	at runtime.  This font is not persistent upon termination of the
+	JVM and is only available to the creator of the <tt>Font</tt>.  At
+	this time, only TrueType<sup><font size="-2">TM</font></sup> fonts
+	can be created at runtime.
+<p>
+	The following code sample illustrates how to dynamically load 
+	the TrueType font Arial from a file:
+<p>
+	<pre>
+	File file = new File("Arial.ttf");
+	FileInputStream fis = new FileInputStream(file);
+	Font font = Font.createFont(Font.TRUETYPE_FONT, fis);	    
+	</pre>
+	Similarly, to load the font from a URL:
+	<pre>
+	URL url = new URL("Arial.ttf");
+	InputStream is = url.openStream();
+	Font font = Font.createFont(Font.TRUETYPE_FONT, is);
+	</pre>
+</blockquote>
+
+<li> <b><a name="SO"><tt>BasicStroke</tt> pixel-adjustment hint</b>
+<blockquote>
+    In some releases of the Java<sup><font size="-2">TM</font></sup> 2
+    SDK, v 1.2, the <tt>BasicStroke</tt> object automatically 
+    translated any lines drawn with it by (0.5,&nbsp;0.5) in user 
+    space coordinates.  This translation was performed so that the
+    line would be centered on the pixels and
+    exactly cover whole pixels.  By completely covering whole pixels,
+    the line would look the same whether or not antialiasing was
+    applied.  The translation bias also ensured the output to a screen
+    and a printer was consistent. 
+    <p>
+    Unfortunately, the translation bias produced unexpected results in 
+    some cases.  For example, when the coordinate system was scaled up
+    significantly, a stroked line that enclosed a filled shape
+    would not be exactly centered on the edge of the shape, as 
+    you might expect. 
+    <p>
+    Although this feature was included in some beta releases of the
+    Java 2 SDK, v 1.2, it was not implemented in the FCS release.
+<p>
+    In the Beta release of the Java 2 SDK, v1.3, three new
+    <tt>BasicStroke</tt> constructors allowed programmers to
+    specify the translation bias.  These constructors have 
+    since been removed because of a backwards compatibility problem.
+<p>
+    For the FCS release of the Java 2 SDK, v1.3, these constructors are
+    replaced with a set of hints in the <tt>RenderingHints</tt> class that
+    are used to perform stroke normalization:    
+<p>
+    The <a href=
+    "../../api/java/awt/RenderingHints.html#KEY_STROKE_CONTROL">
+    KEY_STROKE_CONTROL</a> hint key and these hint values:
+    <br>
+    <a href=
+    "../../api/java/awt/RenderingHints.html#VALUE_STROKE_NORMALIZE">
+    VALUE_STROKE_NORMALIZE</a>
+    <br>
+    <a href=
+    "../../api/java/awt/RenderingHints.html#VALUE_STROKE_DEFAULT">
+    VALUE_STROKE_DEFAULT</a>
+    <br>
+    <a href=
+    "../../api/java/awt/RenderingHints.html#VALUE_STROKE_PURE">
+    VALUE_STROKE_PURE</a>
+<p>
+    The <tt>VALUE_STROKE_NORMALIZE</tt> hint indicates that 
+    normalization is performed.  Normalization improves the
+    consistency of the appearance of a stroke whether or not antialiasing
+    is applied to it and wherever the stoke is rendered on the pixel grid.
+<p>
+    The <tt>VALUE_STROKE_PURE</tt> hint indicates that no normalization
+    is performed.  Use this hint when you prefer that the rendering of
+    your geometry is accurate rather than visually consistent.
+<p>
+    Use the <tt>VALUE_STROKE_DEFAULT</tt> hint if you have no preference
+    whether or not a stroke is normalized.
+<p>
+    To normalize a stroke for consistency, call the <a href=
+"../../api/java/awt/Graphics2D.html#setRenderingHint(java.awt.RenderingHints.Key, java.lang.Object)">
+    setRenderingHint(Key, Object)</a> method of the 
+    <tt>Graphics2D</tt> class with the <tt>KEY_STROKE_CONTROL</tt>
+    hint key and the <tt>VALUE_STROKE_NORMALIZE</tt> hint value:
+<pre>
+	Graphics2D g2 = (Graphics2D) g;
+	g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,
+		RenderingHints.VALUE_STROKE_NORMALIZE);
+</pre>
+    See the Java 2D-Interest list posting,  
+    <a href=
+    "http://archives.java.sun.com/cgi-bin/wa?A2=ind9910&L=java2d-interest&D=0&m=2477&P=6110">
+    Basic Stroke offset and change of plans</a>, for more information
+    about this new API and why it has replaced the <tt>BasicStroke</tt>
+    constructors added with the Beta release of the Java 2 SDK, v1.3.
+</blockquote>
+
+<li><b><a name="PE">Palette Entry Validity Checking</b>
+<blockquote>
+
+	When you create an off-screen image for an 8-bit display on
+	X Windows, the palette of available colors contained in the
+	returned <tt>IndexColorModel</tt> object could have 
+	invalid color entries.  The invalid entries are
+	filled with transparent black.  Before the Java 2 SDK, v1.3, there
+	was no way to determine which entries in the
+	palette were valid.  Two new methods and one new constructor 
+	enable you to determine the validity of the indices in the lookup
+	table:
+	<p>
+	<ul>
+	<li>
+	<tt><a href=
+	"../../api/java/awt/image/IndexColorModel.html#IndexColorModel(int, int, int[], int, int, java.math.BigInteger)">
+	IndexColorModel(int, int, int[], int, int, BigInteger)</a></tt> 
+	is a constructor that allows you to
+	specify the validity of each pixel in the <tt>cmap</tt> array.
+	<li>
+	<tt><a href=
+	"../../api/java/awt/image/IndexColorModel.html#isValid(int)">
+	isValid(int pixel)</a></tt> determines the validity of a 
+	single pixel.
+	<li>
+        <tt><a href=
+        "../../api/java/awt/image/IndexColorModel.html#getValidPixels()">
+        getValidPixels</a></tt> returns a <tt>BigInteger</tt>
+	indicating the valid and invalid pixels in the colormap.
+	</ul>
+</blockquote>
+
+<li><b><a name="GT">Access to a ColorModel's Transfer Type</b>
+<blockquote>
+	The new <tt>ColorModel</tt> 
+	<tt><a href
+	="../../api/java/awt/image/ColorModel.html#getTransferType()"> 
+	getTransferType</a></tt> method allows you to retrieve the 
+	<tt>transferType</tt> of the current <tt>ColorModel</tt>.  The
+        <tt>transferType</tt> is the data type of the array that is used
+	to represent pixel values.
+	Since <tt>transferType</tt> is a protected field, you
+	need to get the <tt>transferType</tt> of the current 
+	<tt>ColorModel</tt> if you want to create a new
+	<tt>ColorModel</tt> object identical to the current one 
+	except for a few parameters. 
+</blockquote>
+
+<li> <b><a name="IC">New ICC Profile tags</b>
+<blockquote>
+	The <tt>ICC_Profile</tt> class has three new profile
+	tags that bring the Java 2D API into compliance with the latest
+	<a href="http://www.color.org">International Color Consortium</a>
+	profile specification, ICC.1:1998-09, and addendum,
+	ICC.1A:1999-04:
+	<p>
+	<ul>
+	<li>
+	<a href=
+	"../../api/java/awt/color/ICC_Profile.html#icSigDeviceSettingsTag"> 
+	<tt>icSigDeviceSettingsTag</tt></a> 
+	<li>
+	<a href=
+	"../../api/java/awt/color/ICC_Profile.html#icSigOutputResponseTag">
+	<tt>icSigOutputResponseTag</tt></a> 
+	<li>
+	<a href=
+        "../../api/java/awt/color/ICC_Profile.html#icSigChromaticityTag">
+	<tt>icSigChromaticityTag</tt></a>
+	</ul>
+
+</blockquote>
+
+<li><b><a name="TM">Improved paragraph balancing and hyphenation</b>
+<blockquote>
+	The <a href="../../api/java/awt/font/TextMeasurer.html">
+	<tt>TextMeasurer</tt></a> class enables more precise control over 
+	line breaking than the <tt>LineBreakMeasurer</tt> class.
+	With <tt>TextMeasurer</tt>, you can determine where to break a
+	line of text and perform paragraph balancing and hyphenation.
+</blockquote>
+
+<li>  <b><a name="QC">Equation-solving methods</b>
+<blockquote>
+	Two new methods have been added to the Java 2D API that solve
+	algebraic equations given an array containing the
+	coefficients and store the results of the solution into a 
+	separate array.  
+<p>
+	In the Java<sup>TM</sup> 2 SDK, version
+	1.2.2, there are only methods that return the results of
+	these equations in the same array that contained the
+	coefficients.  The new methods preserve the coefficients 
+	array by storing the results in a separate array.
+<p>
+	The 
+	<a href=
+	"../../api/java/awt/geom/QuadCurve2D.html#solveQuadratic(double[], double[])"> 
+	<tt>solveQuadratic(double[], double[])</tt></a> method of 
+	<tt>QuadCurve2D</tt>
+	solves quadratic equations.  
+<p>
+	The <a href=
+	"../../api/java/awt/geom/CubicCurve2D.html#solveCubic(double[], double[])">
+	<tt>solveCubic(double[], double[])</tt></a> method of 
+	<tt>CubicCurve2D</tt> solves cubic equations.
+</blockquote>
+
+<li><b><a name="BB">Precise bounding box calculations</b>
+<blockquote>
+	New implementation has been added to the 
+	<a href=
+	"../../api/java/awt/geom/Area.html#getBounds()">
+	<tt>getBounds</tt></a>
+	and 
+	<a href=
+	"../../api/java/awt/geom/Area.html#getBounds2D()">
+	<tt>getBounds2D</tt></a>
+	methods of the <tt>Area</tt> class
+	that calculates a tighter bounding box of a shape.
+<p>
+	The bounding box returned from these methods in the
+	Java 2 SDK, version 1.2.2 is a looser bounding box
+	because the control points are taken into account
+	when the bounds of the geometry is calculated.  The
+	new <tt>getBounds</tt> and <tt>getBounds2D</tt> methods
+	do not factor in the control points to the bounds
+	calculation.
+</blockquote>
+</ul>
+<p>
+</blockquote>
+<br>
+<P>
+<FONT SIZE="-1"><B>*As used on this web site, the terms "Java Virtual
+Machine"
+or "JVM" mean a virtual machine for the Java platform.</B></FONT>
+<P>
+
+
+<!-- Body text ends here -->
+
+<!-- ============================================================== -->
+
+<HR SIZE=3 NOSHADE>
+
+
+
+<TABLE BORDER="0" WIDTH=100%>
+
+<TR VALIGN=TOP>
+
+
+
+<TD>
+
+<P><FONT SIZE="-2">
+
+   <A HREF="../../relnotes/SMICopyright.html">Copyright &#169;</A> 1995-99
+
+   <A HREF="http://www.sun.com/">Sun Microsystems, Inc.</A>
+
+    All Rights Reserved.</FONT></P>
+
+   <FONT SIZE="-1">
+
+   Please send comments to: <a href="mailto:java2d-comments@sun.com">java2d-comments@sun.com</a> 
+
+   </FONT>
+
+</TD>
+
+
+
+<TD ALIGN=RIGHT>
+
+   <IMG SRC="../../images/sunlogo64x30.gif" ALT=" Sun Microsystems, Inc " BORDER=0 WIDTH=64 HEIGHT=30>
+
+   <BR>
+
+   <FONT SIZE="+1">
+
+   <i>Java Software</i>
+
+   </FONT>
+
+</TD>
+
+
+
+</TR>
+
+</TABLE>
+
+</BODY>
+
+</HTML>
+

@@ -1,0 +1,182 @@
+<HTML>
+<HEAD>
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (X11; I; SunOS 5.6 sun4u) [Netscape]">
+   <TITLE>Compiling and Running the HelloWorld Example</TITLE>
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<CENTER>
+<H1>
+<FONT SIZE=+3>Compiling and Running the HelloWorld Example</FONT></H1></CENTER>
+
+<HR>
+
+<P>This document will show you how to <A HREF="#1">compile</A> and <A HREF="#2">run</A>
+a version of the <A HREF="rmisocketfactory.doc.html#4">"Hello World"</A>
+example that was modified to install and use a custom RMI socket factory.
+<H2>
+
+<HR><A NAME="1"></A>Compiling the Example</H2>
+
+<BLOCKQUOTE><p>The first step is to create a directory to hold the source
+files, and to download the source files.
+If you haven't already completed this step, then please do so now.
+
+<P>For all of the source code used in this tutorial, you may choose from the following formats:
+<UL>
+    <LI><A HREF="archives/sockets.zip">sockets.zip</A>
+    <LI><A HREF="archives/sockets.tar">sockets.tar</A>
+    <LI><A HREF="archives/sockets.tar.Z">sockets.tar.Z</A>
+</UL>
+
+<p>The
+directory that you create and download the source files into will be referred
+to as the SOURCE_DIRECTORY. So, if on your machine, you downloaded the
+source files into a directory named "test", then when following these instructions,
+you should substitute the word "test" wherever you see a reference to the
+"SOURCE_DIRECTORY".
+<OL>
+<LI>
+Create your SOURCE_DIRECTORY</LI>
+
+<LI>
+Download the source code into your SOURCE_DIRECTORY</LI>
+
+<LI>
+Change your directory to the SOURCE_DIRECTORY</LI>
+
+<LI>
+Extract the tarfile you downloaded</LI>
+
+<LI>
+Compile all the source files as follows:</LI>
+
+
+<P><code>javac -d . *.java</code>
+
+<P>Because the files from this example all have the package name <code>examples.rmisocfac</code>,
+the results of the above command are:
+<UL>
+<LI>
+A directory named <code>examples</code>, created in the SOURCE_DIRECTORY</LI>
+
+<LI>
+A directory named <code>rmisocfac</code>, created in the directory <code>examples</code></LI>
+
+<LI>
+All the compiled .class files, placed in the directory <code>rmisocfac</code></LI>
+</UL>
+</OL>
+
+<LI>
+After compiling the source files, use the RMI compiler, <code>rmic</code>,
+to produce stub and skeleton code for the remote object implementation
+server, <code>HelloImpl</code>.</LI>
+
+
+<P><code>rmic</code> must be invoked with the <I>fully-qualified package name</I>
+of the implementation class so in this example, the fully-qualified package
+name is <code>examples.rmisocfac.HelloImpl</code>. If you've followed the steps
+up until now, you should be sitting in your SOURCE_DIRECTORY, so to invoke
+<code>rmic</code>, type:
+
+<P><code>rmic -d . examples.rmisocfac.HelloImpl</code>
+
+<P>When this command completes, the stub and skeleton should be located
+in the directory with the rest of the .class files.
+
+<P>On Microsoft Windows platforms that directory would be,  <code>C:\SOURCE_DIRECTORY\examples\rmisocfac</code>
+
+<P>In the Solaris<SUP><FONT SIZE=-2>TM</FONT></SUP> operating environment, that directory would be, <code>~/SOURCE_DIRECTORY/examples/rmisocfac</code>
+
+<P>After invoking <code>rmic</code>, the .class files for the stub and skeleton,
+<code>HelloImpl_Stub.class</code> and <code>HelloImpl_Skel.class</code> will be
+located in <code>~/SOURCE_DIRECTORY/examples/rmisocfac</code>.
+<BR>&nbsp;</BLOCKQUOTE>
+<A NAME="2"></A>
+<H2>
+
+<HR>Running the Example</H2>
+
+<BLOCKQUOTE>In this tutorial, the example will be run in three separate
+windows, or shells; one each for the <code>rmiregistry</code>, the client,
+and the server.
+<OL>
+<LI>
+In each window, change to the SOURCE_DIRECTORY (assuming the package directory,
+<code>examples/rmisocfac</code> is a subdirectory of the SOURCE_DIRECTORY).</LI>
+
+<BR>&nbsp;
+<LI>
+Next, you need to make sure that the Java<SUP><FONT
+SIZE=-2>TM</FONT></SUP> 2  platform runtime knows where to find the
+executable files. To accomplish this, you'll need to set your
+<code>CLASSPATH</code> to include the SOURCE_DIRECTORY in all three
+windows.</LI>
+
+<BR>&nbsp;</OL>
+Start the registry, then the server and then the client.
+<OL>
+<LI>
+To start the <code>rmiregistry</code>, choose one of the three windows as the
+registry window, and type:</LI>
+
+
+<P><code>rmiregistry </code>
+
+<P><A NAME="registryNote"></A><B>Note: </B><I>Before you start the
+</I><code>rmiregistry</code><I>, you must make sure that the shell or
+window in which you will run the registry either has no CLASSPATH set
+or has a CLASSPATH that does not include the path to any classes that
+you want downloaded to your client, including the stubs for your remote
+object implementation classes.</I>
+
+<P><I>If you start the </I><code>rmiregistry</code><I>, and it
+<b>can</b> find your stub classes in its CLASSPATH, it will ignore the
+server's </I><code>java.rmi.server.codebase</code><I> property, and as
+a result, your client(s) will not be able to download the stub code for
+your remote object. For an explanation of how code downloading works in 
+RMI, please take a look at the tutorial on <a href="codebase.html">Dynamic code downloading using RMI</a>.</I>
+<p>
+<LI>
+To start the server, choose a window to be the server window. In that window,
+type:</LI>
+
+
+<P><code>java -Djava.security.policy=/SOURCE_DIRECTORY/policy -Djava.rmi.server.codebase=file:/SOURCE_DIRECTORY/
+examples.rmisocfac.HelloImpl</code>
+
+<P>You will know that the server started successfully when you see the
+message, "HelloServer Bound in registry." If you encounter errors
+starting the server, the likely problems will either be the CLASSPATH
+of the rmiregistry or that the <code>java.rmi.server.codebase</code>
+property was improperly set.
+
+ 
+<BR>&nbsp;
+<LI>
+To start the client, in the third window, type:</LI>
+
+
+<P><code>java -Djava.security.policy=/SOURCE_DIRECTORY/policy examples.rmisocfac.HelloClient</code>
+
+<P>You will know that the <code>HelloClient</code> program completed
+successfully when the message "Hello World!" is printed to in that
+window.&nbsp;
+
+</OL>
+</BLOCKQUOTE>
+<!-- Body text ends here --><!-- ============================================================== -->
+<HR SIZE=3 NOSHADE>
+<TABLE BORDER=0 WIDTH="100%" >
+<TR VALIGN=TOP>
+<TD><FONT SIZE=-2><A HREF="../../relnotes/SMICopyright.html">Copyright &copy;</A>
+1999 <A HREF="http://www.sun.com/">Sun Microsystems, Inc.</A> All Rights
+Reserved.</FONT>&nbsp;
+<BR><FONT SIZE=-1>Please send comments to: <A HREF="mailto:rmi-comments@java.sun.com">rmi-comments@java.sun.com</A>&nbsp;</FONT></TD>
+
+<TD ALIGN=RIGHT><IMG SRC="../../images/sunlogo64x30.gif" ALT="Sun" BORDER=0 HEIGHT=30 WIDTH=64>&nbsp;
+</TR>
+</TABLE>
+</BODY>
+</HTML>

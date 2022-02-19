@@ -1,0 +1,154 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 1 - System Architecture
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="serial-arch.doc10.html">PREV</a>
+ | <a href="serial-arch.doc12.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="4333"><i>	1.11	</i> The Externalizable Interface
+</a></h2>
+
+<blockquote>
+<a name="4334"><!-- --></a>
+For Externalizable objects, only the identity of the class of the object is saved by the container; the class must save and restore the contents. The <code>Externalizable</code> interface is defined as follows:<p>
+<a name="4465"><!-- --></a>
+<pre>package java.io;
+
+public interface Externalizable extends Serializable
+{
+    public void writeExternal(ObjectOutput out)
+        throws IOException;
+
+    public void readExternal(ObjectInput in)
+        throws IOException, java.lang.ClassNotFoundException;
+}
+</pre>
+
+
+<a name="3920"><!-- --></a>
+The class of an Externalizable object must do the following:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="3928"><!-- --></a>
+Implement the <code>java.io.Externalizable</code> interface
+</li>
+<li>
+<a name="3933"><!-- --></a>
+Implement a <code>writeExternal</code> method to save the state of the object
+</li>
+</ul>
+</blockquote>
+<dl>
+<dd><a name="7082"><!-- --></a>
+(It must explicitly coordinate with its supertype to save its state.)
+<p>
+</dl>
+
+<blockquote>
+<ul><li>
+<a name="3936"><!-- --></a>
+Implement a <code>readExternal</code> method to read the data written by the <code>writeExternal</code> method from the stream and restore the state of the object
+</li>
+</ul>
+</blockquote>
+<dl>
+<dd><a name="7083"><!-- --></a>
+(It must explicitly coordinate with the supertype to save its state.)
+<p>
+</dl>
+
+<blockquote>
+<ul><li>
+<a name="3934"><!-- --></a>
+Have the <code>writeExternal</code> and <code>readExternal</code> methods be solely responsible for the format, if an externally defined format is written
+</li>
+</ul>
+</blockquote>
+
+<blockquote>
+<blockquote><hr noshade size="1">
+<b><a name="6336">Note - </a></b>The <code>writeExternal</code> and <code>readExternal</code> methods are public and raise the risk that a client may be able to write or read information in the object other than by using its methods and fields. These methods must be used only when the information held by the object is not sensitive or when exposing it does not present a security risk. 
+<hr noshade size="1">
+</blockquote>
+</blockquote>
+
+<blockquote>
+<ul><li>
+<a name="7141"><!-- --></a>
+Have a public no-arg constructor
+</li>
+</ul>
+</blockquote>
+
+<blockquote>
+<blockquote><hr noshade size="1">
+<b><a name="7146">Note - </a></b>Inner classes do not have no-arg constructors, since all inner class constructors implicitly take the enclosing instance as a prepended parameter. Consequently the <code>Externalizable</code> interface mechanism cannot be used for inner classes and they should implement the <code>Serializable</code> interface, if they need to be serialized. 
+<hr noshade size="1">
+</blockquote>
+</blockquote>
+<blockquote>
+<a name="7139"><!-- --></a>
+An Externalizable class can optionally define the following methods:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="6385"><!-- --></a>
+A <code>writeReplace</code> method to allow a class to nominate a replacement object to be written to the stream
+</li>
+</ul>
+</blockquote>
+<dl>
+<dd><a name="7079"><!-- --></a>
+(See <a href="output.doc5.html#5324">Section&#160;2.5, &#34;The writeReplace Method</a>&#34; for additional information.)
+<p>
+</dl>
+
+<blockquote>
+<ul><li>
+<a name="6338"><!-- --></a>
+A <code>readResolve</code> method to allow a class to designate a replacement object for the object just read from the stream
+</li>
+</ul>
+</blockquote>
+<dl>
+<dd><a name="7080"><!-- --></a>
+(See <a href="input.doc6.html#5903">Section&#160;3.6, &#34;The readResolve Method</a>&#34; for additional information.)
+<p>
+</dl>
+
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="serial-arch.doc10.html">PREV</a>
+ | <a href="serial-arch.doc12.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:47:50 1999 -->
+ 
+
+
+</body>
+</html>

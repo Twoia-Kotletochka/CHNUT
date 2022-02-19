@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API: 4 - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-fonts.fm1.html">PREV</a>
+ | <a href="j2d-fonts.fm3.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="62220"><i>4.2	</i> Font Concepts
+</a></h2>
+
+<blockquote>
+<a name="72771"><!-- --></a>
+The <kbd>Font</kbd> class has been enhanced to support the specification of detailed font information and enable the use of sophisticated typographic features.<p>
+<a name="61786"><!-- --></a>
+A <kbd>Font</kbd> object represents an instance of a font face from the collection of font faces available on the system. Examples of common font faces include <kbd>Helvetica Bold</kbd> and <kbd>Courier Bold Italic</kbd>.<p>
+<a name="68534"><!-- --></a>
+Three names are associated with a <kbd>Font</kbd>&#45;&#45;its logical name, family name, and font face name:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="68535"><!-- --></a>
+A <kbd>Font</kbd> object&#39;s<em> logical name</em> is a name mapped onto one of the specific fonts available on the platform. The logical font name is the name used to specify a <kbd>Font</kbd> in JDK 1.1 and earlier releases. When specifying a <kbd>Font </kbd>in Java<sup>TM</sup> 2 SDK, you should use the <em>font face name</em> instead of the logical name.You can get the logical name from the <kbd>Font</kbd> by calling <kbd>getName</kbd>. To get a list of the logical names that are mapped onto the specific fonts available on a platform, call <kbd>java.awt.Toolkit.getFontList</kbd>. 
+</li>
+<li>
+<a name="68533"><!-- --></a>
+A <kbd>Font</kbd> object&#39;s <em>family name</em> is the name of the font family that determines the typographic design across several faces, such as Helvetica. You retrieve the family name through the <kbd>getFamily</kbd> method. 
+</li>
+<li>
+<a name="68536"><!-- --></a>
+A <kbd>Font</kbd> objects&#39; <em>font face name</em> refers to an actual font installed on the system. This is the name you should use when specifying a font in Java 2 SDK. It&#39;s often referred to as just the <em>font name</em>. You can retrieve the font name by calling <kbd>getFontName</kbd>. To determine which font faces are available on the system, you can call <kbd>GraphicsEnvironment.getAllFonts</kbd>. 
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="73181"><!-- --></a>
+You can access information about a<kbd> Font</kbd> through the <kbd>getAttributes</kbd> method. A <kbd>Font</kbd>&#39;s attributes include its name, size, transform, and font features such as weight and posture. <p>
+<a name="73239"><!-- --></a>
+A <kbd>LineMetrics</kbd> object encapsulates the measurement information associated with a <kbd>Font</kbd>, such as its ascent, descent, and leading:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="73240"><!-- --></a>
+A<em>scent</em> is the distance from the baseline to the ascender line. This distance represents the typical height of capital letters, but some characters might extend above the ascender line.
+</li>
+<li>
+<a name="69526"><!-- --></a>
+<em>Descent</em> is the distance from the baseline to the descender line. The lowest point of most characters will fall within the descent, but some characters might extend below the descender line.
+</li>
+<li>
+<a name="69531"><!-- --></a>
+<em>Leading</em> is the recommended distance from the bottom of the descender line to the top of the next line.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="69518"><!-- --></a>
+<p><center><img src="j2d-fonts.fm.anc5.gif"></center><p>
+</blockquote>
+<blockquote><p>
+<a name="69504"><!-- --></a>
+<b>Figure 4-1	</b> Line Metrics
+
+</p>
+</blockquote><blockquote>
+<a name="73260"><!-- --></a>
+This information is used to properly position characters along a line, and to position lines relative to one another. You can access these line metrics through the <kbd>getAscent</kbd>, <kbd>getDescent</kbd>, and <kbd>getLeading</kbd> methods. You can also access information about a <kbd>Font</kbd>&#39;s height, baseline, and underline and strikethrough characteristics through <kbd>LineMetrics</kbd>.<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-fonts.fm1.html">PREV</a>
+ | <a href="j2d-fonts.fm3.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Mon Nov 22 09:37:08 1999 -->
+ 
+
+
+</body>
+</html>

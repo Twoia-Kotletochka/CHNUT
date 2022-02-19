@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 3 - Object Input Classes
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="input.doc1.html">PREV</a>
+ | <a href="input.doc3.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="4936"><i>	3.2	</i> The ObjectInputStream.GetField Class
+</a></h2>
+
+<blockquote>
+<a name="5058"><!-- --></a>
+The class <code>ObjectInputStream.GetField</code> provides the API for getting the values of serializable fields. The protocol of the stream is the same as used by <code>defaultReadObject.</code> Using <code>readFields</code> to access the serializable fields does not change the format of the stream. It only provides an alternate API to access the values which does not require the class to have the corresponding non-transient and non-static fields for each named serializable field. The serializable fields are those declared using <code>serialPersistentFields</code> or if it is not declared the non-transient and non-static fields of the object. When the stream is read the available serializable fields are those written to the stream when the object was serialized. If the class that wrote the stream is a different version not all fields will correspond to the serializable fields of the current class. The available fields can be retrieved from the <code>ObjectStreamClass</code> of the <code>GetField</code> object.<p>
+<a name="5029"><!-- --></a>
+The <code>getObjectStreamClass</code> method returns an <code>ObjectStreamClass</code> object representing the class in the stream. It contains the list of serializable fields.<p>
+<a name="4941"><!-- --></a>
+The <code>defaulted</code> method returns true if the field is not present in the stream. An IllegalArgumentException is thrown if the requested field is not a serializable field of the current class.<p>
+<a name="4942"><!-- --></a>
+Each <code>get</code> method returns the specified serializable field from the stream. I/O exceptions will be thrown if the underlying stream throws an exception. An IllegalArgumentException is thrown if the name or type does not match the name and type of an field serializable field of the current class. The default value is returned if the stream does not contain an explicit value for the field.<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="input.doc1.html">PREV</a>
+ | <a href="input.doc3.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:47:59 1999 -->
+ 
+
+
+</body>
+</html>

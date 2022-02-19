@@ -1,0 +1,78 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Remote Method Invocation: 9 - Garbage Collector Interfaces
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="rmiTOC.html">CONTENTS</a> | <a href="rmi-dgc4.html">PREV</a>
+ | <a href="rmi-dgc6.html">NEXT</a> 
+<!-- /font --></td><td align=right><i>Java Remote Method Invocation</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="5112"><i>	9.4	</i> The <code>UID</code> Class
+</a></h2>
+
+<blockquote>
+<a name="5102"><!-- --></a>
+<blockquote>
+<a name="6759"><!-- --></a>
+The class <code>UID</code> is an abstraction for creating identifiers that are unique with respect to the host on which it is generated. A <code>UID</code> is contained in an <code>ObjID</code> as an address space identifier. A <code>UID</code> consists of a number that is unique on the host (an <code>int</code>), a time (a <code>long</code>), and a count (a <code>short</code>).<p>
+</blockquote><blockquote><pre>package java.rmi.server;
+
+public final class UID implements java.io.Serializable {
+
+    public UID();
+    public UID(short num); 
+
+    public int hashCode();
+    public boolean equals(Object obj);
+    public String toString();
+    public void write(DataOutput out) 
+        throws java.io.IOException;
+    public static UID read(DataInput in) 
+        throws java.io.IOException;
+}
+</pre></blockquote><blockquote>
+<a name="6761"><!-- --></a>
+The first form of the constructor creates a pure identifier that is unique with respect to the host on which it is generated. This <code>UID</code> is unique under the following conditions: a) the machine takes more than one second to reboot, and b) the machine's clock is never set backward. In order to construct a <code>UID</code> that is globally unique, simply pair a <code>UID</code> with an <code>InetAddress</code>.<p>
+<a name="6762"><!-- --></a>
+The second form of the constructor creates a <em>well-known</em> <code>UID</code>. There are 2<sup>16 -1</sup> such possible well-known IDs. An ID generated via this constructor will not clash with any ID generated via the default <code>UID</code> constructor which generates a genuinely unique identifier with respect to this host.<p>
+<a name="6763"><!-- --></a>
+The methods <code>hashCode</code>, <code>equals</code>, and <code>toString</code> are defined for <code>UIDs</code>. Two <code>UIDs</code> are considered equal if they have the same contents.<p>
+<a name="6764"><!-- --></a>
+The method <code>write</code> writes the <code>UID</code> to the output stream.<p>
+<a name="6765"><!-- --></a>
+The method <code>read</code> constructs a <code>UID</code> whose contents is read from the specified input stream. <p>
+</blockquote>
+</ul>
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="rmiTOC.html">CONTENTS</a> | <a href="rmi-dgc4.html">PREV</a>
+ | <a href="rmi-dgc6.html">NEXT</a>
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF=http://java.sun.com/products/jdk/1.3/docs/relnotes/SMICopyright.html>Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Susan Snyder -->
+<!-- Last updated: Wednesday November 10 04 11:11:27 1999 -->
+ 
+
+
+</body>
+</html>

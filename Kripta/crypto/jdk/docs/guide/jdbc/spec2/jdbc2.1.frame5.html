@@ -1,0 +1,603 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title></title>
+</head>
+<body bgcolor=#ffffff>
+
+<table width=100%><tr>
+<td><font size=-1>
+<a href="jdbc2.1.frame.html">Contents</a>  | <a href="jdbc2.1.frame4.html">Prev</a>  | <a href="jdbc2.1.frame6.html">Next</a>
+</font></td><td align=right><i>JDBC<sup><font size=-2>TM</font></sup> Guide: Getting Started</i></td>
+</tr></table>
+<hr>
+<br>
+ 
+
+<a name="287242"></a>
+<h2>	5	 Result Set Enhancements </h2>
+
+<a name="300864"></a>
+This chapter discusses the new functionality that has been added to result sets. The goal 
+of the enhancements is to add two new basic capabilities to result sets: scrolling and updat
+ability. Several methods have also been added to enable a JDBC driver to deliver improved
+performance when processing results. A variety of examples are included to 
+illustrate the new features. 
+<p>
+
+<a name="300869"></a>
+<h3>5.1 	  &nbsp; &nbsp; Scrolling</h3>
+<a name="287374"></a>
+A result set created by executing a statement may support the ability to move backward 
+(last-to-first) through its contents, as well as forward (first-to-last). Result sets that support
+this capability are called scrollable result sets. Result sets that are scrollable also 
+support relative and absolute positioning. Absolute positioning is the ability to move 
+directly to a row by specifying its absolute position in the result set, while relative positioning
+gives the ability to move to a row by specifying a position that is relative to 
+the current row. The definition of absolute and relative positioning in the JDBC API is 
+modeled on the X/Open SQL CLI specification.
+<p>
+
+<a name="287179"></a>
+<h3>5.2 	  &nbsp; &nbsp; Result Set types</h3>
+<a name="293718"></a>
+The JDBC 1.0 API provided one result set type-forward-only. The JDBC 2.1 core API 
+provides three result set types: forward-only, scroll-insensitive, and scroll-sensitive. As 
+their names suggest, the new result set types support scrolling, but they differ in their 
+ability to make changes visible while they are open. 
+<p>
+<a name="287232"></a>
+A <b>scroll-insensitive</b> result set is generally <b>not</b> sensitive to changes that are made while 
+it is open. A scroll-insensitive result set provides a static view of the underlying data it 
+contains. The membership, order, and column values of rows in a scroll-insensitive result
+set are typically fixed when the result set is created.
+<p>
+<a name="287238"></a>
+On the other hand, a <b>scroll-sensitive</b> result set is sensitive to changes that are made 
+while it is open, and provides a `dynamic' view of the underlying data. For example, 
+when using a scroll-sensitive result set, changes in the underlying column values of 
+rows are visible. The membership and ordering of rows in the result set may be fixed-
+this is implementation defined.
+<p>
+
+<a name="287368"></a>
+<h3>5.3 	  &nbsp; &nbsp; Concurrency types</h3>
+<a name="287393"></a>
+An application may choose from two different concurrency types for a result set: read-
+only and updatable. 
+<p>
+<a name="301562"></a>
+A result set that uses <strong>read-only</strong> concurrency does not allow updates of its contents. This 
+can increase the overall level of concurrency between transactions, since any number 
+of read-only locks may be held on a data item simultaneously.
+<p>
+<a name="287404"></a>
+A result set that is <strong>updatable</strong> allows updates and may use database write locks to mediate
+access to the same data item by different transactions. Since only a single write 
+lock may be held at a time on a data item, this can reduce concurrency. Alternatively, 
+an optimistic concurrency control scheme may be used if it is thought that conflicting 
+accesses to data will be rare. Optimistic concurrency control implementations typically 
+compare rows either by value or by a version number to determine if an update conflict 
+has occurred.
+<p>
+
+<a name="287201"></a>
+<h3>5.4 	  &nbsp; &nbsp; Performance</h3>
+<a name="287418"></a>
+Two performance hints may be given to a JDBC 2.1 technology-enabled driver to make 
+access to result set data more efficient. Specifically, the number of rows to be fetched 
+from the database each time more rows are needed can be specified, and a direction for 
+processing the rows-forward, reverse, or unknown-can be given as well. These values
+can be changed for an individual result set at any time. A JDBC driver may ignore 
+a performance hint if it chooses.
+<p>
+
+<a name="293762"></a>
+<h3>5.5 	  &nbsp; &nbsp; Creating a result set</h3>
+<a name="287223"></a>
+The example below illustrates creation of a result set that is forward-only and uses read-
+only concurrency. No performance hints are given by the example, so the driver is free 
+to do whatever it thinks will result in the best performance. The transaction isolation 
+level for the connection is not specified, so the default transaction isolation level of the 
+underlying database is used for the result set that is created. Note that this code is just 
+written using the JDBC 1.0 API, and that it produces the same type of result set that 
+would have been produced by the JDBC 1.0 API.
+<p>
+<a name="287450"></a>
+
+<p>
+<blockquote><pre>Connection con = DriverManager.getConnection(
+	"jdbc:my_subprotocol:my_subname");
+Statement stmt = con.createStatement();
+ResultSet rs = stmt.executeQuery(
+	"SELECT emp_no, salary FROM employees");
+</pre></blockquote><a name="287425"></a>
+
+<p>
+<a name="287455"></a>
+The next example creates a scrollable result set that is updatable and sensitive to updates.
+Rows of data are requested to be fetched twenty-five at-a-time from the database. 
+<p>
+<a name="300935"></a>
+
+<p>
+<blockquote><pre>Connection con = DriverManager.getConnection(
+	"jdbc:my_subprotocol:my_subname");
+
+Statement stmt = con.createStatement(
+	ResultSet.TYPE_SCROLL_SENSITIVE,
+	ResultSet.CONCUR_UPDATABLE);
+stmt.setFetchSize(25);
+
+ResultSet rs = stmt.executeQuery(
+	"SELECT emp_no, salary FROM employees");
+
+
+</pre></blockquote><a name="287532"></a>
+The example below creates a result set with the same attributes as the previous example, 
+however, a prepared statement is used to produce the result set. 
+<p>
+<a name="302150"></a>
+
+<p>
+<blockquote><pre>PreparedStatement pstmt = con.prepareStatement(
+	"SELECT emp_no, salary FROM employees where emp_no = ?",
+	ResultSet.TYPE_SCROLL_SENSITIVE, 
+	ResultSet.CONCUR_UPDATABLE);
+
+pstmt.setFetchSize(25);
+pstmt.setString(1, "100010");
+ResultSet rs = pstmt.executeQuery();
+
+
+</pre></blockquote><a name="301917"></a>
+The method <code>DatabaseMetaData.supportsResultSetType()</code> can be called to see 
+which result set types are supported by a JDBC driver. However, an application may 
+still ask a JDBC driver to create a <code>Statement</code>, <code>PreparedStatement</code>, or <code>CallableStatement
+</code> object using a result set type that the driver does not support. In this 
+case, the driver should issue an <code>SQLWarning</code> on the <code>Connection </code>that produces the 
+statement and choose an alternative value for the result set type of the statement according
+to the following rules:
+<p>
+<ol><a name="301932"></a>
+<li>If an application asks for a scrollable result set type the driver should use a 
+scrollable type that it supports, even if this differs from the exact type requested 
+by the application.
+
+<a name="301935"></a>
+<li>If the application asks for a scrollable result set type and the driver does not 
+support scrolling, then the driver should use a forward-only result set type.
+
+</ol><a name="301949"></a>
+Similarly, the method <code>DatabaseMetaData.supportsResultSetConcurrency() </code>can 
+be called to determine which concurrency types are supported by a driver. If an application
+asks a JDBC driver for a concurrency type that it does not support then the driver 
+should issue an <code>SQLWarning</code> on the <code>Connection </code>that produces the statement and 
+choose the alternative concurrency type. The choice of result set type should be made 
+first if an application specifies both an unsupported result set type and an unsupported 
+concurrency type.
+<p>
+<a name="301961"></a>
+In some instances, a JDBC driver may need to choose an alternate result set type or concurrency
+type for a <code>ResultSet</code> at statement execution time. For example, a SELECT 
+statement that contains a join over multiple tables may not produce a <code>ResultSet</code> that is 
+updatable. The JDBC driver should issue an <code>SQLWarning</code> in this case on the <code>Statement</code>, 
+<code>PreparedStatement</code>, or <code>CallableStatement</code> that produces the <code>ResultSet</code> and 
+choose an appropriate result set type or concurrency type as described above. An application
+may determine the actual result set type and concurrency type of a <code>ResultSet</code> 
+by calling the <code>ResultSet.getType()</code> and <code>getConcurrency()</code> methods, respectively.
+<p>
+
+<a name="287199"></a>
+<h3>5.6 	  &nbsp; &nbsp; Updates</h3>
+<a name="287587"></a>
+A result set is updatable if its concurrency type is <code>CONCUR_UPDATABLE</code>. Rows in an updatable
+result set may be updated, inserted, and deleted. The example below updates the 
+first row of a result set. The <code>ResultSet.updateXXX()</code> methods are used to modify the 
+value of an individual column in the current row, but do not update the underlying database.
+When the <code>ResultSet.updateRow()</code> method is called the database is updated. 
+Columns may be specified by name or number.
+<p>
+<a name="287622"></a>
+
+<p>
+<blockquote><pre>rs.first();
+rs.updateString(1, "100020");
+rs.updateFloat("salary", 10000.0f);
+rs.updateRow();
+</pre></blockquote><a name="287182"></a>
+
+<p>
+<a name="301986"></a>
+The updates that an application makes must be discarded by a JDBC driver if the application
+moves the cursor from the current row before calling <code>updateRow()</code>. In addition, 
+an application can call the <code>ResultSet.cancelRowUpdates() </code>method to explicitly 
+cancel the updates that have been made to a row. The <code>cancelRowUpdates()</code> method 
+must be called after calling <code>updateXXX()</code> and before calling <code>updateRow()</code>, otherwise 
+it has no effect.
+<p>
+<a name="287615"></a>
+The following example illustrates deleting a row. The fifth row in the result set is deleted
+from the database.
+<p>
+<a name="287627"></a>
+
+<p>
+<blockquote><pre>rs.absolute(5);
+rs.deleteRow();
+
+</pre></blockquote><a name="287631"></a>
+
+<p>
+<a name="301484"></a>
+The example below shows how a new row may be inserted into a result set. The JDBC 
+API defines the concept of an <em>insert row</em> that is associated with each result set and is 
+used as a staging area for creating the contents of a new row before it is inserted into 
+the result set itself. The <code>ResultSet.moveToInsertRow()</code> method is used to position 
+the result set's cursor on the insert row. The <code>ResultSet.updateXXX()</code> and <code>ResultSet.getXXX()
+</code> methods are used to update and retrieve individual column values from 
+the insert row. The contents of the insert row is undefined immediately after calling <code>ResultSet.moveToInsertRow()
+</code>. In other words, the value returned by calling a <code>ResultSet.getXXX()
+</code> method is undefined after <code>moveToInsertRow()</code> is called until the 
+value is set by calling <code>ResultSet.updateXXX()</code>.
+<p>
+<a name="301480"></a>
+Calling <code>ResultSet.updateXXX()</code> while on the insert row does not update the underlying
+database or the result set. Once all of the column values are set in the insert row, 
+<code>ResultSet.insertRow() </code>is called to update the result set and the database simultaneously.
+ If a column is not given a value by calling <code>updateXXX()</code> while on the insert 
+row, or a column is missing from the result set, then that column must allow a null value.
+Otherwise, calling <code>insertRow()</code> throws an <code>SQLException</code>.
+<p>
+<a name="287633"></a>
+
+<p>
+<blockquote><pre>rs.moveToInsertRow();
+rs.updateString(1, "100050");
+rs.updateFloat(2, 1000000.0f);
+rs.insertRow();
+rs.first();
+
+
+</pre></blockquote><a name="287661"></a>
+A result set remembers the current cursor position "in the result set" while its cursor is 
+temporarily positioned on the insert row. To leave the insert row, any of the usual cursor 
+positioning methods may be called, including the special method <code>ResultSet.moveToCurrentRow()
+</code>which returns the cursor to the row which was the current 
+row before <code>ResultSet.moveToInsertRow()</code> was called. In the example above, <code>ResultSet.first()
+</code> is called to leave the insert row and move to the first row of the result
+set.
+<p>
+<a name="303893"></a>
+Due to differences in database implementations, the JDBC API does not specify an exact
+set of SQL queries which must yield an updatable result set for JDBC drivers that 
+support updatability. Developers can, however, generally expect queries which meet 
+the following criteria to produce an updatable result set:
+<p>
+<ol><a name="303894"></a>
+<li>The query references only a single table in the database.
+
+<a name="302170"></a>
+<li>The query does not contain any join operations.
+
+<a name="302171"></a>
+<li>The query selects the primary key of the table it references.
+
+</ol><a name="302176"></a>
+In addition, an SQL query should also satisfy the conditions listed below if inserts are 
+to be performed.
+<p>
+<ol start=4><a name="302177"></a>
+<li>The query selects all of the non-nullable columns in the underlying table.
+
+<a name="302178"></a>
+<li>The query selects all columns that don't have a default value.
+
+</ol>
+<a name="287739"></a>
+<h3>5.7 	  &nbsp; &nbsp; Cursor movement examples</h3>
+<a name="301552"></a>
+A result set maintains an internal pointer called a <em>cursor</em> that indicates the row in the 
+result set that is currently being accessed. A result set cursor is analogous to the cursor 
+on a computer screen which indicates the current screen position. The cursor maintained
+by a forward-only result set can only move forward through the contents of the 
+result set. Thus, rows are accessed sequentially beginning with the first row.
+<p>
+<a name="287742"></a>
+Iterating forward through a result set is done by calling the <code>ResultSet.next()</code> method, 
+as with the JDBC 1.0 API. In addition, scrollable result sets-any result set whose type 
+is not forward only-implement the method, <code>beforeFirst()</code>, which may be called to 
+position the cursor before the first row in the result set. 
+<p>
+<a name="287782"></a>
+The example below positions the cursor before the first row and then iterates forward 
+through the contents of the result set. The <code>getXXX()</code> methods, which are JDBC 1.0 API 
+methods, are used to retrieve column values. 
+<p>
+<blockquote><pre>
+rs.beforeFirst();
+while ( rs.next()) {
+	System.out.println(rs.getString("emp_no") + 
+			   " " + rs.getFloat("salary"));
+}
+</pre></blockquote><a name="287749"></a>
+
+<p>
+<a name="287750"></a>
+Of course, one may iterate backward through a scrollable result set as well, as is shown 
+below.
+<p>
+<a name="287751"></a>
+
+<p>
+<blockquote><pre>rs.afterLast(); 
+while (rs.previous()) {
+	System.out.println(rs.getString("emp_no") + 
+		" " + rs.getFloat("salary"));
+}
+
+</pre></blockquote><a name="287758"></a>
+In this example, the <code>ResultSet.afterLast()</code> method positions the scrollable result 
+set's cursor after the last row in the result set. The <code>ResultSet.previous()</code> method is 
+called to move the cursor to the last row, then the next to last, and so on. <code>ResultSet.previous()
+</code> returns <code>false</code> when there are no more rows, so the loop ends after all 
+of the rows have been visited.
+<p>
+<a name="287759"></a>
+After examining the <code>ResultSet</code> interface, the reader will no doubt recognize that there 
+is more than one way to iterate through the rows of a scrollable result set. It pays to be 
+careful, however, as is illustrated by the following example, which shows one alternative
+that is incorrect.
+<p>
+<blockquote><pre>
+// incorrect!!!
+while (!rs.isAfterLast()) {
+	rs.relative(1);
+	System.out.println(rs.getString("emp_no") + 
+		 " " + rs.getFloat("salary"));
+}
+
+
+</pre></blockquote><a name="287768"></a>
+This example attempts to iterate forward through a scrollable result set and is incorrect 
+for several reasons. One error is that if <code>ResultSet.isAfterLast()</code> is called when the 
+result set is empty, it will return a value of false since there is no last row, and the loop 
+body will be executed, which is not what is wanted. An additional problem occurs when 
+the cursor is positioned before the first row of a result set that contains data. In this case 
+calling <code>rs.relative(1)</code> is erroneous since there is no current row.
+<p>
+<a name="287769"></a>
+The code sample below fixes the problems in the previous example. Here a call to <code>ResultSet.first()
+</code> is used to distinguish the case of an empty result set from one which 
+contains data. Since <code>ResultSet.isAfterLast()</code> is only called when the result set is 
+non-empty the loop control works correctly, and <code>ResultSet.relative(1)</code> steps 
+through the rows of the result set since <code>ResultSet.first()</code> initially positions the cursor
+on the first row.
+<p>
+<blockquote><pre>if (rs.first()) {
+	while (!rs.isAfterLast()) {
+		System.out.println(rs.getString("emp_no") + 
+			" " + rs.getFloat("salary"));
+	    	rs.relative(1);
+	}
+}
+</pre></blockquote><a name="287740"></a>
+
+<p>
+
+<a name="300944"></a>
+<h3>5.8 	  &nbsp; &nbsp; Detecting and viewing changes</h3>
+<a name="300945"></a>
+So far, we have introduced the different result set types and shown a few examples of 
+how a result set of a particular type can be created, updated, and traversed. This section 
+goes into more detail on the differences between result set types, and what these differences
+mean for an application that uses result sets.
+<p>
+<a name="300946"></a>
+The different result set types-forward-only, scroll-insensitive, and scroll-sensitive-
+provided by the JDBC API vary greatly in their ability to make changes in the underlying
+data visible to an application. This aspect of result sets is particularly interesting for 
+the result set types which support scrolling, since they allow a particular row to be visited
+multiple times while a result set is open.
+<p>
+
+<a name="300947"></a>
+<h4>	5.8.1	 Visibility of changes</h4>
+<a name="300948"></a>
+We begin the discussion of this topic by describing the visibility of changes at the transaction
+level. First, note the seemingly obvious fact that all of the updates that a transaction
+makes are visible to itself. However, the changes (updates, inserts, and deletes) 
+made by other transactions that are visible to a particular transaction are determined by 
+the transaction isolation level. The isolation level for a transaction can be set by calling
+<p>
+<a name="300949"></a>
+
+<p>
+<blockquote><pre>con.setTransactionIsolation(TRANSACTION_READ_COMMITTED);
+
+
+</pre></blockquote><a name="300953"></a>
+where the variable <code>con</code> has type <code>Connection</code>. If all transactions in a system execute at 
+the TRANSACTION_READ_COMMITTED isolation level or higher, then a transaction will 
+only see the committed changes of other transactions. The changes that are visible to a 
+result set's enclosing transaction when a result set is opened are always visible through 
+the result set. In fact, this is what it means for an update made by one transaction to be 
+visible to another transaction. 
+<p>
+<a name="300954"></a>
+But what about changes made while a result set is open? Are they visible through the 
+result set by, for example, calling <code>ResultSet.getXXX()</code>? Whether a particular result 
+set exposes changes to its underlying data made by other transactions, other result sets 
+that are part of the same transaction (We refer to these two types of changes collectively 
+as `other's changes'.), or itself while the result set is open depends on the result set type. 
+<p>
+
+<a name="300955"></a>
+<h4>	5.8.2	 Other's changes</h4>
+<a name="300956"></a>
+A scroll-insensitive result set does not make any changes visible that are made by others
+-other transactions and other result sets in the same transaction-once the result set 
+is opened. The content of a scroll-insensitive result set with respect to changes made by 
+others is static-the membership, ordering, and row values are fixed. For example, if 
+another transaction deletes a row that is contained in a static result set while it is open, 
+the row remains visible. One way to implement a scroll-insensitive result set is to create 
+a private copy of the result set's data.
+<p>
+<a name="300957"></a>
+Scroll-sensitive result sets lie at the opposite end of the spectrum. A scroll-sensitive result
+set makes all of the updates made by <strong>others </strong>that are visible to its enclosing transaction
+visible. Inserts and deletes may not be visible, however. 
+<p>
+<a name="301617"></a>
+Let us define carefully what it means for updates to be visible. If an update made by 
+another transaction affects where a row should appear in the result set-this is in effect 
+a delete followed by an insert-the row may not move until the result set is reopened. 
+If an update causes a row to fail to qualify for membership in a result set-this is in effect
+a delete-the row may remain visible until the result set is reopened. If a row is 
+explicitly deleted by another transaction, a scroll-sensitive result set may maintain a 
+placeholder for the row to permit logical fetching of rows by absolute position. Updated 
+column values are always visible, however.
+<p>
+<a name="301665"></a>
+The <code>DatabaseMetaData</code> interface provides a way to determine the exact capabilities 
+that are supported by a result set. For example, the new methods: <code>othersUpdatesAreVisible
+</code>, <code>othersDeletesAreVisible</code>, and <code>othersInsertsAreVisible</code> may be used 
+for this purpose. 
+<p>
+<a name="301666"></a>
+A forward-only result set is really a degenerate case of either a scroll-insensitive or 
+scroll-sensitive result set- depending on how the DBMS evaluates the query that produces
+the result set. Most DBMSs have the ability to materialize query results incrementally
+for some queries. If a query result is materialized incrementally, then data 
+values aren't actually retrieved until they are needed from the DBMS and the result set 
+will behave like a sensitive result set. For some queries, however, incremental materialization
+isn't possible. For example, if the result set is sorted, the entire result set may 
+need to be produced a priori before the first row in the result set is returned to the application
+by the DBMS. In this case a forward-only result set will behave like an insensitive
+result set. 
+<p>
+<a name="301667"></a>
+For a <code>TYPE_FORWARD_ONLY</code> result set the <code>othersUpdatesAreVisible</code>, <code>othersDeletesAreVisible
+</code>, and <code>othersInsertsAreVisible </code>methods determine whether inserts, 
+updates, and deletes are visible when the result set is materialized incrementally by the 
+DBMS. If the result of a query is sorted then incremental materialization may not be 
+possible and changes will not be visible, even if the methods above return true.
+<p>
+
+<a name="300962"></a>
+<h4>	5.8.3	 A result set's own changes</h4>
+<a name="300963"></a>
+We have pointed out that the visibility of changes made by others generally depends on 
+a result set's type. A final point that concerns the visibility of changes via an open result 
+set is whether a result set can see its own changes (inserts, updates, and deletes). A 
+JDBC technology application can determine if the changes made by a result set are visible
+to the result set itself by calling the <code>DatabaseMetaData </code>methods: <code>ownUpdatesAreVisible
+</code>, <code>ownDeletesAreVisible</code>, and <code>ownInsertsAreVisible</code>. These methods 
+are needed since this capability can vary between DBMSs and JDBC drivers.
+<p>
+<a name="300964"></a>
+One's own updates are visible if an updated column value can be retrieved by calling 
+<code>getXXX()</code> following a call to <code>updateXXX()</code>. Updates are <strong>not</strong> visible if <code>getXXX()</code> still 
+returns the initial column value after <code>updateXXX()</code> is called. Similarly, an inserted row 
+is visible if it appears in the result set following a call to <code>insertRow()</code>. An inserted row 
+is not visible if it does not appear in the result set immediately after <code>insertRow()</code> is 
+called-without closing and reopening the result set. Deletions are visible if deleted 
+rows are either removed from the result set or if deleted rows leave a <em>hole</em> in the result 
+set.
+<p>
+<a name="300965"></a>
+The following example, shows how an application may determine whether a 
+<code>TYPE_SCROLL_SENSITIVE</code> result set can see its own updates.
+<p>
+<blockquote><pre>DatabaseMetaData dmd;
+...
+if (dmd.<code>ownUpdatesAreVisible</code>(ResultSet.TYPE_SCROLL_INSENSITIVE)) 
+{
+	// changes are visible
+}
+</pre></blockquote><a name="300971"></a>
+
+<p>
+
+<a name="300977"></a>
+<h4>	5.8.4	 Detecting changes</h4>
+<a name="300978"></a>
+The <code>ResultSet.wasUpdated()</code>, <code>wasDeleted()</code>, and <code>wasInserted()</code> methods can be 
+called to determine whether a row has been effected by a visible update, delete, or insert 
+respectively since the result set was opened. The ability of a result set to detect changes 
+is orthogonal to its ability to make changes visible. In other words, visible changes are 
+not automatically detected. 
+<p>
+<a name="300988"></a>
+The <code>DatabaseMetaData</code> interface provides methods that allow an application to determine
+whether a JDBC driver can detect changes for a particular result set type. For example,
+
+<p>
+<a name="300997"></a>
+
+<p>
+<blockquote><pre>boolean bool = dmd.deletesAreDetected(
+	ResultSet.TYPE_SCROLL_SENSITIVE);
+</pre></blockquote><a name="300991"></a>
+
+<p>
+<a name="300996"></a>
+If deletesAreDetected returns <code>true</code>, then <code>ResultSet.wasDeleted() </code>can be used to 
+detect `holes' in a <code>TYPE_SCROLL_SENSITIVE</code> result set.
+<p>
+
+<a name="302003"></a>
+<h3>5.9 	  &nbsp; &nbsp; Refetching a row</h3>
+<a name="302007"></a>
+Some applications may need to see up-to-the-second changes that have been made to a 
+row. Since a JDBC driver can do prefetching and caching of data that is read from the 
+underlying database (see <code>ResultSet.setFetchSize()</code>), an application may not see 
+the very latest changes that have been made to a row, even when a sensitive result set 
+is used and updates are visible. The <code>ResultSet.refreshRow()</code> method is provided to 
+allow an application to request that a driver refresh a row with the latest values stored 
+in the database. A JDBC driver may actually refresh multiple rows at once if the fetch 
+size is greater than one. Applications should exercise restraint in calling <code>refreshRow()</code>, since calling this method frequently will likely slow performance. 
+<p>
+
+<a name="282665"></a>
+<h3>5.10 	  &nbsp; &nbsp; JDBC API compliance</h3>
+<a name="282739"></a>
+Although we expect most JDBC drivers to support scrollable result sets, we have made 
+them optional to minimize the complexity of implementing JDBC drivers for data 
+sources that do not support scrollability. The goal is that it be possible for a JDBC driver 
+to implement scrollable result sets using the support provided by the underlying database
+system for systems that have such support. If the DBMS associated with a driver 
+does not support scrollability then this feature may be omitted, or a JDBC driver may 
+implement scrollability as a layer on top of the DBMS. Its important to note that JDBC 
+technology rowsets, which are part of the JDBC Optional Package API, always support 
+scrollability, so a rowset can be used when the underlying DBMS doesn't support scrollable
+results.
+<p>
+<a name="287820"></a>
+
+<p>
+
+
+<br>
+<hr> 
+<font size=-1>
+<a href="jdbc2.1.frame.html">Contents</a>  | <a href="jdbc2.1.frame4.html">Prev</a>  | <a href="jdbc2.1.frame6.html">Next</a>
+</font>
+<hr>
+
+
+
+<address>
+<a href="mailto:jdbc@eng.sun.com">jdbc@eng.sun.com</a>
+or
+<a href="mailto:jdbc-business@eng.sun.com">jdbc-business@eng.sun.com</a>
+</address>
+
+<i><a href="../../../relnotes/SMICopyright.html">
+Copyright</a> &#169; 1996-1999 Sun Microsystems, Inc.   All rights reserved.</i>
+
+
+<!-- HTML generated by Suzette Pelouch on December 01, 1999 -->
+
+</body>
+</html>

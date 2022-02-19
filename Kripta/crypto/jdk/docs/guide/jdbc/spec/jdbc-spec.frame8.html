@@ -1,0 +1,350 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title></title>
+</head>
+<body bgcolor=#ffffff>
+
+<table width=600><tr>
+<td><font size=-1>
+<a href="jdbc-spec.frame.html">Contents</a>  | <a href="jdbc-spec.frame7.html">Prev</a>  | <a href="jdbc-spec.frame9.html">Next</a>
+</font></td><td align=right><i>JDBC<sup><font size=-2>TM</font></sup> Guide: Getting Started</i></td>
+</tr></table>
+<hr>
+<br>
+ 
+
+<a name="20986"></a>
+<h2>	8	 Mapping SQL data types into Java</h2>
+
+
+<a name="1763"></a>
+<h3>8.1 	  &nbsp; &nbsp; Constraints</h3>
+<a name="1764"></a>
+We need to provide reasonable Java mappings for the common SQL data types. We also need 
+to make sure that we have enough type information so that we can correctly store and retrieve 
+parameters and recover results from SQL statements.
+<p>
+<a name="6645"></a>
+However, there is no particular reason that the Java data type needs to be exactly isomorphic 
+to the SQL data type. For example, since Java has no fixed length arrays, we can represent both 
+fixed length and variable length SQL arrays as variable length Java arrays. We also felt free to 
+use Java Strings even though they don't precisely match any of the SQL CHAR types.
+<p>
+<a name="6736"></a>
+Table <a href="jdbc-spec.frame8.html#27081">2</a> shows the default Java mapping for various common SQL data types. Not all of these 
+types will necessarily be supported by all databases. The various mappings are described more 
+fully in the following sections.
+<p>
+<a name="28629"></a>
+ 
+<Table Border="3">
+<caption><a name="27081"></a>
+Table 2:  Standard mapping from SQL types to Java types.
+<p>
+<a name="27082"></a>
+ 
+<p>
+</caption>
+<tr><th>SQL type
+<th>Java Type
+
+<tr><td>CHAR
+<td>String
+
+<tr><td>VARCHAR
+<td>String 
+
+<tr><td>LONGVARCHAR
+<td>String
+
+<tr><td>NUMERIC
+<td>java.math.BigDecimal
+
+
+<tr><td>DECIMAL
+<td>java.math.BigDecimal
+
+
+<tr><td>BIT
+<td>boolean
+
+<tr><td>TINYINT
+<td>byte
+
+<tr><td>SMALLINT
+<td>short
+
+<tr><td>INTEGER
+<td>int
+
+<tr><td>BIGINT
+<td>long
+
+<tr><td>REAL
+<td>float
+
+<tr><td>FLOAT
+<td>double
+
+<tr><td>DOUBLE
+<td>double
+
+<tr><td>BINARY
+<td>byte[]
+
+<tr><td>VARBINARY
+<td>byte[]
+
+<tr><td>LONGVARBINARY
+<td>byte[]
+
+<tr><td>DATE
+<td>java.sql.Date
+
+<tr><td>TIME
+<td>java.sql.Time
+
+<tr><td>TIMESTAMP
+<td>java.sql.Timestamp
+
+
+</Table>
+
+<Table>
+<tr><td>
+</Table>
+
+<p>
+<a name="28556"></a>
+Similarly table <a href="jdbc-spec.frame8.html#28688">3</a> shows the reverse mapping from Java types to SQL types. 
+<Table Border="3">
+<caption><a name="28688"></a>
+Table 3:  Standard mapping from Java types to SQL types.
+<p>
+<a name="28689"></a>
+The mapping for String will normally be VARCHAR but will turn into LONGVARCHAR 
+if the given value exceeds the drivers limit on VARCHAR values. Similarly for byte[] and 
+VARBINARY and LONGVARBINARY.
+<p>
+</caption>
+<tr><th>Java Type
+<th>SQL type
+
+<tr><td>String 
+<td>VARCHAR or LONGVARCHAR
+
+<tr><td>java.math.BigDecimal
+<td>NUMERIC
+
+<tr><td>boolean
+<td>BIT
+
+<tr><td>byte
+<td>TINYINT
+
+<tr><td>short
+<td>SMALLINT
+
+<tr><td>int
+<td>INTEGER
+
+<tr><td>long
+<td>BIGINT
+
+<tr><td>float
+<td>REAL
+
+<tr><td>double
+<td>DOUBLE
+
+<tr><td>byte[]
+<td>VARBINARY or LONGVARBINARY
+
+<tr><td>java.sql.Date
+<td>DATE
+
+<tr><td>java.sql.Time
+<td>TIME
+
+<tr><td>java.sql.Timestamp
+<td>TIMESTAMP
+
+
+</Table>
+
+<Table>
+<tr><td>
+</Table>
+
+<p>
+<a name="27091"></a>
+
+<p>
+<a name="27092"></a>
+
+<p>
+<a name="27093"></a>
+
+<p>
+
+<a name="11100"></a>
+<h3>8.2 	  &nbsp; &nbsp; Dynamic data access</h3>
+<a name="16864"></a>
+This chapter focuses on access to results or parameters whose types are known at compile time. 
+However, some applications, for example generic browsers or query tools, are not compiled 
+with knowledge of the database schema they will access, so JDBC also provides support for 
+fully dynamically typed data access. See Section <a href="jdbc-spec.frame14.html#6552">14.2</a>.
+<p>
+
+<a name="15953"></a>
+<h3>8.3 	  &nbsp; &nbsp; CHAR, VARCHAR, and LONGVARCHAR</h3>
+<a name="1216"></a>
+There is no need for Java programmers to distinguish among the three different flavours of 
+SQL strings CHAR, VARCHAR, and LONGVARCHAR. These can all be expressed identically
+in Java. It is possible to read and write the SQL correctly without needing to know the 
+exact data type that was expected.
+<p>
+<a name="1638"></a>
+These types could be mapped to either String or char[]. After considerable discussion we decided
+to use String, as this seemed the more appropriate type for normal use. Note that the Java 
+String class provides a method for converting a String to a char[] and a constructor for turning 
+a char[] into a String.
+<p>
+<a name="20918"></a>
+For fixed length SQL strings of type CHAR(n), the JDBC drivers will perform appropriate padding
+with spaces. Thus when a CHAR(n) field is retrieved from the database the resulting 
+String will always be of length "n" and may include some padding spaces at the end. When a 
+String is sent to a CHAR(n) field, the driver and/or the database will add any necessary padding 
+spaces to the end of the String to bring it up to length "n".
+<p>
+<a name="1645"></a>
+The ResultSet.getString method allocates and returns a new String. This is suitable for retrieving
+normal data, but the LONGVARCHAR SQL type can be used to store multi-megabyte 
+strings. We therefore needed to provide a way for Java programmers to retrieve a LONGVARCHAR
+value in chunks. We handle this by allowing programmers to retrieve a LONGVARCHAR
+as a Java input stream from which they can subsequently read data in whatever chunks 
+they prefer. Java streams can be used for either Unicode or Ascii data, so the programmer may 
+chose to use either getAsciiStream or getUnicodeStream.
+<p>
+
+<a name="1251"></a>
+<h3>8.4 	  &nbsp; &nbsp; DECIMAL and NUMERIC</h3>
+<a name="1667"></a>
+The SQL DECIMAL and NUMERIC data types are used to express fixed point numbers where 
+absolute precision is required. They are often used for currency values.
+<p>
+<a name="1674"></a>
+These two types can be expressed identically in Java. The most convenient mapping uses the 
+java.math.BigDecimal extended precision number type provided in JDK1.1
+<p>
+<a name="1672"></a>
+We also allow access to DECIMAL and NUMERIC as simple Strings and arrays of chars. Thus 
+Java programmers can use getString to receive a NUMERIC or DECIMAL result.
+<p>
+
+<a name="8206"></a>
+<h3>8.5 	  &nbsp; &nbsp; BINARY, VARBINARY, and LONGVARBINARY</h3>
+<a name="1732"></a>
+There is no need for Java programmers to distinguish among the three different flavours of 
+SQL byte arrays BINARY, VARBINARY, and LONGVARBINARY. These can all be expressed
+identically as byte arrays in Java. (It is possible to read and write the SQL correctly 
+without needing to know the exact BINARY data type that was expected.)
+<p>
+<a name="1746"></a>
+As with the LONGVARCHAR SQL type, the LONGVARBINARY SQL type can sometimes 
+be used to return multi-megabyte data values. We therefore allow a LONGVARBINARY value
+to be retrieved as a Java input stream, from which programmers can subsequently read data 
+in whatever chunks they prefer.
+<p>
+
+<a name="1758"></a>
+<h3>8.6 	  &nbsp; &nbsp; BIT</h3>
+<a name="1778"></a>
+The SQL BIT type can be mapped directly to the Java boolean type.
+<p>
+
+<a name="1779"></a>
+<h3>8.7 	  &nbsp; &nbsp; TINYINT, SMALLINT, INTEGER, and BIGINT</h3>
+<a name="1780"></a>
+The SQL TINYINT, SMALLINT, INTEGER, and BIGINT types represent 8 bit, 16 bit, 32 bit, 
+and 64 bit values. These therefore can be mapped to Java's byte, short, int, and long data types.
+<p>
+
+<a name="1759"></a>
+<h3>8.8 	  &nbsp; &nbsp; REAL, FLOAT, and DOUBLE</h3>
+<a name="50247"></a>
+SQL defines three floating point data types, REAL, FLOAT, and DOUBLE.
+<p>
+<a name="50248"></a>
+We map REAL to Java float, and FLOAT and DOUBLE to Java double.
+<p>
+<a name="50249"></a>
+REAL is required to support 7 digits of mantissa precision. FLOAT and DOUBLE are required 
+to support 15 digits of mantissa precision.
+<p>
+
+<a name="1833"></a>
+<h3>8.9 	  &nbsp; &nbsp; DATE, TIME, and TIMESTAMP</h3>
+<a name="1834"></a>
+SQL defines three time related data types. DATE consists of day, month, and year. TIME consists
+of hours, minutes and seconds. TIMESTAMP combines DATE and TIME and also adds 
+in a nanosecond field.
+<p>
+<a name="6050"></a>
+There is a standard Java class java.util.Date that provides date and time information. However, 
+this class doesn't perfectly match any of the three SQL types, as it includes both DATE and 
+TIME information, but lacks the nanosecond granularity required for TIMESTAMP.
+<p>
+<a name="6056"></a>
+We therefore define three subclasses of java.util.Date. These are:
+<p>
+
+<ul><a name="6057"></a>
+<li>java.sql.Date for SQL DATE information
+<br><br>
+<a name="6058"></a>
+<li>java.sql.Time for SQL TIME information
+<br><br>
+<a name="6061"></a>
+<li>java.sql.Timestamp for SQL TIMESTAMP information
+<br><br>
+</ul><a name="1840"></a>
+In the case of java.sql.Date the hour, minute, second, and milli-second fields of the java.util.Date
+base class are set to zero.
+<p>
+<a name="6076"></a>
+In the case of java.sql.Time the year, month, and day fields of the java.util.Date base class are 
+set to 1970, January, and 1, respectively. This is the "zero" date in the Java epoch.
+<p>
+<a name="6077"></a>
+The java.sql.Timestamp class extends java.util.Date by adding a nanosecond field.
+<p>
+<a name="16984"></a>
+
+<p>
+
+
+<br>
+<hr> 
+<font size=-1>
+<a href="jdbc-spec.frame.html">Contents</a>  | <a href="jdbc-spec.frame7.html">Prev</a>  | <a href="jdbc-spec.frame9.html">Next</a>
+</font>
+<hr>
+
+
+
+<address>
+<a href="mailto:jdbc@wombat.eng.sun.com">jdbc@wombat.eng.sun.com</a>
+or
+<a href="mailto:jdbc-odbc@wombat.eng.sun.com">jdbc-odbc@wombat.eng.sun.com</a>
+</address>
+
+<a href="../../../relnotes/SMICopyright.html">
+<font size=-1><i>Copyright &#169; 1996, 1997 Sun Microsystems, Inc.   All rights reserved.</i></font>
+</a>
+
+<!-- HTML generated by Suzette Pelouch on April 10, 1998 -->
+
+</body>
+</html>

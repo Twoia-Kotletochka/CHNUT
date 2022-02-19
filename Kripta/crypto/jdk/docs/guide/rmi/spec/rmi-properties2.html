@@ -1,0 +1,136 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Remote Method Invocation:  - Properties In RMI
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="rmiTOC.html">CONTENTS</a> | <a href="rmi-properties.html">PREV</a>
+ | <a href="rmi-properties3.html">NEXT</a> 
+<!-- /font --></td><td align=right><i>Java Remote Method Invocation</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="5112"><i>	B.1	</i> Server Properties
+</a></h2>
+
+<blockquote>
+<a name="4677"><!-- --></a>
+The following table contains a list of properties typically used by servers for configuration. Note that properties are typically restricted from being set from applets.
+
+<br><br>
+<Table Border="1" Cellpadding="5">
+<caption></caption>
+
+<tr><td><a name="5113"><!-- --></a>
+<b>Property</b><br>
+
+</td><td><a name="5115"><!-- --></a>
+<b>Description</b><br>
+
+</td></tr>
+<tr valign="top"><td><a name="5117"><!-- --></a>
+<p><code>java.rmi.server.codebase</code>
+
+<a name="5118"><!-- --></a>
+<p>
+
+</td>
+<td><a name="5120"><!-- --></a>
+<p>Indicates the codebase URL of classes originating from the JVM. The codebase property is used to annotate class descriptors of classes <em>originating</em> from a JVM so that the class for an object sent as a parameter or return value in a remote method call can be loaded at the receiver.
+
+</td>
+</tr>
+<tr valign="top"><td><a name="5122"><!-- --></a>
+<p><code>java.rmi.server.disableHttp</code>
+
+</td>
+<td><a name="5124"><!-- --></a>
+<p>If set to <code>true</code>, disables the use of HTTP for RMI calls. This means that RMI will never resort to using HTTP to invoke a call via a firewall. Defaults to <code>false</code> (HTTP usage is enabled).
+
+</td>
+</tr>
+<tr valign="top"><td><a name="5126"><!-- --></a>
+<p><code>java.rmi.server.hostname</code>
+
+</td>
+<td><a name="5128"><!-- --></a>
+<p>RMI uses IP addresses to indicate the location of a server (embedded in a remote reference). If the use of a hostname is desired, this property is used to specify the fully-qualified hostname for RMI to use for remote objects exported to the local JVM. The property can also be set to an IP address. Not set by default.
+
+</td>
+</tr>
+<tr valign="top"><td><a name="5131"><!-- --></a>
+<p><code>java.rmi.dgc.leaseValue</code>
+
+</td>
+<td><a name="5133"><!-- --></a>
+<p>Sets the lease duration that the RMI runtime grants to clients referencing remote objects in the JVM. Defaults to 10 minutes.
+
+</td>
+</tr>
+<tr valign="top"><td><a name="5135"><!-- --></a>
+<p><code>java.rmi.server.logCalls</code>
+
+</td>
+<td><a name="5137"><!-- --></a>
+<p>If set to <code>true</code>, server call logging is turned on and prints to stderr. Defaults to <code>false</code>.
+
+</td>
+</tr>
+<tr valign="top"><td><a name="5139"><!-- --></a>
+<p><code>java.rmi.server.useCodebaseOnly</code>
+
+</td>
+<td><a name="5141"><!-- --></a>
+<p>If set to <code>true</code>, when RMI loads classes (if not available via <code>CLASSPATH</code>) they are only loaded using the URL specified by the property <code>java.rmi.server.codebase</code>.
+
+</td>
+</tr>
+<tr valign="top"><td><a name="5146"><!-- --></a>
+<p><code>java.rmi.server.useLocalHostname</code>
+
+</td>
+<td><a name="5148"><!-- --></a>
+<p>If the <code>java.rmi.server.hostname</code> property is not set and this property is set, then RMI will not use an IP address to denote the location (embedded in remote references) of remote objects that are exported into the JVM. Instead, RMI will use the value of the call to the method <code>java.net.InetAddress.getLocalHost</code>.
+
+</td>
+</tr>
+
+</Table>
+ 
+<Table>
+<tr><td></td>
+</tr>
+</Table><p>
+<p>
+</blockquote>
+</ul>
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="rmiTOC.html">CONTENTS</a> | <a href="rmi-properties.html">PREV</a>
+ | <a href="rmi-properties3.html">NEXT</a> 
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF=http://java.sun.com/products/jdk/1.3/docs/relnotes/SMICopyright.html>Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Susan Snyder -->
+<!-- Last updated: Friday November 12 04 11:11:27 1999 -->
+ 
+
+
+</body>
+</html>

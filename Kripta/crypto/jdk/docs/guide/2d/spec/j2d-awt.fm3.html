@@ -1,0 +1,539 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API: 2 - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-awt.fm2.html">PREV</a>
+ | <a href="j2d-awt.fm4.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="68374"><i>2.3	</i> Setting Up the Graphics2D Context
+</a></h2>
+
+<blockquote>
+<a name="70032"><!-- --></a>
+To configure the <kbd>Graphics2D</kbd> context for rendering, you use the <kbd>Graphics2D</kbd> set methods to specify attributes such as the <kbd>RenderingHints</kbd>, <kbd>Stroke</kbd>, <kbd>Paint</kbd>, clipping path, <kbd>Composite</kbd>, and <kbd>Tra
+
+
+nsform</kbd>.<p>
+</blockquote>
+<br>
+<h3>
+<a name="65412"><!-- --></a>
+<i>2.3.1	</i> Setting Rendering Hints
+</h3>
+
+<blockquote>
+<a name="70103"><!-- --></a>
+A <kbd>RenderingHints</kbd> object encapsulates all of your preferences concerning how an object is rendered. To set the rendering hints in the <kbd>Graphics2D</kbd> context, you create a <kbd>RenderingHints</kbd> object and pass it into <kbd>Graphics2D.s
+
+
+etRenderingHints</kbd>.<p>
+<a name="70042"><!-- --></a>
+Setting a rendering hint does not guarantee that a particular rendering algorithm will be used: not all platforms support modification of the rendering mode.<p>
+<a name="70057"><!-- --></a>
+In the following example, antialiasing is enabled and the rendering preference is set to quality:<p>
+</blockquote><blockquote><pre>
+	qualityHints = new
+               RenderingHints(RenderingHints.KEY_ANTIALIASING,
+               RenderingHints.VALUE_ANTIALIAS_ON);
+
+	qualityHints.put(RenderingHints.KEY_RENDERING,
+               RenderingHints.VALUE_RENDER_QUALITY);
+
+	g2.setRenderingHints(qualityHints);
+</pre></blockquote>
+<br>
+<h3>
+<a name="70111"><!-- --></a>
+<i>2.3.2	</i> Specifying Stroke Attributes
+</h3>
+
+<blockquote>
+<a name="70112"><!-- --></a>
+A <kbd>BasicStroke</kbd> defines the characteristics applied to a <kbd>Shape</kbd>&#39;s outline, including its width and dashing pattern, how line segments are joined together, and the decoration (if any) applied to the end of a line. To set the stroke a
+
+
+ttributes in the <kbd>Graphics2D</kbd> context, you create a <kbd>BasicStroke</kbd> object and pass it into <kbd>setStroke</kbd>.<p>
+</blockquote>
+<br>
+<a name="70121"><!-- --></a>
+<h4><i>2.3.2.1	 Setting the Stroke Width
+</i></h4>
+
+<blockquote>
+<a name="70123"><!-- --></a>
+To set the stroke width, you create a <kbd>BasicStroke</kbd> object with the desired width and call <kbd>setStroke</kbd>. <p>
+<a name="70136"><!-- --></a>
+In the following example, the stroke width is set to twelve points and the defaults are used for the join and endcap decorations:<p>
+</blockquote><blockquote><pre>
+	wideStroke = new BasicStroke(12.0f);
+	g2.setStroke(wideStroke);
+</pre></blockquote>
+<br>
+<a name="70122"><!-- --></a>
+<h4><i>2.3.2.2	 Specifying Join and Endcap Styles
+</i></h4>
+
+<blockquote>
+<a name="70193"><!-- --></a>
+To set the join and endcap styles, you create a <kbd>BasicStroke</kbd> object with the desired attributes.<p>
+<a name="70194"><!-- --></a>
+In the following example, the stroke width is set to twelve points and the round join and endcap styles are used instead of the defaults:<p>
+</blockquote><blockquote><pre>
+	roundStroke = new BasicStroke(4.0f, BasicStroke.CAP_ROUND,
+              BasicStroke.JOIN_ROUND);
+	g2.setStroke(roundStroke);
+</pre></blockquote>
+<br>
+<a name="68450"><!-- --></a>
+<h4><i>2.3.2.3	 Setting the Dashing Pattern
+</i></h4>
+
+<blockquote>
+<a name="64466"><!-- --></a>
+Complex dashing patterns can easily be defined with a <kbd>BasicStroke</kbd> object. When you create a <kbd>BasicStroke</kbd> object, you can specify two parameters that control the dashing pattern:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="64469"><!-- --></a>
+<kbd>dash</kbd>&#45;&#45;an array that represents the dashing pattern. Alternating elements in the array represent the dash size and the size of the space between dashes. Element 0 represents the first dash, element 1 represents the first space.
+</li>
+<li>
+<a name="66367"><!-- --></a>
+<kbd>dash_phase</kbd>&#45;&#45;an offset that defines where the dashing pattern starts.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="69382"><!-- --></a>
+In the following example, two different dashing patterns are applied to a line. In the first, the size of the dashes and the space between them is constant. The second dashing pattern is more complex, using a six-element array to define the dashing patter
+
+
+n.<p>
+</blockquote><blockquote><pre>
+	float dash1[] = {10.0f};
+	BasicStroke bs = new BasicStroke(5.0f, BasicStroke.CAP_BUTT, 
+                 BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f);
+	g2.setStroke(bs);
+	Line2D line = new Line2D.Float(20.0f, 10.0f, 100.0f, 10.0f);
+	g2.draw(line);
+
+	float[] dash2 = {6.0f, 4.0f, 2.0f, 4.0f, 2.0f, 4.0f};
+	bs = new BasicStroke(5.0f, BasicStroke.CAP_BUTT, 
+     	BasicStroke.JOIN_MITER, 10.0f, dash2, 0.0f);
+	g2.setStroke(bs);
+	g2.draw(line);
+</pre></blockquote><blockquote>
+<a name="69394"><!-- --></a>
+Both dashing patterns use a dash phase of zero, causing the dashes to be drawn starting at the beginning of the dashing pattern. The two dashing patterns are shown in <a href="j2d-awt.fm3.html#69457">Figure&#160;2-7</a>.<p><center><img src="j2d-awt.fm.anc10.gif"></center><p>
+</blockquote>
+<blockquote><p>
+<a name="69457"><!-- --></a>
+<b>Figure 2-7	</b> Dashing Patterns
+
+</p>
+</blockquote>
+<br>
+<h3>
+<a name="68782"><!-- --></a>
+<i>2.3.3	</i> Specifying Fill Attributes
+</h3>
+
+<blockquote>
+<a name="69419"><!-- --></a>
+The <kbd>Paint</kbd> attribute in the <kbd>Graphics2D</kbd> context determines the fill color or pattern that is used when text and <kbd>Shapes</kbd> are rendered.<p>
+</blockquote>
+<br>
+<a name="68783"><!-- --></a>
+<h4><i>2.3.3.1	 Filling a Shape with a Gradient
+</i></h4>
+
+<blockquote>
+<a name="68784"><!-- --></a>
+The <kbd>GradientPaint</kbd> class provides an easy way to fill a shape with a gradient of one color to another. When you create a <kbd>GradientPaint</kbd>, you specify a beginning position and color, and an ending position and color. The fill color chang
+
+
+es proportionally from one color to the other along the line connecting the two positions, as shown in <a href="j2d-awt.fm3.html#68790">Figure&#160;2-8</a>. <p>
+<a name="68788"><!-- --></a>
+<p><center><img src="j2d-awt.fm.ancA9.gif"></center><p>
+</blockquote>
+<blockquote><p>
+<a name="68790"><!-- --></a>
+<b>Figure 2-8	</b> Creating Gradient Fills
+
+</p>
+</blockquote><blockquote>
+<a name="68794"><!-- --></a>
+In the third star in <a href="j2d-awt.fm3.html#68790">Figure&#160;2-8</a>, both points lie within the shape. All of the points along the gradient line extending beyond P1 take the beginning color, and the points along the gradient line extending beyond P2
+
+
+ take the ending color. <p>
+<a name="68795"><!-- --></a>
+To fill a shape with a gradient of one color to another:<p>
+</blockquote><blockquote><ol>
+<li>
+<a name="68796"><!-- --></a>
+Create a <kbd>GradientPaint</kbd> object.
+</li>
+
+<li>
+<a name="68797"><!-- --></a>
+Call <kbd>Graphics2D.setPaint.</kbd>
+</li>
+
+<li>
+<a name="68798"><!-- --></a>
+Create the <kbd>Shape</kbd>.
+</li>
+
+<li>
+<a name="68799"><!-- --></a>
+Call <kbd>Graphics2D.fill(shape)</kbd>.
+</li>
+
+</ol></blockquote>
+<blockquote>
+<a name="68800"><!-- --></a>
+In the following example, a rectangle is filled with a blue-green gradient.<p>
+</blockquote><blockquote><pre>
+	GradientPaint gp = new GradientPaint(50.0f, 50.0f, Color.blue
+                   50.0f, 250.0f, Color.green);
+	g2.setPaint(gp);
+	g2.fillRect(50, 50, 200, 200);
+</pre></blockquote>
+<br>
+<a name="68805"><!-- --></a>
+<h4><i>2.3.3.2	 Filling a Shape with a Texture
+</i></h4>
+
+<blockquote>
+<a name="68806"><!-- --></a>
+The <kbd>TexturePaint</kbd> class provides an easy way to fill a shape with a repeating pattern. When you create a <kbd>TexturePaint</kbd>, you specify a <kbd>BufferedImage</kbd> to use as the pattern. You also pass the constructor a rectangle to define t
+
+
+he repetition frequency of the pattern, as shown in <a href="j2d-awt.fm3.html#68811">Figure&#160;2-9</a>.<p>
+<a name="68810"><!-- --></a>
+<p><center><img src="j2d-awt.fm.anc11.gif"></center><p>
+</blockquote>
+<blockquote><p>
+<a name="68811"><!-- --></a>
+<b>Figure 2-9	</b> Creating Texture Paints
+
+</p>
+</blockquote><blockquote>
+<a name="68812"><!-- --></a>
+To fill a shape with a texture:<p>
+</blockquote><blockquote><ol>
+<li>
+<a name="68813"><!-- --></a>
+Create a <kbd>TexturePaint</kbd> object.
+</li>
+
+<li>
+<a name="68814"><!-- --></a>
+Call <kbd>Graphics2D.setPaint.</kbd>
+</li>
+
+<li>
+<a name="68815"><!-- --></a>
+Create the <kbd>Shape</kbd>.
+</li>
+
+<li>
+<a name="68816"><!-- --></a>
+Call <kbd>Graphics2D.fill(shape)</kbd>.
+</li>
+
+</ol></blockquote>
+<blockquote>
+<a name="68817"><!-- --></a>
+In the following example, a rectangle is filled with a simple texture created from a buffered image.<p>
+</blockquote><blockquote><pre>
+	// Create a buffered image texture patch of size 5x5
+	BufferedImage bi = new BufferedImage(5, 5,   
+                       BufferedImage.TYPE_INT_RGB);
+	Graphics2D big = bi.createGraphics();
+	// Render into the BufferedImage graphics to create the texture
+	big.setColor(Color.green);
+	big.fillRect(0,0,5,5);
+	big.setColor(Color.lightGray);
+	big.fillOval(0,0,5,5);
+
+	// Create a texture paint from the buffered image
+	Rectangle r = new Rectangle(0,0,5,5);
+	TexturePaint tp = new 
+	   TexturePaint(bi,r,TexturePaint.NEAREST_NEIGHBOR);
+
+	// Add the texture paint to the graphics context.
+	g2.setPaint(tp);
+
+	// Create and render a rectangle filled with the texture.
+	g2.fillRect(0,0,200,200);
+</pre></blockquote>
+<br>
+<h3>
+<a name="70241"><!-- --></a>
+<i>2.3.4	</i> Setting the Clipping Path
+</h3>
+
+<blockquote>
+<a name="70242"><!-- --></a>
+To define a clipping path:<p>
+</blockquote><blockquote><ol>
+<li>
+<a name="70243"><!-- --></a>
+Create a <kbd>Shape</kbd> that represents the area you want to render.
+</li>
+
+<li>
+<a name="70244"><!-- --></a>
+Call <kbd>Graphics2D.setClip</kbd> to use the shape as the clipping path for the <kbd>Graphics2D</kbd> context.
+</li>
+
+</ol></blockquote>
+<blockquote>
+<a name="70245"><!-- --></a>
+To shrink the clipping path:<p>
+</blockquote><blockquote><ol>
+<li>
+<a name="70246"><!-- --></a>
+Create a <kbd>Shape</kbd> that intersects the current clipping path.
+</li>
+
+<li>
+<a name="70247"><!-- --></a>
+Call <kbd>clip</kbd> to change the clipping path to the intersection of the current clipping path and the new <kbd>Shape</kbd>.
+</li>
+
+</ol></blockquote>
+<blockquote>
+<a name="70248"><!-- --></a>
+In the following example, a clipping path is created from an ellipse and then modified by calling <kbd>clip</kbd>.<p>
+</blockquote><blockquote><pre>
+	public void paint(Graphics g) {
+  	   Graphics2D g2 = (Graphics2D) g;
+
+	   // The width and height of the canvas
+  	   int w = getSize().width;
+  	   int h = getSize().height;
+  	   // Create an ellipse and use it as the clipping path
+  	   Ellipse2D e = new Ellipse2D.Float(w/4.0f,h/4.0f,
+                                    w/2.0f,h/2.0f);
+  	   g2.setClip(e);
+
+  	   // Fill the canvas. Only the area within the clip is rendered
+  	   g2.setColor(Color.cyan);
+  	   g2.fillRect(0,0,w,h);
+
+  	   // Change the clipping path, setting it to the intersection of 
+  	   // the current clip and a new rectangle.
+  	   Rectangle r = new Rectangle(w/4+10,h/4+10,w/2-20,h/2-20);
+  	   g2.clip(r);
+
+  	   // Fill the canvas. Only the area within the new clip 
+  	   // is rendered
+  	   g2.setColor(Color.magenta);
+ 	   g2.fillRect(0,0,w,h);
+	}
+</pre></blockquote>
+<br>
+<h3>
+<a name="68134"><!-- --></a>
+<i>2.3.5	</i> Setting the Graphics2D Transform
+</h3>
+
+<blockquote>
+<a name="68135"><!-- --></a>
+To transform a <kbd>Shape,</kbd> text string, or <kbd>Image</kbd> you add a new <kbd>AffineTransform</kbd> to the transformation pipeline in the <kbd>Graphics2D</kbd> context before rendering. The transformation is applied when the graphic object is rende
+
+
+red.<p>
+<a name="68136"><!-- --></a>
+For example, to draw a rectangle that is rotated 45 degrees:<p>
+</blockquote><blockquote><ol>
+<li>
+<a name="68137"><!-- --></a>
+Get a rotation transform by calling <kbd>AffineTransform.getRotateInstance</kbd>. 
+</li>
+
+<li>
+<a name="68138"><!-- --></a>
+Call <kbd>Graphics2D.setTransform</kbd> to add the new transform to the transformation pipeline.
+</li>
+
+<li>
+<a name="68139"><!-- --></a>
+Create a <kbd>Rectangle2D.Float</kbd> object.
+</li>
+
+<li>
+<a name="68140"><!-- --></a>
+Call<kbd> Graphics2D.draw</kbd> to render the rectangle. 
+</li>
+
+</ol></blockquote>
+<blockquote>
+<a name="69431"><!-- --></a>
+In the following example, an instance of <kbd>AffineTransform</kbd> is used to rotate a rectangle 45 degrees when it is rendered.<p>
+</blockquote><blockquote><pre>
+	Rectangle2D rect = new Rectangle2D.Float(1.0,1.0,2.0,3.0);
+	AffineTransform rotate45 =   
+  	   AffineTransform.getRotateInstance(Math.PI/4.0,0.0,0.0)
+	g2.setTransform(rotate45);
+	g2.draw(rect);
+</pre></blockquote><blockquote>
+<a name="69496"><!-- --></a>
+In this example, an <kbd>AffineTransform</kbd> is used to rotate a text string around a center point:<p>
+</blockquote><blockquote><pre>
+	// Define the rendering transform
+	AffineTransform at = new AffineTransform();
+	// Apply a translation transform to make room for the
+	// rotated text.
+	at.setToTranslation(400.0, 400.0);
+	g2.transform(at);
+	// Create a rotation transform to rotate the text
+	at.setToRotation(Math.PI / 2.0);
+	// Render four copies of the string &#34;Java&#34; at 90 degree angles
+	for (int i = 0; i &lt; 4; i++) {
+    	   g2.drawString(&#34;Java&#34;, 0.0f, 0.0f);
+    	   g2.transform(at);
+	}
+</pre></blockquote><blockquote>
+<a name="69494"><!-- --></a>
+You can transform an image in the same way&#45;&#45;the transform in the <kbd>Graphics2D </kbd>context<kbd> </kbd>is applied during rendering regardless of the type of graphic object being rendered. <p>
+<a name="69540"><!-- --></a>
+To apply a transform to an image <em>without</em> changing the transform in the <kbd>Graphics2D</kbd> context, you can pass an <kbd>AffineTransform</kbd> to <kbd>drawImage</kbd>:<p>
+</blockquote><blockquote><pre>
+	AffineTransform rotate45 =   
+  	   AffineTransform.getRotateInstance(Math.PI/4.0,0.0,0.0)
+	g2.drawImage(myImage, rotate45);
+</pre></blockquote><blockquote>
+<a name="69464"><!-- --></a>
+Transforms can also be applied to a <kbd>Font </kbd>to create a modified version of the<kbd> Font</kbd>, for more information see <a href="j2d-fonts.fm6.html#74065">&#34;Creating Font Derivations&#34;</a>.<p>
+</blockquote>
+<br>
+<h3>
+<a name="68155"><!-- --></a>
+<i>2.3.6	</i> Specifying a Composition Style
+</h3>
+
+<blockquote>
+<a name="64024"><!-- --></a>
+An <kbd>AlphaComposite</kbd> encapsulates composition rules that determine how colors should be rendered when one object overlaps another. To specify the composition style for the <kbd>Graphics2D</kbd> context, you create an <kbd>AlphaComposite</kbd> and 
+
+
+pass it into <kbd>setComposite</kbd>. The most commonly used is composition style is <kbd>SRC_OVER</kbd>.<p>
+</blockquote>
+<br>
+<a name="62986"><!-- --></a>
+<h4><i>2.3.6.1	 Using the Source Over Compositing Rule
+</i></h4>
+
+<blockquote>
+<a name="64129"><!-- --></a>
+The <kbd>SRC_OVER</kbd> 
+compositing rule composites the source pixel over the destination pixel such 
+that the shared pixel takes the color of the source pixel. For example, if 
+you render a blue rectangle and then render a red rectangle that partially 
+overlaps it, the overlapping area will be red. In other words, the object 
+that is rendered last will appear to be on top.<p>
+<a name="64147"><!-- --></a>
+To use the <kbd>SRC_OVER</kbd> composition rule:<p>
+</blockquote><blockquote>
+<ol>
+<li>
+<a name="64148"><!-- --></a>
+Create an <kbd>AlphaComposite</kbd> object by calling <kbd>getInstance</kbd> 
+and specifying the <kbd>SRC_OVER</kbd> rule.
+
+<blockquote><pre>
+	AlphaComposite ac = 
+	   AlphaComposite.getInstance(AlphaComposite.SRC_OVER);
+</pre></blockquote>
+</li>
+
+<li>
+<a name="64163"><!-- --></a>
+Call <kbd>setComposite</kbd> to add the <kbd>AlphaComposite</kbd> object to 
+the <kbd>Graphics2D</kbd> context.
+<blockquote><pre>
+	g2.setComposite(ac);
+</pre></blockquote>
+</li>
+</ol>
+<a name="64153"><!-- --></a>
+Once the composite object is set, overlapping objects will be rendered using the specified composition rule.<p>
+</blockquote>
+<br>
+<a name="64058"><!-- --></a>
+<h4><i>2.3.6.2	 Increasing the Transparency of Composited Objects
+</i></h4>
+
+<blockquote>
+<a name="64061"><!-- --></a>
+<kbd>AlphaComposite</kbd> allows you to specify an additional constant alpha value that is multiplied with the alpha of the source pixels to increase transparency. <p>
+<a name="64070"><!-- --></a>
+For example, to create an <kbd>AlphaComposite</kbd> object that renders the source object 50% transparent, specify an alpha of .5:<p>
+</blockquote><blockquote><pre>
+	AlphaComposite ac = 
+	   AlphaComposite.getInstance(AlphaComposite.SRC_OVER, .5f);
+</pre></blockquote><blockquote>
+<a name="67498"><!-- --></a>
+In the following example, a source over alpha composite object is created with an alpha of .5 and added to the graphics context, causing subsequent shapes to be rendered 50% transparent. <p>
+</blockquote><blockquote><pre>
+	public void paint(Graphics g) {
+  	   Graphics2D g2 = (Graphics2D) g;
+
+  	   g2.setColor(Color.red);
+  	   g2.translate(100,50);
+  	   // radians=degree * pie / 180
+  	   g2.rotate((45*java.lang.Math.PI)/180); 
+  	   g2.fillRect(0,0,100,100);
+  	   g2.setTransform(new AffineTransform());  // set to identity
+  	   // Create a new alpha composite
+  	   AlphaComposite ac =
+      	   AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.5f);
+  	   g2.setComposite(ac);
+  	   g2.setColor(Color.green);
+  	   g2.fillRect(50,0,100,100);
+  	   g2.setColor(Color.blue);
+  	   g2.fillRect(125,75,100,100);
+  	   g2.setColor(Color.yellow);
+   	   g2.fillRect(50,125,100,100);
+  	   g2.setColor(Color.pink);
+  	   g2.fillRect(-25,75,100,100);
+	}
+</pre></blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-awt.fm2.html">PREV</a>
+ | <a href="j2d-awt.fm4.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Mon Nov 22 12:29:53 1999 -->
+ 
+
+
+</body>
+</html>

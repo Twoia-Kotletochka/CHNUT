@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 1 - System Architecture
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="serial-arch.doc6.html">PREV</a>
+ | <a href="serial-arch.doc8.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="5253"><i>	1.7	</i> Accessing Serializable Fields of a Class
+</a></h2>
+
+<blockquote>
+<a name="5520"><!-- --></a>
+Serialization provides two mechanisms for accessing the serializable fields in a stream:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="6679"><!-- --></a>
+The default mechanism requires no customization
+</li>
+<li>
+<a name="6680"><!-- --></a>
+The Serializable Fields API allows a class to explicitly access/set the serializable fields by name and type
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="5254"><!-- --></a>
+The default mechanism is used automatically when reading or writing objects that implement the <code>Serializable</code> interface and do no further customization. The serializable fields are mapped to the corresponding fields of the class and values are either written to the stream from those fields or are read in and assigned respectively. If the class provides <code>writeObject</code> and <code>readObject</code> methods, the default mechanism can be invoked by calling <code>defaultWriteObject</code> and <code>defaultReadObject</code>. When the <code>writeObject</code> and <code>readObject</code> methods are implemented, the class has an opportunity to modify the serializable field values before they are written or after they are read.<p>
+<a name="5255"><!-- --></a>
+When the default mechanism cannot be used, the serializable class can use the <code>putFields</code> method of <code>ObjectOutputStream</code> to put the values for the serializable fields into the stream. The <code>writeFields</code> method of <code>ObjectOutputStream</code> puts the values in the correct order, then writes them to the stream using the existing protocol for serialization. Correspondingly, the <code>readFields</code> method of <code>ObjectInputStream</code> reads the values from the stream and makes them available to the class by name in any order. See <a href="output.doc2.html#5068">Section&#160;2.2, &#34;The ObjectOutputStream.PutField Class</a>&#34; and <a href="input.doc2.html#4936">Section&#160;3.2, &#34;The ObjectInputStream.GetField Class</a>.&#34; for a detailed description of the Serializable Fields API.<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="serial-arch.doc6.html">PREV</a>
+ | <a href="serial-arch.doc8.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:47:50 1999 -->
+ 
+
+
+</body>
+</html>

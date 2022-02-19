@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 5 - Versioning of Serializable Objects
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="version.doc4.html">PREV</a>
+ | <a href="version.doc6.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="6519"><i>	5.5	</i> Compatible Java<sup><font size="-2">TM</font></sup> Type Evolution
+</a></h2>
+
+<blockquote>
+<a name="6520"><!-- --></a>
+In the Java<sup><font size="-2">TM</font></sup> Language Specification, Chapter 13 discusses binary compatibility of Java<sup><font size="-2">TM</font></sup> classes as those classes evolve. Most of the flexibility of binary compatibility comes from the use of late binding of symbolic references for the names of classes, interfaces, fields, methods, and so on. <p>
+<a name="6593"><!-- --></a>
+The following are the principle aspects of the design for versioning of serialized object streams.<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="5549"><!-- --></a>
+The default serialization mechanism will use a symbolic model for binding the fields in the stream to the fields in the corresponding class in the virtual machine.
+</li>
+<li>
+<a name="5550"><!-- --></a>
+Each class referenced in the stream will uniquely identify itself, its supertype, and the types and names of each serializable field written to the stream. The fields are ordered with the primitive types first sorted by field name, followed by the object fields sorted by field name.
+</li>
+<li>
+<a name="7102"><!-- --></a>
+Two types of data may occur in the stream for each class: required data (corresponding directly to the serializable fields of the object); and optional data (consisting of an arbitrary sequence of primitives and objects). The stream format defines how the required and optional data occur in the stream so that the whole class, the required, or the optional parts can be skipped if necessary.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul><li>The required data consists of the fields of the object in the order defined by the class descriptor. </li></blockquote>
+</ul><a name="7096"><!-- --></a>
+<TABLE BORDER=0 WIDTH="100%">
+<TR ALIGN=LEFT>
+<TD WIDTH="8%" ALIGN="LEFT" >&nbsp;</TD>
+<TD WIDTH="3%" ALIGN="LEFT" VALIGN="BOTTOM">
+-
+</TD>
+<TD WIDTH="89%" ALIGN="LEFT" VALIGN="BOTTOM">The optional data is written to the stream and does not correspond directly to fields of the class. The class itself is responsible for the length, types, and versioning of this optional information.</TD>
+</TR>
+</TABLE>
+
+<blockquote>
+<ul><li>
+<a name="7100"><!-- --></a>
+If defined for a class, the <code>writeObject</code>/<code>readObject</code> methods supersede the default mechanism to write/read the state of the class. These methods write and read the optional data for a class. The required data is written by calling <code>defaultWriteObject</code> and read by calling <code>defaultReadObject</code>.
+</li>
+<li>
+<a name="5552"><!-- --></a>
+The stream format of each class is identified by the use of a Stream Unique Identifier (SUID). By default, this is the hash of the class. All later versions of the class must declare the Stream Unique Identifier (SUID) that they are compatible with. This guards against classes with the same name that might inadvertently be identified as being versions of a single class.
+</li>
+<li>
+<a name="6676"><!-- --></a>
+Subtypes of <code>ObjectOutputStream</code> and <code>ObjectInputStream</code> may include their own information identifying the class using the <code>annotateClass</code> method; for example, <code>MarshalOutputStream</code> embeds the URL of the class.
+</li>
+</ul>
+</blockquote>
+
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="version.doc4.html">PREV</a>
+ | <a href="version.doc6.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:48:07 1999 -->
+ 
+
+
+</body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title></title>
+</head>
+<body bgcolor=#ffffff>
+
+<table width=100%><tr>
+<td><font size=-1>
+<a href="jdbc2.1.frame.html">Contents</a>  | <a href="jdbc2.1.frame6.html">Prev</a>  | <a href="jdbc2.1.frame8.html">Next</a>
+</font></td><td align=right><i>JDBC<sup><font size=-2>TM</font></sup> Guide: Getting Started</i></td>
+</tr></table>
+<hr>
+<br>
+ 
+
+<a name="285951"></a>
+<h2>	7	 Persistence for Java Objects</h2>
+
+<a name="297423"></a>
+The JDBC 1.0 API provided some support for storing objects and retrieving Java objects
+from a database via the <code>getObject()</code> and <code>setObject() </code>mechanism. The new 
+JDBC API enhances the ability of a JDBC driver to implement persistence for Java objects
+in general, by providing new metadata capabilities that can be used to retrieve a 
+description of the Java objects that a data source contains. Instances of a Java programming
+language class (Java class) can be stored in a database as serialized Java objects, 
+or in some other vendor specific format. If object serialization is used then references 
+between objects can be treated according to the rules specified by Java object serialization.
+
+<p>
+<a name="297434"></a>
+The new JDBC API features described in this chapter are intended to support a new 
+generation of Java-aware database management systems, termed <em>Java-relational 
+DBMSs</em>. A Java-relational DBMS extends the type system of a database with Java object
+types and allows users to write queries that reference these types. Several database 
+vendors are creating products with Java-relational capabilities. The mechanisms described
+in this chapter are optional. JDBC drivers that do not support the capabilities 
+described in this chapter are not required to implement them.
+<p>
+<a name="293109"></a>
+Lets take a look at how a typical application written in the Java programming language 
+(Java application) can make use of the JDBC API to store and retrieve Java objects.
+<p>
+
+<a name="288718"></a>
+<h3>7.1 	  &nbsp; &nbsp; Retrieving Java objects</h3>
+<a name="297383"></a>
+The example below shows how objects can be retrieved using the JDBC API. The example
+query references a table, <code>PERSONNEL</code>, that contains a column called <code>Employee</code> 
+containing instances of the Java class <code>Employee</code>. Here, the column name, <code>Employee</code>, 
+and the Java class name are the same, but this is not required by the JDBC API. In fact, 
+since there is currently not a standard, agreed upon syntax for SQL queries that reference
+Java programming language types (Java types), the JDBC API does not mandate 
+the use of any particular query syntax.
+<p>
+<a name="292868"></a>
+
+<p>
+<blockquote><pre>ResultSet rs = stmt.executeQuery( 
+	"SELECT Employee FROM PERSONNEL");
+rs.next();
+Employee emp = (Employee)rs.getObject(1);
+
+</pre></blockquote><a name="288720"></a>
+	
+<p>
+<a name="292884"></a>
+The example selects all of the <code>Employee</code> instances from the <code>PERSONNEL</code> table. The <code>ResultSet.next()
+</code> method is called to position the result set to the first row containing 
+an <code>Employee</code>. The example application then obtains an <code>Employee</code> instance by calling 
+<code>ResultSet.getObject()</code>. This causes the JDBC driver to construct an instance of the 
+<code>Employee</code> class, possibly by deserializing a serialized object instance, and return the instance
+as a <code>java.lang.Object</code> which the application then narrows to an <code>Employee</code>.
+<p>
+<a name="293026"></a>
+Note that the example above does not contain any additions to the JDBC 1.0 API aside 
+from possibly requiring some form of extended SQL query syntax which is not specified
+by the JDBC API. As an aside, we note that the JDBC technology based code 
+shown above can also be used to retrieve data of an SQL user-defined type that is being 
+mapped to a Java class. The details on how this is done are specified in a later chapter.
+<p>
+
+<a name="288721"></a>
+<h3>7.2 	  &nbsp; &nbsp; Storing Java objects</h3>
+<a name="288607"></a>
+The following example code illustrates the process of updating a Java object and making
+the updated copy of the object persistent using JDBC technology. 
+<p>
+<a name="293066"></a>
+
+<p>
+<blockquote><pre>emp.setSalary(emp.getSalary() * 1.5);
+PreparedStatement pstmt = con.preparedStatement(
+"UPDATE PERSONNEL SET Employee = ? WHERE Employee.no = 1001");
+pstmt.setObject(1, emp);
+pstmt.executeUpdate();
+
+
+</pre></blockquote><a name="293060"></a>
+The example gives an employee a 50% raise. First, the <code>Employee.setSalary()</code> method
+is called to update the value of the employee's salary. Note that the semantics of 
+methods on the <code>Employee</code> class are not specified by the JDBC API. Here, we assume 
+that the <code>Employee</code> class is an ordinary Java class, so calling <code>Employee.setSalary() 
+</code>just changes the value of some private data field contained in the <code>Employee</code> instance. 
+Calling <code>Employee.setSalary()</code> does not update the database, for example, although 
+an alternative implementation could do this, in effect making database updates `transparent'
+to applications that use the <code>Employee</code> class.
+<p>
+<a name="293065"></a>
+Next, a <code>PreparedStatement</code> object is created using an extended SQL UPDATE command
+-the query syntax used in the example is again not mandated by the JDBC API. 
+The UPDATE command specifies that the <code>Employee</code> column in the <code>PERSONNEL</code> table is 
+to be changed for a specified row. <code>PreparedStatement.setObject()</code> is used to pass 
+the <code>Employee</code> object to the prepared statement, and the <code>executeUpdate()</code> method updates
+the <code>Employee</code> value stored in the database.
+<p>
+<a name="288788"></a>
+Note once again that the example above does not involve any syntactic additions to the 
+JDBC 1.0 API. In addition, the same code could be used if the Employee class was being
+mapped to an SQL user-defined type.
+<p>
+
+<a name="297610"></a>
+<h3>7.3 	  &nbsp; &nbsp; Additional metadata </h3>
+<a name="297633"></a>
+The new JDBC API contains new metadata support that allows an application to obtain 
+a complete description of the Java objects that are stored in a data source.
+<p>
+
+<a name="297533"></a>
+<h4>	7.3.1	 Identifying Java objects</h4>
+<a name="297622"></a>
+A new type code, <code>JAVA_OBJECT</code>, has been added to <code>java.sql.Types </code>to denote a Java 
+object type. The <code>JAVA_OBJECT</code> type code is returned by methods such as <code>DatabaseMetaData.getTypeInfo()
+</code>and<code> DatabaseMetaData.getColumns()</code>. For example,
+if a DBMS supports types that can be a Java class, 
+<code>DatabaseMetaData.getTypeInfo()</code> would return a result set containing the following 
+entry:
+<p>
+<a name="297535"></a>
+
+<p>
+<ol><a name="297536"></a>
+<li><strong>TYPE_NAME</strong> String =&gt; data source specific name (may be null)
+
+<a name="297537"></a>
+<li><strong>DATA_TYPE</strong> short =&gt; <code>java.sql.Types.JAVA_OBJECT
+</code>
+<a name="297538"></a>
+<li>etc.
+
+</ol><a name="297539"></a>
+
+<p>
+<a name="297540"></a>
+The TYPE_NAME column contains the data source specific term for a Java object, 
+such as "JavaObject", "Serialized" etc. TYPE_NAME may be null.
+<p>
+
+<a name="297551"></a>
+<h4>	7.3.2	 Retrieving schema-specific Java type descriptions</h4>
+<a name="297664"></a>
+A Java class is typically registered with a particular database schema before it is used 
+in defining the schema's tables. Information on schema-specific user-defined types-
+of which <code>JAVA_OBJECT</code> types are one particular kind-can be retrieved by calling the 
+<code>DatabaseMetaData.getUDTs()</code> method. For example,
+<p>
+<a name="297678"></a>
+
+<p>
+<blockquote><pre><code>int[] types = {Types.JAVA_OBJECT};
+</code><code>ResultSet rs = dmd.getUDTs("catalog-name", "schema-name", 
+</code><code>	"%", types);
+</code></pre></blockquote><a name="297557"></a>
+
+<p>
+<a name="297558"></a>
+returns descriptions of all the Java object types <strong>defined</strong> in the <code>catalog-name.schema-
+name </code>schema<code>. </code>If the driver does not support UDTs or no matching UDTs are found 
+then an empty result set is returned.
+<p>
+<a name="297711"></a>
+Each type description has the following columns:
+<p>
+<a name="297584"></a>
+ 
+<Table Border="0">
+<caption></caption>
+<tr><td><strong>TYPE_CAT
+</strong><td>String =&gt; the type's catalog (may be null)
+
+<tr><td><strong>TYPE_SCHEM
+</strong><td>String =&gt; the type's schema (may be null)
+
+<tr><td><strong>TYPE_NAME
+</strong><td>String =&gt; the database type name
+
+<tr><td>JAVA_CLASS
+<td>String =&gt; a Java classname 
+
+<tr><td><strong>DATA_TYPE
+</strong><td>short =&gt; value defined in <code>java.sql.Types</code>, e.g. 
+JAVA_OBJECT
+
+<tr><td><strong>REMARKS
+</strong><td>String =&gt; explanatory comment on the type
+
+
+</Table>
+
+<Table>
+<tr><td>
+</Table>
+
+<p>
+<a name="297721"></a>
+
+<p>
+<a name="297585"></a>
+The <strong>TYPE_CAT</strong>, <strong>TYPE_SCHEM</strong>, <strong>DATA_TYPE</strong>, and <strong>REMARKS</strong> columns should 
+be self-explanatory. The <strong>TYPE_NAME</strong> is, in effect, the SQL type name. This is the 
+name used in a CREATE TABLE statement to specify a column of this type. 
+<p>
+<a name="297586"></a>
+When <strong>DATA_TYPE</strong> is <code>JAVA_OBJECT</code>, the <strong>JAVA_CLASS </strong>is the fully qualified Java 
+class name of the Java class associated with <strong>TYPE_NAME</strong>. All values actually stored 
+in a <strong>TYPE_NAME</strong> column must be instances of this class or one of its subclasses. Instances
+of this class or a subclass are materialized by the JDBC driver when values are 
+fetched from a <strong>TYPE_NAME</strong> column by an application that uses JDBC technology.
+<p>
+<a name="300789"></a>
+The <code>DatabaseMetaData.getUDTs()</code> method also accepts a fully qualified SQL name 
+as its third parameter. In this case the catalog and schema pattern parameters are ignored.
+The fully qualified SQL name may contain wildcards. For example, the code 
+sample below is equivalent to the previous example,
+<p>
+<a name="300794"></a>
+
+<p>
+<blockquote><pre><code>int[] types = {Types.JAVA_OBJECT};
+</code><code>ResultSet rs = dmd.getUDTs(null, null, 
+</code><code>	"catalog-name.schema-name.%", types);
+</code>
+</pre></blockquote><a name="300804"></a>
+Here we have assumed that the `.' character is used to separate the elements of a fully 
+qualified name. Note that since the format of fully qualified names may vary between 
+database systems, one should generally not hardcode fully qualifed names as in the example
+above. The <code>DatabaseMetaData</code> interface provides information about the format 
+of fully qualified names that is supported by a particular JDBC driver.
+<p>
+
+<a name="297591"></a>
+<h4>	7.3.3	 Retrieving the Java class object</h4>
+<a name="297592"></a>
+The JDBC API doesn't provide any special support for loading the Java class files that 
+correspond to Java objects being stored in a database. An application should be able to 
+obtain the class object that corresponds to an object in the database by calling 
+<code>Class.forName()</code> and passing the class name as a parameter. In other words, the JDBC 
+API assumes that the bytecodes for objects stored in the database are loaded via the usual
+Java programming language mechanism.
+<p>
+<a name="300148"></a>
+
+<p>
+<a name="297646"></a>
+
+<p>
+
+
+<br>
+<hr> 
+<font size=-1>
+<a href="jdbc2.1.frame.html">Contents</a>  | <a href="jdbc2.1.frame6.html">Prev</a>  | <a href="jdbc2.1.frame8.html">Next</a>
+</font>
+<hr>
+
+
+
+<address>
+<a href="mailto:jdbc@eng.sun.com">jdbc@eng.sun.com</a>
+or
+<a href="mailto:jdbc-business@eng.sun.com">jdbc-business@eng.sun.com</a>
+</address>
+
+<i><a href="../../../relnotes/SMICopyright.html">
+Copyright</a> &#169; 1996-1999 Sun Microsystems, Inc.   All rights reserved.</i>
+
+
+<!-- HTML generated by Suzette Pelouch on December 01, 1999 -->
+
+</body>
+</html>

@@ -1,0 +1,177 @@
+<HTML>
+<HEAD>
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.02 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <TITLE>RMI Release Notes</TITLE>
+<!-- Changed by: Jen McGinn,  18-Nov-1999 -->
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000FF" VLINK="#000077" ALINK="#FF0000">
+&nbsp;
+<TABLE BORDER=0 WIDTH="100%" >
+<TR>
+<TD WIDTH="60"><IMG SRC="images/javalogo52x88.gif" ALT="Java" BORDER=0 HEIGHT=88 WIDTH=52>&nbsp;</TD>
+
+<TD>
+<CENTER>
+<H1>
+RMI Release Notes</H1></CENTER>
+</TD>
+
+<TD width=15% ALIGN=center>
+   <font size="-1"><a href="../../index.html">
+	Contents of the<BR> 
+	Java<sup><font size=-2>TM</sup></font> 2 SDK,<BR> 
+	Standard Edition,<BR> 
+	v 1.3 </a>
+   </font>
+</TD>
+
+</TR>
+</TABLE>
+<!-- Body text begins here -->
+<B><FONT SIZE=+2>Serialization Enhancements (notable for RMI)</FONT></B>
+<blockquote>
+<dl>
+<dt>
+<B>Strings longer than 64K can now be serialized (since 1.3)</B></dt>
+
+<dd>Prior to 1.3, an attempt to serialize a string longer than 64K
+would result in a <code>java.io.UTFDataFormatException</code> being
+thrown.  In 1.3, the serialization protocol has been enhanced to allow
+strings longer than 64K to be serialized.  RMI will also allow these
+longer strings to be passed in RMI calls between 1.3-compatible Java
+virtual machines* (JVMs).  Note that if a 1.2 (or earlier) JVM attempts
+to read a long string written from a 1.3-compatible JVM, the 1.2 (or
+earlier) JVM will receive a
+<code>java.io.StreamCorruptedException</code>.</dd>
+<p>
+<dt>
+<B>Serialization performance enhancements (since 1.3)</B></dt>
+<dd>UTF read</code> and write performance has improved significantly in
+1.3.  Additionally, writing the fields of an object during default
+serialization and reading the fields of an object during default
+deserialization is up to 20% faster.  Other general implementation
+improvements have also increased performance up to an additional 20%.
+These serialization improvements have increased the overall performance
+of RMI calls that pass objects as parameters or return values.</dd>
+<p>
+<dt>
+<B>Improved exception reporting (since 1.3)</B></dt>
+
+<dd>If a class can not be found during the class resolution process of
+deserialization, the original
+<code>java.lang.ClassNotFoundException</code> is thrown instead of a
+generic one so that more information about the failure is available.
+Another improvement to deserialization exception reporting includes
+maintaining the name of the original class that could not be found
+instead of reporting a higher-level class that was being deserialized.
+For example, if (in an RMI call) the stub class <i>can</i> be found but
+the remote interface class cannot, the serialization mechanism will now
+report correctly that the interface class was the class that could not
+be found instead of erroneously reporting that the stub class could not
+be found.
+</dd>
+</dl>
+</blockquote>
+
+<B><FONT SIZE=+2>RMI Enhancements</FONT></B>
+<blockquote>
+<dl>
+<dt>
+<b><code><A HREF="../../api/java/rmi/activation/ActivationGroupDesc.html">java.rmi.activation.ActivationGroupDesc</code></a> (since 1.3)</b></dt>
+<dd>
+The <code>getClassName</code> method, which returns the group's class
+name, can now return <code>null</code>, indicating the system's default group
+implementation.  Previously, the <code>getClassName</code> method would
+return the name of the internal implementation class if the default
+group implementation was chosen when the descriptor was constructed.
+<p>
+Due to this change, if an application running in a 1.3 JVM registers an
+new activatable object with the <code>ActivationSystem</code>,
+<code>rmid</code> must also be upgraded to run 1.3, since a pre-1.3
+<code>rmid</code> will not be able to activate the newly registered
+activatable object.
+<p>
+<dt><b>Constructors of activatable objects (since 1.3)</b></dt>
+<dd>
+An activatable object's "activation" constructor, which takes an
+<code>ActivationID</code> and a <code>MarshalledObject</code>as
+arguments and which is called by the
+<code>ActivationInstantiator</code> each time the object is activated,
+can now be <code>private</code> or <code>protected</code>.  Previously,
+the implementation only allowed <code>public</code> activation
+constructors.
+<p>
+<dt>
+<B>Serializing remote objects (since 1.2.2)</B></dt>
+<dd>Prior to 1.2.2, an attempt to pass an unexported remote object in a RMI
+call would result in a <code>java.rmi.StubNotFoundException</code>.
+This exception was a result of the RMI runtime's failure to locate a
+stub object during an attempt to replace a remote object implementation
+with its corresponding stub. In 1.2.2 and later releases, an unexported
+remote object passed in an RMI call will no longer result in an
+exception, but rather the remote object will be serialized instead of
+its stub.  If the remote object implementation is not serializable, an
+attempt to pass an unexported object in an RMI call will result in a
+<code>java.rmi.RemoteException</code> with the nested exception
+<code>java.io.NotSerializableException</code>.
+<p>
+<dt>
+<B><code><A HREF="../../api/java/rmi/server/RMIClassLoader.html">java.rmi.server.RMIClassLoader</A></code> (since 1.3)</B></dt>
+<dd>
+
+<code>java.rmi.server.RMIClassLoader</code> has a new method,
+<code>getClassLoader</code>. This method returns the class loader that
+RMI uses to load classes from a
+ specified codebase URL path.  This API can be used in an
+ implementation that requires complete RMI marshalling/unmarshalling
+behavior.  See <code><A
+HREF="../../api/java/rmi/server/RMIClassLoader.html">java.rmi.server.RMIClassLoader</A></code>
+for details.
+</dd> 
+</dl>
+</blockquote>
+
+<B><FONT SIZE=+2>Changes to RMI Tools</FONT></B>
+<dl>
+<dt>
+<blockquote>
+<dt><b>The RMI Stub Compiler, <code><a href="../../tooldocs/solaris/rmic.html">rmic</code></a></B></dt>
+<ul>
+<li>By default, <code>rmic</code> now assumes that the destination
+directory for generated stubs is the package-named subdirectory of the
+current working directory. If the "<code>-d</code>" option is not
+specified, the result is the same as though it were specified with the
+current working directory "." as an argument. The "<code>-d</code>"
+may still be used to override the default destination directory.</li>
+
+<li>Two new options, "<code>-idl</code>" and "<code>-iiop</code>" have been added to generate IDL and stubs for IIOP, respectively. 
+</LI>
+</blockquote>
+</dl>
+</UL>
+<dl>
+<dt>
+<blockquote>
+<dt><b>The RMI Activation Daemon, <code><a href="../../tooldocs/solaris/rmid.html">rmid</code></a></B></dt>
+<dd> By default, <code>rmid</code> now requires a security policy file.
+</dl>
+<P>
+
+<B>*As used on this web site, the terms "Java virtual machine" or "JVM" 
+	mean a virtual machine for the Java platform.</B>
+
+
+<!-- Body text ends here --><!-- ============================================================== -->
+<HR SIZE=3 NOSHADE>
+<TABLE BORDER=0 WIDTH="100%" >
+<TR VALIGN=TOP>
+<TD><FONT SIZE=-2><A HREF="../../relnotes/SMICopyright.html">Copyright &copy;</A>
+1999 <A HREF="http://www.sun.com/">Sun Microsystems, Inc.</A> All Rights
+Reserved.</FONT>&nbsp;
+<BR><FONT SIZE=-1>Please send comments to: <A HREF="mailto:rmi-comments@java.sun.com">rmi-comments@java.sun.com</A>&nbsp;</FONT></TD>
+
+<TD ALIGN=RIGHT><IMG SRC="../../images/sunlogo64x30.gif" ALT="Sun" BORDER=0 HEIGHT=30 WIDTH=64>&nbsp;
+</TR>
+</TABLE>
+</BODY>
+</HTML>

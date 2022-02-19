@@ -1,0 +1,91 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Remote Method Invocation: 4 - Client Interfaces
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="rmiTOC.html">CONTENTS</a> | <a href="rmi-client3.html">PREV</a>
+ | <a href="rmi-server.html">NEXT</a> 
+<!-- /font --></td><td align=right><i>Java Remote Method Invocation</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="5112"><i>	4.3	</i> The <code>Naming</code> Class
+</a></h2>
+
+<blockquote>
+<a name="5102"><!-- --></a>
+<blockquote>
+<a name="734"><!-- --></a>
+The <code>java.rmi.Naming</code> class provides methods for storing and obtaining references to remote objects in the remote object registry. The <code>Naming</code> class&#39;s methods take, as one of their arguments, a name that is URL formatted <code>java.lang.String</code> of the form:<p>
+</blockquote><blockquote><pre>   //host:port/name
+</pre></blockquote><blockquote>
+<a name="1991"><!-- --></a>
+where <em>host</em> is the host (remote or local) where the registry is located, <em>port</em> is the port number on which the registry accepts calls, and where <em>name</em> is a simple string uninterpreted by the registry. Both <em>host</em> and <em>port</em> are optional. If <em>host</em> is omitted, the host defaults to the local host. If <em>port</em> is omitted, then the port defaults to 1099, the &#34;well-known&#34; port that RMI&#39;s registry, <code>rmiregistry</code>, uses.<p>
+<a name="1993"><!-- --></a>
+<em>Binding</em> a name for a remote object is associating or registering a name for a remote object that can be used at a later time to look up that remote object. A remote object can be associated with a name using the <code>Naming</code> class&#39;s <code>bind</code> or <code>rebind</code> methods.<p>
+<a name="2059"><!-- --></a>
+Once a remote object is registered (bound) with the RMI registry on the local host, callers on a remote (or local) host can lookup the remote object by name, obtain its reference, and then invoke remote methods on the object. A registry may be shared by all servers running on a host or an individual server process may create and use its own registry if desired (see the <code>java.rmi.registry.LocateRegistry.createRegistry</code> method for details).<p>
+</blockquote><blockquote><pre>package java.rmi;<p>
+public final class Naming {
+	public static Remote lookup(String url)
+		throws NotBoundException, java.net.MalformedURLException,
+		RemoteException;
+	public static void bind(String url, Remote obj)
+		throws AlreadyBoundException,
+		java.net.MalformedURLException, RemoteException;	
+	public static void rebind(String url, Remote obj)
+		throws RemoteException, java.net.MalformedURLException;
+	public static void unbind(String url)
+		throws RemoteException, NotBoundException,
+		java.net.MalformedURLException;
+	public static String[] list(String url)
+		throws RemoteException, java.net.MalformedURLException;
+}
+</pre></blockquote><blockquote>
+<a name="654"><!-- --></a>
+The <code>lookup</code> method returns the remote object associated with the file portion of the name. The <code>NotBoundException</code> is thrown if the name has not been bound to an object.<p>
+<a name="656"><!-- --></a>
+The <code>bind</code> method binds the specified name to the remote object. It throws the <code>AlreadyBoundException</code> if the name is already bound to an object.<p>
+<a name="659"><!-- --></a>
+The <code>rebind</code> method always binds the name to the object even if the name is already bound. The old binding is lost.<p>
+<a name="643"><!-- --></a>
+The <code>unbind</code> method removes the binding between the name and the remote object. It will throw the <code>NotBoundException</code> if there was no binding.<p>
+<a name="846"><!-- --></a>
+The <code>list</code> method returns an array of <code>String</code> objects containing a snapshot of the URLs bound in the registry. Only the host and port information of the URL is needed to contact a registry for the list of its contents; thus, the &#34;file&#34; part of the URL is ignored.<p>
+</blockquote>
+<blockquote><hr noshade size="1">
+<b><a name="1705">Note - </a></b>The <code>java.rmi.AccessException</code> may also be thrown as a result of any of these methods. The <code>AccessException</code> indicates that the caller does not have permission to execute the specific operation. For example, only clients that are local to the host on which the registry runs are permitted to execute the operations, <code>bind</code>, <code>rebind</code>, and <code>unbind</code>. A <code>lookup</code> operation, however can be invoked from any non-local client. 
+<hr noshade size="1">
+</blockquote>
+</ul>
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="rmiTOC.html">CONTENTS</a> | <a href="rmi-client3.html">PREV</a>
+ | <a href="rmi-server.html">NEXT</a> 
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF=http://java.sun.com/products/jdk/1.3/docs/relnotes/SMICopyright.html>Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Susan Snyder -->
+<!-- Last updated: Wednesday November 10 04 11:11:27 1999 -->
+ 
+
+
+</body>
+</html>

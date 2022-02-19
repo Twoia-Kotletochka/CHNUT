@@ -1,0 +1,3315 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title> </title>
+</head>
+<body bgcolor=#ffffff>
+
+<table width=600><tr>
+<td><a href="jniTOC.doc.html">Contents</a> | <a href="types.doc.html">Prev</a> | <a href="invocation.doc.html">Next</a> 
+</td><td align=right><i>Java Native Interface Specification
+</i></td>
+</tr></table>
+ 
+
+<hr><br>
+ 
+<h1><a name="15773"></a>
+<strong> 4 -  JNI Functions
+ </strong></h1>
+<hr><p><a name="15899"></a>
+This chapter serves as the reference section for the JNI functions. It provides a 
+complete listing of all the JNI functions. It also presents the exact layout of the 
+JNI function table.
+<p><a name="5821"></a>
+Note the use of the term "must" to describe restrictions on JNI programmers. 
+For example, when you see that a certain JNI function <em>must</em> receive a non-NULL 
+object, it is your responsibility to ensure that NULL is not passed to that JNI 
+function. As a result, a JNI implementation does not need to perform NULL 
+pointer checks in that JNI function.
+<p><a name="5310"></a>
+A portion of this chapter is adapted from Netscape's JRI documentation.
+<p><a name="3476"></a>
+The reference material groups functions by their usage. The reference section is 
+organized by the following functional areas:
+<p><ul><a name="3739"></a>
+<li><a href="functions.doc.html#23717"><em>Version Information</em></a>
+
+<a name="3744"></a>
+<li><a href="functions.doc.html#15982"><em>Class Operations</em></a>
+
+<a name="3749"></a>
+<li><a href="functions.doc.html#5234"><em>Exceptions</em></a>
+
+<a name="3754"></a>
+<li><a href="functions.doc.html#16270"><em>Global and Local References</em></a>
+
+<a name="3759"></a>
+<li><a href="functions.doc.html#16334"><em>Object Operations</em></a>
+
+<a name="3764"></a>
+<li><a href="functions.doc.html#16536"><em>Accessing Fields of Objects</em></a>
+
+<a name="3769"></a>
+<li><a href="functions.doc.html#16656"><em>Calling Instance Methods</em></a>
+
+<a name="3774"></a>
+<li><a href="functions.doc.html#5901"><em>Accessing Static Fields</em></a>
+
+<a name="3779"></a>
+<li><a href="functions.doc.html#20949"><em>Calling Static Methods</em></a>
+
+<a name="3784"></a>
+<li><a href="functions.doc.html#5386"><em>String Operations</em></a>
+
+<a name="3789"></a>
+<li><a href="functions.doc.html#17314"><em>Array Operations</em></a>
+
+<a name="3794"></a>
+<li><a href="functions.doc.html#5833"><em>Registering Native Methods</em></a>
+
+<a name="3799"></a>
+<li><a href="functions.doc.html#5256"><em>Monitor Operations</em></a>
+
+<a name="3804"></a>
+<li><a href="functions.doc.html#5263"><em>Java VM Interface</em></a>
+
+</ul><hr align=left><a name="23720"></a>
+<h1> Interface Function Table
+</h1>
+<a name="23721"></a>
+Each function is accessible at a fixed offset through the <var>JNIEnv</var> argument. The 
+<var>JNIEnv</var> type is a pointer to a structure storing all JNI function pointers. It is 
+defined as follows:
+<p><pre>    typedef const struct JNINativeInterface *JNIEnv;
+</pre><a name="23802"></a>
+The VM initializes the function table, as shown by <a href="functions.doc.html#3818">Code &#32;Example &#32;4-1</a>. Note that 
+the first three entries are reserved for future compatibility with COM. In 
+addition, we reserve a number of additional <code>NULL</code> entries near the beginning of 
+the function table, so that, for example, a future class-related JNI operation can 
+be added after FindClass, rather than at the end of the table.
+<p><a name="5267"></a>
+Note that the function table can be shared among all JNI interface pointers.
+<p><a name="3818"></a>
+<dl><dd>
+<Table Border="0">
+<caption><a name="2556"></a>
+<h4>Code Example 4-1	 
+</h4>
+</caption>
+<tr><td><pre>    const struct JNINativeInterface ... = {</pre>
+<tr><td><pre>        NULL,</pre>
+<tr><td><pre>        NULL,</pre>
+<tr><td><pre>        NULL,</pre>
+<tr><td><pre>        NULL,</pre>
+<tr><td><pre>        GetVersion,</pre>
+<tr><td><pre>    </pre>
+<tr><td><pre>        DefineClass,</pre>
+<tr><td><pre>        FindClass,</pre>
+<tr><td><pre>        NULL,</pre>
+<tr><td><pre>        NULL,</pre>
+<tr><td><pre>        NULL,</pre>
+<tr><td><pre>        GetSuperclass,</pre>
+<tr><td><pre>        IsAssignableFrom,</pre>
+<tr><td><pre>        NULL,</pre>
+<tr><td><pre>    </pre>
+<tr><td><pre>        Throw,</pre>
+<tr><td><pre>        ThrowNew,</pre>
+<tr><td><pre>        ExceptionOccurred,</pre>
+<tr><td><pre>        ExceptionDescribe,</pre>
+<tr><td><pre>        ExceptionClear,</pre>
+<tr><td><pre>        FatalError,</pre>
+<tr><td><pre>        NULL,</pre>
+<tr><td><pre>        NULL,</pre>
+<tr><td><pre>    </pre>
+<tr><td><pre>        NewGlobalRef,</pre>
+<tr><td><pre>        DeleteGlobalRef,</pre>
+<tr><td><pre>        DeleteLocalRef,</pre>
+<tr><td><pre>        IsSameObject,</pre>
+<tr><td><pre>        NULL,</pre>
+<tr><td><pre>        NULL,</pre>
+<tr><td><pre>    </pre>
+<tr><td><pre>        AllocObject,</pre>
+<tr><td><pre>        NewObject,</pre>
+<tr><td><pre>        NewObjectV,</pre>
+<tr><td><pre>        NewObjectA,</pre>
+<tr><td><pre>    </pre>
+<tr><td><pre>        GetObjectClass,</pre>
+<tr><td><pre>        IsInstanceOf,</pre>
+<tr><td><pre>    </pre>
+<tr><td><pre>        GetMethodID,</pre>
+<tr><td><pre>    </pre>
+<tr><td><pre>        CallObjectMethod,</pre>
+<tr><td><pre>        CallObjectMethodV,</pre>
+<tr><td><pre>        CallObjectMethodA,</pre>
+<tr><td><pre>        CallBooleanMethod,</pre>
+<tr><td><pre>        CallBooleanMethodV,</pre>
+<tr><td><pre>        CallBooleanMethodA,</pre>
+<tr><td><pre>        CallByteMethod,</pre>
+<tr><td><pre>        CallByteMethodV,</pre>
+<tr><td><pre>        CallByteMethodA,</pre>
+<tr><td><pre>        CallCharMethod,</pre>
+<tr><td><pre>        CallCharMethodV,</pre>
+<tr><td><pre>        CallCharMethodA,</pre>
+<tr><td><pre>        CallShortMethod,</pre>
+<tr><td><pre>        CallShortMethodV,</pre>
+<tr><td><pre>        CallShortMethodA,</pre>
+<tr><td><pre>        CallIntMethod,</pre>
+<tr><td><pre>        CallIntMethodV,</pre>
+<tr><td><pre>        CallIntMethodA,</pre>
+<tr><td><pre>        CallLongMethod,</pre>
+<tr><td><pre>        CallLongMethodV,</pre>
+<tr><td><pre>        CallLongMethodA,</pre>
+<tr><td><pre>        CallFloatMethod,</pre>
+<tr><td><pre>        CallFloatMethodV,</pre>
+<tr><td><pre>        CallFloatMethodA,</pre>
+<tr><td><pre>        CallDoubleMethod,</pre>
+<tr><td><pre>        CallDoubleMethodV,</pre>
+<tr><td><pre>        CallDoubleMethodA,</pre>
+<tr><td><pre>        CallVoidMethod,</pre>
+<tr><td><pre>        CallVoidMethodV,</pre>
+<tr><td><pre>        CallVoidMethodA,</pre>
+<tr><td><pre>    </pre>
+<tr><td><pre>        CallNonvirtualObjectMethod,</pre>
+<tr><td><pre>        CallNonvirtualObjectMethodV,</pre>
+<tr><td><pre>        CallNonvirtualObjectMethodA,</pre>
+<tr><td><pre>        CallNonvirtualBooleanMethod,</pre>
+<tr><td><pre>        CallNonvirtualBooleanMethodV,</pre>
+<tr><td><pre>        CallNonvirtualBooleanMethodA,</pre>
+<tr><td><pre>        CallNonvirtualByteMethod,</pre>
+<tr><td><pre>        CallNonvirtualByteMethodV,</pre>
+<tr><td><pre>        CallNonvirtualByteMethodA,</pre>
+<tr><td><pre>        CallNonvirtualCharMethod,</pre>
+<tr><td><pre>        CallNonvirtualCharMethodV,</pre>
+<tr><td><pre>        CallNonvirtualCharMethodA,</pre>
+<tr><td><pre>        CallNonvirtualShortMethod,</pre>
+<tr><td><pre>        CallNonvirtualShortMethodV,</pre>
+<tr><td><pre>        CallNonvirtualShortMethodA,</pre>
+<tr><td><pre>        CallNonvirtualIntMethod,</pre>
+<tr><td><pre>        CallNonvirtualIntMethodV,</pre>
+<tr><td><pre>        CallNonvirtualIntMethodA,</pre>
+<tr><td><pre>        CallNonvirtualLongMethod,</pre>
+<tr><td><pre>        CallNonvirtualLongMethodV,</pre>
+<tr><td><pre>        CallNonvirtualLongMethodA,</pre>
+<tr><td><pre>        CallNonvirtualFloatMethod,</pre>
+<tr><td><pre>        CallNonvirtualFloatMethodV,</pre>
+<tr><td><pre>        CallNonvirtualFloatMethodA,</pre>
+<tr><td><pre>        CallNonvirtualDoubleMethod,</pre>
+<tr><td><pre>        CallNonvirtualDoubleMethodV,</pre>
+<tr><td><pre>        CallNonvirtualDoubleMethodA,</pre>
+<tr><td><pre>        CallNonvirtualVoidMethod,</pre>
+<tr><td><pre>        CallNonvirtualVoidMethodV,</pre>
+<tr><td><pre>        CallNonvirtualVoidMethodA,</pre>
+<tr><td><pre>    </pre>
+<tr><td><pre>        GetFieldID,</pre>
+<tr><td><pre>    </pre>
+<tr><td><pre>        GetObjectField,</pre>
+<tr><td><pre>        GetBooleanField,</pre>
+<tr><td><pre>        GetByteField,</pre>
+<tr><td><pre>        GetCharField,</pre>
+<tr><td><pre>        GetShortField,</pre>
+<tr><td><pre>        GetIntField,</pre>
+<tr><td><pre>        GetLongField,</pre>
+<tr><td><pre>        GetFloatField,</pre>
+<tr><td><pre>        GetDoubleField,</pre>
+<tr><td><pre>        SetObjectField,</pre>
+<tr><td><pre>        SetBooleanField,</pre>
+<tr><td><pre>        SetByteField,</pre>
+<tr><td><pre>        SetCharField,</pre>
+<tr><td><pre>        SetShortField,</pre>
+<tr><td><pre>        SetIntField,</pre>
+<tr><td><pre>        SetLongField,</pre>
+<tr><td><pre>        SetFloatField,</pre>
+<tr><td><pre>        SetDoubleField,</pre>
+<tr><td><pre>    </pre>
+<tr><td><pre>        GetStaticMethodID,</pre>
+<tr><td><pre>    </pre>
+<tr><td><pre>        CallStaticObjectMethod,</pre>
+<tr><td><pre>        CallStaticObjectMethodV,</pre>
+<tr><td><pre>        CallStaticObjectMethodA,</pre>
+<tr><td><pre>        CallStaticBooleanMethod,</pre>
+<tr><td><pre>        CallStaticBooleanMethodV,</pre>
+<tr><td><pre>        CallStaticBooleanMethodA,</pre>
+<tr><td><pre>        CallStaticByteMethod,</pre>
+<tr><td><pre>        CallStaticByteMethodV,</pre>
+<tr><td><pre>        CallStaticByteMethodA,</pre>
+<tr><td><pre>        CallStaticCharMethod,</pre>
+<tr><td><pre>        CallStaticCharMethodV,</pre>
+<tr><td><pre>        CallStaticCharMethodA,</pre>
+<tr><td><pre>        CallStaticShortMethod,</pre>
+<tr><td><pre>        CallStaticShortMethodV,</pre>
+<tr><td><pre>        CallStaticShortMethodA,</pre>
+<tr><td><pre>        CallStaticIntMethod,</pre>
+<tr><td><pre>        CallStaticIntMethodV,</pre>
+<tr><td><pre>        CallStaticIntMethodA,</pre>
+<tr><td><pre>        CallStaticLongMethod,</pre>
+<tr><td><pre>        CallStaticLongMethodV,</pre>
+<tr><td><pre>        CallStaticLongMethodA,</pre>
+<tr><td><pre>        CallStaticFloatMethod,</pre>
+<tr><td><pre>        CallStaticFloatMethodV,</pre>
+<tr><td><pre>        CallStaticFloatMethodA,</pre>
+<tr><td><pre>        CallStaticDoubleMethod,</pre>
+<tr><td><pre>        CallStaticDoubleMethodV,</pre>
+<tr><td><pre>        CallStaticDoubleMethodA,</pre>
+<tr><td><pre>        CallStaticVoidMethod,</pre>
+<tr><td><pre>        CallStaticVoidMethodV,</pre>
+<tr><td><pre>        CallStaticVoidMethodA,</pre>
+<tr><td><pre>    </pre>
+<tr><td><pre>        GetStaticFieldID,</pre>
+<tr><td><pre>    </pre>
+<tr><td><pre>        GetStaticObjectField,</pre>
+<tr><td><pre>        GetStaticBooleanField,</pre>
+<tr><td><pre>        GetStaticByteField,</pre>
+<tr><td><pre>        GetStaticCharField,</pre>
+<tr><td><pre>        GetStaticShortField,</pre>
+<tr><td><pre>        GetStaticIntField,</pre>
+<tr><td><pre>        GetStaticLongField,</pre>
+<tr><td><pre>        GetStaticFloatField,</pre>
+<tr><td><pre>        GetStaticDoubleField,</pre>
+<tr><td><pre>    </pre>
+<tr><td><pre>        SetStaticObjectField,</pre>
+<tr><td><pre>        SetStaticBooleanField,</pre>
+<tr><td><pre>        SetStaticByteField,</pre>
+<tr><td><pre>        SetStaticCharField,</pre>
+<tr><td><pre>        SetStaticShortField,</pre>
+<tr><td><pre>        SetStaticIntField,</pre>
+<tr><td><pre>        SetStaticLongField,</pre>
+<tr><td><pre>        SetStaticFloatField,</pre>
+<tr><td><pre>        SetStaticDoubleField,</pre>
+<tr><td><pre>    </pre>
+<tr><td><pre>        NewString,</pre>
+<tr><td><pre>        GetStringLength,</pre>
+<tr><td><pre>        GetStringChars,</pre>
+<tr><td><pre>        ReleaseStringChars,</pre>
+<tr><td><pre>    </pre>
+<tr><td><pre>        NewStringUTF,</pre>
+<tr><td><pre>        GetStringUTFLength,</pre>
+<tr><td><pre>        GetStringUTFChars,</pre>
+<tr><td><pre>        ReleaseStringUTFChars,</pre>
+<tr><td><pre>    </pre>
+<tr><td><pre>        GetArrayLength,</pre>
+<tr><td><pre>     </pre>
+<tr><td><pre>        NewObjectArray,</pre>
+<tr><td><pre>        GetObjectArrayElement,</pre>
+<tr><td><pre>        SetObjectArrayElement,</pre>
+<tr><td><pre>    </pre>
+<tr><td><pre>        NewBooleanArray,</pre>
+<tr><td><pre>        NewByteArray,</pre>
+<tr><td><pre>        NewCharArray,</pre>
+<tr><td><pre>        NewShortArray,</pre>
+<tr><td><pre>        NewIntArray,</pre>
+<tr><td><pre>        NewLongArray,</pre>
+<tr><td><pre>        NewFloatArray,</pre>
+<tr><td><pre>        NewDoubleArray,</pre>
+<tr><td><pre>    </pre>
+<tr><td><pre>        GetBooleanArrayElements,</pre>
+<tr><td><pre>        GetByteArrayElements,</pre>
+<tr><td><pre>        GetCharArrayElements,</pre>
+<tr><td><pre>        GetShortArrayElements,</pre>
+<tr><td><pre>        GetIntArrayElements,</pre>
+<tr><td><pre>        GetLongArrayElements,</pre>
+<tr><td><pre>        GetFloatArrayElements,</pre>
+<tr><td><pre>        GetDoubleArrayElements,</pre>
+<tr><td><pre>    </pre>
+<tr><td><pre>        ReleaseBooleanArrayElements,</pre>
+<tr><td><pre>        ReleaseByteArrayElements,</pre>
+<tr><td><pre>        ReleaseCharArrayElements,</pre>
+<tr><td><pre>        ReleaseShortArrayElements,</pre>
+<tr><td><pre>        ReleaseIntArrayElements,</pre>
+<tr><td><pre>        ReleaseLongArrayElements,</pre>
+<tr><td><pre>        ReleaseFloatArrayElements,</pre>
+<tr><td><pre>        ReleaseDoubleArrayElements,</pre>
+<tr><td><pre>    </pre>
+<tr><td><pre>        GetBooleanArrayRegion,</pre>
+<tr><td><pre>        GetByteArrayRegion,</pre>
+<tr><td><pre>        GetCharArrayRegion,</pre>
+<tr><td><pre>        GetShortArrayRegion,</pre>
+<tr><td><pre>        GetIntArrayRegion,</pre>
+<tr><td><pre>        GetLongArrayRegion,</pre>
+<tr><td><pre>        GetFloatArrayRegion,</pre>
+<tr><td><pre>        GetDoubleArrayRegion,</pre>
+<tr><td><pre>        SetBooleanArrayRegion,</pre>
+<tr><td><pre>        SetByteArrayRegion,</pre>
+<tr><td><pre>        SetCharArrayRegion,</pre>
+<tr><td><pre>        SetShortArrayRegion,</pre>
+<tr><td><pre>        SetIntArrayRegion,</pre>
+<tr><td><pre>        SetLongArrayRegion,</pre>
+<tr><td><pre>        SetFloatArrayRegion,</pre>
+<tr><td><pre>        SetDoubleArrayRegion,</pre>
+<tr><td><pre>    </pre>
+<tr><td><pre>        RegisterNatives,</pre>
+<tr><td><pre>        UnregisterNatives,</pre>
+<tr><td><pre>    </pre>
+<tr><td><pre>        MonitorEnter,</pre>
+<tr><td><pre>        MonitorExit,</pre>
+<tr><td><pre>    </pre>
+<tr><td><pre>        GetJavaVM,</pre>
+<tr><td><pre>    };</pre>
+
+</Table>
+</dd></dl>
+<p><hr align=left><a name="23717"></a>
+<h1> Version Information
+</h1>
+<br><a name="15951"></a>
+<h2>		 GetVersion
+</h2>
+<a name="15956"></a>
+<code>jint GetVersion(JNIEnv *env);
+</code><p><a name="3616"></a>
+Returns the version of the native method interface. 
+<p><a name="3623"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="18147"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="18146"></a>
+<h4> RETURNS:
+</h4>
+<a name="18122"></a>
+Returns the major version number in the higher 16 bits and the minor version 
+number in the lower 16 bits.
+<p><a name="23205"></a>
+In JDK1.1, <code>GetVersion()</code> returns 0x00010001. 
+<p><hr align=left><a name="15982"></a>
+<h1> Class Operations
+</h1>
+<br><a name="15986"></a>
+<h2>		 DefineClass
+</h2>
+<a name="15990"></a>
+<code>jclass DefineClass(JNIEnv *env, jobject loader, <br>
+     const jbyte *buf, jsize bufLen);
+</code><p><a name="15994"></a>
+Loads a class from a buffer of raw class data.
+<p><a name="18144"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="18148"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="18152"></a>
+<code>loader</code>: a class loader assigned to the defined class.
+<p><a name="18153"></a>
+<code>buf</code>: buffer containing the <code>.class</code> file data.
+<p><a name="18151"></a>
+<code>bufLen</code>: buffer length.
+<p><a name="18157"></a>
+<h4> RETURNS:
+</h4>
+<a name="18156"></a>
+Returns a Java class object or <code>NULL</code> if an error occurs.
+<p><a name="16013"></a>
+<h4> THROWS:
+</h4>
+<a name="16015"></a>
+<code>ClassFormatError</code>: if the class data does not specify a valid class.
+<p><a name="5936"></a>
+<code>ClassCircularityError</code>: if a class or interface would be its own superclass 
+or superinterface.
+<p><a name="5935"></a>
+<code>OutOfMemoryError</code>: if the system runs out of memory.
+<p><br><a name="16027"></a>
+<h2>		 FindClass
+</h2>
+<a name="16031"></a>
+<code>jclass FindClass(JNIEnv *env, const char *name);
+</code><p><a name="18197"></a>
+This function loads a locally-defined class. It searches the directories and zip 
+files specified by the <code>CLASSPATH</code> environment variable for the class with the 
+specified name.
+<p><a name="18187"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="18188"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="18189"></a>
+<code>name</code>: a fully-qualified class name (that is, a package name, delimited by "<code>/</code>", 
+followed by the class name). If the name begins with "<code>[</code>" (the array signature 
+character), it returns an array class.
+<p><a name="18213"></a>
+<h4> RETURNS:
+</h4>
+<a name="18214"></a>
+Returns a class object from a fully-qualified name, or <code>NULL</code> if the class cannot 
+be found.
+<p><a name="5939"></a>
+<h4> THROWS:
+</h4>
+<a name="5940"></a>
+<code>ClassFormatError</code>: if the class data does not specify a valid class.
+<p><a name="5950"></a>
+<code>ClassCircularityError</code>: if a class or interface would be its own superclass 
+or superinterface.
+<p><a name="5952"></a>
+<code>NoClassDefFoundError</code>: if no definition for a requested class or interface 
+can be found.
+<p><a name="5942"></a>
+<code>OutOfMemoryError</code>: if the system runs out of memory.
+<p><br><a name="18292"></a>
+<h2>		 GetSuperclass
+</h2>
+<a name="18301"></a>
+<code>jclass GetSuperclass(JNIEnv *env, jclass clazz);
+</code><p><a name="18290"></a>
+If <code>clazz</code> represents any class other than the class <code>Object</code>, then this function 
+returns the object that represents the superclass of the class specified by <code>clazz</code>. 
+<p><a name="18304"></a>
+If <code>clazz</code> specifies the class <code>Object</code>, or <code>clazz</code> represents an interface, this 
+function returns <code>NULL</code>.
+<p><a name="3627"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="18312"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="18313"></a>
+<code>clazz</code>: a Java class object.
+<p><a name="3634"></a>
+<h4> RETURNS:
+</h4>
+<a name="18315"></a>
+Returns the superclass of the class represented by <code>clazz</code>, or <code>NULL</code>.
+<p><br><a name="16061"></a>
+<h2>		 IsAssignableFrom
+</h2>
+<a name="16065"></a>
+<code>jboolean IsAssignableFrom(JNIEnv *env, jclass clazz1, <br>
+     jclass clazz2);
+</code><p><a name="16069"></a>
+Determines whether an object of <code>clazz1</code> can be safely cast to <code>clazz2</code>.
+<p><a name="16071"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="18243"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="18244"></a>
+<code>clazz1</code>: the first class argument.
+<p><a name="18245"></a>
+<code>clazz2</code>: the second class argument.
+<p><a name="18246"></a>
+<h4> RETURNS:
+</h4>
+<a name="18254"></a>
+Returns <code>JNI_TRUE</code> if either of the following is true:
+<p><ul><a name="5311"></a>
+<li>The first and second class arguments refer to the same Java class.
+
+<a name="5316"></a>
+<li>The first class is a subclass of the second class.
+
+<a name="5319"></a>
+<li>The first class has the second class as one of its interfaces.
+
+</ul><hr align=left><a name="5234"></a>
+<h1> Exceptions
+</h1>
+<br><a name="16086"></a>
+<h2>		 Throw
+</h2>
+<a name="16090"></a>
+<code>jint Throw(JNIEnv *env, jthrowable obj);
+</code><p><a name="16094"></a>
+Causes a <code>java.lang.Throwable</code> object to be thrown.
+<p><a name="16095"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="18340"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="18341"></a>
+<code>obj</code>: a <code>java.lang.Throwable</code> object.
+<p><a name="18344"></a>
+<h4> RETURNS:
+</h4>
+<a name="18345"></a>
+Returns 0 on success; a negative value on failure.
+<p><a name="5963"></a>
+<h4> THROWS:
+</h4>
+<a name="5964"></a>
+the<code> java.lang.Throwable object obj.
+</code><p><br><a name="16104"></a>
+<h2>		 ThrowNew
+</h2>
+<a name="16108"></a>
+<code>jint ThrowNew(JNIEnv *env, jclass clazz, <br>
+     const char *message);
+</code><p><a name="16112"></a>
+Constructs an exception object from the specified class with the message 
+specified by <code>message</code> and causes that exception to be thrown.
+<p><a name="18365"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="18366"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="18367"></a>
+<code>clazz</code>: a subclass of <code>java.lang.Throwable</code>.
+<p><a name="18371"></a>
+<code>message</code>: the message used to construct the <code>java.lang.Throwable</code> object.
+<p><a name="18370"></a>
+<h4> RETURNS:
+</h4>
+<a name="18369"></a>
+Returns 0 on success; a negative value on failure.
+<p><a name="5974"></a>
+<h4> THROWS:
+</h4>
+<a name="5975"></a>
+the newly constructed<code> java.lang.Throwable </code>object.
+<p><br><a name="16124"></a>
+<h2>		 ExceptionOccurred
+</h2>
+<a name="16128"></a>
+<code>jthrowable ExceptionOccurred(JNIEnv *env);
+</code><p><a name="3661"></a>
+Determines if an exception is being thrown. The exception stays being thrown 
+until either the native code calls <code>ExceptionClear()</code>, or the Java code handles 
+the exception.
+<p><a name="18387"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="18388"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="18391"></a>
+<h4> RETURNS:
+</h4>
+<a name="18385"></a>
+Returns the exception object that is currently in the process of being thrown, or 
+<code>NULL</code> if no exception is currently being thrown. 
+<p><br><a name="16146"></a>
+<h2>		 ExceptionDescribe
+</h2>
+<a name="16150"></a>
+<code>void ExceptionDescribe(JNIEnv *env);
+</code><p><a name="16154"></a>
+Prints an exception and a backtrace of the stack to a system error-reporting 
+channel, such as <code>stderr</code>. This is a convenience routine provided for 
+debugging.
+<p><a name="18460"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="18461"></a>
+<code>env</code>: the JNI interface pointer.
+<p><br><a name="16166"></a>
+<h2>		 ExceptionClear
+</h2>
+<a name="16170"></a>
+<code>void ExceptionClear(JNIEnv *env);
+</code><p><a name="16174"></a>
+Clears any exception that is currently being thrown. If no exception is currently 
+being thrown, this routine has no effect.
+<p><a name="18549"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="18550"></a>
+<code>env</code>: the JNI interface pointer.
+<p><br><a name="16186"></a>
+<h2>		 FatalError
+</h2>
+<a name="16190"></a>
+<code>void FatalError(JNIEnv *env, const char *msg);
+</code><p><a name="16194"></a>
+Raises a fatal error and does not expect the VM to recover. This function does 
+not return.
+<p><a name="18552"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="18553"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="18543"></a>
+<code>msg</code>: an error message.
+<p><hr align=left><a name="16270"></a>
+<h1> Global and Local References
+</h1>
+<br><a name="16274"></a>
+<h2>		 NewGlobalRef
+</h2>
+<a name="16278"></a>
+<code>jobject NewGlobalRef(JNIEnv *env, jobject obj);
+</code><p><a name="16282"></a>
+Creates a new global reference to the object referred to by the <code>obj</code> argument. 
+The <code>obj</code> argument may be a global or local reference. Global references must 
+be explicitly disposed of by calling <code>DeleteGlobalRef()</code>.
+<p><a name="18585"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="18586"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="18587"></a>
+<code>obj</code>: a global or local reference.
+<p><a name="18589"></a>
+<h4> RETURNS:
+</h4>
+<a name="18590"></a>
+Returns a global reference, or <code>NULL</code> if the system runs out of memory.
+<p><br><a name="16294"></a>
+<h2>		 DeleteGlobalRef
+</h2>
+<a name="16298"></a>
+<code>void DeleteGlobalRef(JNIEnv *env, jobject globalRef);
+</code><p><a name="16302"></a>
+Deletes the global reference pointed to by <code>globalRef</code>. 
+<p><a name="23724"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="18651"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="18652"></a>
+<code>globalRef</code>: a global reference.
+<p><br><a name="18654"></a>
+<h2>		 DeleteLocalRef
+</h2>
+<a name="18655"></a>
+<code>void DeleteLocalRef(JNIEnv *env, jobject localRef);
+</code><p><a name="18656"></a>
+Deletes the local reference pointed to by <code>localRef</code>.
+<p><a name="18657"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="18658"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="18659"></a>
+<code>localRef</code>: a local reference.
+<p><hr align=left><a name="16334"></a>
+<h1> Object Operations
+</h1>
+<br><a name="16337"></a>
+<h2>		 AllocObject
+</h2>
+<a name="16341"></a>
+<code>jobject AllocObject(JNIEnv *env, jclass clazz);
+</code><p><a name="16345"></a>
+Allocates a new Java object without invoking any of the constructors for the 
+object. Returns a reference to the object.
+<p><a name="5280"></a>
+The clazz argument must not refer to an array class.
+<p><a name="18680"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="18681"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="18682"></a>
+<code>clazz</code>: a Java class object.
+<p><a name="18683"></a>
+<h4> RETURNS:
+</h4>
+<a name="18684"></a>
+Returns a Java object, or <code>NULL</code> if the object cannot be constructed.
+<p><a name="18678"></a>
+<h4> THROWS:
+</h4>
+<a name="16353"></a>
+<code>InstantiationException</code>: if the class is an interface or an abstract class.
+<p><a name="5982"></a>
+<code>OutOfMemoryError</code>: if the system runs out of memory.
+<p><br><a name="4517"></a>
+<h2>		 NewObject<br>
+NewObjectA<br>
+NewObjectV
+</h2>
+<a name="16368"></a>
+<code>jobject NewObject(JNIEnv *env, jclass clazz, <br>
+     jmethodID methodID, ...);
+</code><p><a name="4522"></a>
+<code>jobject NewObjectA(JNIEnv *env, jclass clazz, <br>
+     jmethodID methodID, jvalue *args);
+</code><p><a name="4528"></a>
+<code>jobject NewObjectV(JNIEnv *env, jclass clazz, <br>
+     jmethodID methodID, va_list args);
+</code><p><a name="5335"></a>
+Constructs a new Java object. The method ID indicates which constructor 
+method to invoke. This ID must be obtained by calling <code>GetMethodID()</code> with 
+<code>&lt;init&gt;</code> as the method name and <code>void</code> (<code>V</code>) as the return type.
+<p><a name="5774"></a>
+The <code>clazz</code> argument must not refer to an array class.
+<p><a name="5336"></a>
+<h4> NewObject
+</h4>
+<a name="4529"></a>
+Programmers place all arguments that are to be passed to the constructor 
+immediately following the <code>methodID</code> argument. <code>NewObject()</code> accepts these 
+arguments and passes them to the Java method that the programmer wishes to 
+invoke.
+<p><a name="4531"></a>
+<h4> NewObjectA
+</h4>
+<a name="4536"></a>
+Programmers place all arguments that are to be passed to the constructor in an 
+<code>args</code> array of <code>jvalues</code> that immediately follows the <code>methodID</code> argument. 
+<code>NewObjectA()</code> accepts the arguments in this array, and, in turn, passes them 
+to the Java method that the programmer wishes to invoke.
+<p><a name="4534"></a>
+<h4> NewObjectV
+</h4>
+<a name="4538"></a>
+Programmers place all arguments that are to be passed to the constructor in an 
+<code>args</code> argument of type <code>va_list</code> that immediately follows the <code>methodID</code> 
+argument. <code>NewObjectV()</code> accepts these arguments, and, in turn, passes them 
+to the Java method that the programmer wishes to invoke.
+<p><a name="18736"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="18724"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="18725"></a>
+<code>clazz</code>: a Java class object.
+<p><a name="18730"></a>
+<code>methodID</code>: the method ID of the constructor.
+<p><a name="5076"></a>
+<h4> Additional Parameter for NewObject:
+</h4>
+<a name="5077"></a>
+arguments to the constructor.
+<p><a name="4541"></a>
+<h4> Additional Parameter for NewObjectA:
+</h4>
+<a name="4546"></a>
+<code>args</code>: an array of arguments to the constructor.
+<p><a name="4544"></a>
+<h4> Additional Parameter for NewObjectV:
+</h4>
+<a name="4550"></a>
+<code>args</code>: a va_list of arguments to the constructor.
+<p><a name="18726"></a>
+<h4> RETURNS:
+</h4>
+<a name="18727"></a>
+Returns a Java object, or <code>NULL</code> if the object cannot be constructed.
+<p><a name="18728"></a>
+<h4> THROWS:
+</h4>
+<a name="18729"></a>
+<code>InstantiationException</code>: if the class is an interface or an abstract class.
+<p><a name="5987"></a>
+<code>OutOfMemoryError</code>: if the system runs out of memory.
+<p><a name="5990"></a>
+Any exceptions thrown by the constructor.
+<p><br><a name="16454"></a>
+<h2>		 GetObjectClass
+</h2>
+<a name="16458"></a>
+<code>jclass GetObjectClass(JNIEnv *env, jobject obj);
+</code><p><a name="16462"></a>
+Returns the class of an object.
+<p><a name="18795"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="18796"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="18797"></a>
+<code>obj</code>: a Java object (must not be <code>NULL</code>).
+<p><a name="18800"></a>
+<h4> RETURNS:
+</h4>
+<a name="18801"></a>
+Returns a Java class object.
+<p><br><a name="16472"></a>
+<h2>		 IsInstanceOf
+</h2>
+<a name="16476"></a>
+<code>jboolean IsInstanceOf(JNIEnv *env, jobject obj, <br>
+     jclass clazz);
+</code><p><a name="16480"></a>
+Tests whether an object is an instance of a class.
+<p><a name="18855"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="18856"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="18861"></a>
+<code>obj</code>: a Java object.
+<p><a name="18863"></a>
+<code>clazz</code>: a Java class object.
+<p><a name="18858"></a>
+<h4> RETURNS:
+</h4>
+<a name="16481"></a>
+Returns <code>JNI_TRUE</code> if <code>obj</code> can be cast to <code>clazz</code>; otherwise, returns 
+<code>JNI_FALSE</code>. A <code>NULL</code> object can be cast to any class.
+<p><br><a name="16514"></a>
+<h2>		 IsSameObject
+</h2>
+<a name="16518"></a>
+<code>jboolean IsSameObject(JNIEnv *env, jobject ref1, <br>
+     jobject ref2);
+</code><p><a name="16522"></a>
+Tests whether two references refer to the same Java object.
+<p><a name="18896"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="18897"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="18898"></a>
+<code>ref1</code>: a Java object.
+<p><a name="18899"></a>
+<code>ref2</code>: a Java object.
+<p><a name="18900"></a>
+<h4> RETURNS:
+</h4>
+<a name="18901"></a>
+Returns <code>JNI_TRUE</code> if <code>ref1</code> and <code>ref2</code> refer to the same Java object, or are 
+both <code>NULL</code>; otherwise, returns <code>JNI_FALSE</code>.
+<p><hr align=left><a name="16536"></a>
+<h1> Accessing Fields of Objects
+</h1>
+<br><a name="16540"></a>
+<h2>		 GetFieldID
+</h2>
+<a name="18916"></a>
+<code>jfieldID GetFieldID(JNIEnv *env, jclass clazz, <br>
+     const char *name, const char *sig);
+</code><p><a name="4199"></a>
+Returns the field ID for an instance (nonstatic) field of a class. The field is 
+specified by its name and signature. The <var>Get&lt;type&gt;Field</var> and <var>Set&lt;type&gt;Field</var> 
+families of accessor functions use field IDs to retrieve object fields. 
+<p><a name="5991"></a>
+<code>GetFieldID()</code> causes an uninitialized class to be initialized.
+<p><a name="5783"></a>
+<code>GetFieldID()</code> cannot be used to obtain the length field of an array. Use 
+<code>GetArrayLength()</code> instead.
+<p><a name="18928"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="18929"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="18930"></a>
+<code>clazz</code>: a Java class object.
+<p><a name="18935"></a>
+<code>name</code>: the field name in a 0-terminated UTF-8 string.
+<p><a name="18937"></a>
+<code>sig</code>: the field signature in a 0-terminated UTF-8 string.
+<p><a name="18932"></a>
+<h4> RETURNS:
+</h4>
+<a name="16552"></a>
+Returns a field ID, or <code>NULL</code> if the operation fails.
+<p><a name="16560"></a>
+<h4> THROWS:
+</h4>
+<a name="18944"></a>
+<code>NoSuchFieldError</code>: if the specified field cannot be found.
+<p><a name="5992"></a>
+<code>ExceptionInInitializerError</code>: if the class initializer fails due to an 
+exception.
+<p><a name="5998"></a>
+<code>OutOfMemoryError</code>: if the system runs out of memory.
+<p><br><a name="16572"></a>
+<h2>		 Get&lt;type&gt;Field Routines
+</h2>
+<a name="16576"></a>
+<var>NativeType</var><code> </code><var>Get&lt;type&gt;Field</var><code>(JNIEnv *env, jobject obj, <br>
+     jfieldID fieldID);
+</code><p><a name="3691"></a>
+This family of accessor routines returns the value of an instance (nonstatic) 
+field of an object. The field to access is specified by a field ID obtained by 
+calling <code>GetFieldID()</code>.
+<p><a name="3766"></a>
+The following table describes the <em>Get&lt;type&gt;Field</em> routine name and result type. 
+You should replace <var>type</var> in <var>Get&lt;type&gt;Field</var> with the Java type of the field, or use 
+one of the actual routine names from the table, and replace <var>NativeType</var> with the 
+corresponding native type for that routine.
+<p><a name="4033"></a>
+ <strong><dl><dd>
+<Table Border="0">
+<caption><a name="5526"></a>
+<h4>Table 4-1	 Get&lt;type&gt;Field Family of Accessor Routines
+</h4>
+</caption>
+<tr><th><a name="5530"></a>
+Get&lt;type&gt;Field Routine Name
+
+<th><a name="5532"></a>
+Native Type
+
+
+<tr><td><a name="5534"></a>
+<code>GetObjectField()
+</code>
+<td><a name="5536"></a>
+jobject
+
+
+<tr><td><a name="5538"></a>
+<code>GetBooleanField()
+</code>
+<td><a name="5540"></a>
+jboolean
+
+
+<tr><td><a name="5542"></a>
+<code>GetByteField()
+</code>
+<td><a name="5544"></a>
+jbyte
+
+
+<tr><td><a name="5546"></a>
+<code>GetCharField()
+</code>
+<td><a name="5548"></a>
+jchar
+
+
+<tr><td><a name="5550"></a>
+<code>GetShortField()
+</code>
+<td><a name="5552"></a>
+jshort
+
+
+<tr><td><a name="5554"></a>
+<code>GetIntField()
+</code>
+<td><a name="5556"></a>
+jint
+
+
+<tr><td><a name="5558"></a>
+<code>GetLongField()
+</code>
+<td><a name="5560"></a>
+jlong
+
+
+<tr><td><a name="5562"></a>
+<code>GetFloatField()
+</code>
+<td><a name="5564"></a>
+jfloat
+
+
+<tr><td><a name="5566"></a>
+<code>GetDoubleField()
+</code>
+<td><a name="5568"></a>
+jdouble
+
+
+
+</Table>
+</dd></dl>
+</strong><p><a name="3767"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="19123"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="19124"></a>
+<code>obj</code>: a Java object (must not be <code>NULL</code>).
+<p><a name="19125"></a>
+<code>fieldID</code>: a valid field ID.
+<p><a name="19127"></a>
+<h4> RETURNS:
+</h4>
+<a name="19130"></a>
+Returns the content of the field.
+<p><br><a name="16613"></a>
+<h2>		 Set&lt;type&gt;Field Routines
+</h2>
+<a name="16617"></a>
+<code>void </code><var>Set&lt;type&gt;Field</var><code>(JNIEnv *env, jobject obj, jfieldID fieldID,<br>
+     </code><var>NativeType</var><code> value);
+</code><p><a name="16622"></a>
+This family of accessor routines sets the value of an instance (nonstatic) field of 
+an object. The field to access is specified by a field ID obtained by calling 
+<code>GetFieldID()</code>.
+<p><a name="16626"></a>
+The following table describes the <em>Set&lt;type&gt;Field</em> routine name and value type. 
+You should replace <var>type</var> in <var>Set&lt;type&gt;Field</var> with the Java type of the field, or use 
+one of the actual routine names from the table, and replace <var>NativeType</var> with the 
+corresponding native type for that routine.
+<p><a name="4050"></a>
+<dl><dd>
+<Table Border="0">
+<caption><a name="5570"></a>
+<h4>Table 4-2	 Set&lt;type&gt;Field Family of Accessor Routines
+</h4>
+</caption>
+<tr><th><a name="5574"></a>
+Set&lt;type&gt;Field Routine
+
+<th><a name="5576"></a>
+Native Type
+
+
+<tr><td><a name="5578"></a>
+<code>SetObjectField()
+</code>
+<td><a name="5580"></a>
+jobject
+
+
+<tr><td><a name="5582"></a>
+S<code>etBooleanField()
+</code>
+<td><a name="5584"></a>
+jboolean
+
+
+<tr><td><a name="5586"></a>
+<code>SetByteField()
+</code>
+<td><a name="5588"></a>
+jbyte
+
+
+<tr><td><a name="5590"></a>
+<code>SetCharField()
+</code>
+<td><a name="5592"></a>
+jchar
+
+
+<tr><td><a name="5594"></a>
+<code>SetShortField()
+</code>
+<td><a name="5596"></a>
+jshort
+
+
+<tr><td><a name="5598"></a>
+<code>SetIntField()
+</code>
+<td><a name="5600"></a>
+jint
+
+
+<tr><td><a name="5602"></a>
+<code>SetLongField()
+</code>
+<td><a name="5604"></a>
+jlong
+
+
+<tr><td><a name="5606"></a>
+<code>SetFloatField()
+</code>
+<td><a name="5608"></a>
+jfloat
+
+
+<tr><td><a name="5610"></a>
+<code>SetDoubleField()
+</code>
+<td><a name="5612"></a>
+jdouble
+
+
+
+</Table>
+</dd></dl>
+<p><a name="19440"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="19441"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="19442"></a>
+<code>obj</code>: a Java object (must not be <code>NULL</code>).
+<p><a name="19454"></a>
+<code>fieldID</code>: a valid field ID.
+<p><a name="19457"></a>
+<code>value</code>: the new value of the field.
+<p><hr align=left><a name="16656"></a>
+<h1> Calling Instance Methods
+</h1>
+<br><a name="16660"></a>
+<h2>		 GetMethodID
+</h2>
+<a name="16664"></a>
+<code>jmethodID GetMethodID(JNIEnv *env, jclass clazz, <br>
+     const char *name, const char *sig);
+</code><p><a name="16668"></a>
+Returns the method ID for an instance (nonstatic) method of a class or 
+interface. The method may be defined in one of the <code>clazz</code>'s superclasses and 
+inherited by <code>clazz</code>. The method is determined by its name and signature.
+<p><a name="6004"></a>
+<code>GetMethodID()</code> causes an uninitialized class to be initialized.
+<p><a name="23206"></a>
+To obtain the method ID of a constructor, supply <code>&lt;init&gt;</code> as the method name 
+and <code>void</code> (<code>V</code>) as the return type.
+<p><a name="19485"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="19486"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="3783"></a>
+<code>clazz</code>: a Java class object.
+<p><a name="3784"></a>
+<code>name</code>: the method name in a 0-terminated UTF-8 string.
+<p><a name="3785"></a>
+<code>sig</code>: the method signature in 0-terminated UTF-8 string.
+<p><a name="19490"></a>
+<h4> RETURNS:
+</h4>
+<a name="19491"></a>
+Returns a method ID, or <code>NULL</code> if the specified method cannot be found.
+<p><a name="19492"></a>
+<h4> THROWS:
+</h4>
+<a name="19493"></a>
+<code>NoSuchMethodError</code>: if the specified method cannot be found.
+<p><a name="6021"></a>
+<code>ExceptionInInitializerError</code>: if the class initializer fails due to an 
+exception.
+<p><a name="6022"></a>
+<code>OutOfMemoryError</code>: if the system runs out of memory.
+<p><br><a name="4256"></a>
+<h2>		 Call&lt;type&gt;Method Routines<br>
+Call&lt;type&gt;MethodA Routines<br>
+Call&lt;type&gt;MethodV Routines
+</h2>
+<a name="5337"></a>
+<var>NativeType</var><code> </code><var>Call&lt;type&gt;Method</var><code>(JNIEnv *env, jobject obj, <br>
+     jmethodID methodID, ...);
+</code><p><a name="4277"></a>
+<var>NativeType</var><code> </code><var>Call&lt;type&gt;MethodA</var><code>(JNIEnv *env, jobject obj, <br>
+     jmethodID methodID, jvalue *args);
+</code><p><a name="4279"></a>
+<var>NativeType</var><code> </code><var>Call&lt;type&gt;MethodV</var><code>(JNIEnv *env, jobject obj, <br>
+     jmethodID methodID, va_list args);
+</code><p><a name="19682"></a>
+Methods from these three families of operations are used to call a Java instance 
+method from a native method.They only differ in their mechanism for passing 
+parameters to the methods that they call. 
+<p><a name="4302"></a>
+These families of operations invoke an instance (nonstatic) method on a Java 
+object, according to the specified method ID. The <code>methodID</code> argument must be 
+obtained by calling <code>GetMethodID()</code>.
+<p><a name="23729"></a>
+When these functions are used to call private methods and constructors, the 
+method ID must be derived from the real class of <code>obj</code>, not from one of its 
+superclasses.
+<p><a name="4317"></a>
+<h4> Call&lt;type&gt;Method Routines
+</h4>
+<a name="4305"></a>
+Programmers place all arguments that are to be passed to the method 
+immediately following the <code>methodID</code> argument. The <var>Call&lt;type&gt;Method</var> routine 
+accepts these arguments and passes them to the Java method that the 
+programmer wishes to invoke.
+<p><a name="4307"></a>
+<h4> Call&lt;type&gt;MethodA Routines
+</h4>
+<a name="4312"></a>
+Programmers place all arguments to the method in an <code>args</code> array of <code>jvalues</code> 
+that immediately follows the <code>methodID</code> argument. The <var>Call&lt;type&gt;MethodA</var> 
+routine accepts the arguments in this array, and, in turn, passes them to the 
+Java method that the programmer wishes to invoke.
+<p><a name="4309"></a>
+<h4> Call&lt;type&gt;MethodV Routines
+</h4>
+<a name="4314"></a>
+Programmers place all arguments to the method in an <code>args</code> argument of type 
+<code>va_list</code> that immediately follows the <code>methodID</code> argument. The 
+<var>Call&lt;type&gt;MethodV </var>routine accepts the arguments, and, in turn, passes them to 
+the Java method that the programmer wishes to invoke.
+<p><a name="3830"></a>
+The following table describes each of the method calling routines according to 
+their result type. You should replace <var>type</var> in <var>Call&lt;type&gt;Method </var>with the Java 
+type of the method you are calling (or use one of the actual method calling 
+routine names from the table) and replace <var>NativeType</var> with the corresponding 
+native type for that routine.
+<p><a name="4049"></a>
+<dl><dd>
+<Table Border="0">
+<caption><a name="5390"></a>
+<h4>Table 4-3	 Instance Method Calling Routines
+</h4>
+</caption>
+<tr><th><a name="5394"></a>
+Call&lt;type&gt;Method Routine Name
+
+<th><a name="5396"></a>
+Native Type
+
+
+<tr><td><a name="5398"></a>
+<code>CallVoidMethod()
+</code>
+<a name="5399"></a>
+<code>CallVoidMethodA()
+</code>
+<a name="5400"></a>
+<code>CallVoidMethodV()
+</code>
+<td><a name="5402"></a>
+void
+
+
+<tr><td><a name="5404"></a>
+<code>CallObjectMethod()
+</code>
+<a name="5405"></a>
+<code>CallObjectMethodA()
+</code>
+<a name="5406"></a>
+<code>CallObjectMethodV()
+</code>
+<td><a name="5408"></a>
+jobject
+
+
+<tr><td><a name="5410"></a>
+<code>CallBooleanMethod()
+</code>
+<a name="5411"></a>
+<code>CallBooleanMethodA()
+</code>
+<a name="5412"></a>
+<code>CallBooleanMethodV()
+</code>
+<td><a name="5414"></a>
+jboolean
+
+
+<tr><td><a name="5416"></a>
+<code>CallByteMethod()
+</code>
+<a name="5417"></a>
+<code>CallByteMethodA()
+</code>
+<a name="5418"></a>
+<code>CallByteMethodV()
+</code>
+<td><a name="5420"></a>
+jbyte
+
+
+<tr><td><a name="5422"></a>
+<code>CallCharMethod()
+</code>
+<a name="5423"></a>
+<code>CallCharMethodA()
+</code>
+<a name="5424"></a>
+<code>CallCharMethodV()
+</code>
+<td><a name="5426"></a>
+jchar
+
+
+<tr><td><a name="5428"></a>
+<code>CallShortMethod()
+</code>
+<a name="5429"></a>
+<code>CallShortMethodA()
+</code>
+<a name="5430"></a>
+<code>CallShortMethodV()
+</code>
+<td><a name="5432"></a>
+jshort
+
+
+<tr><td><a name="5434"></a>
+<code>CallIntMethod()
+</code>
+<a name="5435"></a>
+<code>CallIntMethodA()
+</code>
+<a name="5436"></a>
+<code>CallIntMethodV()
+</code>
+<td><a name="5438"></a>
+jint
+
+
+<tr><td><a name="5440"></a>
+<code>CallLongMethod()
+</code>
+<a name="5441"></a>
+<code>CallLongMethodA()
+</code>
+<a name="5442"></a>
+<code>CallLongMethodV()
+</code>
+<td><a name="5444"></a>
+jlong
+
+
+<tr><td><a name="5446"></a>
+<code>CallFloatMethod()
+</code>
+<a name="5447"></a>
+<code>CallFloatMethodA()
+</code>
+<a name="5448"></a>
+<code>CallFloatMethodV()
+</code>
+<td><a name="5450"></a>
+jfloat
+
+
+<tr><td><a name="5452"></a>
+<code>CallDoubleMethod()
+</code>
+<a name="5453"></a>
+<code>CallDoubleMethodA()
+</code>
+<a name="5454"></a>
+<code>CallDoubleMethodV()
+</code>
+<td><a name="5456"></a>
+jdouble
+
+
+
+</Table>
+</dd></dl>
+<p><a name="4356"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="4337"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="4338"></a>
+<code>obj</code>: a Java object.
+<p><a name="4339"></a>
+<code>methodID</code>: a method ID.
+<p><a name="5083"></a>
+<h4> Additional Parameter for Call&lt;type&gt;Method Routines:
+</h4>
+<a name="5084"></a>
+arguments to the Java method.
+<p><a name="5098"></a>
+<h4> Additional Parameter for Call&lt;type&gt;MethodA Routines:
+</h4>
+<a name="4340"></a>
+<code>args</code>: an array of arguments.
+<p><a name="4348"></a>
+<h4> Additional Parameter for Call&lt;type&gt;MethodV Routines:
+</h4>
+<a name="4350"></a>
+<code>args</code>: a va_list of arguments.
+<p><a name="19867"></a>
+<h4> RETURNS:
+</h4>
+<a name="19868"></a>
+Returns the result of calling the Java method.
+<p><a name="5870"></a>
+<h4> THROWS:
+</h4>
+<a name="5871"></a>
+<code>Exceptions raised during the execution of the Java method.
+</code><p><br><a name="4581"></a>
+<h2>		 CallNonvirtual&lt;type&gt;Method Routines<br>
+CallNonvirtual&lt;type&gt;MethodA Routines<br>
+CallNonvirtual&lt;type&gt;MethodV Routines
+</h2>
+<a name="20106"></a>
+<var>NativeType</var><code> </code><var>CallNonvirtual&lt;type&gt;Method</var><code>(JNIEnv *env, jobject obj, <br>
+     jclass clazz, jmethodID methodID, ...);
+</code><p><a name="4605"></a>
+<var>NativeType</var><code> </code><var>CallNonvirtual&lt;type&gt;MethodA</var><code>(JNIEnv *env, jobject obj, <br>
+     jclass clazz, jmethodID methodID, jvalue *args);
+</code><p><a name="4607"></a>
+<var>NativeType</var><code> </code><var>CallNonvirtual&lt;type&gt;MethodV</var><code>(JNIEnv *env, jobject obj,<br>
+     jclass clazz, jmethodID methodID, va_list args);
+</code><p><a name="3988"></a>
+These families of operations invoke an instance (nonstatic) method on a Java 
+object, according to the specified class and method ID. The <code>methodID</code> 
+argument must be obtained by calling <code>GetMethodID()</code> on the class <code>clazz</code>.
+<p><a name="5110"></a>
+The <var>CallNonvirtual&lt;type&gt;Method</var> families of routines and the <var>Call&lt;type&gt;Method</var> 
+families of routines are different. <var>Call&lt;type&gt;Method</var> routines invoke the method 
+based on the class of the object, while <var>CallNonvirtual&lt;type&gt;Method</var> routines 
+invoke the method based on the class, designated by the <code>clazz</code> parameter, 
+from which the method ID is obtained. The method ID must be obtained from 
+the real class of the object or from one of its superclasses.
+<p><a name="4599"></a>
+<h4> CallNonvirtual&lt;type&gt;Method Routines
+</h4>
+<a name="5103"></a>
+Programmers place all arguments that are to be passed to the method 
+immediately following the <code>methodID</code> argument. The 
+<var>CallNonvirtual&lt;type&gt;Method</var> routine accepts these arguments and passes them 
+to the Java method that the programmer wishes to invoke.
+<p><a name="5104"></a>
+<h4> CallNonvirtual&lt;type&gt;MethodA Routines
+</h4>
+<a name="5106"></a>
+Programmers place all arguments to the method in an <code>args</code> array of <code>jvalues</code> 
+that immediately follows the <code>methodID</code> argument. The 
+<var>CallNonvirtual&lt;type&gt;MethodA</var> routine accepts the arguments in this array, and, 
+in turn, passes them to the Java method that the programmer wishes to invoke.
+<p><a name="4614"></a>
+<h4> CallNonvirtual&lt;type&gt;MethodV Routines
+</h4>
+<a name="4620"></a>
+Programmers place all arguments to the method in an <code>args</code> argument of type 
+<code>va_list</code> that immediately follows the <code>methodID</code> argument. The 
+<var>CallNonvirtualMethodV</var> routine accepts the arguments, and, in turn, passes 
+them to the Java method that the programmer wishes to invoke.
+<p><a name="4613"></a>
+The following table describes each of the method calling routines according to 
+their result type. You should replace <var>type</var> in <var>CallNonvirtual&lt;type&gt;Method </var>with 
+the Java type of the method, or use one of the actual method calling routine 
+names from the table, and replace <var>NativeType</var> with the corresponding native 
+type for that routine.
+<p><a name="4061"></a>
+<dl><dd>
+<Table Border="0">
+<caption><a name="5458"></a>
+<h4>Table 4-4	 CallNonvirtual&lt;type&gt;Method Routines
+</h4>
+</caption>
+<tr><th><a name="5462"></a>
+CallNonvirtual&lt;type&gt;Method Routine Name
+
+<th><a name="5464"></a>
+Native Type
+
+
+<tr><td><a name="5466"></a>
+<code>CallNonvirtualVoidMethod()
+</code>
+<a name="5467"></a>
+<code>CallNonvirtualVoidMethodA()
+</code>
+<a name="5468"></a>
+<code>CallNonvirtualVoidMethodV()</code>
+
+<td><a name="5470"></a>
+void
+
+
+<tr><td><a name="5472"></a>
+<code>CallNonvirtualObjectMethod()
+</code>
+<a name="5473"></a>
+<code>CallNonvirtualObjectMethodA()
+</code>
+<a name="5474"></a>
+<code>CallNonvirtualObjectMethodV()</code>
+
+<td><a name="5476"></a>
+jobject
+
+
+<tr><td><a name="5478"></a>
+<code>CallNonvirtualBooleanMethod()
+</code>
+<a name="5479"></a>
+<code>CallNonvirtualBooleanMethodA()
+</code>
+<a name="5480"></a>
+<code>CallNonvirtualBooleanMethodV()</code>
+
+<td><a name="5482"></a>
+jboolean
+
+
+<tr><td><a name="5484"></a>
+<code>CallNonvirtualByteMethod()
+</code>
+<a name="5485"></a>
+<code>CallNonvirtualByteMethodA()
+</code>
+<a name="5486"></a>
+<code>CallNonvirtualByteMethodV()</code>
+
+<td><a name="5488"></a>
+jbyte
+
+
+<tr><td><a name="5490"></a>
+<code>CallNonvirtualCharMethod()
+</code>
+<a name="5491"></a>
+<code>CallNonvirtualCharMethodA()
+</code>
+<a name="5492"></a>
+<code>CallNonvirtualCharMethodV()</code>
+
+<td><a name="5494"></a>
+jchar
+
+
+<tr><td><a name="5496"></a>
+<code>CallNonvirtualShortMethod()
+</code>
+<a name="5497"></a>
+<code>CallNonvirtualShortMethodA()
+</code>
+<a name="5498"></a>
+<code>CallNonvirtualShortMethodV()</code>
+
+<td><a name="5500"></a>
+jshort
+
+
+<tr><td><a name="5502"></a>
+<code>CallNonvirtualIntMethod()
+</code>
+<a name="5503"></a>
+<code>CallNonvirtualIntMethodA()
+</code>
+<a name="5504"></a>
+<code>CallNonvirtualIntMethodV()</code>
+
+<td><a name="5506"></a>
+jint
+
+
+<tr><td><a name="5508"></a>
+<code>CallNonvirtualLongMethod()
+</code>
+<a name="5509"></a>
+<code>CallNonvirtualLongMethodA()
+</code>
+<a name="5510"></a>
+<code>CallNonvirtualLongMethodV()</code>
+
+<td><a name="5512"></a>
+jlong
+
+
+<tr><td><a name="5514"></a>
+<code>CallNonvirtualFloatMethod()
+</code>
+<a name="5515"></a>
+<code>CallNonvirtualFloatMethodA()
+</code>
+<a name="5516"></a>
+<code>CallNonvirtualFloatMethodV()</code>
+
+<td><a name="5518"></a>
+jfloat
+
+
+<tr><td><a name="5520"></a>
+<code>CallNonvirtualDoubleMethod()
+</code>
+<a name="5521"></a>
+<code>CallNonvirtualDoubleMethodA()
+</code>
+<a name="5522"></a>
+<code>CallNonvirtualDoubleMethodV()</code>
+
+<td><a name="5524"></a>
+jdouble
+
+
+
+</Table>
+</dd></dl>
+<p><a name="4086"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="20184"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="4836"></a>
+<code>clazz: a</code> Java class.
+<p><a name="20185"></a>
+<code>obj</code>: a Java object.
+<p><a name="20186"></a>
+<code>methodID</code>: a method ID.
+<p><a name="5385"></a>
+<h4> Additional Parameter for CallNonvirtual&lt;type&gt;Method Routines:
+</h4>
+<a name="5386"></a>
+arguments to the Java method.
+<p><a name="4622"></a>
+<h4> Additional Parameter for CallNonvirtual&lt;type&gt;MethodA Routines:
+</h4>
+<a name="4626"></a>
+<code>args</code>: an array of arguments.
+<p><a name="4624"></a>
+<h4> Additional Parameter for CallNonvirtual&lt;type&gt;MethodV Routines:
+</h4>
+<a name="4628"></a>
+<code>args</code>: a <code>va_list</code> of arguments.
+<p><a name="5898"></a>
+<h4> RETURNS:
+</h4>
+<a name="5899"></a>
+<h4> Returns the result of calling the Java method.
+</h4>
+<a name="5904"></a>
+<h4> THROWS:
+</h4>
+<a name="5905"></a>
+<code>Exceptions raised during the execution of the Java method.</code>
+<p><hr align=left><a name="5901"></a>
+<h1> Accessing Static Fields
+</h1>
+<br><a name="16823"></a>
+<h2>		 GetStaticFieldID
+</h2>
+<a name="16827"></a>
+<code>jfieldID GetStaticFieldID(JNIEnv *env, jclass clazz, <br>
+     const char *name, const char *sig);
+</code><p><a name="16831"></a>
+Returns the field ID for a static field of a class. The field is specified by its name 
+and signature. The <var>GetStatic&lt;type&gt;Field</var> and <var>SetStatic&lt;type&gt;Field</var> families of 
+accessor functions use field IDs to retrieve static fields.
+<p><a name="6009"></a>
+<code>GetStaticFieldID()</code> causes an uninitialized class to be initialized.
+<p><a name="20734"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="20735"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="20736"></a>
+<code>clazz</code>: a Java class object.
+<p><a name="20737"></a>
+<code>name</code>: the static field name in a 0-terminated UTF-8 string.
+<p><a name="20738"></a>
+<code>sig</code>: the field signature in a 0-terminated UTF-8 string.
+<p><a name="20739"></a>
+<h4> RETURNS:
+</h4>
+<a name="20740"></a>
+Returns a field ID, or <code>NULL</code> if the specified static field cannot be found.
+<p><a name="20741"></a>
+<h4> THROWS:
+</h4>
+<a name="20742"></a>
+<code>NoSuchFieldError</code>: if the specified static field cannot be found.
+<p><a name="6027"></a>
+<code>ExceptionInInitializerError</code>: if the class initializer fails due to an 
+exception.
+<p><a name="6028"></a>
+<code>OutOfMemoryError</code>: if the system runs out of memory.
+<p><br><a name="20752"></a>
+<h2>		 GetStatic&lt;type&gt;Field Routines
+</h2>
+<a name="20753"></a>
+<var>NativeType</var><code> </code><var>GetStatic&lt;type&gt;Field</var><code>(JNIEnv *env, jclass clazz,<br>
+     jfieldID fieldID);
+</code><p><a name="20754"></a>
+This family of accessor routines returns the value of a static field of an object. 
+The field to access is specified by a field ID, which is obtained by calling 
+<code>GetStaticFieldID()</code>.
+<p><a name="20822"></a>
+The following table describes the family of get routine names and result types. 
+You should replace <var>type</var> in <var>GetStatic&lt;type&gt;Field </var>with the Java type of the field, 
+or one of the actual static field accessor routine names from the table, and 
+replace <var>NativeType</var> with the corresponding native type for that routine.
+<p><a name="4077"></a>
+<dl><dd>
+<Table Border="0">
+<caption><a name="5614"></a>
+<h4>Table 4-5	 GetStatic&lt;type&gt;Field Family of Accessor Routines
+</h4>
+</caption>
+<tr><th><a name="5618"></a>
+GetStatic&lt;type&gt;Field Routine Name
+
+<th><a name="5620"></a>
+Native Type
+
+
+<tr><td><a name="5622"></a>
+<code>GetStaticObjectField()
+</code>
+<td><a name="5624"></a>
+jobject
+
+
+<tr><td><a name="5626"></a>
+<code>GetStaticBooleanField()
+</code>
+<td><a name="5628"></a>
+jboolean
+
+
+<tr><td><a name="5630"></a>
+<code>GetStaticByteField()
+</code>
+<td><a name="5632"></a>
+jbyte
+
+
+<tr><td><a name="5634"></a>
+<code>GetStaticCharField()
+</code>
+<td><a name="5636"></a>
+jchar
+
+
+<tr><td><a name="5638"></a>
+<code>GetStaticShortField()
+</code>
+<td><a name="5640"></a>
+jshort
+
+
+<tr><td><a name="5642"></a>
+<code>GetStaticIntField()
+</code>
+<td><a name="5644"></a>
+jint
+
+
+<tr><td><a name="5646"></a>
+<code>GetStaticLongField()
+</code>
+<td><a name="5648"></a>
+jlong
+
+
+<tr><td><a name="5650"></a>
+<code>GetStaticFloatField()
+</code>
+<td><a name="5652"></a>
+jfloat
+
+
+<tr><td><a name="5654"></a>
+<code>GetStaticDoubleField()
+</code>
+<td><a name="5656"></a>
+jdouble
+
+
+
+</Table>
+</dd></dl>
+<p><a name="20823"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="20824"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="20825"></a>
+<code>clazz</code>: a Java class object.
+<p><a name="20826"></a>
+<code>fieldID</code>: a static field ID.
+<p><a name="20827"></a>
+<h4> RETURNS:
+</h4>
+<a name="20828"></a>
+Returns the content of the static field.
+<p><br><a name="20829"></a>
+<h2>		 SetStatic&lt;type&gt;Field Routines
+</h2>
+<a name="20830"></a>
+<code>void </code><var>SetStatic&lt;type&gt;Field</var><code>(JNIEnv *env, jclass clazz, <br>
+     jfieldID fieldID, </code><var>NativeType</var><code> value);
+</code><p><a name="20831"></a>
+This family of accessor routines sets the value of a static field of an object. The 
+field to access is specified by a field ID, which is obtained by calling 
+<code>GetStaticFieldID()</code>.
+<p><a name="20899"></a>
+The following table describes the set routine name and value types. You should 
+replace <var>type</var> in <var>SetStatic&lt;type&gt;Field </var>with the Java type of the field, or one of the 
+actual set static field routine names from the table, and replace <var>NativeType</var> with 
+the corresponding native type for that routine.<dl><dd>
+<Table Border="0">
+<caption><a name="5658"></a>
+<h4>Table 4-6	 SetStatic&lt;type&gt;Field Family of Accessor Routines
+</h4>
+</caption>
+<tr><th><a name="5662"></a>
+SetStatic&lt;type&gt;Field Routine Name
+
+<th><a name="5664"></a>
+NativeType
+
+
+<tr><td><a name="5666"></a>
+<code>SetStaticObjectField()
+</code>
+<td><a name="5668"></a>
+jobject
+
+
+<tr><td><a name="5670"></a>
+<code>SetStaticBooleanField()
+</code>
+<td><a name="5672"></a>
+jboolean
+
+
+<tr><td><a name="5674"></a>
+<code>SetStaticByteField()
+</code>
+<td><a name="5676"></a>
+jbyte
+
+
+<tr><td><a name="5678"></a>
+<code>SetStaticCharField()
+</code>
+<td><a name="5680"></a>
+jchar
+
+
+<tr><td><a name="5682"></a>
+<code>SetStaticShortField()
+</code>
+<td><a name="5684"></a>
+jshort
+
+
+<tr><td><a name="5686"></a>
+<code>SetStaticIntField()
+</code>
+<td><a name="5688"></a>
+jint
+
+
+<tr><td><a name="5690"></a>
+<code>SetStaticLongField()
+</code>
+<td><a name="5692"></a>
+jlong
+
+
+<tr><td><a name="5694"></a>
+<code>SetStaticFloatField()
+</code>
+<td><a name="5696"></a>
+jfloat
+
+
+<tr><td><a name="5698"></a>
+<code>SetStaticDoubleField()
+</code>
+<td><a name="5700"></a>
+jdouble
+
+
+
+</Table>
+</dd></dl>
+<p><a name="20900"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="20901"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="20902"></a>
+<code>clazz</code>: a Java class object.
+<p><a name="20903"></a>
+<code>fieldID</code>: a static field ID.
+<p><a name="20904"></a>
+<code>value</code>: the new value of the field.
+<p><hr align=left><a name="20949"></a>
+<h1> Calling Static Methods
+</h1>
+<br><a name="20950"></a>
+<h2>		 GetStaticMethodID
+</h2>
+<a name="20951"></a>
+<code>jmethodID GetStaticMethodID(JNIEnv *env, jclass clazz,<br>
+     const char *name, const char *sig);
+</code><p><a name="20952"></a>
+Returns the method ID for a static method of a class. The method is specified 
+by its name and signature.
+<p><a name="6014"></a>
+<code>GetStaticMethodID()</code> causes an uninitialized class to be initialized.
+<p><a name="20953"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="20954"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="20955"></a>
+<code>clazz</code>: a Java class object.
+<p><a name="20956"></a>
+<code>name</code>: the static method name in a 0-terminated UTF-8 string.
+<p><a name="20957"></a>
+<code>sig</code>: the method signature in a 0-terminated UTF-8 string.
+<p><a name="20958"></a>
+<h4> RETURNS:
+</h4>
+<a name="20959"></a>
+Returns a method ID, or <code>NULL</code> if the operation fails.
+<p><a name="20960"></a>
+<h4> THROWS:
+</h4>
+<a name="20961"></a>
+<code>NoSuchMethodError</code>: if the specified static method cannot be found.
+<p><a name="6033"></a>
+<code>ExceptionInInitializerError</code>: if the class initializer fails due to an 
+exception.
+<p><a name="6034"></a>
+<code>OutOfMemoryError</code>: if the system runs out of memory.
+<p><br><a name="4796"></a>
+<h2>		 CallStatic&lt;type&gt;Method Routines<br>
+CallStatic&lt;type&gt;MethodA Routines<br>
+CallStatic&lt;type&gt;MethodV Routines
+</h2>
+<a name="20963"></a>
+<var>NativeType</var><code> </code><var>CallStatic&lt;type&gt;Method</var><code>(JNIEnv *env, jclass clazz,<br>
+     jmethodID methodID, ...);
+</code><p><a name="4821"></a>
+<var>NativeType</var><code> </code><var>CallStatic&lt;type&gt;MethodA</var><code>(JNIEnv *env, jclass clazz,<br>
+     jmethodID methodID, jvalue *args);
+</code><p><a name="4823"></a>
+<var>NativeType</var><code> </code><var>CallStatic&lt;type&gt;MethodV</var><code>(JNIEnv *env, jclass clazz,<br>
+     jmethodID methodID, va_list args);
+</code><p><a name="20964"></a>
+This family of operations invokes a static method on a Java object, according to 
+the specified method ID. The <code>methodID</code> argument must be obtained by calling 
+<code>GetStaticMethodID()</code>.
+<p><a name="4496"></a>
+The method ID must be derived from <code>clazz</code>, not from one of its superclasses.
+<p><a name="4360"></a>
+<h4> CallStatic&lt;type&gt;Method Routines
+</h4>
+<a name="4808"></a>
+Programmers should place all arguments that are to be passed to the method 
+immediately following the <code>methodID</code> argument. The <var>CallStatic&lt;type&gt;Method</var> 
+routine accepts these arguments and passes them to the Java method that the 
+programmer wishes to invoke.
+<p><a name="4809"></a>
+<h4> CallStatic&lt;type&gt;MethodA Routines
+</h4>
+<a name="4825"></a>
+Programmers should place all arguments to the method in an <code>args</code> array of 
+<code>jvalues</code> that immediately follows the <code>methodID</code> argument. The 
+<var>CallStaticMethodA</var> routine accepts the arguments in this array, and, in turn, 
+passes them to the Java method that the programmer wishes to invoke.
+<p><a name="4815"></a>
+<h4> CallStatic&lt;type&gt;MethodV Routines
+</h4>
+<a name="4827"></a>
+Programmers should place all arguments to the method in an <code>args</code> argument 
+of type <code>va_list</code> that immediately follows the <code>methodID</code> argument. The 
+<var>CallStaticMethodV</var> routine accepts the arguments, and, in turn, passes them to 
+the Java method that the programmer wishes to invoke.
+<p><a name="4813"></a>
+The following table describes each of the method calling routines according to 
+their result types. You should replace <var>type</var> in <var>CallStatic&lt;type&gt;Method </var>with the 
+Java type of the method, or one of the actual method calling routine names 
+from the table, and replace <var>NativeType</var> with the corresponding native type for 
+that routine.
+<p><a name="4094"></a>
+<strong><dl><dd>
+<Table Border="0">
+<caption><a name="5702"></a>
+<h4>Table 4-7	 CallStatic&lt;type&gt;Method Calling Routines
+</h4>
+</caption>
+<tr><th><a name="5706"></a>
+CallStatic&lt;type&gt;Method Routine Name
+
+<th><a name="5708"></a>
+Native Type
+
+
+<tr><td><a name="5710"></a>
+<code>CallStaticVoidMethod()
+</code>
+<a name="5711"></a>
+<code>CallStaticVoidMethodA()
+</code>
+<a name="5712"></a>
+<code>CallStaticVoidMethodV()</code>
+
+<td><a name="5714"></a>
+void
+
+
+<tr><td><a name="5716"></a>
+<code>CallStaticObjectMethod()
+</code>
+<a name="5717"></a>
+<code>CallStaticObjectMethodA()
+</code>
+<a name="5718"></a>
+<code>CallStaticObjectMethodV()</code>
+
+<td><a name="5720"></a>
+jobject
+
+
+<tr><td><a name="5722"></a>
+<code>CallStaticBooleanMethod()
+</code>
+<a name="5723"></a>
+<code>CallStaticBooleanMethodA()
+</code>
+<a name="5724"></a>
+<code>CallStaticBooleanMethodV()</code>
+
+<td><a name="5726"></a>
+jboolean
+
+
+<tr><td><a name="5728"></a>
+<code>CallStaticByteMethod()
+</code>
+<a name="5729"></a>
+<code>CallStaticByteMethodA()
+</code>
+<a name="5730"></a>
+<code>CallStaticByteMethodV()</code>
+
+<td><a name="5732"></a>
+jbyte
+
+
+<tr><td><a name="5734"></a>
+<code>CallStaticCharMethod()
+</code>
+<a name="5735"></a>
+<code>CallStaticCharMethodA()
+</code>
+<a name="5736"></a>
+<code>CallStaticCharMethodV()</code>
+
+<td><a name="5738"></a>
+jchar
+
+
+<tr><td><a name="5740"></a>
+<code>CallStaticShortMethod()
+</code>
+<a name="5741"></a>
+<code>CallStaticShortMethodA()
+</code>
+<a name="5742"></a>
+<code>CallStaticShortMethodV()</code>
+
+<td><a name="5744"></a>
+jshort
+
+
+<tr><td><a name="5746"></a>
+<code>CallStaticIntMethod()
+</code>
+<a name="5747"></a>
+<code>CallStaticIntMethodA()
+</code>
+<a name="5748"></a>
+<code>CallStaticIntMethodV()</code>
+
+<td><a name="5750"></a>
+jint
+
+
+<tr><td><a name="5752"></a>
+<code>CallStaticLongMethod()
+</code>
+<a name="5753"></a>
+<code>CallStaticLongMethodA()
+</code>
+<a name="5754"></a>
+<code>CallStaticLongMethodV()</code>
+
+<td><a name="5756"></a>
+jlong
+
+
+<tr><td><a name="5758"></a>
+<code>CallStaticFloatMethod()
+</code>
+<a name="5759"></a>
+<code>CallStaticFloatMethodA()
+</code>
+<a name="5760"></a>
+<code>CallStaticFloatMethodV()</code>
+
+<td><a name="5762"></a>
+jfloat
+
+
+<tr><td><a name="5764"></a>
+<code>CallStaticDoubleMethod()
+</code>
+<a name="5765"></a>
+<code>CallStaticDoubleMethodA()
+</code>
+<a name="5766"></a>
+<code>CallStaticDoubleMethodV()</code>
+
+<td><a name="5768"></a>
+jdouble
+
+
+
+</Table>
+</dd></dl></strong>
+<p><a name="21040"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="21041"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="21042"></a>
+<code>clazz</code>: a Java class object.
+<p><a name="21043"></a>
+<code>methodID</code>: a static method ID.
+<p><a name="5380"></a>
+<h4> Additional Parameter for CallStatic&lt;type&gt;Method Routines:
+</h4>
+<a name="5381"></a>
+arguments to the static method.
+<p><a name="4900"></a>
+<h4> Additional Parameter for CallStatic&lt;type&gt;MethodA Routines:
+</h4>
+<a name="4906"></a>
+<code>args</code>: an array of arguments.
+<p><a name="4904"></a>
+<h4> Additional Parameter for CallStatic&lt;type&gt;MethodV Routines:
+</h4>
+<a name="4912"></a>
+<code>args</code>: a <code>va_list</code> of arguments.
+<p><a name="5373"></a>
+<h4> RETURNS:
+</h4>
+<a name="5374"></a>
+Returns the result of calling the static Java method.
+<p><a name="5910"></a>
+<h4> THROWS:
+</h4>
+<a name="5911"></a>
+<code>Exceptions raised during the execution of the Java method.</code>
+<p><hr align=left><a name="5386"></a>
+<h1> String Operations
+</h1>
+<br><a name="4925"></a>
+<h2>		 NewString
+</h2>
+<a name="4926"></a>
+<code>jstring NewString(JNIEnv *env, const jchar *unicodeChars,<br>
+     jsize len);
+</code><p><a name="17121"></a>
+Constructs a new <code>java.lang.String</code> object from an array of Unicode 
+characters.
+<p><a name="21294"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="21295"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="21296"></a>
+<code>unicodeChars</code>: pointer to a Unicode string.
+<p><a name="21297"></a>
+<code>len</code>: length of the Unicode string.
+<p><a name="21299"></a>
+<h4> RETURNS:
+</h4>
+<a name="21300"></a>
+Returns a Java string object, or <code>NULL</code> if the string cannot be constructed.
+<p><a name="6039"></a>
+<h4> THROWS:
+</h4>
+<a name="6042"></a>
+<code>OutOfMemoryError</code>: if the system runs out of memory.
+<p><br><a name="17132"></a>
+<h2>		 GetStringLength
+</h2>
+<a name="17136"></a>
+<code>jsize GetStringLength(JNIEnv *env, jstring string);
+</code><p><a name="17140"></a>
+Returns the length (the count of Unicode characters) of a Java string.
+<p><a name="21326"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="21327"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="21328"></a>
+<code>string</code>: a Java string object.
+<p><a name="21330"></a>
+<h4> RETURNS:
+</h4>
+<a name="21331"></a>
+Returns the length of the Java string.
+<p><br><a name="17158"></a>
+<h2>		 GetStringChars
+</h2>
+<a name="17162"></a>
+<code>const jchar * GetStringChars(JNIEnv *env, jstring string,<br>
+     jboolean *isCopy);
+</code><p><a name="17166"></a>
+Returns a pointer to the array of Unicode characters of the string. This pointer 
+is valid until <code>ReleaseStringchars()</code> is called.
+<p><a name="21360"></a>
+If <code>isCopy</code> is not <code>NULL</code>, then <code>*isCopy</code> is set to <code>JNI_TRUE</code> if a copy is made; or 
+it is set to <code>JNI_FALSE</code> if no copy is made.
+<p><a name="21364"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="21365"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="21366"></a>
+<code>string</code>: a Java string object.
+<p><a name="21374"></a>
+<code>isCopy</code>: a pointer to a boolean.
+<p><a name="21367"></a>
+<h4> RETURNS:
+</h4>
+<a name="21368"></a>
+Returns a pointer to a Unicode string, or <code>NULL</code> if the operation fails.
+<p><br><a name="17188"></a>
+<h2>		 ReleaseStringChars
+</h2>
+<a name="17192"></a>
+<code>void ReleaseStringChars(JNIEnv *env, jstring string, <br>
+     const jchar *chars);
+</code><p><a name="17196"></a>
+Informs the VM that the native code no longer needs access to <code>chars</code>. The 
+<code>chars</code> argument is a pointer obtained from <code>string</code> using 
+<code>GetStringChars()</code>.
+<p><a name="21416"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="21417"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="21418"></a>
+<code>string</code>: a Java string object.
+<p><a name="21419"></a>
+<code>chars</code>: a pointer to a Unicode string.
+<p><br><a name="17220"></a>
+<h2>		 NewStringUTF
+</h2>
+<a name="17224"></a>
+<code>jstring NewStringUTF(JNIEnv *env, const char *bytes);
+</code><p><a name="17228"></a>
+Constructs a new <code>java.lang.String</code> object from an array of UTF-8 
+characters. 
+<p><a name="21516"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="21517"></a>
+<code>env</code>: the JNI interface pointer, or <code>NULL</code> if the string cannot be constructed.
+<p><a name="21518"></a>
+<code>bytes</code>: the pointer to a UTF-8 string.
+<p><a name="23869"></a>
+<h4> RETURNS:
+</h4>
+<a name="23870"></a>
+Returns a Java string object, or <code>NULL</code> if the string cannot be constructed.
+<p><a name="6053"></a>
+<h4> THROWS:
+</h4>
+<a name="6054"></a>
+<code>OutOfMemoryError</code>: if the system runs out of memory.
+<p><br><a name="23871"></a>
+<h2>		 GetStringUTFLength
+</h2>
+<a name="17243"></a>
+<code>jsize GetStringUTFLength(JNIEnv *env, jstring string);
+</code><p><a name="17247"></a>
+Returns the UTF-8 length in bytes of a string. 
+<p><a name="21535"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="21536"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="21537"></a>
+<code>string</code>: a Java string object.
+<p><a name="21538"></a>
+<h4> RETURNS:
+</h4>
+<a name="21539"></a>
+Returns the UTF-8 length of the string.
+<p><br><a name="17265"></a>
+<h2>		 GetStringUTFChars
+</h2>
+<a name="17269"></a>
+<code>const char* GetStringUTFChars(JNIEnv *env, jstring string, <br>
+     jboolean *isCopy);
+</code><p><a name="17273"></a>
+Returns a pointer to an array of UTF-8 characters of the string. This array is 
+valid until it is released by <code>ReleaseStringUTFChars()</code>.
+<p><a name="4116"></a>
+If <code>isCopy</code> is not <code>NULL</code>, then <code>*isCopy</code> is set to <code>JNI_TRUE</code> if a copy is made; or 
+it is set to <code>JNI_FALSE</code> if no copy is made.
+<p><a name="21562"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="21563"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="21564"></a>
+<code>string</code>: a Java string object.
+<p><a name="21565"></a>
+<code>isCopy</code>: a pointer to a boolean.
+<p><a name="21566"></a>
+<h4> RETURNS:
+</h4>
+<a name="21567"></a>
+Returns a pointer to a UTF-8 string, or <code>NULL</code> if the operation fails.
+<p><br><a name="17294"></a>
+<h2>		 ReleaseStringUTFChars
+</h2>
+<a name="17298"></a>
+<code>void ReleaseStringUTFChars(JNIEnv *env, jstring string,<br>
+     const char *utf);
+</code><p><a name="17302"></a>
+Informs the VM that the native code no longer needs access to <code>utf</code>. The <code>utf</code> 
+argument is a pointer derived from <code>string</code> using <code>GetStringUTFChars()</code>.
+<p><a name="21577"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="21578"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="21579"></a>
+<code>string</code>: a Java string object.
+<p><a name="21580"></a>
+<code>utf</code>: a pointer to a UTF-8 string.
+<p><hr align=left><a name="17314"></a>
+<h1> Array Operations
+</h1>
+<br><a name="21732"></a>
+<h2>		 GetArrayLength
+</h2>
+<a name="21736"></a>
+<code>jsize GetArrayLength(JNIEnv *env, jarray array);
+</code><p><a name="21740"></a>
+Returns the number of elements in the array. 
+<p><a name="21766"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="21767"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="21768"></a>
+<code>array</code>: a Java array object.
+<p><a name="21770"></a>
+<h4> RETURNS:
+</h4>
+<a name="21771"></a>
+Returns the length of the array.
+<p><br><a name="21619"></a>
+<h2>		 NewObjectArray
+</h2>
+<a name="21623"></a>
+<code>jobjectArray NewObjectArray(JNIEnv *env, jsize length, <br>
+     jclass elementClass, jobject initialElement);
+</code><p><a name="21628"></a>
+Constructs a new array holding objects in class <code>elementClass</code>. All elements 
+are initially set to <code>initialElement</code>.
+<p><a name="21868"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="21869"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="21885"></a>
+<code>length</code>: array size.
+<p><a name="21888"></a>
+<code>elementClass</code>: array element class.
+<p><a name="21899"></a>
+<code>initialElement</code>: initialization value.
+<p><a name="21871"></a>
+<h4> RETURNS:
+</h4>
+<a name="21872"></a>
+Returns a Java array object, or <code>NULL</code> if the array cannot be constructed.
+<p><a name="6114"></a>
+<h4> THROWS:
+</h4>
+<a name="6115"></a>
+<code>OutOfMemoryError</code>: if the system runs out of memory.
+<p><br><a name="21671"></a>
+<h2>		 GetObjectArrayElement
+</h2>
+<a name="21675"></a>
+<code>jobject GetObjectArrayElement(JNIEnv *env, <br>
+     jobjectArray array, jsize index);
+</code><p><a name="21679"></a>
+Returns an element of an <code>Object</code> array.
+<p><a name="21922"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="21923"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="21924"></a>
+<code>array</code>: a Java array.
+<p><a name="21925"></a>
+<code>index</code>: array index.
+<p><a name="21927"></a>
+<h4> RETURNS:
+</h4>
+<a name="21928"></a>
+Returns a Java object.
+<p><a name="21680"></a>
+<h4> THROWS:
+</h4>
+<a name="21686"></a>
+<code>ArrayIndexOutOfBoundsException</code>: if <code>index</code> does not specify a valid 
+index in the array.
+<p><br><a name="21699"></a>
+<h2>		 SetObjectArrayElement
+</h2>
+<a name="21703"></a>
+<code>void SetObjectArrayElement(JNIEnv *env, jobjectArray array, <br>
+     jsize index, jobject value);
+</code><p><a name="21707"></a>
+Sets an element of an <code>Object</code> array.
+<p><a name="21972"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="21973"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="21974"></a>
+<code>array</code>: a Java array.
+<p><a name="21975"></a>
+<code>index</code>: array index.
+<p><a name="21985"></a>
+<code>value</code>: the new value.
+<p><a name="21978"></a>
+<h4> THROWS:
+</h4>
+<a name="21980"></a>
+<code>ArrayIndexOutOfBoundsException</code>: if <code>index</code> does not specify a valid 
+index in the array.
+<p><a name="21717"></a>
+<code>ArrayStoreException</code>: if the class of <code>value</code> is not a subclass of the element 
+class of the array.
+<p><br><a name="17318"></a>
+<h2>		 New&lt;PrimitiveType&gt;Array Routines
+</h2>
+<a name="17322"></a>
+<var>ArrayType</var><code> </code><var>New&lt;PrimitiveType&gt;Array</var><code>(JNIEnv *env, jsize length);
+</code><p><a name="17326"></a>
+A family of operations used to construct a new primitive array object. <a href="functions.doc.html#4122">Table &#32;4-8</a> 
+describes the specific primitive array constructors. You should replace 
+<var>New&lt;PrimitiveType&gt;Array </var>with one of the actual primitive array constructor 
+routine names from the following table, and replace <em>ArrayType</em> with the 
+corresponding array type for that routine.
+<p><a name="4122"></a>
+<dl><dd>
+<Table Border="0">
+<caption><a name="5339"></a>
+<h4>Table 4-8	 New&lt;PrimitiveType&gt;Array Family of Array Constructors
+</h4>
+</caption>
+<tr><th><a name="5343"></a>
+New&lt;PrimitiveType&gt;Array Routines
+
+<th><a name="5345"></a>
+Array Type
+
+
+<tr><td><a name="5347"></a>
+<code>NewBooleanArray()
+</code>
+<td><a name="5349"></a>
+jbooleanArray
+
+
+<tr><td><a name="5351"></a>
+<code>NewByteArray()
+</code>
+<td><a name="5353"></a>
+jbyteArray
+
+
+<tr><td><a name="5355"></a>
+<code>NewCharArray()
+</code>
+<td><a name="5357"></a>
+jcharArray
+
+
+<tr><td><a name="5359"></a>
+<code>NewShortArray()
+</code>
+<td><a name="5361"></a>
+jshortArray
+
+
+<tr><td><a name="5363"></a>
+<code>NewIntArray()
+</code>
+<td><a name="5365"></a>
+jintArray
+
+
+<tr><td><a name="5367"></a>
+<code>NewLongArray()
+</code>
+<td><a name="5369"></a>
+jlongArray
+
+
+<tr><td><a name="5371"></a>
+<code>NewFloatArray()
+</code>
+<td><a name="5373"></a>
+jfloatArray
+
+
+<tr><td><a name="5375"></a>
+<code>NewDoubleArray()
+</code>
+<td><a name="5377"></a>
+jdoubleArray
+
+
+
+</Table>
+</dd></dl>
+<p><a name="5092"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="22207"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="22208"></a>
+<code>length</code>: the array length.
+<p><a name="22210"></a>
+<h4> RETURNS:
+</h4>
+<a name="22211"></a>
+Returns a Java array, or <code>NULL</code> if the array cannot be constructed.
+<p><br><a name="17382"></a>
+<h2>		 Get&lt;PrimitiveType&gt;ArrayElements Routines
+</h2>
+<a name="17386"></a>
+<var>NativeType</var><code> *</code><var>Get&lt;PrimitiveType&gt;ArrayElements</var><code>(JNIEnv *env, <br>
+     </code>ArrayType<code> array, jboolean *isCopy);
+</code><p><a name="17390"></a>
+A family of functions that returns the body of the primitive array. The result is 
+valid until the corresponding <var>Release</var>&lt;<var>PrimitiveType</var>&gt;<var>ArrayElements()</var> function is 
+called. <em>S</em><em>ince the returned array may be a copy of the Java array, changes made to the 
+returned array will not necessarily be reflected in the original </em><code>array</code><em> </em><em>until</em><em> 
+</em>Release&lt;PrimitiveType&gt;ArrayElements()<em> </em><em>is called.
+</em><p><a name="4127"></a>
+If <code>isCopy</code> is not <code>NULL</code>, then <code>*isCopy</code> is set to <code>JNI_TRUE</code> if a copy is made; or 
+it is set to <code>JNI_FALSE</code> if no copy is made.
+<p><a name="4637"></a>
+The following table describes the specific primitive array element accessors. 
+You should make the following substitutions:
+<p><ul><a name="6198"></a>
+<li>Replace <var>Get&lt;PrimitiveType&gt;ArrayElements </var>with one of the actual primitive 
+element accessor routine names from the table.
+
+<a name="6201"></a>
+<li>Replace <em>ArrayType</em> with the corresponding array type. 
+
+<a name="6204"></a>
+<li>Replace <var>NativeType </var>with the corresponding native type for that routine.
+
+</ul><a name="4590"></a>
+Regardless of how boolean arrays are represented in the Java VM, 
+<code>GetBooleanArrayElements()</code> always returns a pointer to <code>jbooleans</code>, with 
+each byte denoting an element (the unpacked representation). All arrays of 
+other types are guaranteed to be contiguous in memory.
+<p><a name="4136"></a>
+<dl><dd>
+<Table Border="0">
+<caption><a name="4963"></a>
+<h4>Table 4-9	 Get&lt;PrimitiveType&gt;ArrayElements Family of Accessor Routines
+</h4>
+</caption>
+<tr><th><a name="4649"></a>
+Get&lt;PrimitiveType&gt;ArrayElements 
+Routines
+
+<th><a name="4651"></a>
+Array Type
+
+<th><a name="4653"></a>
+Native Type
+
+
+<tr><td><a name="4655"></a>
+<code>GetBooleanArrayElements()
+</code>
+<td><a name="4657"></a>
+jbooleanArray
+
+<td><a name="4659"></a>
+jboolean
+
+
+<tr><td><a name="4661"></a>
+<code>GetByteArrayElements()
+</code>
+<td><a name="4663"></a>
+jbyteArray
+
+<td><a name="4665"></a>
+jbyte
+
+
+<tr><td><a name="4667"></a>
+<code>GetCharArrayElements()
+</code>
+<td><a name="4669"></a>
+jcharArray
+
+<td><a name="4671"></a>
+jchar
+
+
+<tr><td><a name="4673"></a>
+<code>GetShortArrayElements()
+</code>
+<td><a name="4675"></a>
+jshortArray
+
+<td><a name="4677"></a>
+jshort
+
+
+<tr><td><a name="4679"></a>
+<code>GetIntArrayElements()
+</code>
+<td><a name="4681"></a>
+jintArray
+
+<td><a name="4683"></a>
+jint
+
+
+<tr><td><a name="4685"></a>
+<code>GetLongArrayElements()
+</code>
+<td><a name="4687"></a>
+jlongArray
+
+<td><a name="4689"></a>
+jlong
+
+
+<tr><td><a name="4691"></a>
+<code>GetFloatArrayElements()
+</code>
+<td><a name="4693"></a>
+jfloatArray
+
+<td><a name="4695"></a>
+jfloat
+
+
+<tr><td><a name="4697"></a>
+<code>GetDoubleArrayElements()
+</code>
+<td><a name="4699"></a>
+jdoubleArray
+
+<td><a name="4701"></a>
+jdouble
+
+
+
+</Table>
+</dd></dl>
+<p><a name="22652"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="22281"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="22282"></a>
+<code>array</code>: a Java string object.
+<p><a name="22283"></a>
+<code>isCopy</code>: a pointer to a boolean.
+<p><a name="22284"></a>
+<h4> RETURNS:
+</h4>
+<a name="22285"></a>
+Returns a pointer to the array elements, or <code>NULL</code> if the operation fails.
+<p><br><a name="17440"></a>
+<h2>		 Release&lt;PrimitiveType&gt;ArrayElements Routines
+</h2>
+<a name="17444"></a>
+<code>void </code><var>Release&lt;PrimitiveType&gt;ArrayElements</var><code>(JNIEnv *env, <br>
+     </code>ArrayType<code> array, </code><var>NativeType</var><code> *elems, jint mode);
+</code><p><a name="5114"></a>
+A family of functions that informs the VM that the native code no longer needs 
+access to <code>elems</code>. The <code>elems</code> argument is a pointer derived from <code>array</code> using 
+the corresponding <var>Get</var><code>&lt;</code><var>PrimitiveType</var><code>&gt;</code><var>ArrayElements()</var> function. If necessary, 
+this function copies back all changes made to <code>elems</code> to the original array.
+<p><a name="17454"></a>
+The <code>mode</code> argument provides information on how the array buffer should be 
+released. <code>mode</code> has no effect if <code>elems</code> is not a copy of the elements in <code>array</code>. 
+Otherwise, <code>mode</code> has the following impact, as shown in the following table:
+<p><a name="4137"></a>
+<dl><dd>
+<Table Border="0">
+<caption><a name="1544"></a>
+<h4>Table 4-10	 Primitive Array Release Modes
+</h4>
+</caption>
+<tr><th><a name="22549"></a>
+mode
+
+<th><a name="22551"></a>
+actions
+
+
+<tr><td><a name="22553"></a>
+<code>0
+</code>
+<td><a name="22555"></a>
+copy back the content and free the <code>elems</code> buffer
+
+
+<tr><td><a name="22557"></a>
+<code>JNI_COMMIT
+</code>
+<td><a name="22559"></a>
+copy back the content but do not free the <code>elems</code> 
+buffer
+
+
+<tr><td><a name="22561"></a>
+<code>JNI_ABORT
+</code>
+<td><a name="22563"></a>
+free the buffer without copying back the possible 
+changes
+
+
+
+</Table>
+</dd></dl>
+<p><a name="17470"></a>
+In most cases, programmers pass "0" to the <code>mode</code> argument to ensure 
+consistent behavior for both pinned and copied arrays. The other options give 
+the programmer more control over memory management and should be used 
+with extreme care.
+<p><a name="17475"></a>
+The next table describes the specific routines that comprise the family of 
+primitive array disposers. You should make the following substitutions:
+<p><ul><a name="6205"></a>
+<li>Replace <var>Release&lt;PrimitiveType&gt;ArrayElements </var>with one of the actual 
+primitive array disposer routine names from <a href="functions.doc.html#4140">Table &#32;4-11</a>.
+
+<a name="6206"></a>
+<li>Replace <em>ArrayType</em> with the corresponding array type.
+
+<a name="6209"></a>
+<li>Replace <var>NativeType</var> with the corresponding native type for that routine.
+
+</ul><a name="4140"></a>
+<dl><dd>
+<Table Border="0">
+<caption><a name="1629"></a>
+<h4>Table 4-11	 Release&lt;PrimitiveType&gt;ArrayElements Family of Array Routines
+</h4>
+</caption>
+<tr><th><a name="22662"></a>
+Release&lt;PrimitiveType&gt;ArrayElements 
+Routines
+
+<th><a name="22664"></a>
+Array Type
+
+<th><a name="22666"></a>
+Native Type
+
+
+<tr><td><a name="22668"></a>
+<code>ReleaseBooleanArrayElements()
+</code>
+<td><a name="22670"></a>
+jbooleanArray
+
+<td><a name="22672"></a>
+jboolean
+
+
+<tr><td><a name="22674"></a>
+<code>ReleaseByteArrayElements()
+</code>
+<td><a name="22676"></a>
+jbyteArray
+
+<td><a name="22678"></a>
+jbyte
+
+
+<tr><td><a name="22680"></a>
+<code>ReleaseCharArrayElements()
+</code>
+<td><a name="22682"></a>
+jcharArray
+
+<td><a name="22684"></a>
+jchar
+
+
+<tr><td><a name="22686"></a>
+<code>ReleaseShortArrayElements()
+</code>
+<td><a name="22688"></a>
+jshortArray
+
+<td><a name="22690"></a>
+jshort
+
+
+<tr><td><a name="22692"></a>
+<code>ReleaseIntArrayElements()
+</code>
+<td><a name="22694"></a>
+jintArray
+
+<td><a name="22696"></a>
+jint
+
+
+<tr><td><a name="22698"></a>
+<code>ReleaseLongArrayElements()
+</code>
+<td><a name="22700"></a>
+jlongArray
+
+<td><a name="22702"></a>
+jlong
+
+
+<tr><td><a name="22704"></a>
+<code>ReleaseFloatArrayElements()
+</code>
+<td><a name="22706"></a>
+jfloatArray
+
+<td><a name="22708"></a>
+jfloat
+
+
+<tr><td><a name="22710"></a>
+<code>ReleaseDoubleArrayElements()
+</code>
+<td><a name="22712"></a>
+jdoubleArray
+
+<td><a name="22714"></a>
+jdouble
+
+
+
+</Table>
+</dd></dl>
+<p><a name="22735"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="22736"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="22737"></a>
+<code>array</code>: a Java array object.
+<p><a name="4797"></a>
+<code>elems</code>: a pointer to array elements.
+<p><a name="4798"></a>
+<code>mode</code>: the release mode.
+<p><br><a name="6212"></a>
+<h2>		 Get&lt;PrimitiveType&gt;ArrayRegion Routines
+</h2>
+<a name="6213"></a>
+<var>void</var><code> </code><var>Get&lt;PrimitiveType&gt;ArrayRegion</var><code>(JNIEnv *env, </code><var>ArrayType</var><code> array,<br>
+     jsize start, jsize len, </code><var>NativeType</var><code> *buf);
+</code><p><a name="17518"></a>
+A family of functions that copies a region of a primitive array into a buffer.
+<p><a name="17521"></a>
+The following table describes the specific primitive array element accessors. 
+You should do the following substitutions:
+<p><ul><a name="6214"></a>
+<li>Replace <var>Get&lt;PrimitiveType&gt;ArrayRegion </var>with one of the actual primitive 
+element accessor routine names from <a href="functions.doc.html#4143">Table &#32;4-12</a>.
+
+<a name="6217"></a>
+<li>Replace <var>ArrayType</var> with the corresponding array type.
+
+<a name="6220"></a>
+<li>Replace <var>NativeType</var> with the corresponding native type for that routine.
+
+</ul><a name="4143"></a>
+<dl><dd>
+<Table Border="0">
+<caption><a name="1716"></a>
+<h4>Table 4-12	 Get&lt;PrimitiveType&gt;ArrayRegion Family of Array Accessor Routines
+</h4>
+</caption>
+<tr><th><a name="22777"></a>
+Get&lt;PrimitiveType&gt;ArrayRegion 
+Routine
+
+<th><a name="22779"></a>
+Array Type
+
+<th><a name="22781"></a>
+Native Type
+
+
+<tr><td><a name="22783"></a>
+<code>GetBooleanArrayRegion()
+</code>
+<td><a name="22785"></a>
+jbooleanArray
+
+<td><a name="22787"></a>
+jboolean
+
+
+<tr><td><a name="22789"></a>
+<code>GetByteArrayRegion()
+</code>
+<td><a name="22791"></a>
+jbyteArray
+
+<td><a name="22793"></a>
+jbyte
+
+
+<tr><td><a name="22795"></a>
+<code>GetCharArrayRegion()
+</code>
+<td><a name="22797"></a>
+jcharArray
+
+<td><a name="22799"></a>
+jchar
+
+
+<tr><td><a name="22801"></a>
+<code>GetShortArrayRegion()
+</code>
+<td><a name="22803"></a>
+jshortArray
+
+<td><a name="22805"></a>
+jhort
+
+
+<tr><td><a name="22807"></a>
+<code>GetIntArrayRegion()
+</code>
+<td><a name="22809"></a>
+jintArray
+
+<td><a name="22811"></a>
+jint
+
+
+<tr><td><a name="22813"></a>
+<code>GetLongArrayRegion()
+</code>
+<td><a name="22815"></a>
+jlongArray
+
+<td><a name="22817"></a>
+jlong
+
+
+<tr><td><a name="22819"></a>
+<code>GetFloatArrayRegion()
+</code>
+<td><a name="22821"></a>
+jfloatArray
+
+<td><a name="22823"></a>
+jloat
+
+
+<tr><td><a name="22825"></a>
+<code>GetDoubleArrayRegion()
+</code>
+<td><a name="22827"></a>
+jdoubleArray
+
+<td><a name="22829"></a>
+jdouble
+
+
+
+</Table>
+</dd></dl>
+<p><a name="22935"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="22936"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="22937"></a>
+<code>array</code>: a Java array.
+<p><a name="5199"></a>
+<code>start</code>: the starting index.
+<p><a name="5205"></a>
+<code>len</code>: the number of elements to be copied.
+<p><a name="5207"></a>
+<code>buf</code>: the destination buffer.
+<p><a name="22941"></a>
+<h4> THROWS:
+</h4>
+<a name="22943"></a>
+<code>ArrayIndexOutOfBoundsException</code>: if one of the indexes in the region is 
+not valid.
+<p><br><a name="22933"></a>
+<h2>		 Set&lt;PrimitiveType&gt;ArrayRegion Routines
+</h2>
+<a name="17563"></a>
+<code>void </code><var>Set&lt;PrimitiveType&gt;ArrayRegion</var><code>(JNIEnv *env, </code><var>ArrayType</var><code> array, <br>
+     jsize start, jsize len, </code><var>NativeType</var><code> *buf);
+</code><p><a name="17568"></a>
+A family of functions that copies back a region of a primitive array from a 
+buffer.
+<p><a name="22912"></a>
+The following table describes the specific primitive array element accessors. 
+You should make the following replacements:
+<p><ul><a name="6221"></a>
+<li>Replace <var>Set&lt;PrimitiveType&gt;ArrayRegion </var>with one of the actual primitive 
+element accessor routine names from the table.
+
+<a name="6224"></a>
+<li>Replace <em>ArrayType</em> with the corresponding array type. 
+
+<a name="6227"></a>
+<li>Replace <var>NativeType</var> with the corresponding native type for that routine.<dl><dd>
+<Table Border="0">
+<caption><a name="1803"></a>
+<h4>Table 4-13	 Set&lt;PrimitiveType&gt;ArrayRegion Family of Array Accessor Routines
+</h4>
+</caption>
+<tr><th><a name="22859"></a>
+Set&lt;PrimitiveType&gt;ArrayRegion 
+Routine
+
+<th><a name="22861"></a>
+Array Type
+
+<th><a name="22863"></a>
+Native Type
+
+
+<tr><td><a name="22865"></a>
+<code>SetBooleanArrayRegion()
+</code>
+<td><a name="22867"></a>
+jbooleanArray
+
+<td><a name="22869"></a>
+jboolean
+
+
+<tr><td><a name="22871"></a>
+<code>SetByteArrayRegion()
+</code>
+<td><a name="22873"></a>
+jbyteArray
+
+<td><a name="22875"></a>
+jbyte
+
+
+<tr><td><a name="22877"></a>
+<code>SetCharArrayRegion()
+</code>
+<td><a name="22879"></a>
+jcharArray
+
+<td><a name="22881"></a>
+jchar
+
+
+<tr><td><a name="22883"></a>
+<code>SetShortArrayRegion()
+</code>
+<td><a name="22885"></a>
+jshortArray
+
+<td><a name="22887"></a>
+jshort
+
+
+<tr><td><a name="22889"></a>
+<code>SetIntArrayRegion()
+</code>
+<td><a name="22891"></a>
+jintArray
+
+<td><a name="22893"></a>
+jint
+
+
+<tr><td><a name="22895"></a>
+<code>SetLongArrayRegion()
+</code>
+<td><a name="22897"></a>
+jlongArray
+
+<td><a name="22899"></a>
+jlong
+
+
+<tr><td><a name="22901"></a>
+<code>SetFloatArrayRegion()
+</code>
+<td><a name="22903"></a>
+jfloatArray
+
+<td><a name="22905"></a>
+jfloat
+
+
+<tr><td><a name="22907"></a>
+<code>SetDoubleArrayRegion()
+</code>
+<td><a name="22909"></a>
+jdoubleArray
+
+<td><a name="22911"></a>
+jdouble
+
+
+
+</Table>
+</dd></dl>
+
+</ul><a name="22951"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="22952"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="5232"></a>
+<code>array</code>: a Java array.
+<p><a name="5233"></a>
+<code>start</code>: the starting index.
+<p><a name="5234"></a>
+<code>len</code>: the number of elements to be copied.
+<p><a name="5235"></a>
+<code>buf</code>: the source buffer.
+<p><a name="5830"></a>
+<h4> THROWS:
+</h4>
+<a name="5835"></a>
+<code>ArrayIndexOutOfBoundsException</code>: if one of the indexes in the region is 
+not valid.
+<p><hr align=left><a name="5833"></a>
+<h1> Registering Native Methods
+</h1>
+<br><a name="17734"></a>
+<h2>		 RegisterNatives
+</h2>
+<a name="17738"></a>
+<code>jint RegisterNatives(JNIEnv *env, jclass clazz, <br>
+     const JNINativeMethod *methods, jint nMethods);
+</code><p><a name="4894"></a>
+Registers native methods with the class specified by the <code>clazz</code> argument. The 
+<code>methods</code> parameter specifies an array of <code>JNINativeMethod</code> structures that 
+contain the names, signatures, and function pointers of the native methods. 
+The <code>nMethods</code> parameter specifies the number of native methods in the array. 
+The <code>JNINativeMethod</code> structure is defined as follows:
+<p><pre>    typedef struct {
+        char *name;
+        char *signature;
+        void *fnPtr;
+    } JNINativeMethod;
+</pre><a name="5854"></a>
+The function pointers nominally must have the following signature:
+<p><pre>    <code>ReturnType (*fnPtr)(JNIEnv *env, jobject objectOrClass, ...);
+</code></pre><a name="23061"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="23062"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="23063"></a>
+<code>clazz</code>: a Java class object.
+<p><a name="23064"></a>
+<code>methods</code>: the native methods in the class.
+<p><a name="4889"></a>
+<code>nMethods</code>: the number of native methods in the class.
+<p><a name="23113"></a>
+<h4> RETURNS:
+</h4>
+<a name="23114"></a>
+Returns "0" on success; returns a negative value on failure.
+<p><a name="17760"></a>
+<h4> THROWS:
+</h4>
+<a name="17763"></a>
+<code>NoSuchMethodError</code>: if a specified method cannot be found or if the method 
+is not native.
+<p><br><a name="17775"></a>
+<h2>		 UnregisterNatives
+</h2>
+<a name="5119"></a>
+<code>jint UnregisterNatives(JNIEnv *env, jclass clazz);
+</code><p><a name="5120"></a>
+Unregisters native methods of a class. The class goes back to the state before it 
+was linked or registered with its native method functions.
+<p><a name="5130"></a>
+This function should not be used in normal native code. Instead, it provides 
+special programs a way to reload and relink native libraries.
+<p><a name="5121"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="23076"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="23077"></a>
+<code>clazz</code>: a Java class object.
+<p><a name="23120"></a>
+<h4> RETURNS:
+</h4>
+<a name="4160"></a>
+Returns "0" on success; returns a negative value on failure.
+<p><hr align=left><a name="5256"></a>
+<h1> Monitor Operations
+</h1>
+<br><a name="23124"></a>
+<h2>		 MonitorEnter
+</h2>
+<a name="23125"></a>
+<code>jint MonitorEnter(JNIEnv *env, jobject obj);
+</code><p><a name="23126"></a>
+Enters the monitor associated with the underlying Java object referred to by 
+<code>obj</code>. 
+<p><a name="5310"></a>
+Each Java object has a monitor associated with it. If the current thread already 
+owns the monitor associated with <code>obj</code>, it increments a counter in the monitor 
+indicating the number of times this thread has entered the monitor.  If the 
+monitor associated with <code>obj</code> is not owned by any thread, the current thread 
+becomes the owner of the monitor, setting the entry count of this monitor to 1. 
+If another thread already owns the monitor associated with <code>obj</code>, the current 
+thread waits until the monitor is released, then tries again to gain ownership.
+<p><a name="23127"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="23128"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="23129"></a>
+<code>obj</code>: a normal Java object or class object.
+<p><a name="23130"></a>
+<h4> RETURNS:
+</h4>
+<a name="5251"></a>
+Returns "0" on success; returns a negative value on failure.
+<p><br><a name="5252"></a>
+<h2>		 MonitorExit
+</h2>
+<a name="5253"></a>
+<code>jint MonitorExit(JNIEnv *env, jobject obj);
+</code><p><a name="23139"></a>
+The current thread must be the owner of the monitor associated with the 
+underlying Java object referred to by <code>obj</code>. The thread decrements the counter 
+indicating the number of times it has entered this monitor. If the value of the 
+counter becomes zero, the current thread releases the monitor.
+<p><a name="23140"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="23141"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="23142"></a>
+<code>obj</code>: a normal Java object or class object.
+<p><a name="23143"></a>
+<h4> RETURNS:
+</h4>
+<a name="4180"></a>
+Returns "0" on success; returns a negative value on failure.
+<p><hr align=left><a name="5263"></a>
+<h1> Java VM Interface
+</h1>
+<br><a name="23168"></a>
+<h2>		 GetJavaVM
+</h2>
+<a name="23169"></a>
+<code>jint GetJavaVM(JNIEnv *env, JavaVM **vm);
+</code><p><a name="23170"></a>
+Returns the Java VM interface (used in the Invocation API) associated with the 
+current thread. The result is placed at the location pointed to by the second 
+argument, <code>vm</code>.
+<p><a name="23171"></a>
+<h4> PARAMETERS:
+</h4>
+<a name="23172"></a>
+<code>env</code>: the JNI interface pointer.
+<p><a name="23173"></a>
+<code>vm</code>: a pointer to where the result should be placed.
+<p><a name="23174"></a>
+<h4> RETURNS:
+</h4>
+<a name="4184"></a>
+Returns "0" on success; returns a negative value on failure.
+<p><a name="4850"></a>
+
+<p>
+
+<hr>
+<!-- This inserts footnotes--><p>
+<a href="jniTOC.doc.html">Contents</a> | <a href="types.doc.html">Prev</a> | <a href="invocation.doc.html">Next</a> 
+
+<p>
+<font size=-1>Java Native Interface Specification (HTML generated by dkramer on March 15, 1997)<br>
+<i><a href="copyright.doc.html">Copyright &#169 1996, 1997 Sun Microsystems, Inc.</a>
+All rights reserved</i>
+<br>
+Please send any comments or corrections to <a href="mailto:jni@java.sun.com">jni@java.sun.com</a>
+</font>
+</body></html>

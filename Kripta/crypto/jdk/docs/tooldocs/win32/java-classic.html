@@ -1,0 +1,88 @@
+<html><head>
+
+<title>Non-Standard Options: Classic VM</title>
+
+</head>
+<body bgcolor="white">
+<center>
+<h1>Non-Standard Options of the Classic VM</h1>
+</center>
+<blockquote>
+The Java 2 Classic VM is included only in the Java 2 SDK.  It is 
+not included in the Java 2 Runtime Environment.
+<dl>
+    <dt><b>-Xbootclasspath:</b><i>bootclasspath</i>
+	<dd>Specify a semicolon-separated list of directories, JAR
+	archives, and ZIP archives to search for boot class files.
+	These are used in place of the boot class files included in the
+	Java 2 SDK. <em>Note: Applications that use this option for the 
+        purpose of overriding a class in rt.jar should not be deployed 
+        as doing so would contravene the Java 2 Runtime Environment 
+        binary code license.</em>
+    <p><dt><b>-Xbootclasspath/a:</b><i>path</i>
+        <dd>Specify a semicolon-separated path of directires, JAR 
+        archives, and ZIP archives to append to the default bootstrap 
+        class path. 
+    <p><dt><b>-Xbootclasspath/p:</b><i>path</i>
+        <dd>Specify a semicolon-separated path of directires, JAR 
+        archives, and ZIP archives to prepend in front of the default 
+        bootstrap class path. <em>Note: Applications that use this option 
+        for the purpose of overriding a class in rt.jar should not be 
+        deployed as doing so would contravene the Java 2 Runtime Environment 
+        binary code license.</em>
+    <p>
+    <dt><b>-Xdebug</b>
+        <dd>Start with the debugger enabled.  The Java interpereter 
+        prints out a password for jdb's use.  Refer to 
+        <a href="jdb.html#description">jdb description</a> for more 
+        details and an example.
+    <p>
+    <dt><b>-Xnoclassgc</b>
+	<dd>Disable class garbage collection
+    <p>
+    <dt><b>-Xms</b><i>n</i>
+	<dd>Specify the initial size of the memory allocation pool.
+	This value must greather than 1000. To multiply the value by
+	1000, append the letter <b>k</b>. To multiply the value by 1
+	million, append the letter <b>m</b>. The default value is
+	<b>1m</b>
+    <p>
+    <dt><b>-Xmx</b><i>n</i>
+	<dd>Specify the maximum size of the memory allocation pool.
+	This value must greather than 1000. To multiply the value by
+	1000, append the letter <b>k</b>. To multiply the value by 1
+	million, append the letter <b>m</b>. The default value is
+	<b>64m</b>.
+    <p>
+    <dt><b>-Xrunhprof</b>[:<i>help</i>][:<i>&lt;suboption&gt;=&lt;value&gt;,...</i>]<dd>Enables cpu, heap, or monitor profiling. This option is typically 
+    followed by a list of comma-separated "&lt;suboption&gt;=&lt;value&gt" pairs.
+    Run the command <b>java&nbsp;-Xrunhprof:help</b> to obtain a 
+    list of suboptions and their default values.
+
+    <p>
+    <dt><b>-Xrs</b>
+	<dd>Reduce the use of operating system signals.
+    <p>
+    <dt><b>-Xcheck:jni</b>
+	<dd>Perform additional checks for Java Native Interface
+	functions.
+    <p>
+    <dt><b>-Xcheck:nabounds</b>
+        <dd>Perform additional checks for Java Native Interface array bounds.
+    <p>
+    <dt><b>-Xfuture</b>
+        <dd>Perform strict class-file format checks. For purposes of backwards 
+        compatibility, the default format checks performed by the 
+        Java 2 SDK's virtual machine are no stricter than 
+        the checks performed by 1.1.x versions of the JDK software. The 
+        <b>-Xfuture</b> flag turns on stricter class-file format checks 
+        that enforce closer conformance to the class-file format 
+        specification. Developers are encouraged to use this flag 
+        when developing new code because the stricter checks will 
+        become the default in future releases of the Java application 
+        launcher.
+
+</dl>
+</blockquote>
+
+</body></html>		

@@ -1,0 +1,15 @@
+D:\CHNTU\Lab2\Kripta\lab2\Lav2\Lav2\bin\Release\net5.0\Lav2.exe
+D:\CHNTU\Lab2\Kripta\lab2\Lav2\Lav2\bin\Release\net5.0\Lav2.deps.json
+D:\CHNTU\Lab2\Kripta\lab2\Lav2\Lav2\bin\Release\net5.0\Lav2.runtimeconfig.json
+D:\CHNTU\Lab2\Kripta\lab2\Lav2\Lav2\bin\Release\net5.0\Lav2.runtimeconfig.dev.json
+D:\CHNTU\Lab2\Kripta\lab2\Lav2\Lav2\bin\Release\net5.0\Lav2.dll
+D:\CHNTU\Lab2\Kripta\lab2\Lav2\Lav2\bin\Release\net5.0\ref\Lav2.dll
+D:\CHNTU\Lab2\Kripta\lab2\Lav2\Lav2\bin\Release\net5.0\Lav2.pdb
+D:\CHNTU\Lab2\Kripta\lab2\Lav2\Lav2\obj\Release\net5.0\Lav2.GeneratedMSBuildEditorConfig.editorconfig
+D:\CHNTU\Lab2\Kripta\lab2\Lav2\Lav2\obj\Release\net5.0\Lav2.AssemblyInfoInputs.cache
+D:\CHNTU\Lab2\Kripta\lab2\Lav2\Lav2\obj\Release\net5.0\Lav2.AssemblyInfo.cs
+D:\CHNTU\Lab2\Kripta\lab2\Lav2\Lav2\obj\Release\net5.0\Lav2.csproj.CoreCompileInputs.cache
+D:\CHNTU\Lab2\Kripta\lab2\Lav2\Lav2\obj\Release\net5.0\Lav2.dll
+D:\CHNTU\Lab2\Kripta\lab2\Lav2\Lav2\obj\Release\net5.0\ref\Lav2.dll
+D:\CHNTU\Lab2\Kripta\lab2\Lav2\Lav2\obj\Release\net5.0\Lav2.pdb
+D:\CHNTU\Lab2\Kripta\lab2\Lav2\Lav2\obj\Release\net5.0\Lav2.genruntimeconfig.cache

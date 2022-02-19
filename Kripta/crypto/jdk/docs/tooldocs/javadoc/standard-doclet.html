@@ -1,0 +1,253 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+  <head>
+    <title>Doclet Overview</title>
+  </head>
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" VLINK="#000077" ALINK="#FF0000">
+<TABLE BORDER="0" WIDTH="100%">
+
+<TR>
+
+<TD WIDTH="60">
+
+   <IMG SRC="../../images/javalogo52x88.gif" ALT="Java" BORDER=0 WIDTH=52 HEIGHT=88>
+
+</TD>
+
+<td align=center>
+
+      <h1>The Standard Doclet</h1>
+
+</td>
+
+<td align=right valign=top>
+
+      <font size="-1"><a href="index.html">Javadoc 1.3</a></font>
+</td>
+
+</tr>
+
+</table>
+
+<!-- Body text begins here -->
+
+<h2>Contents</h2>
+   <ul>
+   <li><a href=#what">What the Standard Doclet Is</a>
+   <li><a href="#api">Classes in the Standard Doclet</a>
+   <li><a href="#running">Running the Standard Doclet</a>
+   <li><a href="#source">The Source for the Standard Doclet</a>
+   </ul>
+
+
+<a name="what">
+<h2>What the Standard Doclet Is</h2></a>
+
+The standard doclet is the doclet provided by 
+Sun<font size="-2"><sup>TM</sup></font> that produces Javadoc's default 
+HTML-formatted API output.  The 
+<a href="../../api/index.html">API documentation</a> for the 
+Java<font size="-2"><sup>TM</sup></font> platform in this 
+SDK documentation is an example of 
+the standard doclet's output. Javadoc uses the standard doclet if 
+no other doclet is specified using Javadoc's <tt>-doclet</tt> option 
+on the command line.
+<p>
+
+One reason to look at the standard doclet is 
+that it serves as a good example of the use of much of the doclet  
+API. A second reason is that by seeing how the standard doclet produces 
+the default HTML output, it will be easier for you to modify the standard 
+doclet to make your own doclet for generating custom API documentation.
+
+
+<p><a name="api">
+<h2>Classes in the Standard Doclet</h2></a>
+The standard doclet is comprised of 
+the classes in the <tt>com.sun.tools.doclets</tt> and 
+<tt>com.sun.tools.doclets.standard</tt> packages. These packages are not 
+a part of the core API of the Java platform. 
+Classes in the standard doclet that play key roles in generating 
+the default HTML output are summarized here:
+<ul>
+<li><a href="source/standard/Standard.java"><b>Standard</b></a> - This class contains the <tt>start</tt> method and 
+hence serves as the entry point for the standard doclet. It orchestrates 
+the generation of the HTML API files for the packages and classes upon 
+which javadoc is operating.
+
+<li><a href="source/HtmlWriter.java"><b>HtmlWriter</b></a> - This class contains APIs for writing the various 
+HTML tags needed for generating any output in HTML form.
+
+<li><a href="source/HtmlDocWriter.java"><b>HtmlDocWriter</b></a> - This class extends HtmlWriter, and contains 
+additional HTML-related APIs for producing the specialized hyperlinks 
+used in the default HTML output, including links in the headers and 
+footers of the HTML pages.
+
+<li><a href="source/standard/PackageIndexWriter.java"><b>PackageIndexWriter</b></a> - This class generates the <tt>overview-summary.html</tt> 
+file that lists all packages specified on the javadoc command line. As an 
+example, see the <a href="../../api/overview-summary.html">
+<tt>overview-summary.html</tt></a> file in the API documentation for 
+this Java Development Kit.
+
+<li><a href="source/standard/PackageIndexFrameWriter.java"><b>PackageIndexFrameWriter</b></a> - This generates the 
+<tt>overview-frame.html</tt> file used for displaying the list of package 
+links in the upper-left frame in the frame-formatted default output. See 
+the <a href="../../api/overview-frame.html"><tt>overview-frame.html</tt></a> 
+file in the API documentation of this release of the SDK documentation.
+
+<li><a href="source/standard/PackageFrameWriter.java"><b>PackageFrameWriter</b></a> - This generates the 
+<tt>package-frame.html</tt> file that lists the interfaces and classes in a 
+given package for displaying in the lower-left frame of the frame-formatted 
+default output. As an example of this type of page, see 
+the <a href="../../api/java/awt/package-frame.html"><tt>package-frame.html</tt></a> 
+file for <tt>java.awt</tt> in the API documentation of this release of the 
+platform API documentation.
+
+<li><a href="source/standard/FrameOutputWriter.java"><b>FrameOutputWriter</b></a> - This generates the <tt>index.html</tt> file 
+used for presenting the frame-formated "cover page" of the API 
+documentation.  See the 
+<a href="../../api/index.html"><tt>index.html</tt></a> file from the 
+platform API documentation as an example.
+
+<li><a href="source/standard/PackageWriter.java"><b>PackageWriter</b></a> - This generates the <tt>package-summary.html</tt> 
+files that list the interfaces and classes for a given package. For an 
+example of this type of page, see the 
+<a href="../../api/java/lang/package-summary.html"><tt>package-summary.html</tt></a> 
+page for <tt>java.lang</tt> in the API documentation of this release.
+
+<li><a href="source/standard/ClassWriter.java"><b>ClassWriter</b></a> - This generates the HTML API documentation for 
+each individual interface and class.  For an example from the Java 2 Platform  
+API documentation, see <a href="../../api/java/awt/Font.html"><tt>Font.html</tt></a>.
+
+<li><a href="source/standard/SingleIndexWriter.java"><b>SingleIndexWriter</b></a> - This generates the single index file of 
+class members that the standard doclet produces when the 
+<tt>-splitindex</tt> option is not used.
+
+<li><a href="source/standard/SplitIndexWriter.java"><b>SplitIndexWriter</b></a> - This generates the mutliple index files for the 
+class members that is generated when the Javadoc runs the standard doclet 
+with the <tt>-splitindex</tt> command-line option. The files are named <a href="../../api/index-files/index-1.html"><tt>index-1.html</tt></a>.
+
+<li><a href="source/standard/TreeWriter.java"><b>TreeWriter</b></a> - This class generates the <tt>overview-tree.html</tt> file 
+that lists the Class Hierarchy for the classes upon which the standard doclet 
+operates. For an example from the Java 2 Platform API documentation, 
+see <a href="../../api/overview-tree.html"><tt>overview-tree.html</tt></a>.
+
+<li><a href="source/standard/DeprecatedListWriter.java"><b>DeprecatedListWriter</b></a> - This generates the file 
+<tt>deprecatedlist.html</tt> which lists deprecated APIs. As an example, 
+see the <a href="../../api/deprecated-list.html"><tt>deprecated-list.html</tt></a> 
+file from the API documentation in this release.
+
+<li><a href="source/standard/ClassUseMapper.java"><b>ClassUseMapper</b></a>, 
+<a href="source/standard/ClassUseWriter.java"><b>ClassUseWriter</b></a>, and 
+<a href="source/standard/PackageUseWriter.java"><b>PackageUseWriter</b></a> - 
+These classes generate the "Use" files for classes and packages. Click the 
+"Use" link in the navigation bar to go to a class or package "use" page. 
+Examples of such pages are those for class 
+<a href="../../api/java/lang/class-use/Character.html">Character</a> and 
+package <a href="../../api/java/lang/package-use.html">java.lang</a>.
+
+<li><a href="source/standard/PackageListWriter.java"><b>PackageListWriter</b></a> 
+- generates the <tt>package-list</tt> text file that gets placed in the top-level 
+directory of the API documetation. This file is required for use with 
+standard doclet's <tt>-link</tt> command-line option. Standard doclet 
+class <a href="source/standard/Extern.java"><b>Extern</b></a> also plays 
+a role in making the <tt>-link</tt> option work. See the Javadoc 
+reference pages ([<a href="../win32/javadoc.html">Windows</a>]&nbsp;[<a href="../solaris/javadoc.html">Solaris</a>]) for details about this option.
+
+<li><a href="source/standard/Group.java"><b>Group</b></a> - This class handles
+the grouping of packages in one or more tables on the 
+<a href="../../api/overview-summary.html"><tt>overview-summary.html</tt></a> page. 
+It supports the standard doclet's <tt>-group</tt> command-line option. See the 
+Javadoc reference pages ([<a href="../win32/javadoc.html">Windows</a>]&nbsp;[<a href="../solaris/javadoc.html">Solaris</a>]) for details about this option.
+
+</ul>
+
+<a name="running">
+<h2>Running the Standard Doclet</h2></a>
+The standard doclet is invoked by default when no other doclet is 
+specified with the <tt>-doclet</tt> tag on the command line.  For example, 
+running
+<blockquote><pre>
+% javadoc MyPackage
+</pre></blockquote>
+will use the standard doclet to produce the default-style HTML API 
+documentation for <tt>MyPackage</tt>. Running javadoc without the 
+<tt>-doclet</tt> option is equivalent to running javadoc using the 
+<tt>-doclet</tt> option to invoke the standard doclet. That is, 
+<blockquote><pre>
+% javadoc MyClass.java
+</pre></blockquote>
+is equivalent to 
+<blockquote><pre>
+% javadoc -doclet com.sun.tools.doclets.standard.Standard MyClass.java
+</pre></blockquote>
+
+<a name="source">
+<h2>The Source for the Standard Doclet</h2></a>
+If you download and install the SDK documentation bundle, you will find 
+the source files for the standard doclet in the directories 
+<tt>docs/tooldocs/javadoc/source</tt> and 
+<tt>docs/tooldocs/javadoc/source/standard</tt>. You can browse the source 
+code here:
+<ul>
+<li><a href="source"><b>Standard Doclet Source Files</b></a>
+</ul>
+
+
+
+
+
+
+<!-- Body text ends here -->
+
+<!-- ============================================================== -->
+
+<HR SIZE=3 NOSHADE>
+
+
+
+<TABLE BORDER="0" WIDTH="100%">
+
+<TR VALIGN=TOP>
+
+
+
+<TD>
+
+<P><FONT SIZE="-2">
+
+   <A HREF="../../relnotes/SMICopyright.html">Copyright &#169;</A> 1995-98
+
+   <A HREF="http://www.sun.com/">Sun Microsystems, Inc.</A>
+
+    All Rights Reserved.</FONT>
+</P>
+
+
+
+
+
+   <FONT SIZE="-1">Please send comments to: <a href="mailto:javadoc-tool@sun.com">javadoc-tool@sun.com</a> 
+
+   </FONT>
+
+</TD>
+
+
+
+<TD ALIGN=RIGHT>
+
+   <IMG SRC="../../images/sunlogo64x30.gif" ALT="Sun" BORDER=0 WIDTH=64 HEIGHT=30>
+
+
+</TD>
+
+
+
+</TR>
+
+</TABLE>
+
+
+  </body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 1 - System Architecture
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="serial-arch.doc3.html">PREV</a>
+ | <a href="serial-arch.doc5.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="962"><i>	1.4	</i> Object Streams as Containers
+</a></h2>
+
+<blockquote>
+<a name="4267"><!-- --></a>
+Object Serialization produces and consumes a stream of bytes that contain one or more primitives and objects. The objects written to the stream, in turn, refer to other objects, which are also represented in the stream. Object Serialization produces just one stream format that encodes and stores the contained objects.<p>
+<a name="4374"><!-- --></a>
+Each object that acts as a container implements an interface which allows primitives and objects to be stored in or retrieved from it. These interfaces are the <code>ObjectOutput</code> and <code>ObjectInput</code> interfaces which:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="4417"><!-- --></a>
+Provide a stream to write to and to read from
+</li>
+<li>
+<a name="7056"><!-- --></a>
+Handle requests to write primitive types and objects to the stream
+</li>
+<li>
+<a name="4418"><!-- --></a>
+Handle requests to read primitive types and objects from the stream
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="4357"><!-- --></a>
+Each object which is to be stored in a stream must explicitly allow itself to be stored and must implement the protocols needed to save and restore its state. Object Serialization defines two such protocols. The protocols allow the container to ask the object to write and read its state. <p>
+<a name="7090"><!-- --></a>
+To be stored in an Object Stream, each object must implement either the <code>Serializable</code> or the <code>Externalizable</code> interface:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="5805"><!-- --></a>
+For a <code>Serializable</code> class, Object Serialization can automatically save and restore fields of each class of an object and automatically handle classes that evolve by adding fields or supertypes. A serializable class can declare which of its fields are saved or restored, and write and read optional values and objects.
+</li>
+<li>
+<a name="6552"><!-- --></a>
+For an <code>Externalizable</code> class, Object Serialization delegates to the class complete control over its external format and how the state of the supertype(s) is saved and restored.
+</li>
+</ul>
+</blockquote>
+
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="serial-arch.doc3.html">PREV</a>
+ | <a href="serial-arch.doc5.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:47:50 1999 -->
+ 
+
+
+</body>
+</html>

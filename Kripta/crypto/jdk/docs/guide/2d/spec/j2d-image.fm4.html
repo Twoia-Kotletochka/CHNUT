@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API: 5 - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-image.fm3.html">PREV</a>
+ | <a href="j2d-image.fm5.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="66674"><i>5.4	</i> Managing and Manipulating Rasters 
+</a></h2>
+
+<blockquote>
+<a name="66676"><!-- --></a>
+A <kbd>BufferedImage</kbd> object uses a <kbd>Raster</kbd> to manage its rectangular array of pixel data. The <kbd>Raster</kbd> class defines fields for the image&#39;s coordinate system&#45;&#45;width, height, and origin. A <kbd>Raster</kbd> object itself uses two objects to manage the pixel data, a <kbd>DataBuffer</kbd> and a <kbd>SampleModel</kbd>. The <kbd>DataBuffer</kbd> is the object that stores pixel data for the raster (as described on <a href="j2d-image.fm5.html#69487">page&#160;81</a>), and the <kbd>SampleModel</kbd> provides the interpretation of pixel data from the <kbd>DataBuffer</kbd> (as described on <a href="j2d-image.fm6.html#66873">page&#160;81</a>). <p>
+</blockquote>
+<br>
+<h3>
+<a name="67258"><!-- --></a>
+<i>5.4.1	</i> Creating a Raster
+</h3>
+
+<blockquote>
+<a name="67259"><!-- --></a>
+In most cases, you don&#39;t need to create a <kbd>Raster</kbd> directly, since one is supplied with any <kbd>BufferedImage</kbd> that you create in memory. However, one of the <kbd>BufferedImage</kbd> constructor methods allows you to create a <kbd>Raster</kbd> by passing in a <kbd>WritableRaster</kbd>. <p>
+<a name="67264"><!-- --></a>
+The <kbd>Raster</kbd> class provides a number of static factory methods for creating <kbd>Rasters</kbd> with the <kbd>DataBuffers</kbd> and <kbd>SampleModels</kbd> you specify. You can use these factories when implementing <kbd>RasterOp</kbd> filtering classes.<p>
+</blockquote>
+<br>
+<h3>
+<a name="66680"><!-- --></a>
+<i>5.4.2	</i> Parent and Child Rasters
+</h3>
+
+<blockquote>
+<a name="66682"><!-- --></a>
+The <kbd>Raster</kbd> class incorporates the concept of parent and child rasters. This can improve storage efficiency by allowing you to construct any number of buffered images from the same parent. The parent and its children all refer to the same data buffer, and each child has a specific offset and bounds to identify its image location in the buffer. A child identifies its ownership through its <kbd>getParent</kbd> method. <p>
+<a name="67257"><!-- --></a>
+To create a subraster, you use the <kbd>Raster</kbd>.<kbd>createSubRaster</kbd> method.When you create a subraster, you identify the area of its parent that it covers and its offset from the parent&#39;s origin. <p>
+</blockquote>
+<br>
+<h3>
+<a name="66687"><!-- --></a>
+<i>5.4.3	</i> Operations on a Raster
+</h3>
+
+<blockquote>
+<a name="66698"><!-- --></a>
+The <kbd>Raster</kbd> class defines a number of ways to access pixels and pixel data. These are useful when you&#39;re implementing the <kbd>RasterOp</kbd> interface, which provides raster-level filtering and manipulation of image data, or when implementing any method that needs to perform low-level pixel manipulation.<p>
+<a name="66703"><!-- --></a>
+The <kbd>Raster.getPixel</kbd> methods let you get an individual pixel, which is returned as individual samples in an array. The <kbd>Raster</kbd>.<kbd>getDataElements</kbd> methods return a specified run of uninterpreted image data from the <kbd>DataBuffer</kbd>. The <kbd>Raster</kbd>.<kbd>getSample</kbd> method returns samples of an individual pixel. The <kbd>getSamples</kbd> method returns a band for a particular region of an image.<p>
+<a name="69483"><!-- --></a>
+In addition to these methods, you can also access the data buffer and the sample model through instance variables of the <kbd>Raster</kbd> class. These objects provide additional ways to access and interpret the <kbd>Raster</kbd>&#39;s pixel data. <p>
+</blockquote>
+<br>
+<h3>
+<a name="69484"><!-- --></a>
+<i>5.4.4	</i> The WritableRaster Subclass
+</h3>
+
+<blockquote>
+<a name="69485"><!-- --></a>
+The <kbd>WritableRaster</kbd> subclass provides methods for setting pixel data and samples. The <kbd>Raster</kbd> associated with a <kbd>BufferedImage</kbd> is actually a <kbd>WritableRaster</kbd>, thus providing full access to manipulate its pixel data.<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-image.fm3.html">PREV</a>
+ | <a href="j2d-image.fm5.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Mon Nov 22 09:37:15 1999 -->
+ 
+
+
+</body>
+</html>

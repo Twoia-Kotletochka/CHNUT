@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Drag and Drop: Issues</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="dnd1TOC.doc.html">CONTENTS</a> | <a href="dnd1.doc7.html">PREV</a>
+ | <a href="dnd1.doc9.html">NEXT</a> <!-- | <a href="dnd1.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Drag and Drop</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="921691"><i>3.0  </i> Issues
+</a></h2>
+
+
+<br>
+<a name="919822"><!-- --></a>
+<h4><i>3.0.1   What are the implications of the various platform protocol engines?
+</i></h4>
+
+<blockquote>
+<a name="920390"><!-- --></a>
+Due to limitations of particular underlying platform Drag and Drop and Window System implementations, the interaction of a Drag operation, and the event delivery semantics to AWT <em>Components</em> is platform dependent. Therefore during a drag operation a <em>DragSource</em> may process platform Window System Events pertaining to that drag to the exclusion of normal event processing.<p>
+<a name="922369"><!-- --></a>
+Due to interactions between the single-threaded design center of the platform native DnD systems, and the native window system event dispatching implementations in AWT,  &#34;callbacks&#34; into <em>DropTargetListener</em> and <em>DragSourceListener</em> will occur either on, or synchronized with the AWT system event dispatch thread. This behavior is highly undesirable for security reasons but is an implementation, not architectural feature, and is unavoidable.<p>
+</blockquote>
+<br>
+<a name="919656"><!-- --></a>
+<h4><i>3.0.2   Inter/Intra VM transfers?
+</i></h4>
+
+<blockquote>
+<a name="920296"><!-- --></a>
+To enable intra-JVM<B>*</B> Drag and Drop Transfers the existing <em>DataFlavor</em> class will be extended to enable it to represent the type of a &#34;live&#34; object reference, as opposed to a Serialized (persistent) representation of one. Such objects may be transferred between source and destination within the same JVM and <em>ClassLoader</em> context.<p>
+<a name="924196"><!-- --></a>
+The MIME Content-Type shall be application/x-java-local-objectref. <p>
+</blockquote>
+<br>
+<a name="919768"><!-- --></a>
+<h4><i>3.0.3   Lifetime of the Transferable(s)?
+</i></h4>
+
+<blockquote>
+<a name="920297"><!-- --></a>
+<em>Transferable</em> objects, their associated <em>DataFlavor</em>s&#39;, and the objects that encapsulate the underlying data specified as the operand(s) of a drag and drop operation shall remain valid until, at least, the <em>DragSourceListener,</em> associated with the <em>DragSource</em> controlling the operation, receives a <em>dragDropEnd</em>(). The lifetime of the subject(s) of the operation, transferred between source and target is implementation defined beyond that point in time.<p>
+</blockquote>
+<br>
+<a name="920248"><!-- --></a>
+<h4><i>3.0.4   Implications of ACTION_MOVE semantics on source objects exposed via <em>Transferable</em>?
+</i></h4>
+
+<blockquote>
+<a name="920299"><!-- --></a>
+The &#34;source&#34; of a successful Drag and Drop (<i><b>ACTION_MOVE</b></i>) operation is required to delete/relinquish all references to the object(s) that are the subject of the <em>Transferable</em> immediately after transfer has been successfully completed. That is before returning from the <em>DragSourceListener.dragDropEnd()</em> notification.<p>
+</blockquote>
+<br>
+<a name="921474"><!-- --></a>
+<h4><i>3.0.5   Semantics of ACTION_REFERENCE operation.
+</i></h4>
+
+<blockquote>
+<a name="921475"><!-- --></a>
+As a result of significant input from developers to an earlier version of the specification an additional operation/action tag; <i><b>ACTION_REFERENCE</b></i> was added to include existing platform Drag and Drop&#34;Link&#34; semantics.<p>
+<a name="921480"><!-- --></a>
+It is believed that Reference, or Link, semantics are already sufficiently poorly specified for the platform native Drag and Drop to render it essentially useless even between native applications, thus between native and platform independent Java applications it is not recommended.<p>
+<a name="921481"><!-- --></a>
+For Java to Java usage the required semantic; within the same JVM/<em>ClassLoader</em>, is defined such that the destination shall obtain a Java object reference to the subject(s) of the transfer. Between Java JVM&#39;s or <em>ClassLoader</em>s, the semantic is implementation defined, but could be implemented through transferring either a URL from the source to the destination or an RMI <em>Remote</em> reference.<p>
+<a name="922646"><!-- --></a>
+<p>
+</blockquote>
+
+<P>
+<FONT SIZE="-1"><B>*As used on this web site, the terms "Java Virtual Machine" 
+or "JVM" mean a virtual machine for the Java platform.</B></FONT>
+<P>
+
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="dnd1TOC.doc.html">CONTENTS</a> | <a href="dnd1.doc7.html">PREV</a>
+ | <a href="dnd1.doc9.html">NEXT</a> <!-- | <a href="dnd1.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997, 1998 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Doug Kramer -->
+<!-- Last updated: Thu Nov 19 14:12:35 1998 -->
+ 
+
+
+</body>
+</html>

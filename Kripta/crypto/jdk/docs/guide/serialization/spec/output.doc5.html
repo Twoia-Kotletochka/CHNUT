@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 2 - Object Output Classes
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="output.doc4.html">PREV</a>
+ | <a href="output.doc6.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="5324"><i>	2.5	</i> The writeReplace Method
+</a></h2>
+
+<blockquote>
+<a name="5325"><!-- --></a>
+For Serializable and Externalizable classes, the <code>writeReplace</code> method allows a class of an object to nominate its own replacement in the stream before the object is written. By implementing the <code>writeReplace</code> method, a class can directly control the types and instances of its own instances being serialized. <p>
+<a name="5399"><!-- --></a>
+The method is defined as follows:<p>
+<a name="5326"><!-- --></a>
+<pre>	ANY-ACCESS-MODIFIER Object writeReplace() {
+   		 throws ObjectStreamException;
+</pre>
+
+
+<a name="5327"><!-- --></a>
+The <code>writeReplace</code> method is called when <code>ObjectOutputStream</code> is preparing to write the object to the stream. The <code>ObjectOutputStream</code> checks whether the class defines the <code>writeReplace</code> method. If the method is defined, the <code>writeReplace</code> method is called to allow the object to designate its replacement in the stream. The object returned should be either of the same type as the object passed in or an object that when read and resolved will result in an object of a type that is compatible with all references to the object. If it is not, a <code>ClassCastException</code> will occur when the type mismatch is discovered.<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="output.doc4.html">PREV</a>
+ | <a href="output.doc6.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:47:55 1999 -->
+ 
+
+
+</body>
+</html>

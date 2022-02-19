@@ -1,0 +1,359 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 6 - Object Serialization Stream Protocol
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="protocol.doc4.html">PREV</a>
+ | <a href="protocol.doc6.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<br>
+<h3>
+<a name="53688"><!-- --></a>
+<i>	6.4.1	</i> Rules of the Grammar
+</h3>
+
+<blockquote>
+<a name="9583"><!-- --></a>
+A Serialized stream is represented by any stream satisfying the <em>stream</em> rule.<p>
+<a name="4949"><!-- --></a>
+<pre><em>stream:
+</em>  <em>magic version contents
+</em></pre>
+
+
+<a name="4953"><!-- --></a>
+<pre><em>contents:
+</em>  <em>content
+</em>  <em>contents content
+</em></pre>
+
+
+<a name="9188"><!-- --></a>
+<pre><em>content:
+</em>  <em>object
+</em>  <em>blockdata
+</em></pre>
+
+
+<a name="4393"><!-- --></a>
+<pre><em>object:
+</em>  <em>newObject
+</em>  <em>newClass
+</em>  <em>newArray
+</em>  <em>newString
+</em>  <em>newClassDesc
+</em>  <em>prevObject
+</em>  <em>nullReference
+</em>  <em>exception
+</em>  <em>TC_RESET
+</em></pre>
+
+
+<a name="9070"><!-- --></a>
+<pre><em>newClass</em>:
+  <em>TC_CLASS classDesc newHandle
+</em></pre>
+
+
+<a name="9261"><!-- --></a>
+<pre><em>classDesc:
+  newClassDesc
+  nullReference
+  (ClassDesc)prevObject      // an object required to be of type
+                               // ClassDesc
+</em></pre>
+
+
+<a name="9716"><!-- --></a>
+<pre><em>superClassDesc:
+  classDesc
+</em></pre>
+
+
+<a name="10577"><!-- --></a>
+<pre><em>newClassDesc:
+  TC_CLASSDESC className serialVersionUID newHandle classDescInfo
+  TC_PROXYCLASSDESC newHandle proxyClassDescInfo</em>
+</pre>
+
+
+<a name="10578"><!-- --></a>
+<pre><em>classDescInfo:
+  classDescFlags fields classAnnotation superClassDesc 
+</em></pre>
+
+
+<a name="9169"><!-- --></a>
+<pre><em>className:
+  (utf)
+</em></pre>
+
+
+<a name="9171"><!-- --></a>
+<pre><em>serialVersionUID:
+  (long)
+</em></pre>
+
+
+<a name="9176"><!-- --></a>
+<pre><em>classDescFlags:
+  (byte)                  // Defined in Terminal Symbols and
+                            // Constants
+</em></pre>
+
+
+<a name="53665"><!-- --></a>
+<pre>proxyClassDescInfo:
+  (int)&lt;count&gt; proxyInterfaceName[count] classAnnotation
+      superClassDesc
+</pre>
+
+
+<a name="53669"><!-- --></a>
+<pre>proxyInterfaceName:
+</pre>
+
+
+<a name="53670"><!-- --></a>
+<pre>  (utf)
+</pre>
+
+
+<a name="9170"><!-- --></a>
+<pre><em>fields:
+  (short)&lt;count&gt;  fieldDesc[count]
+</em></pre>
+
+
+<a name="9270"><!-- --></a>
+<pre><em>fieldDesc:
+  primitiveDesc
+  objectDesc
+</em></pre>
+
+
+<a name="9207"><!-- --></a>
+<pre><em>primitiveDesc:
+  prim_typecode fieldName
+</em></pre>
+
+
+<a name="10063"><!-- --></a>
+<pre><em>objectDesc:
+  obj_typecode fieldName className1
+</em></pre>
+
+
+<a name="10064"><!-- --></a>
+<pre><em>fieldName:
+  (utf)
+</em></pre>
+
+
+<a name="9719"><!-- --></a>
+<pre><em>className1:
+  (String)object             // String containing the field&#39;s type
+</em></pre>
+
+
+<a name="4414"><!-- --></a>
+<pre><em>classAnnotation:
+  endBlockData
+  contents endBlockData      // contents written by annotateClass
+</em></pre>
+
+
+<a name="53716"><!-- --></a>
+<pre><em>prim_typecode:
+  `B&#39;	// byte
+  `C&#39;	// char
+  `D&#39;	// double
+  `F&#39;	// float
+  `I&#39;	// integer
+  `J&#39;	// long
+  `S&#39;	// short
+  `Z&#39;	// boolean
+</em></pre>
+
+
+<a name="9114"><!-- --></a>
+<pre><em>obj_typecode:
+  `[`	// array
+  `L&#39;	// object
+</em></pre>
+
+
+<a name="4426"><!-- --></a>
+<pre><em>newArray:
+  TC_ARRAY classDesc newHandle (int)&lt;size&gt; values[size]
+</em></pre>
+
+
+<a name="4430"><!-- --></a>
+<pre><em>newObject:
+  TC_OBJECT classDesc newHandle classdata[]  // data for each class
+</em></pre>
+
+
+<a name="9475"><!-- --></a>
+<pre><em>classdata:
+  nowrclass                 // SC_SERIALIZABLE &amp; classDescFlag &amp;&amp;
+                            // !(SC_WRITE_METHOD &amp; classDescFlags)
+  wrclass objectAnnotation  // SC_SERIALIZABLE &amp; classDescFlag &amp;&amp;
+                            // SC_WRITE_METHOD &amp; classDescFlags
+  externalContents          // SC_EXTERNALIZABLE &amp; classDescFlag &amp;&amp;
+                            // !(SC_BLOCKDATA  &amp; classDescFlags
+  objectAnnotation          // SC_EXTERNALIZABLE &amp; classDescFlag&amp;&amp; 
+                            // SC_BLOCKDATA &amp; classDescFlags
+</em></pre>
+
+
+<a name="11092"><!-- --></a>
+<pre><em>nowrclass:
+  values                    // fields in order of class descriptor
+</em></pre>
+
+
+<a name="7942"><!-- --></a>
+<pre><em>wrclass:
+  nowrclass
+</em></pre>
+
+
+<a name="9749"><!-- --></a>
+<pre><em>objectAnnotation:
+  endBlockData
+  contents endBlockData     // contents written by writeObject
+                            // or writeExternal PROTOCOL_VERSION_2.
+</em></pre>
+
+
+<a name="10242"><!-- --></a>
+<pre><em>blockdata:
+  blockdatashort
+  blockdatalong
+</em></pre>
+
+
+<a name="10270"><!-- --></a>
+<pre><em>blockdatashort:
+  TC_BLOCKDATA (unsigned byte)&lt;size&gt; (byte)[size]
+</em></pre>
+
+
+<a name="9453"><!-- --></a>
+<pre><em>blockdatalong:
+  TC_BLOCKDATALONG (int)&lt;size&gt; (byte)[size]
+</em></pre>
+
+
+<a name="4448"><!-- --></a>
+<pre><em>endBlockData	:
+  TC_ENDBLOCKDATA
+</em></pre>
+
+
+<a name="10233"><!-- --></a>
+<pre><em>externalContent:          // Only parseable by readExternal
+  ( bytes)                // primitive data
+    object
+</em></pre>
+
+
+<a name="10234"><!-- --></a>
+<pre><em>externalContents:         // externalContent written by 
+  externalContent         // writeExternal in PROTOCOL_VERSION_1.
+  externalContents externalContent
+</em></pre>
+
+
+<a name="4452"><!-- --></a>
+<pre><em>newString:
+  TC_STRING newHandle (utf)
+  TC_LONGSTRING newHandle (long-utf)
+</em></pre>
+
+
+<a name="4456"><!-- --></a>
+<pre><em>prevObject
+  TC_REFERENCE (int)handle
+</em></pre>
+
+
+<a name="4460"><!-- --></a>
+<pre><em>nullReference
+  TC_NULL
+</em></pre>
+
+
+<a name="9611"><!-- --></a>
+<pre><em>exception:
+  TC_EXCEPTION reset (Throwable)object	 reset 
+</em></pre>
+
+
+<a name="9150"><!-- --></a>
+<pre><em>magic:
+  STREAM_MAGIC
+</em></pre>
+
+
+<a name="9153"><!-- --></a>
+<pre><em>version
+  STREAM_VERSION
+</em></pre>
+
+
+<a name="4487"><!-- --></a>
+<pre><em>values:          // The size and types are described by the
+                 // classDesc for the current object
+</em></pre>
+
+
+<a name="10151"><!-- --></a>
+<pre><em>newHandle:       // The next number in sequence is assigned
+                 // to the object being serialized or deserialized
+</em></pre>
+
+
+<a name="11119"><!-- --></a>
+<pre><em>reset:           // The set of known objects is discarded
+                 // so the objects of the exception do not
+                 // overlap with the previously sent objects 
+                 // or with objects that may be sent after 
+                 // the exception
+</em></pre>
+
+
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="protocol.doc4.html">PREV</a>
+ | <a href="protocol.doc6.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:48:11 1999 -->
+ 
+
+
+</body>
+</html>

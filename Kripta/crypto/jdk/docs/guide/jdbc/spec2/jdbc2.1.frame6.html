@@ -1,0 +1,269 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title></title>
+</head>
+<body bgcolor=#ffffff>
+
+<table width=100%><tr>
+<td><font size=-1>
+<a href="jdbc2.1.frame.html">Contents</a>  | <a href="jdbc2.1.frame5.html">Prev</a>  | <a href="jdbc2.1.frame7.html">Next</a>
+</font></td><td align=right><i>JDBC<sup><font size=-2>TM</font></sup> Guide: Getting Started</i></td>
+</tr></table>
+<hr>
+<br>
+ 
+
+<a name="287821"></a>
+<h2>	6	 Batch Updates</h2>
+
+<a name="283239"></a>
+The batch update facility allows multiple update operations to be submitted to a data 
+source for processing at once. Submitting multiple updates together, instead of individually,
+can greatly improve performance. <code>Statement</code>, <code>PreparedStatement</code>, and <code>CallableStatement
+</code>objects can be used to submit batch updates. 
+<p>
+
+<a name="302396"></a>
+<h3>6.1 	  &nbsp; &nbsp; Description of batch updates</h3>
+
+<a name="283374"></a>
+<h4>	6.1.1	 Statements</h4>
+<a name="283286"></a>
+The batch update facility allows a <code>Statement</code> object to submit a set of heterogeneous 
+update commands together as a single unit, or batch, to the underlying DBMS. In the 
+example below all of the update operations required to insert a new employee into a fictitious
+company database are submitted as a single batch.
+<p>
+<a name="283316"></a>
+
+<p>
+<blockquote><pre>// turn off autocommit
+con.setAutoCommit(false);
+
+Statement stmt = con.createStatement();
+
+stmt.addBatch("INSERT INTO employees VALUES (1000, 'Joe Jones')");
+stmt.addBatch("INSERT INTO departments VALUES (260, 'Shoe')");
+stmt.addBatch("INSERT INTO emp_dept VALUES (1000, 260)");
+
+// submit a batch of update commands for execution
+int[] updateCounts = stmt.executeBatch();
+
+
+</pre></blockquote><a name="283392"></a>
+In the example, autocommit mode is disabled to prevent the driver from committing the 
+transaction when <code>Statement.executeBatch()</code> is called. Disabling autocommit allows 
+an application to decide whether or not to commit the transaction in the event that an 
+error occurs and some of the commands in a batch cannot be processed successfully. 
+For this reason, autocommit should always be turned off when batch updates are done. 
+The commit behavior of <code>executeBatch</code> is always implementation defined when an error
+occurs and autocommit is true.
+<p>
+<a name="283325"></a>
+To keep our discussion of batch updates general, we define the term <em>element</em> to refer to 
+an individual member of a batch. As we have seen, an element in a batch is just a simple 
+command when a <code>Statement</code> object is being used. Although we are focusing on using 
+<code>Statement</code> objects to do batch updates in this section, the discussion that follows applies
+to <code>PreparedStatment</code> and <code>CallableStatement</code> objects, as well.
+<p>
+<a name="302787"></a>
+In the new JDBC API, a <code>Statement</code> object has the ability to keep track of a list of commands
+-or batch-that can be submitted together for execution. When a <code>Statement</code> 
+object is created, its associated batch is empty-the batch contains no elements. The 
+<code>Statement.addBatch() </code>method adds an element to the calling statement's batch. The 
+method <code>Statement.clearBatch()</code> (not shown above) can be called to reset a batch if 
+the application decides not to submit a batch of commands that has been constructed 
+for a statement.
+<p>
+<a name="302656"></a>
+<b>Successful execution</b>
+<p>
+<a name="283340"></a>
+The <code>Statement.executeBatch()</code> method submits a statement's batch to the underlying
+data source for execution. Batch elements are executed serially (at least logically) 
+in the order in which they were added to the batch. When all of the elements in a batch 
+execute successfully, <code>executeBatch() </code>returns an integer array containing one entry 
+for each element in the batch. The entries in the array are ordered according to the order 
+in which the elements were processed (which, again, is the same as the order in which 
+the elements were originally added to the batch). An entry in the array may have the 
+following values:
+<p>
+<ol><a name="302416"></a>
+<li>If the value of an array entry is greater than or equal to zero, then the batch 
+element was processed successfully and the value is an update count indicating 
+the number of rows in the database that were effected by the element's 
+execution.
+
+<a name="302417"></a>
+<li>A value of -2 indicates that a element was processed successfully, but that the 
+number of effected rows is unknown. 
+
+</ol><a name="302415"></a>
+Calling<code> executeBatch()</code> closes the calling <code>Statement</code> object's current result set if one 
+is open. The statement's internal list of batch elements is reset to empty once <code>executeBatch()
+</code> returns. The behavior of the <code>executeQuery</code>, <code>executeUpdate</code>, or <code>execute</code> 
+methods is implementation defined when a statement's batch is non-empty.
+<p>
+<a name="284570"></a>
+<code>ExecuteBatch()</code> throws a <code>BatchUpdateException</code> if any of the elements in the batch 
+fail to execute properly, or if an element attempts to return a result set. Only DDL and 
+DML commands that return a simple update count may be executed as part of a batch. 
+When a <code>BatchUpdateException</code> is thrown, the <code>BatchUpdateException.getUpdateCounts()
+</code> method can be called to obtain an integer array of update counts that describes
+the outcome of the batch execution. 
+<p>
+<a name="302657"></a>
+<b>Handling failures during execution</b>
+<p>
+<a name="302439"></a>
+A JDBC driver may or may not continue processing the remaining elements in a batch 
+once execution of an element in a batch fails. However, a JDBC driver must always provide
+the same behavior when used with a particular DBMS. For example, a driver cannot
+continue processing after a failure for one batch, and not continue processing for 
+another batch. 
+<p>
+<a name="302845"></a>
+If a driver stops processing after the first failure, the array returned by <code>BatchUpdateException.getUpdateCounts()
+</code> will always contain fewer entries than there were elements
+in the batch. Since elements are executed in the order that they are added to the 
+batch, if the array contains N elements, this means that the first N elements in the batch 
+were processed successfully when <code>executeBatch()</code> was called. 
+<p>
+<a name="302645"></a>
+When a driver continues processing in the presence of failures, the number of elements, 
+N, in the array returned by <code>BatchUpdateException.getUpdateCounts()</code>is always 
+equal to the number of elements in the batch. The following additional array value is 
+returned when a <code>BatchUpdateException</code> is thrown and the driver continues processing 
+after a failure:
+<p>
+<ol start=3><a name="302434"></a>
+<li>A value of -3 indicates that the command or element failed to execute 
+successfully. This value is also returned for elements that could not be 
+processed for some reason-such elements fail implicitly.
+
+</ol><a name="302581"></a>
+JDBC drivers that do not continue processing after a failure never return -3 in an update 
+count array. Drivers of this type simply return a status array containing an entry for each 
+command that was processed successfully. 
+<p>
+<a name="302629"></a>
+A JDBC technology based application can distinguish a JDBC driver that continues 
+processing after a failure from one that does not by examining the size of the array returned
+by <code>BatchUpdateException.getUpdateCounts()</code>. A JDBC driver that continues
+processing always returns an array containing one entry for each element in the 
+batch. A JDBC driver that does not continue processing after a failure will always return
+an array whose number of entries is less than the number of elements in the batch.
+<p>
+
+<a name="302606"></a>
+<h4>	6.1.2	 PreparedStatements</h4>
+<a name="283404"></a>
+An element in a batch consists of a parameterized command and an associated set of 
+parameters when a <code>PreparedStatement</code> is used. The batch update facility is used with 
+a <code>PreparedStatement</code> to associate multiple sets of input parameter values with a single 
+<code>PreparedStatement </code>object. The sets of parameter values together with their associated
+parameterized update command can then be sent to the underlying DBMS engine for 
+execution as a single unit.
+<p>
+<a name="283428"></a>
+The example below inserts two new employee records into a database as a single batch. 
+The <code>PreparedStatement.setXXX()</code> methods are used to create each parameter set 
+(one for each employee), while the <code>PreparedStatement.addBatch()</code> method adds a 
+set of parameters to the current batch.
+<p>
+<a name="283503"></a>
+
+<p>
+<blockquote><pre>// turn off autocommit
+con.setAutoCommit(false);
+
+PreparedStatement stmt = con.prepareStatement(
+	"INSERT INTO employees VALUES (?, ?)");
+
+stmt.setInt(1, 2000);
+stmt.setString(2, "Kelly Kaufmann");
+stmt.addBatch();
+
+stmt.setInt(1, 3000);
+stmt.setString(2, "Bill Barnes");
+stmt.addBatch();
+ 
+// submit the batch for execution
+int[] updateCounts = stmt.executeBatch();
+
+
+</pre></blockquote><a name="302592"></a>
+Finally, <code>PreparedStatement.executeBatch()</code> is called to submit the updates to the 
+DBMS. Calling <code>PreparedStatement.executeBatch() </code>clears the statement's associated
+list of batch elements. The array returned by <code>PreparedStatement.executeBatch()
+</code> contains an element for each set of parameters in the batch, similar to the case 
+for <code>Statement</code>. Each element either contains an update count or the generic `success' 
+indicator (-2).
+<p>
+<a name="302500"></a>
+Error handling in the case of<code> PreparedStatement </code>objects is the same as error handling
+in the case of <code>Statement</code> objects. Some drivers may stop processing as soon as 
+an error occurs, while others may continue processing the rest of the batch. As for 
+<code>Statement</code>, the number of elements in the array returned by <code>BatchUpdateException.getUpdateCounts()
+</code>indicates whether or not the driver continues processing 
+after a failure. The same three array element values are possible, as for <code>Statement</code>. The 
+order of the entries in the array is the same order as the order in which elements were 
+added to the batch.
+<p>
+
+<a name="283558"></a>
+<h4>	6.1.3	 Callable Statements</h4>
+<a name="283559"></a>
+The batch update facility works the same with <code>CallableStatement</code> objects as it does 
+with <code>PreparedStatement</code> objects. Multiple sets of input parameter values may be associated
+with a callable statement and sent to the DBMS together. Stored procedures 
+invoked using the batch update facility with a callable statement must return an update 
+count, and may not have out or inout parameters. The <code>CallableStatement.executeBatch()
+</code> method should throw an exception if this restriction is violated. Error handling 
+is analogous to <code>PreparedStatement</code>.
+<p>
+
+<a name="302387"></a>
+<h3>6.2 	  &nbsp; &nbsp; What's required</h3>
+<a name="302619"></a>
+Support for batch updates is optional. If a JDBC driver supports batch updates, then the 
+<code>DatabaseMetaData.supportsBatchUpdates()</code> method must return true, else it must 
+return false. In addition, to preserve backward compatibility, JDBC drivers that do not 
+continue processing after a failure are not required to return a value of -2 as described 
+in <a href="jdbc2.1.frame6.html#302396">Section 6.1</a>, however, this is encouraged. JDBC drivers that continue processing are 
+required to support both of the negative return values.
+<p>
+<a name="302610"></a>
+Note: In the future, the JDBC API shall define symbolic constants for the negative array 
+entry values described in <a href="jdbc2.1.frame6.html#302396">Section 6.1</a>. These values have been added as an addendum 
+to the original JDBC 2.0 API specification.
+<p>
+<a name="302607"></a>
+
+<p>
+
+
+<br>
+<hr> 
+<font size=-1>
+<a href="jdbc2.1.frame.html">Contents</a>  | <a href="jdbc2.1.frame5.html">Prev</a>  | <a href="jdbc2.1.frame7.html">Next</a>
+</font>
+<hr>
+
+
+
+<address>
+<a href="mailto:jdbc@eng.sun.com">jdbc@eng.sun.com</a>
+or
+<a href="mailto:jdbc-business@eng.sun.com">jdbc-business@eng.sun.com</a>
+</address>
+
+<i><a href="../../../relnotes/SMICopyright.html">
+Copyright</a> &#169; 1996-1999 Sun Microsystems, Inc.   All rights reserved.</i>
+
+
+<!-- HTML generated by Suzette Pelouch on December 01, 1999 -->
+
+</body>
+</html>

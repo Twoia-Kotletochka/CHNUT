@@ -1,0 +1,76 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Remote Method Invocation: 9 - Garbage Collector Interfaces
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="rmiTOC.html">CONTENTS</a> | <a href="rmi-dgc.html">PREV</a>
+ | <a href="rmi-dgc3.html">NEXT</a> 
+<!-- /font --></td><td align=right><i>Java Remote Method Invocation</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="5112"><i>	9.1	</i> The <code>DGC</code> Interface 
+</a></h2>
+
+<blockquote>
+<a name="5102"><!-- --></a>
+<blockquote>
+<a name="6772"><!-- --></a>
+The DGC abstraction is used for the server side of the distributed garbage collection algorithm. This interface contains the two methods: <code>dirty</code> and <code>clean</code>. A <code>dirty</code> call is made when a remote reference is unmarshaled in a client (the client is indicated by its <em>VMID</em>). A corresponding clean call is made when no more references to the remote reference exist in the client. A failed dirty call must schedule a <em>strong</em> clean call so that the call&#39;s sequence number can be retained in order to detect future calls received out of order by the distributed garbage collector.<p>
+<a name="6773"><!-- --></a>
+A reference to a remote object is <em>leased</em> for a period of time by the client holding the reference. The lease period starts when the <code>dirty</code> call is received. It is the client&#39;s responsibility to renew the leases, by making additional <code>dirty</code> calls, on the remote references it holds before such leases expire. If the client does not renew the lease before it expires, the distributed garbage collector assumes that the remote object is no longer referenced by that client.<p>
+</blockquote><blockquote><pre>package java.rmi.dgc;<p>
+import java.rmi.server.ObjID;
+
+public interface DGC extends java.rmi.Remote {
+	Lease dirty(ObjID[] ids, long sequenceNum, Lease lease)
+		throws java.rmi.RemoteException;	
+	void clean(ObjID[] ids, long seqNum, VMID vmid, boolean strong)
+		throws java.rmi.RemoteException;
+}
+</pre></blockquote><blockquote>
+<a name="6583"><!-- --></a>
+The <code>dirty</code> method requests leases for the remote object references associated with the object identifiers contained in the array argument <em>ids</em>. The <em>lease</em> contains a client&#39;s unique virtual machine identifier (VMID) and a requested lease period. For each remote object exported in the local virtual machine, the garbage collector maintains a <em>reference list</em>&#45;&#45;a list of clients that hold references to it. If the lease is granted, the garbage collector adds the client&#39;s VMID to the reference list for each remote object indicated in <em>ids</em>. The <em>sequenceNum</em> parameter is a sequence number that is used to detect and discard late calls to the garbage collector. The sequence number should always increase for each subsequent call to the garbage collector.<p>
+<a name="6834"><!-- --></a>
+Some clients are unable to generate a unique VMID. This is because a VMID is a universally unique identifier only if it contains a true host address, an address which some clients are unable to obtain due to security restrictions. In this case, a client can use a VMID of <code>null</code>, and the distributed garbage collector will assign a VMID for the client.<p>
+<a name="6838"><!-- --></a>
+The <code>dirty</code> call returns a <code>Lease</code> object that contains the VMID used and the lease period granted for the remote references. (A server can decide to grant a smaller lease period than the client requests.) A client must use the VMID the garbage collector uses in order to make corresponding <code>clean</code> calls when the client drops remote object references.<p>
+<a name="6843"><!-- --></a>
+A client virtual machine need only make one initial <code>dirty</code> call for each remote reference referenced in the virtual machine (even if it has multiple references to the same remote object). The client must also make a <code>dirty</code> call to renew leases on remote references before such leases expire. When the client no longer has any references to a specific remote object, it must schedule a <code>clean</code> call for the object ID associated with the reference.<p>
+<a name="6477"><!-- --></a>
+The <code>clean</code> call removes the <code>VMID</code> from the reference list of each remote object indicated in <em>ids</em>. The sequence number is used to detect late <code>clean</code> calls. If the <em>strong </em>argument is <code>true</code>, then the <code>clean</code> call is a result of a failed <code>dirty</code> call, and the sequence number for the client <code>VMID</code> therefore needs to be remembered.<p>
+</blockquote>
+
+
+</ul>
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="rmiTOC.html">CONTENTS</a> | <a href="rmi-dgc.html">PREV</a>
+ | <a href="rmi-dgc3.html">NEXT</a> 
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF=http://java.sun.com/products/jdk/1.3/docs/relnotes/SMICopyright.html>Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Susan Snyder -->
+<!-- Last updated: Wednesday November 10 04 11:11:27 1999 -->
+ 
+
+
+</body>
+</html>

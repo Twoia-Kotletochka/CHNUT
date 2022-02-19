@@ -1,0 +1,207 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title></title>
+</head>
+<body bgcolor=#ffffff>
+
+<table width=100%><tr>
+<td><font size=-1>
+<a href="jdbc2.1.frame.html">Contents</a>  | <a href="jdbc2.1.frame12.html">Prev</a>  | <a href="jdbc2.1.frame14.html">Next</a>
+</font></td><td align=right><i>JDBC<sup><font size=-2>TM</font></sup> Guide: Getting Started</i></td>
+</tr></table>
+<hr>
+<br>
+ 
+
+<a name="284927"></a>
+<h2>Appendix B:  Additional Suggestions </h2>
+
+<a name="282047"></a>
+This section contains a list of some of the suggested additions that we received that have 
+<strong>not</strong> been added to the JDBC API. They are listed simply as a record of some of the 
+things that have been left out. We welcome input concerning the items listed here.
+<p>
+
+<a name="281852"></a>
+<h2>B.1 	  &nbsp;&nbsp; Other Suggestions for v0.1</h2>
+<a name="284716"></a>
+Processing Results - Add a way to determine the value of an auto-incremented key after 
+an insert is done.
+<p>
+<a name="282325"></a>
+Enhanced Meta-Data - Add meta-data for prepared statement parameters and for prepared
+statement result set. The JDBC API does not provide metadata describing a prepared
+statements parameters; and, it does not provide metadata describing its results 
+without executing the statement (equivalent to SQL92 DESCRIBE OUTPUT and 
+ODBC SQLDescribeParam.
+<p>
+<a name="281853"></a>
+New Data Types - Add the SQL time interval data type
+<p>
+<a name="281857"></a>
+Security - Allow the application to choose underlying transport properties, e.g., SSL. 
+Provide SSL Socket implementation. A JDBC technology based application must be 
+able to select driver-supported mechanisms for securing the wirelevel protocol (e.g., 
+encryption). Relative to SSL, one option is to allow the application to specify a specific 
+Cyphersuite (key-exchange algorithm, bulk-encryption, MAC [message authentication 
+algorithm])
+<p>
+<a name="281859"></a>
+Security-Authentication - Allow an application to select driver-supported mechanisms 
+for performing authentication. The following mechanisms should be supported: Username,
+password; Kerberos token; Digital Certificates
+<p>
+<a name="281862"></a>
+Command Complete event - Support a user provided event object that is fired when a 
+Command completes (both current command and regular command, sync or async). - - 
+Various events: Connect Event; Disconnect Event; Before Connect Event
+<p>
+<a name="281863"></a>
+Cursor Implementation Location - Support client-side vs server-side.
+<p>
+<a name="281865"></a>
+Parameter Management -  Support: Append, GetCount,  GetItem (by name/position),  
+Delete and  Refresh.
+<p>
+<a name="281872"></a>
+Hybrid SQL/Java programming language Integration - Provide a mechanism for defining
+Java classess and provide a hybrid SQL/Java query mechanism over Tables whose 
+columns may be SQL atomics or Java classes.
+<p>
+<a name="281873"></a>
+Specialty Data Types - Provide extensions for OLAP, Spatial, TimeSeries and other 
+Specialty Data Types.
+<p>
+<a name="281874"></a>
+Serializing data, time, timestamps - Allow these types to be serializable.
+<p>
+<a name="281875"></a>
+Async Requests - Allow the caller to request that a Statement execute asynchronously.
+<p>
+<a name="281876"></a>
+Java classes - Introduce the notion of a SQL specialization of Java classes/beans that 
+introduces SQL99 concepts useful for dealing with Java objects in the context of databases
+and business applications. For example, it is useful for a database system to understand
+which method(s) definitions in a Class may be used to perform operations on 
+objects such as comparisons, etc. One approach would be to introduce "generic" method
+names. Those could also be used outside of the database by regular Business Applications.
+
+<p>
+<a name="281877"></a>
+Add support for SQL PSM.
+<p>
+<a name="281878"></a>
+Add additional SQL language functionality e.g. various forms of join.
+<p>
+<a name="281879"></a>
+Add *levels* of JDBC compatibility, as opposed to individual API calls to see if individual
+features are supported by a drvier.
+<p>
+<a name="281880"></a>
+Add an API call that describes the format of the URL understood by a driver.
+<p>
+<a name="281881"></a>
+Add a row object that encapsulates database data in its native format.
+<p>
+<a name="282201"></a>
+Add immutability for Date, Time, Timestamp.
+<p>
+
+<a name="281850"></a>
+<h2>B.2 	  &nbsp;&nbsp; Additional suggestions for v0.7</h2>
+
+<ul><a name="288240"></a>
+<li>It was suggested that as an alternative to providing individual methods for each 
+new property on the <code>Statement</code> interface such as result set type, concurrency 
+type, etc., we could introduce a new Class, <code>ResultSetProperties</code>, that itself 
+contained all methods for getting and setting these properties. Statement would 
+then just contain two new methods for getting and setting a 
+<code>ResultSetProperties</code> property. This approach would help to simplify the 
+<code>Statement</code> interface.
+<br><br>
+<a name="293573"></a>
+<li>Add a new CursorResultSet interface which extends ResultSet and adds method 
+<code>CursorStatement prepareUpdate() throws SQLException</code>; OR add the 
+<code>prepareUpdate</code> method to the existing <code>ResultSet</code> interface - and define that it 
+may fail if there is no cursor associated with it. Add a new <code>CursorStatement</code> 
+interface which extends <code>PreparedStatement</code> and adds the methods:<code> void 
+update() throws SQLException </code>and<code> void delete() throws 
+SQLException</code>. It would be helpful to introduce another intermediate 
+<code>CursorResultSet</code> which would sit in the interitance hierarchy between 
+<code>ResultSet</code> and <code>ScrollableResultSet</code>. The motivation for the 
+CursorStatement is to avoid the need to parse every query to look for cursor 
+operations. The reason to have CursorStatement extend PreparedStatement is to 
+get access to the setXXX methods. The setXXX() methods would be used to 
+provide new values to the corresponding columns of the current row in the 
+CursorResultSet. The executeUpdate() method would perform the actual update 
+(with the parameter values that had been set) or delete (parameter values are 
+ignored). The execute() and executeQuery() methods would be overridden so 
+that they always throw SQLException. Additionally, the CursorStatement 
+would be "bound" to the CursorResultSet which created it such that whenever 
+that CursorResultSet was repositioned (next, relative, absolute, first, last, etc.) 
+that the CursorStatement would automatically track this and update/delete 
+methods affect the right row. ** It is tempting to do away with the 
+CursorStatement and just add that functionality to the CursorResultSet because 
+these things are likely to be in 1:1 relationship.
+<br><br>
+<a name="293575"></a>
+<li>Add to the <code>Statement</code> interface: <code>void 
+setCursorProperties(CursorProperties props) throws SQLException</code>; 
+Define a new <code>java.sql.CursorProperties</code> class. I like the idea of adding 
+statement properties so that appropriate subclasses of <code>ResultSet</code> are returned 
+when the statement is executed. But, rather than adding a bunch of individual 
+accessors/mutators for all these properties to <code>Statement</code>, I would recommend 
+defining a <code>CursorProperties</code> class with public members and then add just a 
+single new method to <code>Statement</code>: <code>void 
+setCursorProperties(CursorProperties props) throws SQLException</code>; 
+This would remove the need for the new <code>Statement.setFetchSize</code> and 
+<code>getFetchSize</code> methods for example. <code>CursorProperties</code> would have a public 
+constructor which returns a <code>CursorProperties</code> object with well defined 
+default values (TBD). Members of this class would include: 0. boolean 
+useCursors - if true the statement should return a <code>CursorResultSet</code> from 
+executeQuery. 1. String cursorName - <code>Statement.setCursorName()</code> would be 
+depricated. 2. boolean scrollable - if true the statement should return a 
+<code>ScrollableResultSet</code> from execute query. 3. boolean readonly - if true this 
+cursor is READONLY. 4. int rowCacheSize - hint to driver on how many rows 
+to retrieve from the database at a time. 5. boolean closeOnEndTransaction - in 
+ANSI SQL '92 cursors are automatically closed on commit/rollback, but many 
+databases allow cursors to remain open for efficiency 6. String[] 
+updatableColumns - list of columns which in SQL '92 grammar would be in the 
+"FOR UPDATE OF &lt;column list&gt;" clause. 7. boolean sensitive - if true 
+committed changes to the underlying tables which happened while the cursor 
+was open may be seen by the application as it scrolls over those rows.
+<br><br>
+<a name="293570"></a>
+<li>The result of any SQL query can be thought of as defining a simple structured 
+type. The fields of the structured type correspond to the columns of the query 
+result, and each row in the result set returned by the query represents an instance 
+of the type. The JDBC API could allow a mapping from a type that is defined 
+implicitly by an SQL query to a Java class, or even a bi-directional mapping 
+between regular relational tables and Java classes.
+<br><br>
+</ul>
+
+<br>
+<hr> 
+<font size=-1>
+<a href="jdbc2.1.frame.html">Contents</a>  | <a href="jdbc2.1.frame12.html">Prev</a>  | <a href="jdbc2.1.frame14.html">Next</a>
+</font>
+<hr>
+
+
+
+<address>
+<a href="mailto:jdbc@eng.sun.com">jdbc@eng.sun.com</a>
+or
+<a href="mailto:jdbc-business@eng.sun.com">jdbc-business@eng.sun.com</a>
+</address>
+
+<i><a href="../../../relnotes/SMICopyright.html">
+Copyright</a> &#169; 1996-1999 Sun Microsystems, Inc.   All rights reserved.</i>
+
+
+<!-- HTML generated by Suzette Pelouch on December 01, 1999 -->
+
+</body>
+</html>

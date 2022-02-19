@@ -1,0 +1,277 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API: 6 - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-color.fm1.html">PREV</a>
+ | <a href="j2d-print.fm.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="62583"><i>6.2	</i> Color Concepts
+</a></h2>
+
+<blockquote>
+<a name="62586"><!-- --></a>
+A <kbd>ColorModel</kbd> is used to interpret pixel data in an image. This includes mapping components in the bands of an image to components of a particular color space. It might also involve extracting pixel components from packed pixel data, retrieving 
+
+multiple components from a single band using masks, and converting pixel data through a lookup table. <p>
+<a name="62297"><!-- --></a>
+To determine the color value of a particular pixel in an image, you need to know how color information is encoded in each pixel. The <kbd>ColorModel</kbd> associated with an image encapsulates the data and methods necessary for translating a pixel value t
+
+o and from its constituent color components. <p>
+<a name="62298"><!-- --></a>
+The Java 2D<sup>TM</sup> API provides two color models in addition to the <kbd>DirectColorModel</kbd> and <kbd>IndexColorModel</kbd> defined in the JDK 1.1 software release: <p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="62299"><!-- --></a>
+<kbd>ComponentColorModel</kbd> can handle an arbitrary <kbd>ColorSpace</kbd> and an array of color components to match the <kbd>ColorSpace</kbd>. This model can be used to represent most color models on most types of <kbd>GraphicsDevices</kbd>. 
+</li>
+<li>
+<a name="62300"><!-- --></a>
+<kbd>PackedColorModel</kbd> is a base class for models that represent pixel values that have their color components embedded directly in the bits of an integer pixel. A <kbd>PackedColorModel</kbd> stores the packing information that describes how color an
+
+d alpha components are extracted from the channel.The <kbd>DirectColorModel</kbd> in the JDK 1.1 software release is a <kbd>PackedColorModel</kbd>. 
+</li>
+</ul>
+</blockquote>
+
+<br>
+<a name="62302"><!-- --></a>
+<h4><i>6.2.0.1	 ColorSpace
+</i></h4>
+
+<blockquote>
+<a name="62303"><!-- --></a>
+A <kbd>ColorSpace</kbd> object represents a system for measuring colors, typically using three separate numeric values. For example, RGB and CMYK are color spaces. A <kbd>ColorSpace</kbd> object serves as a colorspace tag that identifies the specific colo
+
+r space of a <kbd>Color</kbd> object or, through a <kbd>ColorModel</kbd> object, of an <kbd>Image</kbd>, <kbd>BufferedImage</kbd>, or <kbd>GraphicsConfiguration</kbd>. <kbd>ColorSpace</kbd> provides methods that transform <kbd>Colors</kbd> in a specific c
+
+olor space to and from <kbd>sRGB</kbd> and to and from a well-defined <kbd>CIEXYZ</kbd> color space.<p>
+<a name="62304"><!-- --></a>
+All <kbd>ColorSpace</kbd> objects must be able to map a color from the represented color space into <kbd>sRGB</kbd> and transform an <kbd>sRGB</kbd> color into the represented color space. Since every <kbd>Color</kbd> contains a <kbd>ColorSpace</kbd> obje
+
+ct, set explicitly or by default, every <kbd>Color</kbd> can also be converted to <kbd>sRGB</kbd>. Every <kbd>GraphicsConfiguration</kbd> is associated with a <kbd>ColorSpace</kbd> object that in turn has an associated <kbd>ColorSpace</kbd>. A color speci
+
+fied in any color space can be displayed by any device by mapping it through <kbd>sRGB</kbd> as an intermediate color space.<p>
+<a name="62305"><!-- --></a>
+The methods used for this process are <kbd>toRGB</kbd> and <kbd>fromRGB:</kbd><p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="62306"><!-- --></a>
+<kbd>toRGB</kbd> transforms a <kbd>Color</kbd> in the represented color space to a <kbd>Color</kbd> in <kbd>sRGB</kbd>. 
+</li>
+<li>
+<a name="62307"><!-- --></a>
+<kbd>fromRGB</kbd> takes a <kbd>Color</kbd> in <kbd>sRGB</kbd> and transforms it into the represented color space.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="62308"><!-- --></a>
+Though mapping through <kbd>sRGB</kbd> always works, it's not always the best solution. For one thing, <kbd>sRGB</kbd> cannot represent every color in the full gamut of <kbd>CIEXYZ</kbd> colors. If a color is specified in some space that has a different g
+
+amut (spectrum of representable colors) than <kbd>sRGB</kbd>, then using <kbd>sRGB</kbd> as an intermediate space results in a loss of information. To address this problem, the <kbd>ColorSpace</kbd> class can map colors to and from another color space, th
+
+e &#34;conversion space&#34; <kbd>CIEXYZ</kbd>.<p>
+<a name="62309"><!-- --></a>
+The methods <kbd>toCIEXYZ</kbd> and <kbd>fromCIEXYZ</kbd> map color values from the represented color space to the conversion space. These methods support conversions between any two color spaces at a reasonably high degree of accuracy, one 
+<kbd>Color</kbd> at a time. However, it is expected that Java 2D API implementations will support high-performance conversion based on underlying platform color-management systems, operating on entire images. (See <kbd>ColorConvertOp</kbd> in 
+<a href="j2d-image.fm.html#65661">&#34;Imaging&#34;</a>.)<p>
+<a name="62319"><!-- --></a>
+<a href="j2d-color.fm2.html#62371">Figure&#160;6-1</a> and <a href="j2d-color.fm2.html#62421">Figure&#160;6-2</a> illustrate the process of translating a color specified in a CMYK color space for display on an RGB color monitor. <a href="j2d-color.fm2.html#62371">Figure&#160;6-1</a> shows a mapping through <kbd>sRGB</kbd>. As this figure illustrates, the translation of the CMYK color to an RGB color is not exact because of a gamut mismatch. <a href="#62325"><sup>1</sup></a><p>
+<a name="62369"><!-- --></a>
+<p><center><img src="j2d-color.fm.anc1.gif"></center><p>
+</blockquote>
+<blockquote><p>
+<a name="62371"><!-- --></a>
+<b>Figure 6-1	</b> Mapping Through sRGB
+
+</p>
+</blockquote><blockquote>
+<a name="62375"><!-- --></a>
+<a href="j2d-color.fm2.html#62421">Figure&#160;6-2</a> shows the same process using <kbd>CIEXYZ</kbd> as the conversion space. When <kbd>CIEXYZ</kbd> is used, the color is passed through accurately.<p>
+<a name="62419"><!-- --></a>
+<p><center><img src="j2d-color.fm.anc2.gif"></center><p>
+</blockquote>
+<blockquote><p>
+<a name="62421"><!-- --></a>
+<b>Figure 6-2	</b> Mapping Through CIEXYZ
+
+</p>
+</blockquote>
+<br>
+<a name="62422"><!-- --></a>
+<h4><i>6.2.0.2	 ICC_Profile and ICC_ColorSpace
+</i></h4>
+
+<blockquote>
+<a name="62423"><!-- --></a>
+<kbd>ColorSpace</kbd> is actually an abstract class. The Java 2D API provides one implementation, <kbd>ICC_ColorSpace</kbd>, which is based on ICC Profile data as represented by the <kbd>ICC_Profile</kbd> class. You can define your own subclasses to repre
+
+sent arbitrary color spaces, as long as the methods discussed above are implemented. However, most developers can simply use the default <kbd>sRGB</kbd> <kbd>ColorSpace</kbd> or color spaces that are represented by commonly available ICC Profiles, such as
+
+ profiles for monitors and printers, or profiles embedded in image data.<p>
+<a name="62427"><!-- --></a>
+<a href="j2d-color.fm2.html#62302">&#34;ColorSpace&#34;</a> 
+describes how <kbd>ColorSpace</kbd> objects represent a color space 
+and how colors in the represented space can be mapped to and from a 
+conversion space. Color management systems 
+are often used to handle the mapping between color spaces. 
+A typical color management system (CMS) manages ICC profiles, which 
+are similar to <kbd>ColorSpace</kbd> objects; ICC profiles describe 
+an input space and a connection space, and define how to map
+ between them. Color management systems are very good at figuring out 
+how to map a color tagged with one profile into the color space of 
+another profile.<p>
+<a name="62428"><!-- --></a>
+The Java 2D API defines a class called <kbd>ICC_Profile</kbd> that 
+holds data for an arbitrary ICC Profile. <kbd>ICC_ColorSpace</kbd> is 
+an implementation of the abstract <kbd>ColorSpace</kbd> class. 
+<kbd>ICC_ColorSpace</kbd> objects can be constructed from 
+<kbd>ICC_Profiles</kbd>. (There are some limitations&#45;&#45;not 
+all ICC Profiles are appropriate for defining an 
+<kbd>ICC_ColorSpace</kbd>). <p>
+<a name="62429"><!-- --></a>
+<kbd>ICC_Profile</kbd> has several subclasses that correspond to specific color space types, such as <kbd>ICC_ProfileRGB</kbd> and <kbd>ICC_ProfileGray</kbd>. Each subclass of <kbd>ICC_Profile</kbd> has a well-defined input space (such as an RGB space) an
+
+d a well-defined connection space (like <kbd>CIEXYZ</kbd>). The Java 2D API can use a platform's CMS to access color profiles for various devices such as scanners, printers, and monitors. It can also use the CMS to find the best mapping between profiles.<
+
+p>
+</blockquote>
+<br>
+<h3>
+<a name="62455"><!-- --></a>
+<i>6.2.1	</i> Describing Colors
+</h3>
+
+<blockquote>
+<a name="62437"><!-- --></a>
+The <kbd>Color</kbd> class provides a description of a color in a particular color space. An instance of <kbd>Color</kbd> contains the value of the color components and a <kbd>ColorSpace</kbd> object. Because a <kbd>ColorSpace</kbd> object can be specifie
+
+d in addition to the color components when a new instance of <kbd>Color</kbd> is created, the <kbd>Color</kbd> class can handle colors in any color space.<p>
+<a name="62438"><!-- --></a>
+The <kbd>Color</kbd> class has a number of methods that support a proposed standard RGB color space called <kbd>sRGB</kbd> (see <kbd>http://www.w3.org/pub/WWW/Graphics/Color/sRGB.html</kbd>). <kbd>sRGB</kbd> is the default color space for the Java 2D API.
+
+ Several constructors defined by the Color class omit the <kbd>ColorSpace</kbd> parameter. These constructors assume that the color's RGB values are defined in <kbd>sRGB</kbd>, and use a default instance of <kbd>ColorSpace</kbd> to represent that space.<p
+
+>
+<a name="62439"><!-- --></a>
+The Java 2D API uses <kbd>sRGB</kbd> as a convenience to application programmers, not as a reference color space for color conversion. Many applications are primarily concerned with RGB images and monitors, and defining a standard RGB color space makes wr
+
+iting such applications easier. The <kbd>ColorSpace</kbd> class defines the methods <kbd>toRGB</kbd> and <kbd>fromRGB</kbd> so that developers can easily retrieve colors in this standard space. These methods are not intended to be used for highly accurate
+
+ color correction or conversions. See <a href="j2d-color.fm2.html#62302">&#34;ColorSpace&#34;</a> for more information.<p>
+<a name="62443"><!-- --></a>
+To create a color in a color space other than <kbd>sRGB</kbd>, you use the <kbd>Color</kbd> constructor that takes a 
+<kbd>ColorSpace</kbd> object and an array of floats that represent the color components appropriate to that space. The 
+<kbd>ColorSpace</kbd> object identifies the color space.<p>
+<a name="61780"><!-- --></a>
+To display a rectangle of a certain color, such as the process color cyan, you need a way to describe this color to the system. There are a number of different ways to describe a color; for example, a color could be described as a set of red, green, and b
+
+lue (RGB) components, or a set of cyan, magenta, yellow, and black (CMYK) components. These different techniques for specifying colors are called<em> color spaces</em>. <p>
+<a name="61781"><!-- --></a>
+As you probably know, colors on a computer screen are generated by blending different amounts of red, green, and blue light. Therefore, using an RGB color space is standard for imaging on computer monitors. Similarly, four-color process printing uses cyan
+
+, magenta, yellow, and black ink to produce color on a printed page; the printed colors are specified as percentages in a CMYK color space. <p>
+<a name="61782"><!-- --></a>
+Due to the prevalence of computer monitors and color printing, RGB and CMYK color spaces are both commonly used to describe colors. However, both types of color spaces have a fundamental drawback&#45;&#45;they are device-dependent. The cyan ink used by on
+
+e printer might not exactly match the cyan ink used by another. Similarly, a color described as an RGB color might look blue on one monitor and purplish on another. <p>
+</blockquote>
+<br>
+<h3>
+<a name="61783"><!-- --></a>
+<i>6.2.2	</i> Mapping Colors through sRGB and CIEXYZ
+</h3>
+
+<blockquote>
+<a name="62282"><!-- --></a>
+The Java 2D API refers to RGB and CMYK as color space types. A particular model of monitor with its particular phosphors defines its own RGB color space. Similarly, a particular model of printer has its own CMYK color space. Different RGB or CMYK color sp
+
+aces can be related to each other through a device-independent color space.<p>
+<a name="61784"><!-- --></a>
+Standards for the device-independent specification of color have been defined by the International Commission on Illumination (CIE). The most commonly used device-independent color space is the three-component XYZ color space developed by CIE. When you sp
+
+ecify a color using <kbd>CIEXYZ</kbd>, you are insulated from device dependencies.<p>
+<a name="61785"><!-- --></a>
+Unfortunately, it&#39;s not always practical to describe colors in the <kbd>CIEXYZ</kbd> color space&#45;&#45;there are valid reasons for representing colors in other color spaces. To obtain consistent results when a color is represented using a device-de
+
+pendent color space such as a particular RGB space, it is necessary to show how that RGB&#160;space relates to a device-independent space like <kbd>CIEXYZ</kbd>.<p>
+<a name="61786"><!-- --></a>
+One way to map between color spaces is to attach information to the spaces that describes how the device-dependent space relates to the device-independent space. This additional information is called a <em>profile</em>. A commonly used type of color profi
+
+le is the ICC Color Profile, as defined by the International Color Consortium. For details, see the ICC Profile Format Specification, version 3.4 available at <kbd>http://www.color.org</kbd>.<p>
+<a name="61790"><!-- --></a>
+<a href="j2d-color.fm2.html#61912">Figure&#160;6-3</a> illustrates how a solid color and a scanned image are passed to the Java 2D API, and how they are displayed by various output devices. As you can see in <a href="j2d-color.fm2.html#61912">Figure&#160;
+
+6-3</a>, both the input color and the image have profiles attached.<p>
+</blockquote><a name="61910"><!-- --></a>
+<p><p><center><img src="j2d-color.fm.anc.gif"></center>
+
+
+<blockquote><p>
+<a name="61912"><!-- --></a>
+<b>Figure 6-3	</b> Using Profiles to Map Between Color Spaces
+
+</p>
+</blockquote>
+<br>
+<a name="61913"><!-- --></a>
+<h4><i>6.2.2.1	 Color Matching 
+</i></h4>
+
+<blockquote>
+<a name="62270"><!-- --></a>
+Once the API has an accurately specified color, it must reproduce that color on an output device, such as a monitor or printer. These devices have imaging characteristics of their own that must be taken into account to make sure that they produce the corr
+
+ect results. Another profile is associated with each output device to describe how the colors need to be transformed to produce accurate results.<p>
+<a name="62724"><!-- --></a>
+Achieving consistent and accurate color requires that both input colors and output devices be profiled against a standard color space. For example, an input color could be mapped from its original color space into a standard device-independent space, and 
+
+then mapped from that space to the output device&#39;s color space. In many respects, the transformation of colors mimics the transformation of graphical objects in an (<em>x</em>,&#160;<em>y</em>) coordinate space. In both cases, a transformation is used
+
+ to specify coordinates in a &#34;standard&#34; space and then map those coordinates to a device-specific space for output.<p>
+<a name="62729"><!-- --></a>
+<p>
+</blockquote>
+<p>
+<font size="-1">
+<a name="62325">
+1. Of course, the colors used in these diagrams are illustrative,
+not accurate. The point is that
+colors might not be mapped accurately between color spaces unless
+an appropriate conversion
+space is used.</font>
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-color.fm1.html">PREV</a>
+ | <a href="j2d-print.fm.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Mon Nov 22 09:37:20 1999 -->
+ 
+
+
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title></title>
+</head>
+<body bgcolor=#ffffff>
+
+<table width=600><tr>
+<td><font size=-1>
+<a href="jdbc-spec.frame.html">Contents</a>  | <a href="jdbc-spec.frame3.html">Prev</a>  | <a href="jdbc-spec.frame5.html">Next</a>
+</font></td><td align=right><i>JDBC<sup><font size=-2>TM</font></sup> Guide: Getting Started</i></td>
+</tr></table>
+<hr>
+<br>
+ 
+
+<a name="15649"></a>
+<h2>	4	 Scenarios for use</h2>
+
+<a name="15650"></a>
+Before looking at specifics of the JDBC API, an understanding of typical use scenarios is helpful.
+There are two common scenarios that must be treated differently for our purposes: <em>applets</em> 
+and <em>applications</em>.
+<p>
+
+<a name="15654"></a>
+<h3>4.1 	  &nbsp; &nbsp; Applets</h3>
+<a name="15664"></a>
+The most publicized use of Java to date is for implementing <em>applets</em> that are downloaded over 
+the net as parts of web documents. Among these will be database access applets, and these applets
+could use JDBC to get to databases.<br><br><img src="jdbc-spec.frame.anc6.gif"><br> 
+<p>
+<a name="15823"></a>
+For example, a user might download a Java applet that displays historical price graphs for a 
+custom portfolio of stocks. This applet might access a relational database over the Internet to 
+obtain the historical stock prices.
+<p>
+<a name="15829"></a>
+The most common use of applets may be across untrusted boundaries, e.g. fetching applets 
+from another company on the Internet. Thus, this scenario might be called the "Internet" scenario.
+However, applets might also be downloaded on a local network where client machine 
+security is still an issue.
+<p>
+<a name="15923"></a>
+Typical applets differ from traditional database applications in a number of ways:
+<p>
+
+<ul><a name="15867"></a>
+<li>Untrusted applets are severely constrained in the operations they are allowed to 
+perform. In particular, they are not allowed any access to local files and they are not 
+allowed to open network connections to arbitrary hosts.
+<br><br>
+<a name="15895"></a>
+<li>Applets on the Internet present new problems with respect to identifying and 
+connecting to databases.<a href="#16038"><sup>1</sup></a>
+<br><br>
+<a name="15929"></a>
+<li>Performance considerations for a database connectivity implementation differ when the 
+database may be halfway around the world. Database applets on the Internet will 
+experience quite different network response times than database applications on a local 
+area network.
+<br><br>
+</ul>
+<a name="15665"></a>
+<h3>4.2 	  &nbsp; &nbsp; Applications</h3>
+<a name="15817"></a>
+Java can also be used to build normal applications that run like any shrink-wrapped or custom 
+application on a client machine. We believe this use of Java will become increasingly common 
+as better tools become available for Java and as people recognize the improved programming 
+productivity and other advantages of Java for application development. In this case the Java 
+code is trusted and is allowed to read and write files, open network connections, etc., just like 
+any other application code. <br><br><img src="jdbc-spec.frame.anc7.gif"><br>
+<p>
+<a name="15666"></a>
+Perhaps the most common use of these Java applications will be within a company or on an 
+"Intranet," so this might be called the Intranet scenario. For example, a company might implement
+all of its corporate applications in Java using GUI building tools that generate Java code 
+for forms based on corporate data schemas. These applications would access corporate database
+servers on a local or wide area network. However, Java applications could also access databases
+through the Internet.
+<p>
+<a name="15906"></a>
+The Java application and "Intranet" cases differ from applets in a number of ways. For example,
+the most natural way to identify a database is typically for the user or application to specify 
+a database name, e.g. "Customers" or "Personnel". The users will expect the system to locate 
+the specific machine, DBMS, JDBC driver, and database.
+<p>
+
+<a name="15778"></a>
+<h3>4.3 	  &nbsp; &nbsp; Other scenarios</h3>
+<a name="15779"></a>
+There are some other special cases of interest:
+<p>
+
+<ul><a name="15854"></a>
+<li><em>Trusted applets</em> are applets that have convinced the Java virtual machine<B>*</B> that they can 
+be trusted. They might be trusted because they have been signed with a particular 
+cryptographic key, or because the user has decided to trust applets from a particular 
+source. We will treat these applets the same as applications for security purposes, but 
+they may behave more like applets for other purposes, e.g. locating a database on the 
+Internet.
+<br><br>
+<a name="15864"></a>
+<li><em>Three-tier access</em> to databases may be used, in contrast to direct client/server access 
+from Java GUIs to DBMS servers. In this scenario, Java applications make calls to a 
+"middle tier" of services on the net whose implementations in turn access databases. 
+These calls might be made through RPC (remote procedure call) or through an ORB 
+(object request broker), and in either case the middle tier might best be defined using 
+an object paradigm, e.g. "customer objects" with operations for customer invoicing, 
+address changes, and other transactions.
+<br><br>
+</ul><a name="15981"></a>
+We expect that three-tier access will become more common because it is attractive to the MIS 
+director to explicitly define the legal operations on their corporate data rather than allowing direct
+unrestricted updates to the DBMS servers. Also, the three-tier architecture can provide performance
+advantages in many cases. 
+<p>
+<a name="11292"></a>
+<br><br><img src="jdbc-spec.frame.anc4.gif"><br>
+<p>
+<a name="16000"></a>
+Today, the middle tier is typically implemented in a language such as C or C++. With the introduction
+of optimizing compilers translating Java byte codes into efficient machine-specific 
+code, the middle tier may practically be implemented in Java; Java has many valuable qualities 
+(robustness, security, multi-threading) for these purposes. JDBC will be of use for this middle 
+tier.
+<p>
+<a name="15776"></a>
+
+<P>
+<FONT SIZE="-1"><B>*As used on this web site, the terms "Java Virtual Machine" 
+or "JVM" mean a virtual machine for the Java platform.</B></FONT>
+<P>
+
+<hr> 
+<font size=-1>
+<a href="jdbc-spec.frame.html">Contents</a>  | <a href="jdbc-spec.frame3.html">Prev</a>  | <a href="jdbc-spec.frame5.html">Next</a>
+</font>
+<hr>
+
+<sup>1</sup><a name="16038"></a>
+ For example, you could not depend on your database location or driver being in a .INI file or local registry on the 
+client's machine, as in ODBC.
+<p>
+
+
+<address>
+<a href="mailto:jdbc@wombat.eng.sun.com">jdbc@wombat.eng.sun.com</a>
+or
+<a href="mailto:jdbc-odbc@wombat.eng.sun.com">jdbc-odbc@wombat.eng.sun.com</a>
+</address>
+
+<a href="../../../relnotes/SMICopyright.html">
+<font size=-1><i>Copyright &#169; 1996, 1997 Sun Microsystems, Inc.   All rights reserved.</i></font>
+</a>
+
+<!-- HTML generated by Suzette Pelouch on April 10, 1998 -->
+
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Drag and Drop: API</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="dnd1TOC.doc.html">CONTENTS</a> | <a href="dnd1.doc2.html">PREV</a>
+ | <a href="dnd1.doc4.html">NEXT</a> <!-- | <a href="dnd1.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Drag and Drop</i></td>
+</tr></table>
+<br>
+ 
+
+<br>
+<h3>
+<a name="919335"><!-- --></a>
+<i>2.1  </i> Overview
+</h3>
+
+<blockquote>
+<a name="919340"><!-- --></a>
+Drag and Drop is a direct manipulation gesture found in many Graphical User Interface systems that provides a mechanism to transfer information between two entities logically associated with presentation elements in the GUI. Normally driven by a physical gesture of a human user using an appropriate input device, Drag and Drop provides both a mechanism to enable continuous feedback regarding the possible outcome of any subsequent data transfer to the user during navigation over the presentation elements in the GUI, and the facilities to provide for any subsequent data negotiation and transfer.<p>
+<a name="919369"><!-- --></a>
+A typical Drag and Drop operation can be decomposed into the following states (not entirely sequentially):<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="919370"><!-- --></a>
+	A <em>DragSource</em> comes into existence, associated with some presentation element (<em>Component</em>) in the GUI, to initiate a Drag and Drop of some potentially <em>Transferable</em> data.
+</li>
+<li>
+<a name="919371"><!-- --></a>
+1 or more <em>DropTarget</em>(s) come into/go out of existence, associated with presentation elements in the GUI (<em>Components</em>), potentially capable of consuming <em>Transferable</em> data types.
+</li>
+<li>
+<a name="919378"><!-- --></a>
+A <em>DragGestureRecognizer</em> is obtained from the <em>DragSource</em> and is associated with a <em>Component</em> in order to track and identify any Drag initiating gesture by the user over the <em>Component</em>.
+</li>
+<li>
+<a name="923910"><!-- --></a>
+A Human user makes a Drag gesture over the <em>Component</em>, which the registered <em>DragGestureRecognizer</em> detects, and notifies its <em>DragGestureListener</em> of.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="919729"><!-- --></a>
+<i><b>Note</b></i>: Although the body of this document consistently refers to the stimulus for a drag and drop operation being a physical gesture by a human user this does not preclude a programmatically driven DnD operation given the appropriate implementation of a <em>DragSource</em>.<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="919373"><!-- --></a>
+The <em>DragGestureListener </em>causes the <em>DragSource</em> to initiate the Drag and Drop operation on behalf of the user, perhaps animating the GUI <em>Cursor</em> and/or rendering an <em>Image</em> of the item(s) that are the subject of the operation.
+</li>
+<li>
+<a name="919374"><!-- --></a>
+As the user gestures navigate over <em>Component(s)</em> in the GUI with associated <em>DropTarget</em>(s), the <em>DragSource</em> receives notifications in order to provide &#34;Drag Over&#34; feedback effects, and the <em>DropTarget</em>(s) receive notifications in order to provide &#34;Drag Under&#34; feedback effects based upon the operation(s) supported and the data type(s) involved.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="920068"><!-- --></a>
+The gesture itself moves a logical cursor across the GUI hierarchy, intersecting the geometry of GUI <em>Component</em>(s), possibly resulting in the logical &#34;Drag&#34; cursor entering, crossing, and subsequently leaving <em>Component(s)</em> and associated <em>DropTarget</em>(s)<em>.</em><p>
+<a name="920072"><!-- --></a>
+The <em>DragSource</em> object manifests &#34;Drag Over&#34; feedback to the user, in the typical case by animating the GUI <em>Cursor</em> associated with the logical cursor.<p>
+<a name="920073"><!-- --></a>
+<em>DropTarget</em> objects manifest &#34;Drag Under&#34; feedback to the user, in the typical case, by rendering animations into their associated GUI <em>Component</em>(s) under the GUI <em>Cursor</em>.<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="920071"><!-- --></a>
+The determination of the feedback effects, and the ultimate success or failure of the data transfer, should one occur, is parameterized as follows:
+</li>
+<li>
+<a name="919770"><!-- --></a>
+ By the transfer &#34;operation&#34; selected by the user, and supported by both the <em>DragSource</em> and <em>DropTarget</em>: Copy, Move or Reference(link).
+</li>
+<li>
+<a name="919771"><!-- --></a>
+ By the intersection of the set of data types provided by the <em>DragSource</em> and the set of data types comprehensible by the <em>DropTarget</em>.
+</li>
+<li>
+<a name="919774"><!-- --></a>
+When the user terminates the drag operation, normally resulting in a successful Drop, both the <em>DragSource</em> and <em>DropTarget</em> receive notifications that include, and result in the type negotiation and transfer of, the information associated with the <em>DragSource </em>via a <em>Transferable</em> object.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="922602"><!-- --></a>
+The remainder of this document details the proposed API changes to support this model.<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="dnd1TOC.doc.html">CONTENTS</a> | <a href="dnd1.doc2.html">PREV</a>
+ | <a href="dnd1.doc4.html">NEXT</a> <!-- | <a href="dnd1.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997, 1998 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Doug Kramer -->
+<!-- Last updated: Thu Nov 19 14:12:35 1998 -->
+ 
+
+
+</body>
+</html>

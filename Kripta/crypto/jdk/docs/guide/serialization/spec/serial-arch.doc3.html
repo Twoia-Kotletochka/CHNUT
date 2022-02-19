@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 1 - System Architecture
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="serial-arch.doc2.html">PREV</a>
+ | <a href="serial-arch.doc4.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="4188"><i>	1.3	</i> Reading from an Object Stream
+</a></h2>
+
+<blockquote>
+<a name="4189"><!-- --></a>
+Reading an object from a stream, like writing, is straightforward:<p>
+<a name="4190"><!-- --></a>
+<pre>// Deserialize a string and date from a file.
+    FileInputStream in = new FileInputStream(&#34;tmp&#34;);
+    ObjectInputStream s = new ObjectInputStream(in);
+    String today = (String)s.readObject();
+    Date date = (Date)s.readObject();
+</pre>
+
+
+<a name="4191"><!-- --></a>
+First an <code>InputStream</code>, in this case a <code>FileInputStream</code>, is needed as the source stream. Then an <code>ObjectInputStream</code> is created that reads from the <code>InputStream</code>. Next, the string &#34;Today&#34; and a Date object are read from the stream. Generally, objects are read with the <code>readObject</code> method and primitives are read from the stream with the methods of <code>DataInput</code>.<p>
+<a name="4195"><!-- --></a>
+The <code><a href="input.doc4.html#2971">readObject</a></code> method deserializes the next object in the stream and traverses its references to other objects recursively to create the complete graph of objects serialized.<p>
+<a name="4248"><!-- --></a>
+Primitive data types are read from the stream with the methods in the <code>DataInput</code> interface, such as <code>readInt</code>, <code>readFloat</code>, or <code>readUTF</code>. Individual bytes and arrays of bytes are read with the methods of <code>InputStream</code>. Except for serializable fields, primitive data is read from block-data records.<p>
+<a name="4199"><!-- --></a>
+<code>ObjectInputStream</code> can be extended to utilize customized information in the stream about classes or to replace objects that have been deserialized. Refer to the <code>resolveClass</code> and <code>resolveObject</code> method descriptions for details.<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="serial-arch.doc2.html">PREV</a>
+ | <a href="serial-arch.doc4.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:47:50 1999 -->
+ 
+
+
+</body>
+</html>

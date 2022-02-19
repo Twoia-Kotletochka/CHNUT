@@ -1,0 +1,246 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API: 7 - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-print.fm2.html">PREV</a>
+ | <a href="j2d-print.fm4.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="418013"><i>7.3	</i> Printing with Printables
+</a></h2>
+
+<blockquote>
+<a name="420973"><!-- --></a>
+To provide basic printing support:<p>
+<ol>
+<li>
+<a name="420976"><!-- --></a>
+Implement the <kbd>Printable</kbd> interface to provide a page painter that can render each page to be printed.
+</li>
+<li>
+<a name="420983"><!-- --></a>
+Create a <kbd>PrinterJob</kbd>.
+</li>
+
+<li>
+<a name="420984"><!-- --></a>
+Call <kbd>setPrintable</kbd> to tell the <kbd>PrinterJob</kbd> how to print your document.
+</li>
+<li>
+Call <kbd>print</kbd> on the <kbd>PrinterJob</kbd> object to start the job.
+</li>
+</ol></blockquote>
+<a name="420986"><!-- --></a>
+<blockquote>
+<a name="418014"><!-- --></a>
+In the following example, a <kbd>Printable</kbd> job is used to print five pages, each of which displays a green page number. Job control is managed in the <kbd>main</kbd> method, which obtains and controls the <kbd>PrinterJob</kbd>. Rendering is performe
+d in the page painter&#39;s <kbd>print</kbd> method.<p>
+</blockquote><blockquote><pre>
+	import java.awt.*; 
+	import java.awt.print.*;
+	public class SimplePrint implements Printable {   
+  	   private static Font fnt = new Font("Helvetica",Font.PLAIN,24);
+  
+  	   public static void main(String[] args) {     
+    		// Get a PrinterJob     
+    		PrinterJob job = PrinterJob.getPrinterJob();     
+    		// Specify the Printable is an instance of SimplePrint
+    		job.setPrintable(new SimplePrint());     
+    		// Put up the dialog box     
+    		if (job.printDialog()) { 	
+      		   // Print the job if the user didn't cancel printing 
+      		   try { job.print(); }
+      		   catch (Exception e)
+        	   { /* handle exception */ }
+    		}     
+    		System.exit(0);   
+  	   }
+
+  	   public int print(Graphics g, PageFormat pf, int pageIndex)
+  		throws PrinterException {     
+    		// pageIndex 0 to 4 corresponds to page numbers 1 to 5.
+    		if (pageIndex &gt;= 5) return Printable.NO_SUCH_PAGE;   
+    		g.setFont(fnt);     
+    		g.setColor(Color.green);     
+    		g.drawString("Page " + (pageIndex+1), 100, 100);     
+    		return Printable.PAGE_EXISTS;   
+  	   } 
+	}
+</pre></blockquote>
+<br>
+<h3>
+<a name="418019"><!-- --></a>
+<i>7.3.1	</i> Using Graphics2D for Rendering 
+</h3>
+
+<blockquote>
+<a name="421000"><!-- --></a>
+You can invoke <kbd>Graphics2D</kbd> functions in you page painter&#39;s print method by first casting the <kbd>Graphics</kbd> context to a <kbd>Graphics2D</kbd>.<p>
+<a name="420997"><!-- --></a>
+In the following example, the page numbers are rendered using a red-green gradient. To do this, a <kbd>GradientPaint</kbd> is set in the <kbd>Graphics2D</kbd> context.<p>
+</blockquote><blockquote><pre>
+	import java.awt.*; 
+	import java.awt.print.*;
+
+	public class SimplePrint2D implements Printable {   
+  	   private static Font fnt = new Font("Helvetica",Font.PLAIN,24);
+  
+  	   private Paint pnt = new GradientPaint(100f, 100f, Color.red, 	                    
+                      136f, 100f, Color.green, true);
+  
+  	   public static void main(String[] args) {     
+    	 	// Get a PrinterJob     
+    		PrinterJob job = PrinterJob.getPrinterJob();     
+    		// Specify the Printable is an instance of SimplePrint2D
+    		job.setPrintable(new SimplePrint2D());     
+    		// Put up the dialog box     
+    		if (job.printDialog()) { 	
+      		   // Print the job if the user didn't cancel printing 
+      		   try { job.print(); } 	    
+      		   catch (Exception e) { /* handle exception */ }     
+    		}     
+  		System.exit(0);   
+  	   }
+
+  	   public int print(Graphics g, PageFormat pf, int pageIndex)
+  		throws PrinterException {     
+    		// pageIndex 0 to 4 corresponds to page numbers 1 to 5.
+    		if (pageIndex &gt;= 5) return Printable.NO_SUCH_PAGE;
+    		Graphics2D g2 = (Graphics2D) g;
+    		// Use the font defined above
+    		g2.setFont(fnt);
+    		// Use the gradient color defined above
+    		g2.setPaint(pnt);
+    		g2.drawString("Page " + (pageIndex+1), 100f, 100f);
+    		return Printable.PAGE_EXISTS;   
+  	   } 
+	}
+</pre></blockquote>
+<br>
+<h3>
+<a name="418024"><!-- --></a>
+<i>7.3.2	</i> Printing a File
+</h3>
+
+<blockquote>
+<a name="421029"><!-- --></a>
+When a page painter&#39;s print method is invoked several times for the same page, it must generate the same output each time.<p>
+<a name="421046"><!-- --></a>
+There are many ways to ensure that repeated requests to render a page yield the same output. For example, to ensure that the same output is generated each time the printing system requests a particular page of a text file, page painter could either store 
+and reuse file pointers for each page or store the actual page data. <p>
+<a name="418025"><!-- --></a>
+In the following example, a &#34;listing&#34; of a text file is printed. The name of the file is passed as an argument to the <kbd>main</kbd> method. The <kbd>PrintListingPainter</kbd> class stores the file pointer in effect at the beginning of each new p
+age it is asked to render. When the same page is rendered again, the file pointer is reset to the remembered position.<p>
+</blockquote><blockquote><pre>
+	import java.awt.*; 
+	import java.awt.print.*; 
+	import java.io.*;
+
+	public class PrintListing {   
+  	   public static void main(String[] args) {     
+    		// Get a PrinterJob
+    		PrinterJob job = PrinterJob.getPrinterJob();
+    		// Ask user for page format (e.g., portrait/landscape)
+    		PageFormat pf = job.pageDialog(job.defaultPage());
+    		// Specify the Printable is an instance of
+    		// PrintListingPainter; also provide given PageFormat
+    		job.setPrintable(new PrintListingPainter(args[0]), pf);
+    		// Print 1 copy   
+    		job.setCopies(1);     
+    		// Put up the dialog box     
+    		if (job.printDialog()) {
+      		   // Print the job if the user didn't cancel printing
+      		   try { job.print(); }
+      		   catch (Exception e) { /* handle exception */ }     
+    	   	}     
+    	   	System.exit(0);   
+  	   } 
+	}
+
+	class PrintListingPainter implements Printable {
+  	   private RandomAccessFile raf;   
+  	   private String fileName;   
+  	   private Font fnt = new Font("Helvetica", Font.PLAIN, 10);
+  	   private int rememberedPageIndex = -1;   
+  	   private long rememberedFilePointer = -1;   
+  	   private boolean rememberedEOF = false;
+  
+  	   public PrintListingPainter(String file) { 
+    		fileName = file;     
+    		try { 
+      		   // Open file 	
+      		   raf = new RandomAccessFile(file, "r");     
+    		} 
+    		catch (Exception e) { rememberedEOF = true; }   
+  	   }
+
+  	   public int print(Graphics g, PageFormat pf, int pageIndex)
+  		throws PrinterException {
+  		try { 
+    		   // For catching IOException     
+    		   if (pageIndex != rememberedPageIndex) { 
+      			// First time we've visited this page
+      			rememberedPageIndex = pageIndex; 	
+      			// If encountered EOF on previous page, done 
+      			if (rememberedEOF) return Printable.NO_SUCH_PAGE;
+      			// Save current position in input file
+      			rememberedFilePointer = raf.getFilePointer();
+    		   } 
+    		   else raf.seek(rememberedFilePointer);
+    		   g.setColor(Color.black);     
+    		   g.setFont(fnt); 
+		   int x = (int) pf.getImageableX() + 10;
+		   int y = (int) pf.getImageableY() + 12;    
+    		   // Title line     
+    		  g.drawString("File: " + fileName + ", page: " + 
+			(pageIndex+1),  x, y);
+    		  // Generate as many lines as will fit in imageable area
+    		  y += 36;
+    		  while (y + 12 &lt; pf.getImageableY()+pf.getImageableHeight()){
+      			String line = raf.readLine();
+      			if (line == null){ 
+        		   rememberedEOF = true;
+        		   break; 
+			}
+        		g.drawString(line, x, y); 
+        		y += 12;     
+      		  }
+      		  return Printable.PAGE_EXISTS;    
+    		} 
+    		catch (Exception e) { return Printable.NO_SUCH_PAGE;}
+  	   } 
+	}
+</pre></blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-print.fm2.html">PREV</a>
+ | <a href="j2d-print.fm4.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Mon Nov 22 09:37:25 1999 -->
+ 
+
+
+</body>
+</html>

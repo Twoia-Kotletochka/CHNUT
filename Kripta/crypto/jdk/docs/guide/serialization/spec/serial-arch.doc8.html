@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 1 - System Architecture
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="serial-arch.doc7.html">PREV</a>
+ | <a href="serial-arch.doc9.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="4542"><i>	1.8	</i> The ObjectOutput Interface
+</a></h2>
+
+<blockquote>
+<a name="4543"><!-- --></a>
+The <code>ObjectOutput</code> interface provides an abstract, stream-based interface to object storage. It extends the DataOutput interface so those methods can be used for writing primitive data types. Objects that implement this interface can be used to store primitives and objects.<p>
+<a name="4930"><!-- --></a>
+<pre>package java.io;
+
+public interface ObjectOutput extends DataOutput
+{
+    public void writeObject(Object obj) throws IOException;
+    public void write(int b) throws IOException;
+    public void write(byte b[]) throws IOException;
+     public void write(byte b[], int off, int len) throws IOException;
+    public void flush() throws IOException;
+    public void close() throws IOException;
+}
+</pre>
+
+
+<a name="4545"><!-- --></a>
+<code>The writeObject</code> method is used to write an object. The exceptions thrown reflect errors while accessing the object or its fields, or exceptions that occur in writing to storage. If any exception is thrown, the underlying storage may be corrupted. If this occurs, refer to the object that is implementing this interface for more information.<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="serial-arch.doc7.html">PREV</a>
+ | <a href="serial-arch.doc9.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:47:50 1999 -->
+ 
+
+
+</body>
+</html>

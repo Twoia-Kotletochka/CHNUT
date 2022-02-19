@@ -1,0 +1,148 @@
+<HTML>
+
+<TITLE>Physical Fonts</TITLE>
+
+<BODY BGCOLOR="#FFFFFF" TEXT=#000000 LINK=#0000ff VLINK=#000077 ALINK=#ff0000>
+
+<hr>
+<center>
+<h1>Physical Fonts</h1>
+</center>
+
+<hr>
+<p>
+Starting with the 1.2 release, the Java 2 SDK
+includes a set of TrueType fonts in the <code>lib/fonts</code> subdirectory.
+Prior to the 1.2 release, the JDK software
+relied on the host platform fonts.
+Logical fonts, such as Monospaced,
+are mapped to the host platform fonts
+in the <code>font.properties</code> file.
+To distinguish them from the logical fonts,
+this document refers to the TrueType fonts
+as <em>physical fonts</em>. 
+
+<h2> Benefits </h2>
+
+Because physical fonts are included in the Java 2 Platform itself, 
+programmers are guaranteed to have a uniform set of font families 
+available for several locales for use on whatever host platform the 
+Java runtime environment is on.  This obviously lessens programmer's 
+dependence on the fonts might be provided by the host platform, which 
+can vary greatly from platform to platform, and from locale to locale.
+<p>
+
+The SDK's physical fonts offer the following benefits:
+<ul>
+<li>Consistent Look and Feel
+<p>
+Your applications will look the same on all platforms
+because they will be using the same fonts.  
+This makes testing,
+deployment, and support easier in a cross-platform environment.
+<p>
+<li> Rich Character Sets
+<p>
+You don't have to switch fonts if you use
+characters from various scripts.
+For example, in a text component that uses the
+Lucida Sans Regular font, you can display
+characters in Hebrew, Arabic, German, and English, which are 
+all included as part of the SDK's Lucida Sans Regular font.
+(Asian character sets for the physical fonts are not supported in the current
+release.)
+<p>
+<li> Euro Currency Symbol
+<p>
+All of the physical fonts of the Java 2 Platform
+support the Euro currency symbol.
+</ul>
+
+<h2> The Physical Fonts Supplied by the Java 2 Platform </h2>
+
+The Java 2 SDK provides three font families: Lucida Sans, Lucida Bright, and 
+Lucida Sans Typewriter. Each family contains four fonts, for a total of 
+12 fonts:
+
+<ul>
+<li>Lucida Sans Regular 
+<li>Lucida Sans Bold     
+<li>Lucida Sans Oblique  
+<li>Lucida Sans Bold Oblique 
+</ul>
+
+<p> </p>
+
+<ul>
+<li>Lucida Bright Regular 
+<li>Lucida Bright Bold
+<li>Lucida Bright Italic
+<li>Lucida Bright Bold Italic
+</ul>
+
+<p> </p>
+
+<ul>
+<li>Lucida Sans Typewriter Regular 
+<li>Lucida Sans Typewriter Bold
+<li>Lucida Sans Typewriter Oblique
+<li>Lucida Sans Typewriter Bold Oblique
+</ul>
+
+<h2> Related Methods in the Java 2D<sup><font size=-1>TM</font></sup> API</h2>
+<ul>
+<li> <a href="../../api/java/awt/GraphicsEnvironment.html#getAvailableFontFamilyNames()"><code>GraphicsEnvironment.getAvailableFontFamilyNames</code></a>  
+<p>
+Returns an array of font family names available for use, including 
+font families provided by the host platform as well as the families 
+provided by the SDK.
+<p>
+<li> <a href="../../api/java/awt/GraphicsEnvironment.html#getAllFonts()"><code>GraphicsEnvironment.getAllFonts</code></a>
+<p>
+Returns an array of physical fonts 
+in this environment.  The fonts returned include 
+the fonts supplied by the host platform and the
+physical fonts of the SDK.
+</ul>
+
+<h2>Using the SDK's Physical Fonts</h2>
+You can use the physical fonts in the SDK in the same way that you'd 
+use any other fonts such as those supplied by the underlying platform. 
+For example, you can create an instance of the Lucida Sans Regular font 
+with the usual <code>Font</code> constructor. For example, this 
+constructor would create a <code>Font</code> instance for the 
+Lucida Sans Regular font.
+<blockquote><pre>
+Font f = new Font("Lucida Sans", font.PLAIN, 12)
+</pre></blockquote>
+
+The following example would create a <code>Font</code> instance for 
+the Lucida Sans Typewriter Oblique font.
+<blockquote><pre>
+Font f = new Font("Lucida Sans Typewriter", font.ITALIC, 18)
+</pre></blockquote>
+
+<p>
+The Java 2 Platform's physical fonts are located in the 
+<code>jre/lib/fonts</code> folder in the Java 2 SDK and in 
+the <code>lib/fonts</code> directory of the Java 2 Runtime 
+Environment.  Users can add additional TrueType fonts to 
+this directory for use by their programs. The TrueType fonts 
+must be Unicode encoded.
+<hr>
+
+
+
+<address>
+<a href="mailto:java-intl@java.sun.com">java-intl@java.sun.com</a>
+</address>
+
+<a href="copyright.doc.html">
+<font size=-1><i>Copyright &#169; 1998-99 Sun Microsystems, Inc.   All rights re
+served.</i></font>
+</a>
+
+
+</BODY>
+</HTML>
+

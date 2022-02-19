@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Extensible Runtime Containment and Services Protocol for JavaBeans:  - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="beancontextTOC.fm.html">CONTENTS</a> | <a href="beancontext.fm5.html">PREV</a>
+ | <a href="beancontext.fm7.html">NEXT</a> 
+<!-- /font --></td><td align=right><i>Extensible Runtime Containment and Services Protocol for JavaBeans</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="916575"><i>4.0  </i> Providing better support for Beans that are also Applets
+</a></h2>
+
+<blockquote>
+<a name="916480"><!-- --></a>
+The current implementation of <em>java.beans.instantiate()</em> contains minimal support for instantiating JavaBeans that are also Applets. In particular, this method will currently construct an <em>AppletContext</em> and <em>AppletStub</em> for the newly instantiated JavaBean, set the stub on the newly instantiated <em>Applet,</em> and <em>init()</em> the <em>Applet</em> if it has not already been invoked.<p>
+<a name="916481"><!-- --></a>
+Unfortunately this does not provide sufficient support in order to allow most Applets to be fully functional, since the <em>AppletContext</em> and <em>AppletStub</em> created by <em>java.beans.instantiate()</em>, are no-ops. This is a direct consequence of the lack of sufficient specification of how to construct <em>AppletContext</em> and <em>AppletStub </em>implementations in the existing <em>Applet</em> API&#39;s. Furthermore, even if such specifications existed we would require an API that propagated a number of <em>Applet</em> attributes such as its Codebase, Parameters, <em>AppletContext</em>, and Documentbase into <em>java.beans.instantiate()</em> in order for it to subsequently instantiate the appropriately initialized objects.<p>
+<a name="916596"><!-- --></a>
+Since key to supporting fully functional Applets is to provide them with fully functional <em>AppletContext</em> and <em>AppletStub </em>instances, the design goal is to provide a mechanism to provide this state to <em>instantiate()</em> so that it may carry out the appropriate initialization and binding<a href="#foot1"><sup>1</sup></a>, therefore the proposed interface is:<p>
+</blockquote>
+<blockquote><pre>
+public static Object 
+              instantiate(ClassLoader 		cl,
+                          String      		beanName,
+                          BeanContext 		bCtxt,
+                          AppletInitializer	ai
+
+			);
+
+public interface AppletInitializer {
+	void initialize(Applet newApplet, BeanContext bCtxt);
+	void activate(Applet newApplet);
+
+}
+</pre></blockquote><blockquote>
+<a name="916490"><!-- --></a>
+If the newly instantiated JavaBean component is an instance of <em>java.applet.Apple</em>t then the new constructed <em>Applet</em>, (Bean) will be passed to the <em>AppletInitializer</em> via a call to <em>initialize(). </em><p>
+<a name="919311"><!-- --></a>
+Compliant implementations of <em>AppletInitializer.initialize()</em> shall:<p>
+</blockquote><a name="919313"><!-- --></a>
+<blockquote>
+<ol>
+<li>Associate the newly instantiated <em>Applet</em> with the appropriate <em>AppletContext</em>.
+<li>Instantiate an <em>AppletStub</em>() and associate that <em>AppletStub</em> with the <em>Applet</em> via an invocation of <em>setStub</em>().
+<li>If <em>BeanContext</em> parameter is null, then it shall associate the <em>Applet</em> with its appropriate <em>Container</em> by adding that <em>Applet</em> to its <em>Container</em> via an invocation of <em>add</em>(). If the <em>BeanContext</em> parameter is non-null, then it is the responsibility of the <em>BeanContext</em> to associate the <em>Applet</em> with its <em>Container</em> during the subsequent invocation of its <em>addChildren</em>() method.
+</ol>
+</blockquote>
+<blockquote>
+<a name="919343"><!-- --></a>
+Compliant implementations of <em>AppletInitializer.activate()</em> shall mark the <em>Applet</em> as active, and may optionally also invoke the <em>Applet</em>&#39;s <em>start()</em> method.<p>
+<a name="919310"><!-- --></a>
+Note that if the newly instantiated JavaBean is not an instance of <em>Applet</em>, then the <em>AppletInitializer </em>interface is ignored.<p>
+</blockquote>
+<hr>
+<font size="-1">
+<ol>
+<a name="foot1"></a>
+<li><em>AppletContext</em> objects expose a list of <em>Applet</em> objects
+they "contain", unfortunately the current <em>Applet</em> or <em>AppletStub</em>
+API's as defined, provide no mechanism for the <em>AppletContext</em> to 
+discover its <em>Applets</em> from its <em>AppletStubs</em>, or for an
+<em>AppletStub</em> to inform its <em>AppletContext</em> of its
+<em>Applet</em>. Therefore we will have to assume that this binding/discovery
+can occur in order for this mechanism to be worthwhile in
+<em>java.beans.instantiate()</em>.
+</ol>
+</font>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="beancontextTOC.fm.html">CONTENTS</a> | <a href="beancontext.fm5.html">PREV</a>
+ | <a href="beancontext.fm7.html">NEXT</a> 
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1998-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Thu Dec 03 12:39:43 1998-1999 -->
+ 
+
+
+</body>
+</html>

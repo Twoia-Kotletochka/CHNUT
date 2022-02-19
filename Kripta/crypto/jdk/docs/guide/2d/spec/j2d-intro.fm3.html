@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API: 1 - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-intro.fm2.html">PREV</a>
+ | <a href="j2d-intro.fm4.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="61978"><i>1.3	</i> 	Backward Compatibility and Platform Independence
+</a></h2>
+
+<blockquote>
+<a name="61980"><!-- --></a>
+The Java 2D<sup>TM</sup> API maintains backward compatibility with JDK 1.1 software.   It is also architected so that applications can maintain platform-independence.<p>
+</blockquote>
+<br>
+<h3>
+<a name="63962"><!-- --></a>
+<i>1.3.1	</i> Backward Compatibility
+</h3>
+
+<blockquote>
+<a name="61985"><!-- --></a>
+To ensure backward compatibility, the functionality of existing JDK graphics and imaging classes and interfaces was maintained. Existing features were not removed and no package designations were changed for existing classes. The Java 2D API enhances the 
+functionality of the AWT by implementing new methods in existing classes, extending existing classes, and adding new classes and interfaces that don&#39;t affect the legacy APIs.<p>
+<a name="61987"><!-- --></a>
+For example, much of the Java 2D API functionality is delivered through an expanded graphics context, <kbd>Graphics2D</kbd>. To provide this extended graphics context while maintaining backward compatibility, <kbd>Graphics2D</kbd> extends the <kbd>Graphic
+s</kbd> class from the JDK 1.1 release.<p>
+<a name="63834"><!-- --></a>
+The usage model of the graphics context remains unchanged. The AWT passes a graphics context to an AWT <kbd>Component</kbd> through the following methods:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="63835"><!-- --></a>
+<kbd>paint</kbd>
+</li>
+<li>
+<a name="61997"><!-- --></a>
+<kbd>paintAll</kbd>
+</li>
+<li>
+<a name="61998"><!-- --></a>
+<kbd>update</kbd>
+</li>
+<li>
+<a name="61999"><!-- --></a>
+<kbd>print</kbd>
+</li>
+<li>
+<a name="62839"><!-- --></a>
+<kbd>printAll</kbd>
+</li>
+<li>
+<a name="62840"><!-- --></a>
+<kbd>getGraphics</kbd>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="62841"><!-- --></a>
+A JDK 1.1 applet interprets the graphics context that&#39;s passed in as an instance of <kbd>Graphics</kbd>. To gain access to the new features implemented in <kbd>Graphics2D, </kbd>a Java 2D API&#45;compatible applet casts the graphics context to a <kbd>
+Graphics2D</kbd> object:<p>
+</blockquote><blockquote><pre>
+	public void paint (Graphics g) {
+
+	   Graphics2D g2 = (Graphics2D) g;
+	   ...
+	   ...
+	  g2.setTransform (t);
+	}
+</pre></blockquote><blockquote>
+<a name="62013"><!-- --></a>
+In some cases, rather than extending a legacy class, the Java 2D API generalizes it. Two techniques were used to generalize legacy classes:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="63864"><!-- --></a>
+One or more parent classes were inserted in the hierarchy, and the legacy class was updated to extend the new parent classes. This technique is used to add general implemented methods and instance data to the legacy class. 
+</li>
+<li>
+<a name="63880"><!-- --></a>
+One or more interface implementations were added to the legacy class. This technique is used to add general abstract methods to the legacy class. 
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="63895"><!-- --></a>
+For example, the Java 2D API generalizes the AWT <kbd>Rectangle</kbd> class using both of these techniques. The hierarchy for rectangle now looks like:<p>
+</blockquote><blockquote><pre>
+	java.lang.Object
+	|
+	+-------java.awt.geom.RectangularShape
+             	|
+             	+---------java.awt.geom.Rectangle2D
+                          |
+                          +-------java.awt.Rectangle
+</pre></blockquote><blockquote>
+<a name="62856"><!-- --></a>
+In the JDK 1.1 software, <kbd>Rectangle</kbd> simply extended <kbd>Object</kbd>. It now extends the new <kbd>Rectangle2D</kbd> class and implements both <kbd>Shape</kbd> and <kbd>Serializable</kbd>. Two parent classes were added to the <kbd>Rectangle </kb
+d>hierarchy: <kbd>RectangularShape</kbd> and <kbd>Rectangle2D</kbd>. Applets written for JDK 1.1 software are unaware of the new parent classes and interface implementations, but are unaffected because <kbd>Rectangle</kbd> still contains the methods and m
+embers that were present in earlier versions.<p>
+<a name="62031"><!-- --></a>
+The Java 2D API adds several new classes and interfaces that are &#34;orthogonal&#34; to the legacy API. These additions do not extend or generalize existing classes&#45;&#45;they are entirely new and distinct. These new classes and interfaces embody conc
+epts that had no explicit representation in the legacy API. <p>
+<a name="63955"><!-- --></a>
+For example, the Java 2D API implements several new <kbd>Shape</kbd> classes, including <kbd>Arc2D</kbd>, <kbd>CubicCurve2D</kbd>, and <kbd>QuadCurve2D</kbd>. Although early versions of the AWT could render arcs using the <kbd>drawArc</kbd> and <kbd>fillA
+rc</kbd> methods, there was no general curve abstraction and no discrete classes that embodied arcs. These discrete classes could be added to the Java 2D API without disrupting legacy applets because <kbd>drawArc</kbd> and <kbd>fillArc</kbd> are still sup
+ported through the <kbd>Graphics</kbd> class.<p>
+</blockquote>
+<br>
+<h3>
+<a name="63963"><!-- --></a>
+<i>1.3.2	</i> Platform Independence
+</h3>
+
+<blockquote>
+<a name="62033"><!-- --></a>
+To enable the development of platform-independent applications, the Java 2D API makes no assumptions about the resolution, color space, or color model of the target rendering device. Nor does the Java 2D API assume any particular image file format. <p>
+<a name="63973"><!-- --></a>
+Truly platform-independent fonts are possible only when the fonts are built-in (provided as part of the JDK software), or when they are mathematically or programmatically generated. The Java 2D API does not currently support built-in or mathematically gen
+erated fonts, but it does enable the programmatic definition of entire fonts through their glyph set. Each glyph can in turn be defined by a <kbd>Shape</kbd> that consists of line segments and curves. Many fonts of particular styles and sizes can be deriv
+ed from a single glyph set. <p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-intro.fm2.html">PREV</a>
+ | <a href="j2d-intro.fm4.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Mon Nov 22 09:36:53 1999 -->
+ 
+
+
+</body>
+</html>

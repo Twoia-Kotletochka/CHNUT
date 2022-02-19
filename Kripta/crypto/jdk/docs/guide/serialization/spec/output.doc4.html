@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 2 - Object Output Classes
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="output.doc3.html">PREV</a>
+ | <a href="output.doc5.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="3146"><i>	2.4	</i> The writeExternal Method
+</a></h2>
+
+<blockquote>
+<a name="3134"><!-- --></a>
+Objects implementing <code>java.io.Externalizable</code> must implement the <code>writeExternal</code> method to save the entire state of the object. It must coordinate with its superclasses to save their state. All of the methods of <code>ObjectOutput</code> are available to save the object&#39;s primitive typed fields and object fields. <p>
+<a name="4827"><!-- --></a>
+<pre>    public void writeExternal(ObjectOutput stream)
+        throws IOException;
+</pre>
+
+
+<a name="4952"><!-- --></a>
+A new default format for writing Externalizable data has been introduced in JDK<sup><font size="-2">TM</font></sup> 1.2. The new format specifies that primitive data will be written in block data mode by <code>writeExternal</code> methods. Additionally, a tag denoting the end of the External object is appended to the stream after the <code>writeExternal</code> method returns. The benefits of this format change are discussed in <a href="input.doc5.html#6014">Section&#160;3.5, &#34;The readExternal Method</a>.&#34; Compatibility issues caused by this change are discussed in <a href="output.doc6.html#4787">Section&#160;2.6, &#34;The useProtocolVersion Method</a>.&#34;<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="output.doc3.html">PREV</a>
+ | <a href="output.doc5.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:47:55 1999 -->
+ 
+
+
+</body>
+</html>

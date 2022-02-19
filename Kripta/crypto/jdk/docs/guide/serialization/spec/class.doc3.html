@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 4 - Class Descriptors	
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="class.doc2.html">PREV</a>
+ | <a href="class.doc4.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="5421"><i>	4.3	</i> Serialized Form
+</a></h2>
+
+<blockquote>
+<a name="5425"><!-- --></a>
+The serialized form of an ObjectStreamClass instance depends on whether or not the Class object it represents is serializable, externalizable, or a dynamic proxy class.<p>
+<a name="5018"><!-- --></a>
+When an <code>ObjectStreamClass</code> instance that does not represent a dynamic proxy class is written to the stream, it writes the class name and <code>serialVersionUID</code>, flags, and the number of fields. Depending on the class, additional information may be written:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="5020"><!-- --></a>
+For non-serializable classes, the number of fields is always zero. Neither the serializable nor the externalizable flag bits are set.
+</li>
+<li>
+<a name="5529"><!-- --></a>
+For serializable classes, the serializable flag is set, the number of fields counts the number of serializable fields and is followed by a descriptor for each serializable field. The descriptors are written in canonical order. The descriptors for primitive typed fields are written first sorted by field name followed by descriptors for the object typed fields sorted by field name. The names are sorted using <code>String.compareTo</code>.  For details of the format, refer to <a href="protocol.doc4.html#10258">Section&#160;6.4, &#34;Grammar for the Stream Format</a>&#34;.
+</li>
+<li>
+<a name="5530"><!-- --></a>
+For externalizable classes, flags includes the externalizable flag, and the number of fields is always zero.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="5426"><!-- --></a>
+When an ObjectOutputStream serializes the ObjectStreamClass descriptor for a dynamic proxy class, as determined by passing its Class object to the isProxyClass method of java.lang.reflect.Proxy, it writes the number of interfaces that the dynamic proxy class implements, followed by the interface names. Interfaces are listed in the order that they are returned by invoking the getInterfaces method on the Class object of the dynamic proxy class.<p>
+<a name="5427"><!-- --></a>
+The serialized representations of ObjectStreamClass descriptors for dynamic proxy classes and non-dynamic proxy classes are differentiated through the use of different typecodes (TC_PROXYCLASSDESC and TC_CLASSDESC, respectively); for a more detailed specification of the grammar, see <a href="protocol.doc4.html#10258">Section&#160;6.4, &#34;Grammar for the Stream Format</a>&#34;.<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="class.doc2.html">PREV</a>
+ | <a href="class.doc4.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:48:04 1999 -->
+ 
+
+
+</body>
+</html>

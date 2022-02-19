@@ -1,0 +1,351 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title> </title>
+</head>
+<body bgcolor=#ffffff>
+
+<table width=600><tr>
+<td><a href="jniTOC.doc.html">Contents</a> | <a href="design.doc.html">Prev</a> | <a href="functions.doc.html">Next</a> 
+</td><td align=right><i>Java Native Interface Specification
+</i></td>
+</tr></table>
+ 
+
+<hr><br>
+ 
+<h1><a name="15773"></a>
+<strong> 3 - JNI Types and Data Structures
+ </strong></h1>
+<hr><p><a name="15901"></a>
+This chapter discusses how the JNI maps Java types to native C types. 
+<p><hr align=left><a name="428"></a>
+<h1> Primitive Types
+</h1>
+<a name="16207"></a>
+<a href="types.doc.html#522">Table &#32;3-1</a> describes Java primitive types and their machine-dependent native 
+equivalents.
+<p><a name="522"></a>
+<dl><dd>
+<Table Border="0">
+<caption><a name="198"></a>
+<h4>Table 3-1	 Primitive Types and Native Equivalents
+</h4>
+</caption>
+<tr><th><a name="16285"></a>
+Java Type
+
+<th><a name="16287"></a>
+Native Type
+
+<th><a name="16289"></a>
+Description
+
+
+<tr><td><a name="16291"></a>
+boolean
+
+<td><a name="16293"></a>
+jboolean
+
+<td><a name="16295"></a>
+unsigned 8 bits
+
+
+<tr><td><a name="16297"></a>
+byte
+
+<td><a name="16299"></a>
+jbyte
+
+<td><a name="16301"></a>
+signed 8 bits
+
+
+<tr><td><a name="16303"></a>
+char
+
+<td><a name="16305"></a>
+jchar
+
+<td><a name="16307"></a>
+unsigned 16 bits
+
+
+<tr><td><a name="16309"></a>
+short
+
+<td><a name="16311"></a>
+jshort
+
+<td><a name="16313"></a>
+signed 16 bits
+
+
+<tr><td><a name="16315"></a>
+int
+
+<td><a name="16317"></a>
+jint
+
+<td><a name="16319"></a>
+signed 32 bits
+
+
+<tr><td><a name="16321"></a>
+long
+
+<td><a name="16323"></a>
+jlong
+
+<td><a name="16325"></a>
+signed 64 bits
+
+
+<tr><td><a name="16327"></a>
+float
+
+<td><a name="16329"></a>
+jfloat
+
+<td><a name="16331"></a>
+32 bits
+
+
+<tr><td><a name="16344"></a>
+double
+
+<td><a name="16346"></a>
+jdouble
+
+<td><a name="16348"></a>
+64 bits
+
+
+<tr><td><a name="16333"></a>
+void
+
+<td><a name="16335"></a>
+void
+
+<td><a name="16337"></a>
+N/A
+
+
+
+</Table>
+</dd></dl>
+<p><a name="15927"></a>
+The following definition is provided for convenience.
+<p><pre>    #define JNI_FALSE  0
+    #define JNI_TRUE   1
+</pre><a name="16071"></a>
+The <code>jsize</code> integer type is used to describe cardinal indices and sizes:
+<p><pre>    typedef jint jsize;
+</pre><hr align=left><a name="15954"></a>
+<h1> Reference Types
+</h1>
+<a name="970"></a>
+The JNI includes a number of reference types that correspond to different 
+kinds of Java objects. JNI reference types are organized in the hierarchy shown 
+in <a href="types.doc.html#914">Figure &#32;3-1</a>.
+<p><pre>    <img src="types.doc.anc.gif">
+</pre><a name="914"></a>
+<center><h4>Figure 3-1	   Reference Type Hierarchy
+</h4></center>
+<a name="663"></a>
+In C, all other JNI reference types are defined to be the same as jobject. For 
+example:
+<p><pre>    typedef jobject jclass;
+</pre><a name="1033"></a>
+In C++, JNI introduces a set of dummy classes to enforce the subtyping 
+relationship. For example:
+<p><pre>    class _jobject {};
+    class _jclass : public _jobject {};
+    ...
+    typedef _jobject *jobject;
+    typedef _jclass *jclass;
+</pre><hr align=left><a name="1064"></a>
+<h1> Field and Method IDs
+</h1>
+<a name="1065"></a>
+Method and field IDs are regular C pointer types:
+<p><pre>    struct _jfieldID;              /* opaque structure */
+    typedef struct _jfieldID *jfieldID;   /* field IDs */
+    
+    struct _jmethodID;              /* opaque structure */
+    typedef struct _jmethodID *jmethodID; /* method IDs */
+</pre><hr align=left><a name="568"></a>
+<h1> The Value Type 
+</h1>
+<a name="16107"></a>
+The <code>jvalue</code> union type is used as the element type in argument arrays. It is 
+declared as follows:
+<p><pre>    typedef union jvalue {
+        jboolean z;
+        jbyte    b;
+        jchar    c;
+        jshort   s;
+        jint     i;
+        jlong    j;
+        jfloat   f;
+        jdouble  d;
+        jobject  l;
+    } jvalue;
+</pre><hr align=left><a name="16432"></a>
+<h1> Type Signatures
+</h1>
+<a name="16437"></a>
+The JNI uses the Java VM's representation of type signatures. <a href="types.doc.html#597">Table &#32;3-2</a> shows 
+these type signatures.
+<p><a name="597"></a>
+<dl><dd>
+<Table Border="0">
+<caption><a name="276"></a>
+<h4>Table 3-2	 Java VM Type Signatures
+</h4>
+</caption>
+<tr><th><a name="16445"></a>
+Type Signature
+
+<th><a name="16447"></a>
+Java Type
+
+
+<tr><td><a name="16449"></a>
+Z
+
+<td><a name="16451"></a>
+boolean
+
+
+<tr><td><a name="16453"></a>
+B
+
+<td><a name="16455"></a>
+byte
+
+
+<tr><td><a name="16457"></a>
+C
+
+<td><a name="16459"></a>
+char
+
+
+<tr><td><a name="16461"></a>
+S
+
+<td><a name="16463"></a>
+short
+
+
+<tr><td><a name="16465"></a>
+I
+
+<td><a name="16467"></a>
+int
+
+
+<tr><td><a name="16469"></a>
+J
+
+<td><a name="16471"></a>
+long
+
+
+<tr><td><a name="16473"></a>
+F
+
+<td><a name="16475"></a>
+float
+
+
+<tr><td><a name="16477"></a>
+D
+
+<td><a name="16479"></a>
+double
+
+
+<tr><td><a name="16520"></a>
+<strong>L</strong> <em>fully-qualified-class</em> <strong>;
+</strong>
+<td><a name="16522"></a>
+fully-qualified-class
+
+
+<tr><td><a name="16528"></a>
+<strong>[</strong> <em>type
+</em>
+<td><a name="16530"></a>
+<em>type</em>[]
+
+
+<tr><td><a name="16534"></a>
+<strong>(</strong> <em>arg-types </em><strong>)</strong> <em>ret-type
+</em>
+<td><a name="16536"></a>
+method type
+
+
+
+</Table>
+</dd></dl>
+<p><a name="16537"></a>
+For example, the Java method:
+<p><pre>    long f (int n, String s, int[] arr);
+</pre><a name="16540"></a>
+has the following type signature:
+<p><pre>    (ILjava/lang/String;[I)J
+</pre><hr align=left><a name="16542"></a>
+<h1> UTF-8 Strings
+</h1>
+<a name="477"></a>
+The JNI uses UTF-8 strings to represent various string types. UTF-8 strings are 
+the same as those used by the Java VM. UTF-8 strings are encoded so that 
+character sequences that contain only nonnull ASCII characters can be 
+represented using only one byte per character, but characters of up to 16 bits 
+can be represented. All characters in the range <code>\u0001</code> to <code>\u007F</code> are 
+represented by a single byte, as follows:
+<p><a name="483"></a>
+<img src="types.doc.anc1.gif">
+<p>
+<a name="486"></a>
+The seven bits of data in the byte give the value of the character that is 
+represented. The null character (<code>\u000</code>) and characters in the range <code>\u0080 
+to \u07FF</code> are represented by a pair of bytes, <var>x</var> and <var>y</var>, as follows:
+<p><a name="501"></a>
+<img src="types.doc.anc2.gif">
+<p>
+<a name="545"></a>
+The bytes represent the character with the value <code>((x&amp;0x1f)&lt;&lt;6)+(y&amp;0x3f)</code>.
+<p><a name="546"></a>
+Characters in the range <code>\u0800</code> to <code>\uFFFF</code> are represented by three bytes, <var>x</var>, <var>y</var>, 
+and <var>z</var>:
+<p><a name="547"></a>
+<img src="types.doc.anc3.gif">
+<p>
+<a name="548"></a>
+The character with the value <code>((x&amp;0xf)&lt;&lt;12)+(y&amp;0x3f)&lt;&lt;6)+(z&amp;0x3f)</code> is 
+represented by the three bytes.
+<p><a name="608"></a>
+There are two differences between this format and the "standard" UTF-8 
+format. First, the null byte <code>(byte)0</code> is encoded using the two-byte format 
+rather than the one-byte format. This means that Java VM UTF-8 strings never 
+have embedded nulls. Second, only the one-byte, two-byte, and three-byte 
+formats are used. The Java VM does not recognize the longer UTF-8 formats.
+<p>
+
+<hr>
+<!-- This inserts footnotes--><p>
+<a href="jniTOC.doc.html">Contents</a> | <a href="design.doc.html">Prev</a> | <a href="functions.doc.html">Next</a> 
+
+<p>
+<font size=-1>Java Native Interface Specification (HTML generated by dkramer on March 15, 1997)<br>
+<i><a href="copyright.doc.html">Copyright &#169 1996, 1997 Sun Microsystems, Inc.</a>
+All rights reserved</i>
+<br>
+Please send any comments or corrections to <a href="mailto:jni@java.sun.com">jni@java.sun.com</a>
+</font>
+</body></html>

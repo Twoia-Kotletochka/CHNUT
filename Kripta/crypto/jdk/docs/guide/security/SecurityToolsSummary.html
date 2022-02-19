@@ -1,0 +1,188 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+
+<HTML><HEAD><TITLE>
+Summary of Upcoming Security Tools
+
+</TITLE></HEAD>
+<BODY>
+
+<center>
+<H2>
+Summary of Tools for the Java<sup><font size=-2>TM</font></sup> 2 Platform Security
+</H2>
+
+<b>Last Modified:  <em>19 October, 1998</em></b>
+</center>
+
+<P>Below is a brief summary of the Security Tools, with links to
+the more detailed documentation.
+
+<p>The <b>keytool</b>, <b>jar</b>, <b>jarsigner</b>, and
+<b>Policy Tool</b> tools are available to facilitate various
+security-related operations. All are command-line tools, except for
+<b>Policy Tool</b>, which has a graphical user interface.
+(Note: the <b>jar</b> tool was also available in JDK 1.1.)
+
+<p>The <b>keytool</b> and <b>jarsigner</b> tools replace
+<b>javakey</b>, which was an interim tool introduced in JDK 1.1. 
+These new tools provide more features than <b>javakey</b>,
+including the ability to protect the keystore and private keys
+with passwords, and the ability to verify signed JAR files in addition
+to generating them. The new
+keystore architecture replaces the identity database that <b>javakey</b>
+created and managed. It is possible to import the information from
+an identity database into a keystore, via a <b>keytool</b> command.
+
+
+<H2>The Tools</H2>
+
+<blockquote>
+
+<H3><b>keytool</b> 
+(<a href="../../tooldocs/solaris/keytool.html">for Solaris</a>) (<a href="../../tooldocs/win32/keytool.html">for Windows</a>)</H3>
+
+<blockquote>
+
+<p>Use <b>keytool</b> to manage your keystore, for example to
+
+<ul>
+<li>create public/private key pairs
+<li>issue certificate
+requests (which you send to the appropriate Certification Authority)
+<li>import certificate replies (obtained from the Certification Authority
+you contacted)
+<li>designate public keys belonging to other parties as
+trusted 
+</ul>
+
+<p>Keys and certificates are 
+used to digitally sign your applications and applets (see
+<b>jarsigner</b> below).  A <i>keystore</i> is
+a protected database that holds keys and certificates for an enterprise.
+Access to a keystore is guarded by a password (defined at the time
+the keystore is created, by the person who creates the keystore, and
+changeable only when providing the current password).  In
+addition, each private key in a keystore can be guarded by
+its own password.
+
+</blockquote>
+
+
+<H3><b>jar</b> 
+(<a href="../../tooldocs/solaris/jar.html">for Solaris</a>) (<a href="../../tooldocs/win32/jar.html">for Windows</a>)</H3>
+
+<blockquote>
+
+<p>Use the <b>jar</b> tool to create JAR files. 
+
+<p>The Java ARchive (JAR) file format enables you to bundle multiple files 
+into a single archive file. Typically a JAR file will contain the class files
+and auxiliary resources associated with applets and applications. When you 
+want to "digitally sign" code, you use the <b>jar</b> tool to place it 
+in a JAR file and the <b>jarsigner</b> tool to sign the JAR file 
+(after generating or importing appropriate keys into your keystore using 
+<b>keytool</b>).
+
+</blockquote>
+
+
+<H3><b>jarsigner</b> 
+(<a href="../../tooldocs/solaris/jarsigner.html">for Solaris</a>) (<a href="../../tooldocs/win32/jarsigner.html">for Windows</a>)</H3>
+
+<blockquote>
+
+<p>Use the <b>jarsigner</b> tool to sign JAR files, or to verify signatures on
+signed JAR files.  
+
+<p>The <b>jarsigner</b> tool accesses a keystore that is created and 
+managed by <b>keytool</b>, when it needs to find
+the private key and its associated certificate chain
+to use when signing a JAR file.  Since accesses to the
+keystore and to private keys are protected by passwords, only 
+people who know the
+passwords will be able to access the key and use it to sign
+a JAR file.  The <b>jarsigner</b> tool prompts for needed passwords.
+
+</blockquote>
+
+
+<H3><b>Policy Tool</b> 
+(<a href="../../tooldocs/solaris/policytool.html">for Solaris</a>) (<a href="../../tooldocs/win32/policytool.html">for Windows</a>)</H3>
+
+<blockquote>
+
+<p>Use the <b>Policy Tool</b> (invoked by using the <code>policytool</code> 
+command) to create and modify the external policy
+configuration files that define your installation's security
+policy.
+ 
+<p>The policy is described in the
+<a href="spec/security-spec.doc.html">
+<b>Security Architecture Specification</b></a>. Further
+information is provided in
+<a href="PolicyFiles.html">
+<b>Default Policy Implementation and Policy File Syntax</b></a>.
+
+<p>This tool has a graphical user interface, so you select buttons and
+other options rather than type in commands as for the other tools. 
+
+</blockquote>
+
+</blockquote>
+
+
+<H2>Examples of Use of the Tools</H2>
+
+<blockquote>
+
+Examples of the use of the security tools can be found in the
+<a href="http://java.sun.com/docs/books/tutorial/security1.2/index.html">
+<b>Java<sup><font size=-2>TM</font></sup> 2 Platform Security</b></a> trail of the
+<a href="http://java.sun.com/docs/books/tutorial/trailmap.html">
+<b>Java Tutorial</b></a>.
+
+</blockquote>
+
+
+<!-- Body text ends here -->
+
+<!-- ============================================================== -->
+<HR SIZE=3 NOSHADE>
+
+<TABLE BORDER="0" WIDTH="100%">
+
+<TR VALIGN=TOP>
+
+<TD>
+
+<P><FONT SIZE="-2">
+   <A HREF="../../relnotes/SMICopyright.html">Copyright &#169;</A> 1997-98
+   <A HREF="http://www.sun.com/">Sun Microsystems, Inc.</A>
+    All Rights Reserved.</FONT></P>
+
+   <FONT SIZE="-1">
+   Please send comments to: <a href="mailto:java-security@sun.com">java-security@sun.com</a>. This is not a subscription list.
+   </FONT>
+
+</TD>
+
+<TD ALIGN=RIGHT>
+
+   <IMG SRC="../../images/sunlogo64x30.gif" ALT="Sun" BORDER=0 WIDTH=64 HEIGHT=30>
+   <BR>
+   <FONT SIZE="+1">
+   <i>Java Software</i>
+   </FONT>
+
+</TD>
+
+</TR>
+
+</TABLE>
+
+
+
+</BODY>
+
+</HTML>
+

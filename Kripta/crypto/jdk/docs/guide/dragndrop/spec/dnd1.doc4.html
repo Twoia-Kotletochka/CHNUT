@@ -1,0 +1,198 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Drag and Drop: API</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="dnd1TOC.doc.html">CONTENTS</a> | <a href="dnd1.doc3.html">PREV</a>
+ | <a href="dnd1.doc5.html">NEXT</a> <!-- | <a href="dnd1.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Drag and Drop</i></td>
+</tr></table>
+<br>
+ 
+
+<br>
+<h3>
+<a name="923911"><!-- --></a>
+<i>2.2  </i> Drag Gesture Recognition
+</h3>
+
+<blockquote>
+<a name="923917"><!-- --></a>
+The gesture(s) that can initiate a Drag and Drop operation vary, not only per platform, but also per <em>Component, </em>and per device. Therefore a mechanism is required in order to encapsulate these dependencies, thus making the task of the author of a <em>Component</em> that wishes to initiate a Drag and Drop operation much simpler. <p>
+</blockquote>
+<br>
+<a name="923922"><!-- --></a>
+<h4><i>2.2.1   DragGestureRecognizer
+</i></h4>
+
+<blockquote>
+<a name="923923"><!-- --></a>
+The <em>DragGestureRecognizer</em> is an abstract base class for all device/platform/<em>Component</em> specific Drag and Drop gesture recognizers, and is defined as:<p>
+</blockquote><blockquote><pre>
+public abstract DragGestureRecognizer {
+    protected DragGestureRecognizer(
+				DragSource          ds,
+				Component           c,
+				int                 srcActions,
+				DragGestureListener dgl
+    );
+
+    public Component getComponent();
+    public void      setComponent(Component c);
+
+    public int  getSourceActions();
+    public void setSourceActions(int actions);
+    
+    public java.awt.InputEvent getTriggerEvent();
+
+    public void resetRecognizer();
+
+    public void addDragGestureListener(
+                    DragGestureListener dgl
+    ) throws TooManyListenerExceptions;
+
+    public void removeDragGestureListener(
+                    DragGestureListener dgl
+    );
+
+    protected abstract void registerListeners();
+    protected abstract void unregisterListeners();
+
+    protected void fireDragGestureRecognized(
+                       int dragAction
+    );
+
+    protected void appendEvent(InputEvent awtie);
+}
+
+
+</pre></blockquote><blockquote>
+<a name="924252"><!-- --></a>
+An appropriate concrete subclasses of <em>DragGestureRecognizer</em> for a particular may be obtained in a variety of ways; from a <em>DragSource </em>instance, from the <em>Toolkit</em>, or by other means. Concrete implementation subclasses are obtained through standard APIs&#39; by specifying a <em>Class</em> reference to an abstract <em>DragGestureRecognizer</em> superclass, an instance of a concrete subclass of this actual parameter is instantiated and returned to the requestor.<p>
+<a name="924253"><!-- --></a>
+Once a <em>DragGestureRecognizer</em> instance is associated with a <em>Component</em> and a <em>DragSource</em> it registers its own particular set of <em>EventListener</em>s&#39; with the target <em>Component</em> in order to monitor the appropriate events being delivered to that <em>Component</em> to detect an initiating gesture. (Using <em>registerListeners()</em> and <em>unregisterListeners()</em> to add/remove these monitoring <em>EventListener</em>s&#39;).<p>
+<a name="925486"><!-- --></a>
+Note that a <em>DragGestureRecognizer</em> may throw either an <em>IllegalStateException</em> or an <em>IllegalArgumentException</em> if either the <em>Component</em> or <em>DragSource</em> specified is either not in the correct state for, or is not interoperable with, that <em>DragGestureRecognizer</em>.<p>
+<a name="925495"><!-- --></a>
+When a concrete <em>DragGestureRecognizer</em> instance detects a Drag initiating user gesture on the <em>Component</em> it is associated with, it will fire a <em>DragGestureEvent</em> to the <em>DragGestureListener</em> registered on its unicast event source for <em>DragGestureListener</em> events. This <em>DragGestureListener</em> is responsible for causing the associated <em>DragSource</em> to start the Drag and Drop operation (if appropriate).<p>
+<a name="924071"><!-- --></a>
+The implementation provides (at least) an abstract subclass for recognizing mouse device gestures <em>MouseDragGestureRecognizer</em>. Other abstract subclasses may be provided by the platform to support other input devices or particular Component class semantics. Concrete superclasses of this <em>MouseDragGestureRecognizer</em> that encapsulate platform dependent mouse based gestures are available from the <em>Toolkit</em> object via its <em>createDragGestureRecognizer(Class adgrc, DragSource ds, Component c, int sa, DragGestureListener dgl)</em> method. This <em>Toolkit</em> API provides platform dependent concrete implementations that extend particular platform independent abstract definitions (classes).<p>
+<a name="924230"><!-- --></a>
+The <em>MouseDragGestureRecognizer</em> abstract class is defined as:<p>
+</blockquote><blockquote><pre>
+public abstract   MouseDragGestureRecognizer
+       extends    DragGestureRecognizer
+	  implements MouseListener, MouseMotionListener {
+
+    public MouseDragGestureRecognizer(
+			DragSource          ds,
+			Component           c,
+			int                 sa,
+			DragGestureListener dsl
+    );
+   
+    // ...                      
+}
+
+</pre></blockquote><blockquote>
+<a name="923997"><!-- --></a>
+The <em>DragGestureListener</em> is defined as:<p>
+</blockquote><blockquote><pre>
+public interface DragGestureListener extends EventListener {
+    void dragGestureRecognized(DragGestureEvent dge);
+}
+
+</pre></blockquote><blockquote>
+<a name="923998"><!-- --></a>
+Usually the <em>dragGestureRecognized()</em> method will simply, via the <em>DragGestureEvent</em>&#39;s convenience API <em>startDrag()</em>, start a Drag and Drop operation on the associated <em>DragSource</em>.<p>
+<a name="924007"><!-- --></a>
+Note that per <em>Component</em> (class or instance) behavior that may effect the initiating gesture would usually be implemented in this <em>DragGestureListener</em> method, or in the <em>DragGestureRecognizer</em> subclass where appropriate or possible.<p>
+<a name="924006"><!-- --></a>
+The <em>DragGestureEvent</em> is defined as:<p>
+</blockquote><blockquote><pre>
+publc class DragGestureEvent extends EventObject {
+	public DragGestureEvent(DragGestureRecognizer dgr,
+                             int                   dragAction,
+                             java.util.List        events
+     );
+
+    public DragGestureRecognizer
+               getSourceAsDragGestureRecognizer();
+
+    public Component  getComponent();
+    public DragSource getDragSource();
+
+    public java.util.Iterator iterator();
+
+    public Object[] toArray();
+    public Object[] toArray(Object[] array);
+
+    public int getDragAction();
+
+    public startDrag(Cursor             dragCursor,
+                     Transferable       t,
+                     DragSourceListener dsl
+    );
+   
+    public startDrag(Cursor             dragCursor,
+                     Image              dragImage,
+                     Point              imageOffset,
+                     Transferable       t,
+                     DragSourceListener dsl
+    );
+}
+
+
+</pre></blockquote><blockquote>
+<a name="924049"><!-- --></a>
+The <em>DragGestureEvent</em> encapsulates all the information regarding the nature of the gesture that has just been recognized, including:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="924050"><!-- --></a>
+The <em>DragGestureRecognizer </em>that recognized the gesture
+</li>
+<li>
+<a name="924051"><!-- --></a>
+The <em>Component</em> that the gesture occurred on
+</li>
+<li>
+<a name="924052"><!-- --></a>
+The <em>DragSource </em>that will process the operation
+</li>
+<li>
+<a name="924053"><!-- --></a>
+The List of <em>InputEvent</em> objects that comprise the gesture.
+</li>
+<li>
+<a name="924054"><!-- --></a>
+The action (ACTION_COPY, ACTION_MOVE or ACTION_LINK, selected by the users gesture.
+</li>
+</ul>
+</blockquote>
+
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="dnd1TOC.doc.html">CONTENTS</a> | <a href="dnd1.doc3.html">PREV</a>
+ | <a href="dnd1.doc5.html">NEXT</a> <!-- | <a href="dnd1.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997, 1998 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Doug Kramer -->
+<!-- Last updated: Thu Nov 19 14:12:35 1998 -->
+ 
+
+
+</body>
+</html>

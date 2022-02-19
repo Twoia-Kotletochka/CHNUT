@@ -1,0 +1,2239 @@
+<html><head><title> Java IDL: 6 -  Mapping Pseudo-Objects to Java 
+</title></head>
+<body bgcolor=#ffffff>
+ 
+
+<br><br>
+ 
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tr valign="top">
+<td align="left">
+<a name="509889">
+<h1><font size=7> 
+ Mapping Pseudo-Objects to Java 
+</font></h1>
+</a></td>
+<td><a name="509891">
+<h1 align="right"><font size=7>
+6 
+</font></h1>
+</a></td>
+<td align="right"> <img src="chars/chapnumbar.gif"></td>
+</tr></table>
+<hr size="3" width="100%" align="left" noshade><a name="998335">
+<p>
+<h2><font size=6>	6.1	 Introduction
+</font></h2>
+</a>
+<a name="998528">
+Pseudo objects are constructs whose definition is usually specified in &#34;IDL&#34;, but whose mapping is language specified. A pseudo object is not (usually) a regular CORBA object. Often it exposed to either clients and/or servers as a process, or a thread local, programming language construct. <p>
+</a>
+<a name="998534">
+For each of the standard IDL pseudo-objects we either specify a specific Java language construct or we specify it as a <strong>pseudo interface</strong>.<strong> </strong><p>
+</a>
+<a name="998547">
+This mapping is based on the revised version 1.1 C++ mapping.<p>
+</a>
+<a name="998548">
+We have chosen the option allowed in the IDL specification section 4.1.3 to define Status as void and have eliminated it for the convenience of Java programmers.<p>
+</a>
+<a name="998541">
+<h3><font size=5> 	6.1.1	Pseudo Interface
+</font></h3>
+</a>
+<a name="998542">
+The use of <strong>pseudo interface</strong> is a convenient device which means that most of the standard language mapping rules defined in this specification may be mechanically used to generate the Java. However, in general the resulting construct is not a CORBA object. Specifically it is:<p>
+</a>
+<ul><a name="998545">
+<p><li>not represented in the Interface Repository
+</a>
+<a name="998546">
+<p><li>no helper classes are generated
+</a>
+<a name="999271">
+<p><li>no holder classes are generated
+</a>
+<a name="999272">
+<p><li>mapped to a Java <code><strong>public abstract</strong></code> <code><strong>class</strong></code> that does not extend or inherit from any other classes or interfaces
+</a>
+</ul><a name="999932">
+Note: The specific definition given for each piece of PIDL may override the general guidelines above. In such a case, the specific definition takes precedence.<p>
+</a>
+<a name="1000318">
+All of the pseudo interfaces are mapped as if they were declared in:<p>
+</a>
+<a name="999934">
+<strong><pre>module org {
+</pre>
+</strong></a>
+<a name="999044">
+<strong><pre>	module omg { 
+</pre>
+</strong></a>
+<a name="999045">
+<strong><pre>		module CORBA {
+</pre>
+</strong></a>
+<a name="999046">
+<strong><pre>								...
+</pre>
+</strong></a>
+<a name="999037">
+That is, they are mapped to the <code><strong>org.omg.CORBA</strong></code> Java package.<p>
+</a>
+<a name="997211">
+<p>
+<h2><font size=6>	6.2	 Certain Exceptions
+</font></h2>
+</a>
+<a name="1000225">
+The standard CORBA PIDL uses several exceptions, <strong>Bounds</strong>, <strong>BadKind</strong>, and<strong> InvalidName</strong>.<p>
+</a>
+<a name="1000238">
+No holder and helper classes are defined for these exceptions, nor are they in the interface repository., However so that users can treat them as &#34;normal exceptions&#34; for programming purposes, they are mapped as normal user exceptions.<p>
+</a>
+<a name="1000248">
+They are defined within the scopes that they are used. A <strong>Bounds</strong> and <strong>BadKind</strong> exception are defined in the <code><strong>TypeCodePackage</strong></code> for use by <strong>TypeCode</strong>. A <strong>Bounds</strong> exception is defined in the standard CORBA module for use by <strong>NVList</strong>, <strong>ExceptionList</strong>, and <strong>ContextList</strong>. An <strong>InvalidName</strong> exception is defined in the <code><strong>ORBPackage</strong></code> for use by <strong>ORB</strong>.<p>
+</a>
+<a name="1000218">
+<code><strong><pre>// Java
+</pre>
+</strong></code></a>
+<a name="1000255">
+<code><strong><pre>package org.omg.CORBA;
+</pre>
+</strong></code></a>
+<a name="1000256">
+<code><strong><pre>final public class Bounds 
+</pre>
+</strong></code></a>
+<a name="1000399">
+<code><strong><pre>	extends org.omg.CORBA.UserException {
+</pre>
+</strong></code></a>
+<a name="1000257">
+<code><strong><pre>	public Bounds() {...}
+</pre>
+</strong></code></a>
+<a name="1000258">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1000253">
+<code><strong><pre>package org.omg.CORBA.TypeCodePackage;
+</pre>
+</strong></code></a>
+<a name="1000219">
+<code><strong><pre>final public class Bounds
+</pre>
+</strong></code></a>
+<a name="1000400">
+<code><strong><pre>	extends org.omg.CORBA.UserException {
+</pre>
+</strong></code></a>
+<a name="1000220">
+<code><strong><pre>	public Bounds() {...}
+</pre>
+</strong></code></a>
+<a name="1000221">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1000222">
+<code><strong><pre>final public class BadKind 
+</pre>
+</strong></code></a>
+<a name="1000401">
+<code><strong><pre>	extends org.omg.CORBA.UserException {
+</pre>
+</strong></code></a>
+<a name="1000223">
+<code><strong><pre>	public BadKind() {...}
+</pre>
+</strong></code></a>
+<a name="1000345">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1000349">
+<code><strong><pre>package org.omg.CORBA.ORBPackage;
+</pre>
+</strong></code></a>
+<a name="1000346">
+<code><strong><pre>final public class InvalidName
+</pre>
+</strong></code></a>
+<a name="1000402">
+<code><strong><pre>	extends org.omg.CORBA.UserException {
+</pre>
+</strong></code></a>
+<a name="1000347">
+<code><strong><pre>	public InvalidName() {...}
+</pre>
+</strong></code></a>
+<a name="1000348">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1000224">
+<code><strong><pre>
+</pre>
+</strong></code></a>
+<a name="1000215">
+<p>
+</a>
+<a name="1000205">
+<p>
+<h2><font size=6>	6.3	 Environment
+</font></h2>
+</a>
+<a name="999213">
+The <strong>Environment</strong> is used in request operations to make exception information available.<p>
+</a>
+<a name="999252">
+<code><strong><pre>// Java code
+</pre>
+</strong></code></a>
+<a name="999258">
+<code><strong><pre>package org.omg.CORBA;
+</pre>
+</strong></code></a>
+<a name="999253">
+<code><strong><pre>public abstract class Environment {
+</pre>
+</strong></code></a>
+<a name="999254">
+<code><strong><pre>	void exception(java.lang.Exception except);
+</pre>
+</strong></code></a>
+<a name="999255">
+<code><strong><pre>	java.lang.Exception exception();
+</pre>
+</strong></code></a>
+<a name="999256">
+<code><strong><pre>	void clear();
+</pre>
+</strong></code></a>
+<a name="999257">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="998493">
+<p>
+<h2><font size=6>	6.4	 NamedValue
+</font></h2>
+</a>
+<a name="998554">
+A <strong>NamedValue</strong> describes a name, value pair. It is used in the DII to describe arguments and return values, and in the context routines to pass property, value pairs.<p>
+</a>
+<a name="1000164">
+In Java it includes a name, a value (as an any), and an integer representing a set of flags.<p>
+</a>
+<a name="1000165">
+<strong><pre>typedef unsigned long Flags;
+</pre>
+</strong></a>
+<a name="1000167">
+<strong><pre>typedef string Identifier;
+</pre>
+</strong></a>
+<a name="1000166">
+<strong><pre>const Flags ARG_IN = 1;
+</pre>
+</strong></a>
+<a name="998559">
+<strong><pre>const Flags ARG_OUT = 2;
+</pre>
+</strong></a>
+<a name="998560">
+<strong><pre>const Flags ARG_INOUT = 3;
+</pre>
+</strong></a>
+<a name="1000430">
+<strong><pre>const Flags CTX_RESTRICT_SCOPE = 15;
+</pre>
+</strong></a>
+<a name="998561">
+<strong><pre>pseudo interface NamedValue {
+</pre>
+</strong></a>
+<a name="998562">
+<strong><pre>	readonly attribute Identifier name;
+</pre>
+</strong></a>
+<a name="998564">
+<strong><pre>	readonly attribute any value;
+</pre>
+</strong></a>
+<a name="998566">
+<strong><pre>	readonly attribute Flags flags;
+</pre>
+</strong></a>
+<a name="998575">
+<strong><pre>};
+</pre>
+</strong></a>
+<a name="999283">
+<code><strong><pre>// Java 
+</pre>
+</strong></code></a>
+<a name="999303">
+<code><strong><pre>package org.omg.CORBA;
+</pre>
+</strong></code></a>
+<a name="999284">
+<code><strong><pre>public interface ARG_IN {
+</pre>
+</strong></code></a>
+<a name="999285">
+<code><strong><pre>	public static final int value = 1;
+</pre>
+</strong></code></a>
+<a name="999286">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="999289">
+<code><strong><pre>public interface ARG_OUT {
+</pre>
+</strong></code></a>
+<a name="999290">
+<code><strong><pre>	public static final int value = 2;
+</pre>
+</strong></code></a>
+<a name="999291">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="999293">
+<code><strong><pre>public interface ARG_INOUT {
+</pre>
+</strong></code></a>
+<a name="999294">
+<code><strong><pre>	public static final int value = 3;
+</pre>
+</strong></code></a>
+<a name="999295">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1000432">
+<code><strong><pre>public interface CTX_RESTRICT_SCOPE {
+</pre>
+</strong></code></a>
+<a name="1000433">
+<code><strong><pre>	public static final int value = 15;
+</pre>
+</strong></code></a>
+<a name="1000434">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="999298">
+<code><strong><pre>public abstract class NamedValue {
+</pre>
+</strong></code></a>
+<a name="999299">
+<code><strong><pre>	public abstract String name();
+</pre>
+</strong></code></a>
+<a name="999300">
+<code><strong><pre>	public abstract Any value();
+</pre>
+</strong></code></a>
+<a name="999301">
+<code><strong><pre>	public abstract int flags();
+</pre>
+</strong></code></a>
+<a name="999302">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="999287">
+<code><strong><pre>
+</pre>
+</strong></code></a>
+<a name="998494">
+<p>
+<h2><font size=6>	6.5	 NVList
+</font></h2>
+</a>
+<a name="998578">
+A <strong>NVList</strong> is used in the DII to describe arguments, and in the context routines to describe context values.<p>
+</a>
+<a name="999221">
+In Java it maintains a modifiable list of <strong>NamedValue</strong>s.<p>
+</a>
+<a name="998580">
+<strong><pre>pseudo interface NVList {
+</pre>
+</strong></a>
+<a name="998581">
+<strong><pre>	readonly attribute unsigned long count;
+</pre>
+</strong></a>
+<a name="998582">
+<strong><pre>	NamedValue add(in Flags flags);
+</pre>
+</strong></a>
+<a name="998583">
+<strong><pre>	NamedValue add_item(in Identifier item_name, in Flags flags);
+</pre>
+</strong></a>
+<a name="998584">
+<strong><pre>	NamedValue add_value(in Identifier item_name,
+</pre>
+</strong></a>
+<a name="998585">
+<strong><pre>							 in any val, 
+</pre>
+</strong></a>
+<a name="998586">
+<strong><pre>							 in Flags flags);
+</pre>
+</strong></a>
+<a name="998587">
+<strong><pre>	NamedValue item(in unsigned long index) raises (CORBA::Bounds);
+</pre>
+</strong></a>
+<a name="998588">
+<strong><pre>	void remove(in unsigned long index) raises (CORBA::Bounds);
+</pre>
+</strong></a>
+<a name="998589">
+<strong><pre>};
+</pre>
+</strong></a>
+<a name="999306">
+<code><strong><pre>// Java 
+</pre>
+</strong></code></a>
+<a name="999307">
+<code><strong><pre>package org.omg.CORBA;
+</pre>
+</strong></code></a>
+<a name="999304">
+<code><strong><pre>public abstract class NVList {
+</pre>
+</strong></code></a>
+<a name="999311">
+<code><strong><pre>	public abstract int count();
+</pre>
+</strong></code></a>
+<a name="999312">
+<code><strong><pre>	public abstract NamedValue add(int flags);
+</pre>
+</strong></code></a>
+<a name="999313">
+<code><strong><pre>	public abstract NamedValue add_item(String item_name, int flags);
+</pre>
+</strong></code></a>
+<a name="999314">
+<code><strong><pre>	public abstract NamedValue add_value(String item_name, Any val,
+</pre>
+</strong></code></a>
+<a name="999488">
+<code><strong><pre>								int flags);
+</pre>
+</strong></code></a>
+<a name="999489">
+<code><strong><pre>	public abstract NamedValue item(int index)
+</pre>
+</strong></code></a>
+<a name="1000529">
+<code><strong><pre>					throws org.omg.CORBA.Bounds;
+</pre>
+</strong></code></a>
+<a name="1000530">
+<code><strong><pre>	public abstract void remove(int index) throws org.omg.CORBA.Bounds;
+</pre>
+</strong></code></a>
+<a name="1000531">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="998495">
+<p>
+<h2><font size=6>	6.6	 ExceptionList
+</font></h2>
+</a>
+<a name="998591">
+An <strong>ExceptionList</strong> is used in the DII to describe the exceptions that can be raised by IDL operations.<p>
+</a>
+<a name="998592">
+It maintains a list of modifiable list of <strong>TypeCode</strong>s.<p>
+</a>
+<a name="998593">
+<strong><pre>pseudo interface ExceptionList {
+</pre>
+</strong></a>
+<a name="998594">
+<strong><pre>	readonly attribute unsigned long count;
+</pre>
+</strong></a>
+<a name="998595">
+<strong><pre>	void add(in TypeCode exc);
+</pre>
+</strong></a>
+<a name="998596">
+<strong><pre>	TypeCode item (in unsigned long index) raises (CORBA::Bounds);
+</pre>
+</strong></a>
+<a name="998599">
+<strong><pre>	void remove (in unsigned long index) raises (CORBA::Bounds);
+</pre>
+</strong></a>
+<a name="998600">
+<strong><pre>};
+</pre>
+</strong></a>
+<a name="999325">
+<code><strong><pre>// Java 
+</pre>
+</strong></code></a>
+<a name="999326">
+<code><strong><pre>package org.omg.CORBA;
+</pre>
+</strong></code></a>
+<a name="999327">
+<code><strong><pre>public abstract class ExceptionList {
+</pre>
+</strong></code></a>
+<a name="999332">
+<code><strong><pre>	public abstract int count();
+</pre>
+</strong></code></a>
+<a name="999333">
+<code><strong><pre>	public abstract void add(TypeCode exc);
+</pre>
+</strong></code></a>
+<a name="999334">
+<code><strong><pre>	public abstract TypeCode item(int index)
+</pre>
+</strong></code></a>
+<a name="1000169">
+<code><strong><pre>				throws org.omg.CORBA.Bounds;
+</pre>
+</strong></code></a>
+<a name="999337">
+<code><strong><pre>	public abstract void remove(int index)
+</pre>
+</strong></code></a>
+<a name="1000170">
+<code><strong><pre>				throws org.omg.CORBA.Bounds;
+</pre>
+</strong></code></a>
+<a name="999338">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="998496">
+<p>
+<h2><font size=6>	6.7	 Context
+</font></h2>
+</a>
+<a name="998601">
+A <strong>Context</strong> is used in the DII to specify a context in which context strings must be resolved before being sent along with the request invocation.<p>
+</a>
+<a name="998602">
+<strong><pre>pseudo interface Context {
+</pre>
+</strong></a>
+<a name="998603">
+<strong><pre>	readonly attribute Identifier context_name;
+</pre>
+</strong></a>
+<a name="998604">
+<strong><pre>	readonly attribute Context parent;
+</pre>
+</strong></a>
+<a name="998605">
+<strong><pre>	Context create_child(in Identifier child_ctx_name);
+</pre>
+</strong></a>
+<a name="998606">
+<strong><pre>	void set_one_value(in Identifier propname, in any propvalue);
+</pre>
+</strong></a>
+<a name="998608">
+<strong><pre>	void set_values(in NVList values);
+</pre>
+</strong></a>
+<a name="998609">
+<strong><pre>	void delete_values(in Identifier propname);
+</pre>
+</strong></a>
+<a name="998610">
+<strong><pre>	NVList get_values(in Identifier start_scope,
+</pre>
+</strong></a>
+<a name="998611">
+<strong><pre>					     in Flags op_flags,
+</pre>
+</strong></a>
+<a name="998612">
+<strong><pre>					     in Identifier pattern);
+</pre>
+</strong></a>
+<a name="998613">
+<strong><pre>};
+</pre>
+</strong></a>
+<a name="999341">
+<code><strong><pre>// Java 
+</pre>
+</strong></code></a>
+<a name="999342">
+<code><strong><pre>package org.omg.CORBA;
+</pre>
+</strong></code></a>
+<a name="999343">
+<code><strong><pre>public abstract class Context {
+</pre>
+</strong></code></a>
+<a name="999348">
+<code><strong><pre>	public abstract String context_name();
+</pre>
+</strong></code></a>
+<a name="999349">
+<code><strong><pre>	public abstract Context parent();
+</pre>
+</strong></code></a>
+<a name="999350">
+<code><strong><pre>	public abstract Context create_child(String child_ctx_name);
+</pre>
+</strong></code></a>
+<a name="999351">
+<code><strong><pre>	public abstract void set_one_value(String propname,
+</pre>
+</strong></code></a>
+<a name="1000171">
+<code><strong><pre>						Any propvalue);
+</pre>
+</strong></code></a>
+<a name="999352">
+<code><strong><pre>	public abstract void set_values(NVList values);
+</pre>
+</strong></code></a>
+<a name="999353">
+<code><strong><pre>	public abstract void delete_values(String propname);
+</pre>
+</strong></code></a>
+<a name="999354">
+<code><strong><pre>	public abstract NVList get_values(String start_scpe, int op_flags,
+</pre>
+</strong></code></a>
+<a name="999355">
+<code><strong><pre>						String pattern);
+</pre>
+</strong></code></a>
+<a name="999356">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="998497">
+<p>
+<h2><font size=6>	6.8	 ContextList
+</font></h2>
+</a>
+<a name="998619">
+<strong><pre>pseudo interface ContextList {
+</pre>
+</strong></a>
+<a name="998620">
+<strong><pre>	readonly attribute unsigned long count;
+</pre>
+</strong></a>
+<a name="998621">
+<strong><pre>	void add(in string ctx);
+</pre>
+</strong></a>
+<a name="998622">
+<strong><pre>	string item(in unsigned long index) raises (CORBA::Bounds);
+</pre>
+</strong></a>
+<a name="998623">
+<strong><pre>	void remove(in unsigned long index) raises (CORBA::Bounds);
+</pre>
+</strong></a>
+<a name="998624">
+<strong><pre>};
+</pre>
+</strong></a>
+<a name="999359">
+<code><strong><pre>// Java 
+</pre>
+</strong></code></a>
+<a name="999360">
+<code><strong><pre>package org.omg.CORBA;
+</pre>
+</strong></code></a>
+<a name="999361">
+<code><strong><pre>public abstract class ContextList {
+</pre>
+</strong></code></a>
+<a name="999370">
+<code><strong><pre>	public abstract int count();
+</pre>
+</strong></code></a>
+<a name="999371">
+<code><strong><pre>	public abstract void add(String ctx);
+</pre>
+</strong></code></a>
+<a name="999372">
+<code><strong><pre>	public abstract String item(int index)
+</pre>
+</strong></code></a>
+<a name="1000172">
+<code><strong><pre>		throws org.omg.CORBA.Bounds;
+</pre>
+</strong></code></a>
+<a name="999373">
+<code><strong><pre>	public abstract void remove(int index)
+</pre>
+</strong></code></a>
+<a name="1000173">
+<code><strong><pre>		throws org.omg.CORBA.Bounds;
+</pre>
+</strong></code></a>
+<a name="999374">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="998498">
+<p>
+<h2><font size=6>	6.9	 Request
+</font></h2>
+</a>
+<a name="998629">
+<strong><pre>pseudo interface Request {
+</pre>
+</strong></a>
+<a name="998632">
+<strong><pre>	readonly attribute Object target; 
+</pre>
+</strong></a>
+<a name="998655">
+<strong><pre>	readonly attribute Identifier operation; 
+</pre>
+</strong></a>
+<a name="998656">
+<strong><pre>	readonly attribute NVList arguments; 
+</pre>
+</strong></a>
+<a name="998657">
+<strong><pre>	readonly attribute NamedValue result;     
+</pre>
+</strong></a>
+<a name="998658">
+<strong><pre>	readonly attribute Environment env;        
+</pre>
+</strong></a>
+<a name="998643">
+<strong><pre>	readonly attribute ExceptionList exceptions;
+</pre>
+</strong></a>
+<a name="998644">
+<strong><pre>	readonly attribute ContextList contexts;
+</pre>
+</strong></a>
+<a name="998633">
+<strong><pre>	attribute Context ctx;
+</pre>
+</strong></a>
+<a name="998634">
+<strong><pre>	any add_in_arg(); 
+</pre>
+</strong></a>
+<a name="998671">
+<strong><pre>	any add_named_in_arg(in string name); 
+</pre>
+</strong></a>
+<a name="998672">
+<strong><pre>	any add_inout_arg();
+</pre>
+</strong></a>
+<a name="998673">
+<strong><pre>	any add_named_inout_arg(in string name); 
+</pre>
+</strong></a>
+<a name="998674">
+<strong><pre>	any add_out_arg();
+</pre>
+</strong></a>
+<a name="998675">
+<strong><pre>	any add_named_out_arg(in string name); 
+</pre>
+</strong></a>
+<a name="998676">
+<strong><pre>	void set_return_type(in TypeCode tc);
+</pre>
+</strong></a>
+<a name="998677">
+<strong><pre>	any return_value();
+</pre>
+</strong></a>
+<a name="998630">
+<strong><pre>	void invoke();
+</pre>
+</strong></a>
+<a name="998701">
+<strong><pre>	void send_oneway(); 
+</pre>
+</strong></a>
+<a name="998702">
+<strong><pre>	void send_deferred();
+</pre>
+</strong></a>
+<a name="998703">
+<strong><pre>	void get_response();
+</pre>
+</strong></a>
+<a name="998709">
+<strong><pre>	boolean poll_response();
+</pre>
+</strong></a>
+<a name="998710">
+<strong><pre>};
+</pre>
+</strong></a>
+<a name="999381">
+<code><strong><pre>// Java 
+</pre>
+</strong></code></a>
+<a name="999382">
+<code><strong><pre>package org.omg.CORBA;
+</pre>
+</strong></code></a>
+<a name="1000556">
+<code><strong><pre>public abstract class Request {
+</pre>
+</strong></code></a>
+<a name="1000557">
+<code><strong><pre>	public abstract Object target(); 
+</pre>
+</strong></code></a>
+<a name="1000558">
+<code><strong><pre>	public abstract String operation(); 
+</pre>
+</strong></code></a>
+<a name="999392">
+<code><strong><pre>	public abstract NVList arguments(); 
+</pre>
+</strong></code></a>
+<a name="999393">
+<code><strong><pre>	public abstract NamedValue result();     
+</pre>
+</strong></code></a>
+<a name="999394">
+<code><strong><pre>	public abstract Environment env();        
+</pre>
+</strong></code></a>
+<a name="999395">
+<code><strong><pre>	public abstract ExceptionList exceptions();
+</pre>
+</strong></code></a>
+<a name="999396">
+<code><strong><pre>	public abstract ContextList contexts();
+</pre>
+</strong></code></a>
+<a name="999388">
+<code><strong><pre>	public abstract Context ctx();
+</pre>
+</strong></code></a>
+<a name="999425">
+<code><strong><pre>	public abstract void ctx(Context c);
+</pre>
+</strong></code></a>
+<a name="999428">
+<code><strong><pre>	public abstract Any add_in_arg(); 
+</pre>
+</strong></code></a>
+<a name="999429">
+<code><strong><pre>	public abstract Any add_named_in_arg(String name); 
+</pre>
+</strong></code></a>
+<a name="999430">
+<code><strong><pre>	public abstract Any add_inout_arg();
+</pre>
+</strong></code></a>
+<a name="999431">
+<code><strong><pre>	public abstract Any add_named_inout_arg(String name); 
+</pre>
+</strong></code></a>
+<a name="999432">
+<code><strong><pre>	public abstract Any add_out_arg();
+</pre>
+</strong></code></a>
+<a name="999433">
+<code><strong><pre>	public abstract Any add_named_out_arg(String name); 
+</pre>
+</strong></code></a>
+<a name="999434">
+<code><strong><pre>	public abstract void set_return_type(TypeCode tc);
+</pre>
+</strong></code></a>
+<a name="999435">
+<code><strong><pre>	public abstract Any return_value();
+</pre>
+</strong></code></a>
+<a name="999450">
+<code><strong><pre>	public abstract void invoke();
+</pre>
+</strong></code></a>
+<a name="999451">
+<code><strong><pre>	public abstract void send_oneway(); 
+</pre>
+</strong></code></a>
+<a name="999452">
+<code><strong><pre>	public abstract void send_deferred();
+</pre>
+</strong></code></a>
+<a name="999453">
+<code><strong><pre>	public abstract void get_response();
+</pre>
+</strong></code></a>
+<a name="999454">
+<code><strong><pre>	public abstract boolean poll_response();
+</pre>
+</strong></code></a>
+<a name="999448">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="998704">
+<p>
+<h2><font size=6>	6.10	 ServerRequest and Dynamic Implementation
+</font></h2>
+</a>
+<a name="998712">
+<strong><pre>pseudo interface ServerRequest {
+</pre>
+</strong></a>
+<a name="998719">
+<strong><pre>	Identifier op_name();
+</pre>
+</strong></a>
+<a name="998720">
+<strong><pre>	Context ctx();   
+</pre>
+</strong></a>
+<a name="998721">
+<strong><pre>	void params(in NVList parms); 
+</pre>
+</strong></a>
+<a name="999951">
+<strong><pre>	void result(in Any res);  
+</pre>
+</strong></a>
+<a name="998723">
+<strong><pre>	void   except(in Any ex); 
+</pre>
+</strong></a>
+<a name="999462">
+<strong><pre>} ;
+</pre>
+</strong></a>
+<a name="999466">
+<code><strong><pre>// Java 
+</pre>
+</strong></code></a>
+<a name="999467">
+<code><strong><pre>package org.omg.CORBA;
+</pre>
+</strong></code></a>
+<a name="999468">
+<code><strong><pre>public abstract class ServerRequest {
+</pre>
+</strong></code></a>
+<a name="999471">
+<code><strong><pre>	public abstract String op_name();
+</pre>
+</strong></code></a>
+<a name="999472">
+<code><strong><pre>	public abstract Context ctx();
+</pre>
+</strong></code></a>
+<a name="999473">
+<code><strong><pre>	public abstract void params(NVList parms);
+</pre>
+</strong></code></a>
+<a name="999952">
+<code><strong><pre>	public abstract void result(Any a);
+</pre>
+</strong></code></a>
+<a name="999474">
+<code><strong><pre>	public abstract void except(Any a);
+</pre>
+</strong></code></a>
+<a name="999464">
+The <code><strong>DynamicImplementation</strong></code> interface defines the interface such a dynamic server is expect to implement. Note that it inherits from the base class for stubs and skeletons (see <a href="jsoi.fm.html#1001136">Section&#160;8.5.2, &#34;Portable ObjectImpl"</a>).<p>
+</a>
+<a name="998768">
+<code><strong><pre>// Java
+</pre>
+</strong></code></a>
+<a name="998769">
+<code><strong><pre>package org.omg.CORBA;
+</pre>
+</strong></code></a>
+<a name="998770">
+<code><strong><pre>public abstract class DynamicImplementation
+</pre>
+</strong></code></a>
+<a name="1000445">
+<code><strong><pre>		extends org.omg.CORBA.portable.ObjectImpl {
+</pre>
+</strong></code></a>
+<a name="998771">
+<code><strong><pre>	public abstract void invoke(org.omg.CORBA.ServerRequest request);
+</pre>
+</strong></code></a>
+<a name="998772">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="998500">
+<p>
+<h2><font size=6>	6.11	 TypeCode
+</font></h2>
+</a>
+<a name="998773">
+The deprecated <strong>parameter</strong> and <strong>param_count</strong> methods are not mapped.<p>
+</a>
+<a name="999144">
+<strong><pre>enum TCKind {
+</pre>
+</strong></a>
+<a name="999145">
+<strong><pre>	tk_null, tk_void,
+</pre>
+</strong></a>
+<a name="999146">
+<strong><pre>	tk_short, tk_long, tk_ushort, tk_ulong,
+</pre>
+</strong></a>
+<a name="999147">
+<strong><pre>	tk_float, tk_double, tk_boolean, tk_char,
+</pre>
+</strong></a>
+<a name="999148">
+<strong><pre>	tk_octet, tk_any, tk_TypeCode, tk_Principal, tk_objref,
+</pre>
+</strong></a>
+<a name="999151">
+<strong><pre>	tk_struct, tk_union, tk_enum, tk_string,
+</pre>
+</strong></a>
+<a name="999152">
+<strong><pre>	tk_sequence, tk_array, tk_alias, tk_except,
+</pre>
+</strong></a>
+<a name="999234">
+<strong><pre>	tk_longlong, tk_ulonglong, tk_longdouble,
+</pre>
+</strong></a>
+<a name="999235">
+<strong><pre>	tk_wchar, tk_wstring, tk_fixed
+</pre>
+</strong></a>
+<a name="999153">
+<strong><pre>};
+</pre>
+</strong></a>
+<a name="999499">
+<code><strong><pre>// Java 
+</pre>
+</strong></code></a>
+<a name="999500">
+<code><strong><pre>package org.omg.CORBA;
+</pre>
+</strong></code></a>
+<a name="999501">
+<code><strong><pre>public final class TCKind {
+</pre>
+</strong></code></a>
+<a name="999506">
+<code><strong><pre>	public static final int _tk_null = 0;
+</pre>
+</strong></code></a>
+<a name="999507">
+<code><strong><pre>	public static final 
+</pre>
+</strong></code></a>
+<a name="999592">
+<code><strong><pre>		TCKind tk_null = new TCKind(_tk_null);
+</pre>
+</strong></code></a>
+<a name="999593">
+<code><strong><pre>	public static final int _tk_void = 1;
+</pre>
+</strong></code></a>
+<a name="999594">
+<code><strong><pre>		TCKind tk_void = new TCKind(_tk_void);
+</pre>
+</strong></code></a>
+<a name="999519">
+<code><strong><pre>	public static final int _tk_short = 2;
+</pre>
+</strong></code></a>
+<a name="999520">
+<code><strong><pre>		TCKind tk_short = new TCKind(_tk_short);
+</pre>
+</strong></code></a>
+<a name="999522">
+<code><strong><pre>	public static final int _tk_long = 3;
+</pre>
+</strong></code></a>
+<a name="999523">
+<code><strong><pre>		TCKind tk_long = new TCKind(_tk_long);
+</pre>
+</strong></code></a>
+<a name="999525">
+<code><strong><pre>	public static final int _tk_ushort = 4;
+</pre>
+</strong></code></a>
+<a name="999526">
+<code><strong><pre>		TCKind tk_ushort = new TCKind(_tk_ushort);
+</pre>
+</strong></code></a>
+<a name="999528">
+<code><strong><pre>	public static final int _tk_ulong = 5;
+</pre>
+</strong></code></a>
+<a name="999529">
+<code><strong><pre>		TCKind tk_ulong = new TCKind(_tk_ulong);
+</pre>
+</strong></code></a>
+<a name="999531">
+<code><strong><pre>	public static final int _tk_float = 6;
+</pre>
+</strong></code></a>
+<a name="999532">
+<code><strong><pre>		TCKind tk_float = new TCKind(_tk_float);
+</pre>
+</strong></code></a>
+<a name="999534">
+<code><strong><pre>	public static final int _tk_double = 7;
+</pre>
+</strong></code></a>
+<a name="999535">
+<code><strong><pre>		TCKind tk_double = new TCKind(_tk_double);
+</pre>
+</strong></code></a>
+<a name="999537">
+<code><strong><pre>	public static final int _tk_boolean = 8;
+</pre>
+</strong></code></a>
+<a name="999538">
+<code><strong><pre>		TCKind tk_boolean = new TCKind(_tk_boolean);
+</pre>
+</strong></code></a>
+<a name="999540">
+<code><strong><pre>	public static final int _tk_char = 9;
+</pre>
+</strong></code></a>
+<a name="999541">
+<code><strong><pre>		TCKind tk_char = new TCKind(_tk_char);
+</pre>
+</strong></code></a>
+<a name="999543">
+<code><strong><pre>	public static final int _tk_octet = 10;
+</pre>
+</strong></code></a>
+<a name="999544">
+<code><strong><pre>		TCKind tk_octet = new TCKind(_tk_octet);
+</pre>
+</strong></code></a>
+<a name="999546">
+<code><strong><pre>	public static final int _tk_any = 11;
+</pre>
+</strong></code></a>
+<a name="999547">
+<code><strong><pre>		TCKind tk_any = new TCKind(_tk_any);
+</pre>
+</strong></code></a>
+<a name="999549">
+<code><strong><pre>	public static final int _tk_TypeCode = 12;
+</pre>
+</strong></code></a>
+<a name="999550">
+<code><strong><pre>		TCKind tk_TypeCode = new TCKind(_tk_TypeCode);
+</pre>
+</strong></code></a>
+<a name="999552">
+<code><strong><pre>	public static final int _tk_Principal = 13;
+</pre>
+</strong></code></a>
+<a name="999553">
+<code><strong><pre>		TCKind tk_Principal = new TCKind(_tk_Principal);
+</pre>
+</strong></code></a>
+<a name="999555">
+<code><strong><pre>	public static final int _tk_objref = 14;
+</pre>
+</strong></code></a>
+<a name="999556">
+<code><strong><pre>		TCKind tk_objref = new TCKind(_tk_objref);
+</pre>
+</strong></code></a>
+<a name="999558">
+<code><strong><pre>	public static final int _tk_stuct = 15;
+</pre>
+</strong></code></a>
+<a name="999559">
+<code><strong><pre>		TCKind tk_stuct = new TCKind(_tk_stuct);
+</pre>
+</strong></code></a>
+<a name="999561">
+<code><strong><pre>	public static final int _tk_union = 16;
+</pre>
+</strong></code></a>
+<a name="999562">
+<code><strong><pre>		TCKind tk_union = new TCKind(_tk_union);
+</pre>
+</strong></code></a>
+<a name="999564">
+<code><strong><pre>	public static final int _tk_enum = 17;
+</pre>
+</strong></code></a>
+<a name="999565">
+<code><strong><pre>		TCKind tk_enum = new TCKind(_tk_enum);
+</pre>
+</strong></code></a>
+<a name="999567">
+<code><strong><pre>	public static final int _tk_string = 18;
+</pre>
+</strong></code></a>
+<a name="999568">
+<code><strong><pre>		TCKind tk_string = new TCKind(_tk_string);
+</pre>
+</strong></code></a>
+<a name="999570">
+<code><strong><pre>	public static final int _tk_sequence = 19;
+</pre>
+</strong></code></a>
+<a name="999571">
+<code><strong><pre>		TCKind tk_sequence = new TCKind(_tk_sequence);
+</pre>
+</strong></code></a>
+<a name="999573">
+<code><strong><pre>	public static final int _tk_array = 20;
+</pre>
+</strong></code></a>
+<a name="999574">
+<code><strong><pre>		TCKind tk_array = new TCKind(_tk_array);
+</pre>
+</strong></code></a>
+<a name="999576">
+<code><strong><pre>	public static final int _tk_alias = 21;
+</pre>
+</strong></code></a>
+<a name="999577">
+<code><strong><pre>		TCKind tk_alias = new TCKind(_tk_alias);
+</pre>
+</strong></code></a>
+<a name="999579">
+<code><strong><pre>	public static final int _tk_except = 22;
+</pre>
+</strong></code></a>
+<a name="999580">
+<code><strong><pre>		TCKind tk_except = new TCKind(_tk_except);
+</pre>
+</strong></code></a>
+<a name="999582">
+<code><strong><pre>	public static final int _tk_longlong = 23;
+</pre>
+</strong></code></a>
+<a name="999583">
+<code><strong><pre>		TCKind tk_longlong = new TCKind(_tk_longlong);
+</pre>
+</strong></code></a>
+<a name="999589">
+<code><strong><pre>	public static final int _tk_ulonglong = 24;
+</pre>
+</strong></code></a>
+<a name="999590">
+<code><strong><pre>		TCKind tk_ulonglong = new TCKind(_tk_ulonglong);
+</pre>
+</strong></code></a>
+<a name="999666">
+<code><strong><pre>	public static final int _tk_longdouble = 25;
+</pre>
+</strong></code></a>
+<a name="999667">
+<code><strong><pre>		TCKind tk_longdouble = new TCKind(_tk_longdouble);
+</pre>
+</strong></code></a>
+<a name="999669">
+<code><strong><pre>	public static final int _tk_wchar = 26;
+</pre>
+</strong></code></a>
+<a name="999670">
+<code><strong><pre>		TCKind tk_wchar = new TCKind(_tk_wchar);
+</pre>
+</strong></code></a>
+<a name="999672">
+<code><strong><pre>	public static final int _tk_wstring = 27;
+</pre>
+</strong></code></a>
+<a name="999673">
+<code><strong><pre>		TCKind tk_wstring = new TCKind(_tk_wstring);
+</pre>
+</strong></code></a>
+<a name="999675">
+<code><strong><pre>	public static final int _tk_fixed = 28;
+</pre>
+</strong></code></a>
+<a name="999676">
+<code><strong><pre>		TCKind tk_fixed = new TCKind(_tk_fixed);
+</pre>
+</strong></code></a>
+<a name="1000624">
+<code><strong><pre>
+</pre>
+</strong></code></a>
+<a name="1000625">
+<code><strong><pre>	public int value() {...}
+</pre>
+</strong></code></a>
+<a name="1000626">
+<code><strong><pre>	public static TCKind from_int(int value) {...}
+</pre>
+</strong></code></a>
+<a name="999789">
+<code><strong><pre>	private TCKind(int value) {...}
+</pre>
+</strong></code></a>
+<a name="999790">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="998777">
+<strong><pre>pseudo interface TypeCode {
+</pre>
+</strong></a>
+<a name="999060">
+<strong><pre>	exception Bounds {};
+</pre>
+</strong></a>
+<a name="999126">
+<strong><pre>	exception BadKind {};
+</pre>
+</strong></a>
+<a name="999127">
+<strong><pre>	// for all TypeCode kinds
+</pre>
+</strong></a>
+<a name="999128">
+<strong><pre>	boolean equal(in TypeCode tc);
+</pre>
+</strong></a>
+<a name="998779">
+<strong><pre>	TCKind kind();
+</pre>
+</strong></a>
+<a name="999129">
+<strong><pre>	// for objref, struct, union, enum, alias, and except
+</pre>
+</strong></a>
+<a name="998780">
+<strong><pre>	RepositoryID id() raises (BadKind);
+</pre>
+</strong></a>
+<a name="998781">
+<strong><pre>	RepositoryId name() raises (BadKind);
+</pre>
+</strong></a>
+<a name="998782">
+<strong><pre>	// for struct, union, enum, and except
+</pre>
+</strong></a>
+<a name="999130">
+<strong><pre>	unsigned long member_count() raises (BadKind);
+</pre>
+</strong></a>
+<a name="998783">
+<strong><pre>	Identifier member_name(in unsigned long index)
+</pre>
+</strong></a>
+<a name="998784">
+<strong><pre>		 raises (BadKind, Bounds);
+</pre>
+</strong></a>
+<a name="999131">
+<strong><pre>	// for struct, union, and except
+</pre>
+</strong></a>
+<a name="998785">
+<strong><pre>	TypeCode member_type(in unsigned long index) 
+</pre>
+</strong></a>
+<a name="998787">
+<strong><pre>		raises (BadKind, Bounds);
+</pre>
+</strong></a>
+<a name="999132">
+<strong><pre>	// for union
+</pre>
+</strong></a>
+<a name="998786">
+<strong><pre>	any member_label(in unsigned long index) raises (BadKind, Bounds);
+</pre>
+</strong></a>
+<a name="998788">
+<strong><pre>	TypeCode discriminator_type() raises (BadKind);
+</pre>
+</strong></a>
+<a name="998789">
+<strong><pre>	long default_index() raises (BadKind);
+</pre>
+</strong></a>
+<a name="999133">
+<strong><pre>	// for string, sequence, and array
+</pre>
+</strong></a>
+<a name="998790">
+<strong><pre>	unsigned long length() raises (BadKind);
+</pre>
+</strong></a>
+<a name="998791">
+<strong><pre>	TypeCode content_type() raises (BadKind);
+</pre>
+</strong></a>
+<a name="998792">
+<strong><pre>	}
+</pre>
+</strong></a>
+<a name="999812">
+<code><strong><pre>// Java
+</pre>
+</strong></code></a>
+<a name="999820">
+<code><strong><pre>package org.omg.CORBA;
+</pre>
+</strong></code></a>
+<a name="999925">
+<code><strong><pre>public abstract class TypeCode {
+</pre>
+</strong></code></a>
+<a name="999821">
+<code><strong><pre>	// for all TypeCode kinds
+</pre>
+</strong></code></a>
+<a name="999891">
+<code><strong><pre>	public abstract boolean equal(TypeCode tc);
+</pre>
+</strong></code></a>
+<a name="999822">
+<code><strong><pre>	public abstract TCKind kind();
+</pre>
+</strong></code></a>
+<a name="999867">
+<code><strong><pre>	// for objref, struct, unio, enum, alias, and except
+</pre>
+</strong></code></a>
+<a name="999824">
+<code><strong><pre>	public abstract String id() throws TypeCodePackage.BadKind;
+</pre>
+</strong></code></a>
+<a name="999828">
+<code><strong><pre>	public abstract String name() throws TypeCodePackage.BadKind;
+</pre>
+</strong></code></a>
+<a name="999874">
+<code><strong><pre>	// for struct, union, enum, and except
+</pre>
+</strong></code></a>
+<a name="999872">
+<code><strong><pre>	public abstract int member_count() throws TypeCodePackage.BadKind;
+</pre>
+</strong></code></a>
+<a name="999877">
+<code><strong><pre>	public abstract String member_name(int index)
+</pre>
+</strong></code></a>
+<a name="999831">
+<code><strong><pre>			throws TypeCodePackage.BadKind;
+</pre>
+</strong></code></a>
+<a name="999890">
+<code><strong><pre>	// for struct, union, and except	
+</pre>
+</strong></code></a>
+<a name="999832">
+<code><strong><pre>	public abstract TypeCode member_type(int index)
+</pre>
+</strong></code></a>
+<a name="999835">
+<code><strong><pre>			throws TypeCodePackage.BadKind,
+</pre>
+</strong></code></a>
+<a name="999838">
+<code><strong><pre>				TypeCodePackage.Bounds;
+</pre>
+</strong></code></a>
+<a name="999884">
+<code><strong><pre>	// for union	
+</pre>
+</strong></code></a>
+<a name="999922">
+<code><strong><pre>	public abstract Any member_label(int index)
+</pre>
+</strong></code></a>
+<a name="999923">
+<code><strong><pre>			throws TypeCodePackage.BadKind,
+</pre>
+</strong></code></a>
+<a name="999924">
+<code><strong><pre>						TypeCodePackage.Bounds;
+</pre>
+</strong></code></a>
+<a name="999918">
+<code><strong><pre>	public abstract TypeCode discriminator_type()
+</pre>
+</strong></code></a>
+<a name="999919">
+<code><strong><pre>			throws TypeCodePackage.BadKind;
+</pre>
+</strong></code></a>
+<a name="999852">
+<code><strong><pre>	public abstract int default_index() throws TypeCodePackage.BadKind;
+</pre>
+</strong></code></a>
+<a name="999846">
+<code><strong><pre>	// for string, sequence, and array
+</pre>
+</strong></code></a>
+<a name="999893">
+<code><strong><pre>	public abstract int length() throws TypeCodePackage.BadKind;
+</pre>
+</strong></code></a>
+<a name="999896">
+<code><strong><pre>	public abstract TypeCode content_type() throws TypeCodePackage.BadKind;
+</pre>
+</strong></code></a>
+<a name="999908">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="998501">
+<p>
+<h2><font size=6>	6.12	 ORB
+</font></h2>
+</a>
+<a name="999161">
+<blockquote><hr noshade size="1"><b><i>Issue -  create_named_value() is incorrect in the CORBA spec. We have used the correct definition here. It is indicated as a change to CORBA 2.0</i></b> 
+<hr noshade size="1"></blockquote>
+</a><a name="999966">
+The <strong>UnionMemeberSeq</strong>, <strong>EnumMemberSeq</strong>, and <strong>StructMemberSeq</strong> typedefs are real IDL and bring in the Interface Repository. Rather than tediously list its interfaces, and other assorted types, suffice it to say that it is all mapped following the rules for IDL set forth in this specification in <a href="idl.fm.html#509891">Chapter 5, &#34;Mapping IDL to Java"</a>. <p>
+</a>
+<a name="999969">
+StructMember[], UnionMember[], EnumMember[]<p>
+</a>
+<a name="998797">
+<strong><pre>pseudo interface ORB {
+</pre>
+</strong></a>
+<a name="999079">
+<strong><pre>	exception InvalidName {};               
+</pre>
+</strong></a>
+<a name="998798">
+<strong><pre>	typedef string ObjectId;
+</pre>
+</strong></a>
+<a name="998799">
+<strong><pre>	typedef sequence&lt;ObjectId&gt; ObjectIdList;
+</pre>
+</strong></a>
+<a name="998800">
+<strong><pre>	ObjectIdList list_initial_services();
+</pre>
+</strong></a>
+<a name="998801">
+<strong><pre>	Object resolve_initial_references(in ObjectId object_name)
+</pre>
+</strong></a>
+<a name="998802">
+<strong><pre>		raises(InvalidName);
+</pre>
+</strong></a>
+<a name="998803">
+<strong><pre>	string object_to_string(in Object obj);
+</pre>
+</strong></a>
+<a name="998804">
+<strong><pre>	Object string_to_object(in string str);
+</pre>
+</strong></a>
+<a name="998805">
+<strong><pre>	NVList create_list(in long count);
+</pre>
+</strong></a>
+<a name="998806">
+<strong><pre>	NVList create_operation_list(in OperationDef oper);
+</pre>
+</strong></a>
+<a name="998807">
+<strong><pre>	NamedValue create_named_value(in String name, in Any value,
+</pre>
+</strong></a>
+<a name="999965">
+<strong><pre>					in Flags flags);
+</pre>
+</strong></a>
+<a name="998808">
+<strong><pre>	ExceptionList create_exception_list();
+</pre>
+</strong></a>
+<a name="998809">
+<strong><pre>	ContextList create_context_list();
+</pre>
+</strong></a>
+<a name="998810">
+<strong><pre>	Context get_default_context();
+</pre>
+</strong></a>
+<a name="999134">
+<strong><pre>	Environment create_environment();
+</pre>
+</strong></a>
+<a name="999135">
+<strong><pre>	void send_multiple_requests_oneway(in RequestSeq req);
+</pre>
+</strong></a>
+<a name="999136">
+<strong><pre>	void send_multiple_requests_deferred(in RequestSeq req);
+</pre>
+</strong></a>
+<a name="998814">
+<strong><pre>	boolean poll_next_response();
+</pre>
+</strong></a>
+<a name="998815">
+<strong><pre>	Request get_next_response();
+</pre>
+</strong></a>
+<a name="999140">
+<strong><pre>// typecode creation
+</pre>
+</strong></a>
+<a name="998817">
+<strong><pre>	TypeCode create_struct_tc (	in RepositoryId id,
+</pre>
+</strong></a>
+<a name="998818">
+<strong><pre>			in Identifier name,
+</pre>
+</strong></a>
+<a name="998819">
+<strong><pre>			in StructMemberSeq members);
+</pre>
+</strong></a>
+<a name="998820">
+<strong><pre>	TypeCode create_union_tc (	in RepositoryId id,
+</pre>
+</strong></a>
+<a name="998821">
+<strong><pre> 			in Identifier name,
+</pre>
+</strong></a>
+<a name="998822">
+<strong><pre>			in TypeCode discriminator_type,
+</pre>
+</strong></a>
+<a name="998823">
+<strong><pre>			in UnionMemberSeq members);
+</pre>
+</strong></a>
+<a name="998824">
+<strong><pre>	TypeCode create_enum_tc (	in RepositoryId id,
+</pre>
+</strong></a>
+<a name="998825">
+<strong><pre>			in Identifier name,
+</pre>
+</strong></a>
+<a name="998826">
+<strong><pre>			in EnumMemberSeq members);
+</pre>
+</strong></a>
+<a name="998827">
+<strong><pre>	TypeCode create_alias_tc (	in RepositoryId id,
+</pre>
+</strong></a>
+<a name="998828">
+<strong><pre>			in Identifier name,
+</pre>
+</strong></a>
+<a name="998829">
+<strong><pre>			in TypeCode original_type);
+</pre>
+</strong></a>
+<a name="998830">
+<strong><pre>	TypeCode create_exception_tc (	in RepositoryId id, 
+</pre>
+</strong></a>
+<a name="998831">
+<strong><pre>			in Identifier name,
+</pre>
+</strong></a>
+<a name="998832">
+<strong><pre>			in StructMemberSeq members);
+</pre>
+</strong></a>
+<a name="998833">
+<strong><pre>	TypeCode create_interface_tc (	in RepositoryId id,
+</pre>
+</strong></a>
+<a name="998834">
+<strong><pre>			in Identifier name);
+</pre>
+</strong></a>
+<a name="998835">
+<strong><pre>	TypeCode create_string_tc (in unsigned long bound);
+</pre>
+</strong></a>
+<a name="1000453">
+<strong><pre>	TypeCode create_wstring_tc (in unsigned long bound);
+</pre>
+</strong></a>
+<a name="998836">
+<strong><pre>	TypeCode create_sequence_tc (in unsigned long bound,
+</pre>
+</strong></a>
+<a name="998837">
+<strong><pre>			in TypeCode element_type);
+</pre>
+</strong></a>
+<a name="998838">
+<strong><pre>	TypeCode create_recursive_sequence_tc(in unsigned long bound,
+</pre>
+</strong></a>
+<a name="998839">
+<strong><pre>			in unsigned long offset);
+</pre>
+</strong></a>
+<a name="998840">
+<strong><pre>	TypeCode create_array_tc (in unsigned long length,
+</pre>
+</strong></a>
+<a name="999082">
+<strong><pre>			in TypeCode element_type);
+</pre>
+</strong></a>
+<a name="1000418">
+<strong><pre>	Current get_current();
+</pre>
+</strong></a>
+<a name="999973">
+<strong><pre>// Additional operations for Java mapping
+</pre>
+</strong></a>
+<a name="999978">
+<strong><pre>	TypeCode get_primitive_tc(in TCKind tcKind);
+</pre>
+</strong></a>
+<a name="999979">
+<strong><pre>	Any create_any();
+</pre>
+</strong></a>
+<a name="999980">
+<strong><pre>	OutputStream create_output_stream();
+</pre>
+</strong></a>
+<a name="999981">
+<strong><pre>	void connect(Object obj);
+</pre>
+</strong></a>
+<a name="999982">
+<strong><pre>	void disconnect(Object obj);
+</pre>
+</strong></a>
+<a name="999986">
+<strong><pre>// additional methods for ORB initialization go here, but only
+</pre>
+</strong></a>
+<a name="1000379">
+<strong><pre>// appear in the mapped Java (see <a href="jsoi.fm.html#1001407">Section&#160;8.8, &#34;ORB Initialization"</a> )
+</pre>
+</strong></a>
+<a name="1000366">
+<code><strong><pre>// Java signatures
+</pre>
+</strong></code></a>
+<a name="1000391">
+<code><strong><pre>//	public static ORB init(Strings[] args, Properties props);
+</pre>
+</strong></code></a>
+<a name="1000368">
+<code><strong><pre>//	public static ORB init(Applet app, Properties props);
+</pre>
+</strong></code></a>
+<a name="1000370">
+<code><strong><pre>//	public static ORB init();
+</pre>
+</strong></code></a>
+<a name="999083">
+<code><strong><pre>// abstract protected void set_parameters(String[] args,
+</pre>
+</strong></code></a>
+<a name="1000486">
+<code><strong><pre>//			java.util.Properties props);
+</pre>
+</strong></code></a>
+<a name="1000485">
+<code><strong><pre>// abstract protected void set_parameters(java.applet.Applet app,
+</pre>
+</strong></code></a>
+<a name="1000489">
+<code><strong><pre>//			java.util.Properties props);
+</pre>
+</strong></code></a>
+<a name="1000484">
+<strong><pre>}
+</pre>
+</strong></a>
+<a name="1000020">
+<code><strong><pre>// Java
+</pre>
+</strong></code></a>
+<a name="1000056">
+<code><strong><pre>package org.omg.CORBA;
+</pre>
+</strong></code></a>
+<a name="1000057">
+<code><strong><pre>public abstract class ORB {
+</pre>
+</strong></code></a>
+<a name="1000060">
+<code><strong><pre>	public abstract String[] list_initial_services();
+</pre>
+</strong></code></a>
+<a name="1000061">
+<code><strong><pre>	public abstract org.omg.CORBA.Object resolve_initial_references(
+</pre>
+</strong></code></a>
+<a name="1000065">
+<code><strong><pre>		String object_name)
+</pre>
+</strong></code></a>
+<a name="1000066">
+<code><strong><pre>		throws org.omg.CORBA.ORBPackage.InvalidName;
+</pre>
+</strong></code></a>
+<a name="1000067">
+<code><strong><pre>	public abstract String object_to_string(org.omg.CORBA.Object obj);
+</pre>
+</strong></code></a>
+<a name="1000068">
+<code><strong><pre>	public abstract org.omg.CORBA.Object string_to_object(String str);
+</pre>
+</strong></code></a>
+<a name="1000069">
+<code><strong><pre>	public abstract NVList create_list(int count);
+</pre>
+</strong></code></a>
+<a name="1000070">
+<code><strong><pre>	public abstract NVList create_operation_list(OperationDef oper);
+</pre>
+</strong></code></a>
+<a name="1000071">
+<code><strong><pre>	public abstract NamedValue create_named_value(String name,
+</pre>
+</strong></code></a>
+<a name="1000072">
+<code><strong><pre>				  	Any value,
+</pre>
+</strong></code></a>
+<a name="1000073">
+<code><strong><pre>			  		int flags);
+</pre>
+</strong></code></a>
+<a name="1000074">
+<code><strong><pre>	public abstract ExceptionList create_exception_list();
+</pre>
+</strong></code></a>
+<a name="1000075">
+<code><strong><pre>	public abstract ContextList create_context_list();
+</pre>
+</strong></code></a>
+<a name="1000079">
+<code><strong><pre>	public abstract Context get_default_context();
+</pre>
+</strong></code></a>
+<a name="1000080">
+<code><strong><pre>	public abstract Environment create_environment();
+</pre>
+</strong></code></a>
+<a name="1000679">
+<code><strong><pre>	public abstract void send_multiple_requests_oneway(Request[] req);
+</pre>
+</strong></code></a>
+<a name="1000680">
+<code><strong><pre>	public abstract void sent_multiple_requests_deferred(Request[] req);
+</pre>
+</strong></code></a>
+<a name="1000681">
+<code><strong><pre>	public abstract boolean poll_next_response();
+</pre>
+</strong></code></a>
+<a name="1000084">
+<code><strong><pre>	public abstract Request get_next_response();
+</pre>
+</strong></code></a>
+<a name="1000088">
+<code><strong><pre>	// typecode creation
+</pre>
+</strong></code></a>
+<a name="1000089">
+<code><strong><pre>	public abstract TypeCode create_struct_tc(String id,
+</pre>
+</strong></code></a>
+<a name="1000090">
+<code><strong><pre>						String name,
+</pre>
+</strong></code></a>
+<a name="1000095">
+<code><strong><pre>						StructMember[] members);
+</pre>
+</strong></code></a>
+<a name="1000096">
+<code><strong><pre>	public abstract TypeCode create_union_tc(String id,
+</pre>
+</strong></code></a>
+<a name="1000097">
+<code><strong><pre>						String name,
+</pre>
+</strong></code></a>
+<a name="1000098">
+<code><strong><pre>						TypeCode discriminator_type,
+</pre>
+</strong></code></a>
+<a name="1000099">
+<code><strong><pre>						UnionMember[] members);
+</pre>
+</strong></code></a>
+<a name="1000100">
+<code><strong><pre>	public abstract TypeCode create_enum_tc(String id,
+</pre>
+</strong></code></a>
+<a name="1000101">
+<code><strong><pre>						String name,
+</pre>
+</strong></code></a>
+<a name="1000102">
+<code><strong><pre>						EnumMember[] members);
+</pre>
+</strong></code></a>
+<a name="1000103">
+<code><strong><pre>	public abstract TypeCode create_alias_tc(String id,
+</pre>
+</strong></code></a>
+<a name="1000104">
+<code><strong><pre>						String name,
+</pre>
+</strong></code></a>
+<a name="1000105">
+<code><strong><pre>						TypeCode original_type);
+</pre>
+</strong></code></a>
+<a name="1000106">
+<code><strong><pre>	public abstract TypeCode create_exception_tc(String id,
+</pre>
+</strong></code></a>
+<a name="1000107">
+<code><strong><pre>						String name,
+</pre>
+</strong></code></a>
+<a name="1000108">
+<code><strong><pre>						StructMember[] members);
+</pre>
+</strong></code></a>
+<a name="1000109">
+<code><strong><pre>	public abstract TypeCode create_interface_tc(String id,
+</pre>
+</strong></code></a>
+<a name="1000708">
+<code><strong><pre>						String name);
+</pre>
+</strong></code></a>
+<a name="1000709">
+<code><strong><pre>	public abstract TypeCode create_string_tc(int bound);
+</pre>
+</strong></code></a>
+<a name="1000710">
+<code><strong><pre>	public abstract TypeCode create_wstring_tc(int bound);
+</pre>
+</strong></code></a>
+<a name="1000457">
+<code><strong><pre>	public abstract TypeCode create_sequence_tc(int bound,
+</pre>
+</strong></code></a>
+<a name="1000458">
+<code><strong><pre>						TypeCode element_type);
+</pre>
+</strong></code></a>
+<a name="1000117">
+<code><strong><pre>	public abstract TypeCode create_recursive_sequence_tc(int bound,
+</pre>
+</strong></code></a>
+<a name="1000118">
+<code><strong><pre>						int offset);
+</pre>
+</strong></code></a>
+<a name="1000119">
+<code><strong><pre>	public abstract TypeCode create_array_tc(int length,
+</pre>
+</strong></code></a>
+<a name="1000122">
+<code><strong><pre>						TypeCode element_type);
+</pre>
+</strong></code></a>
+<a name="1000425">
+<code><strong><pre>	public abstract Current get_current();
+</pre>
+</strong></code></a>
+<a name="1000125">
+<code><strong><pre>	// additional methods for IDL/Java mapping
+</pre>
+</strong></code></a>
+<a name="1000126">
+<code><strong><pre>	public abstract TypeCode get_primitive_tc(TCKind tcKind);
+</pre>
+</strong></code></a>
+<a name="1000127">
+<code><strong><pre>	public abstract Any create_any();
+</pre>
+</strong></code></a>
+<a name="1000128">
+<code><strong><pre>	public abstract org.omg.CORBA.portable.OutputStream
+</pre>
+</strong></code></a>
+<a name="1000727">
+<code><strong><pre>		create_output_stream();
+</pre>
+</strong></code></a>
+<a name="1000130">
+<code><strong><pre>	public abstract void connect(org.omg.CORBA.Object obj);
+</pre>
+</strong></code></a>
+<a name="1000131">
+<code><strong><pre>	public abstract void disconnect(org.omg.CORBA.Object obj);
+</pre>
+</strong></code></a>
+<a name="1000135">
+<code><strong><pre>	// additional static methods for ORB initialization
+</pre>
+</strong></code></a>
+<a name="1000136">
+<code><strong><pre>	public static ORB init(Strings[] args, Properties props);
+</pre>
+</strong></code></a>
+<a name="1000428">
+<code><strong><pre>	public static ORB init(Applet app, Properties props);
+</pre>
+</strong></code></a>
+<a name="1000429">
+<code><strong><pre>	public static ORB init();
+</pre>
+</strong></code></a>
+<a name="1000737">
+<code><strong><pre>	abstract protected void set_parameters(String[] args,
+</pre>
+</strong></code></a>
+<a name="1000738">
+<code><strong><pre>					java.util.Properties props);
+</pre>
+</strong></code></a>
+<a name="1000739">
+<code><strong><pre>	abstract protected void set_parameters(java.applet.Applet app,
+</pre>
+</strong></code></a>
+<a name="1000740">
+<code><strong><pre>					java.util.Properties props);
+</pre>
+</strong></code></a>
+<a name="1000133">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+
+<a name="998508">
+<p>
+<h2><font size=6>	6.13	 CORBA::Object
+</font></h2>
+</a>
+<a name="998858">
+The IDL <strong>Object</strong> type is mapped to the <code><strong>org.omg.CORBA.Object and org.omg.CORBA.ObjectHelper</strong></code> classes as shown below. <p>
+</a>
+<a name="998862">
+The Java interface for each user defined IDL <strong>interface</strong> extends <code><strong>org.omg.CORBA.Object</strong></code>, so that any object reference can be passed anywhere a <code><strong>org.omg.CORBA.Object</strong></code> is expected.<p>
+</a>
+<a name="998863">
+<code><strong><pre>// Java
+</pre>
+</strong></code></a>
+<a name="998864">
+<code><strong><pre>package org.omg.CORBA;
+</pre>
+</strong></code></a>
+<a name="998865">
+<code><strong><pre>public interface Object {
+</pre>
+</strong></code></a>
+<a name="998866">
+<code><strong><pre>	boolean _is_a(String Identifier);
+</pre>
+</strong></code></a>
+<a name="998867">
+<code><strong><pre>	boolean _is_equivalent(Object that);
+</pre>
+</strong></code></a>
+<a name="998868">
+<code><strong><pre>	boolean _non_existent();
+</pre>
+</strong></code></a>
+<a name="998869">
+<code><strong><pre>	int _hash(int maximum);
+</pre>
+</strong></code></a>
+<a name="998870">
+<code><strong><pre>	org.omg.CORBA.Object _duplicate();
+</pre>
+</strong></code></a>
+<a name="998871">
+<code><strong><pre>	void _release();
+</pre>
+</strong></code></a>
+<a name="998872">
+<code><strong><pre>	ImplementationDef _get_implementation();
+</pre>
+</strong></code></a>
+<a name="998873">
+<code><strong><pre>	InterfaceDef _get_interface();
+</pre>
+</strong></code></a>
+<a name="1000178">
+<code><strong><pre>	Request _request(String s);
+</pre>
+</strong></code></a>
+<a name="998874">
+<code><strong><pre>	Request _create_request(Context ctx,
+</pre>
+</strong></code></a>
+<a name="998875">
+<code><strong><pre>				String operation,
+</pre>
+</strong></code></a>
+<a name="998876">
+<code><strong><pre>				NVList arg_list,
+</pre>
+</strong></code></a>
+<a name="998877">
+<code><strong><pre>				NamedValue result);
+</pre>
+</strong></code></a>
+<a name="998880">
+<code><strong><pre>	Request _create_request(Context ctx,
+</pre>
+</strong></code></a>
+<a name="998881">
+<code><strong><pre>				String operation,
+</pre>
+</strong></code></a>
+<a name="998882">
+<code><strong><pre>				NVList arg_list,
+</pre>
+</strong></code></a>
+<a name="998883">
+<code><strong><pre>				NamedValue result,	
+</pre>
+</strong></code></a>
+<a name="998884">
+<code><strong><pre>				ExceptionList exclist,
+</pre>
+</strong></code></a>
+<a name="998885">
+<code><strong><pre>				ContextList ctxlist);
+</pre>
+</strong></code></a>
+<a name="998886">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="998878">
+<code><strong><pre>
+</pre>
+</strong></code></a>
+<a name="998857">
+<p>
+<h2><font size=6>	6.14	 Current
+</font></h2>
+</a>
+<a name="998484">
+<strong><pre>pseudo interface Current {
+</pre>
+</strong></a>
+<a name="998850">
+<strong><pre>}
+</pre>
+</strong></a>
+<a name="1000471">
+<code><strong><pre>// Java
+</pre>
+</strong></code></a>
+<a name="1000472">
+<code><strong><pre>public abstract class Current
+</pre>
+</strong></code></a>
+<a name="1000473">
+<code><strong><pre>		extends org.omg.CORBA.portable.ObjectImpl {
+</pre>
+</strong></code></a>
+<a name="999994">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="998485">
+<p>
+<h2><font size=6>	6.15	 Principal
+</font></h2>
+</a>
+<a name="999052">
+<strong><pre>pseudo interface Principal {
+</pre>
+</strong></a>
+<a name="1000015">
+<strong><pre>attribute sequence&lt;octet&gt; name;
+</pre>
+</strong></a>
+<a name="1000016">
+<strong><pre>}
+</pre>
+</strong></a>
+<a name="999997">
+<code><strong><pre>// Java
+</pre>
+</strong></code></a>
+<a name="999998">
+<code><strong><pre>public abstract class Principal {
+</pre>
+</strong></code></a>
+<a name="1000004">
+<code><strong><pre>	public abstract byte[] name();
+</pre>
+</strong></code></a>
+<a name="1000005">
+<code><strong><pre>	public abstract void name(byte[] name);
+</pre>
+</strong></code></a>
+<a name="999999">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+
+</BODY>
+</HTML> 
+

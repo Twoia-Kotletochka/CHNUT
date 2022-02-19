@@ -1,0 +1,554 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Extensible Runtime Containment and Services Protocol for JavaBeans:  - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="beancontextTOC.fm.html">CONTENTS</a> | <a href="beancontext.fm1.html">PREV</a>
+ | <a href="beancontext.fm4.html">NEXT</a> 
+<!-- /font --></td><td align=right><i>Extensible Runtime Containment and Services Protocol for JavaBeans</i></td>
+</tr></table>
+<br>
+ 
+
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><i>2.0 </i> API Specification</h2>
+<br>
+<h3>
+<a name="916410"><!-- --></a>
+<i>2.1  </i> interface java.beans.beancontext.BeanContext
+</h3>
+
+<blockquote>
+<a name="918560"><!-- --></a>
+The hierarchal structure and general facilities of a <em>BeanContext</em> are provided for as follows:<p>
+</blockquote>
+<blockquote><pre>
+public interface java.beans.beancontext.BeanContext
+         extends java.beans.beancontext.BeanContextChild,
+		         java.util.Collection,
+			     java.beans.DesignMode,
+		 	     java.beans.Visibility {
+
+	Object instantiateChild(String beanName)
+		    throws IOException, ClassNotFoundException;
+
+	public InputStream
+		getResourceAsStream(String           name,
+		                    BeanContextChild requestor
+		);
+
+	public java.net.URL
+		getResource(String           name,
+		            BeanContextChild requestor
+		);
+
+	void addBeanContextMembershipListener(
+		    BeanContextMembershipListener bcml
+          );
+
+	void removeBeanContextMembershipListener{
+		    BeanContextMembershipListener bcml
+	);
+
+	public static final Object globalHierarchyLock;
+}
+
+</pre></blockquote><blockquote>
+Notifications of changes in the membership of a <em>BeanContext</em> are modeled as follows:<p>
+</blockquote>
+<blockquote><pre>
+public interface BeanContextMembershipListener
+	   extends   java.util.Listener {
+	void childrenAdded(BeanContextMembershipEvent   bcme);
+	void childrenRemoved(BeanContextMembershipEvent bcme);
+
+}
+
+</pre></blockquote><blockquote>
+The base class of all <em>BeanContext</em> related Events is defined by:<p>
+</blockquote>
+<blockquote><pre>
+public abstract class BeanContextEvent
+	   extends  java.util.EventObject {
+	public BeanContext getBeanContext();
+
+	public synchronized void
+		setPropagatedFrom(BeanContext bc);
+
+	public synchronized BeanContext getPropagatedFrom();
+
+	public synchronized boolean isPropagated()
+
+}
+
+
+</pre></blockquote><blockquote>
+The <em>BeanContextMembershipEvent</em> is defined as:<p>
+</blockquote>
+<blockquote><pre>
+public class BeanContextMembershipEvent
+	   extends BeanContextEvent {
+
+	public BeanContextMembershipEvent(BeanContext bc,
+	                                  Object[]    deltas);
+
+	public BeanContextMembershipEvent(BeanContext bc,
+	                                  Collection	 deltas);
+
+	public int size();
+
+	public boolean contains(Object child);
+
+	public Object[] toArray();
+
+	public Iterator iterator();
+
+}
+</pre></blockquote>
+<br>
+<a name="919733"><!-- --></a>
+<h4><i>2.1.1   The BeanContext as a participant in nested structure
+</i></h4>
+
+<blockquote>
+<a name="916698"><!-- --></a>
+One of the roles of the <em>BeanContext</em> is to introduce the notion of a hierarchical nesting or structure of <em>BeanContext</em> and JavaBean instances. In order to model this structure the <em>BeanContext</em> must expose API that defines the relationships in the structure or hierarchy.<p>
+<a name="916730"><!-- --></a>
+The <em>BeanContext</em> exposes its superstructure through implementation of the <em>java.beans.beancontext.BeanContextChild</em> interface (as described later). This interface allows the discovery and manipulation of a <em>BeanContext</em>&#39;s nesting <em>BeanContext</em>, and thus introduces a facility to create a hierarchy of <em>BeanContexts</em>.<p>
+<a name="916885"><!-- --></a>
+The <em>BeanContext </em>exposes its substructure through a number of interface methods modeled by the <em>java.util.Collection</em> interface semantics<p>
+<a name="920020"><!-- --></a>
+<em>BeanContexts</em> are required to implement all the mandatory <em>Collection</em> API&#39;s, with the following particular semantics for <em>add</em>() and <em>remove</em>():.<p>
+<a name="916737"><!-- --></a>
+The <em>add()</em> method may be invoked in order to nest a new <em>Object</em>, <em>BeanContextChild</em>, or <em>BeanContext</em> within the target <em>BeanContext</em>. A conformant <em>add()</em> implementation is required to adhere to the following semantics:<p>
+</blockquote><blockquote>
+<ul><li>
+Synchronize on the <em>BeanContext.globalHierarchyLock.</em>
+
+<li>
+Each child object shall appear only once in the set of children for a given <em>BeanContext</em>. If the instance is already a member of the <em>BeanContext</em> then the method shall return False.
+
+<li>
+Each valid child shall be added to the set of children of a given source <em>BeanContext,</em> and thus shall appear in the set of children, obtained through either the<em> toArray(), </em>or<em> iterator() </em>methods, until such time as that child is deleted from the nesting <em>BeanContext</em> via an invocation of <em>remove()</em>, <em>removeAll()</em>, <em>retainAll()</em>, or <em>clear</em>()
+
+<li>
+As the child is added to the set of nested children, and where that child implements the <em>java.beans.beancontext.BeanContextChild</em> interface (or <em>BeanContextProxy, </em>see later for details<em>)</em>, the <em>BeanContext</em> shall invoke the <em>setBeanContext</em>() method upon that child, with a reference to itself. Upon invocation, a child may, if it is for some reason unable or unprepared to function in that <em>BeanContext</em>, throw a <em>PropertyVetoException</em> to notify the nesting <em>BeanContext</em>. If the child throws such an exception the <em>BeanContext</em> shall revoke the addition of the child (and any other partial changes made to the state of the BeanContext as a side effect of this addition operation) to the set of nested children and throw an <em>IllegalStateException</em>.
+
+<li>
+JavaBeans that implement the <em>java.beans.Visibility</em> interface shall be notified via the appropriate method, either <em>dontUseGui()</em> or <em>okToUseGui(),</em> of their current ability to render GUI as defined the policy of the <em>BeanContext</em>.
+
+<li>
+If the newly added child implements <em>BeanContextChild</em>, the <em>BeanContext</em> shall register itself with the child on both its <em>VetoableChangeListener</em> and <em>PropertyChangeListener</em> interfaces to monitor, at least, that <em>BeanContextChild</em>&#39;s &#34;beanContext&#34; property.
+
+<li>
+By doing so the <em>BeanContext</em> can monitor its child and can detect when such children are removed by a 3rd party (usually another <em>BeanContext</em>) invoking <em>setBeanContext</em>(). A <em>BeanContext</em> may veto such a change by a 3rd party if it determines that the child is not in a state to depart membership at that time. 
+
+<li>
+If the JavaBean(s) added implement <em>Listener</em> interfaces that the <em>BeanContext</em> is a source for, then the <em>BeanContext</em> may register the newly added objects via the appropriate <em>Listener</em> registration methods as a permissible side effect of nesting.
+
+<li>
+If the JavaBean(s) added are Event Sources for Event that a particular <em>BeanContext</em> has interest in the <em>BeanContext</em> may, as a side effect of adding the child, register <em>Listeners</em> on that child. The <em>BeanContext</em> should avoid using <em>Serializable</em> <em>Listeners</em> thus avoiding accidental serialization of unwanted structure when a child serializes itself.
+
+<li>
+Once the <em>targetChild</em> has been successfully processed, the <em>BeanContext</em> shall fire a <em>java.beans.beancontext.BeanContextMembershipEvent</em>, containing a reference to the newly added <em>targetChild</em>, to the <em>childrenAdded</em>() method of all the <em>BeanContextMemebrshipListeners</em> currently registered.
+
+<li>
+The method shall<em> </em>return true if successful.
+
+</ul>
+</ul>
+</blockquote><blockquote>
+<a name="919527"><!-- --></a>
+The <em>remove()</em> method may be invoked in order to remove an existing child JavaBean or <em>BeanContext</em> from within the target <em>BeanContext</em>. A conformant <em>remove()</em> implementation is required to adhere to the following semantics:<p>
+</blockquote><blockquote>
+<ul><li>
+Synchronize with the<em> BeanContext.globalHierarchyLock.</em>
+
+<li>
+If a particular child is not present in the set of children for the source <em>BeanContext,</em> the method shall return False.
+
+<li>
+Remove the valid <em>targetChild</em> from the set of children for the source <em>BeanContext, </em>also removing that child from any other <em>Listener</em> interfaces that it was implicitly registered on, for that <em>BeanContext </em>as a side-effect of nesting.
+
+<li>
+Subsequently, if the <em>targetChild</em> implements the<em> java.beans.beancontext.BeanContextChild </em>interface (or <em>BeanContextProxy, </em>see later for deatils), the <em>BeanContext </em>shall invoke the <em>setBeanContext</em>() with a null<a href="#foot1"><sup>1</sup></a> <em>BeanContext</em> value, in order to notify that child that it is no longer nested within the <em>BeanContext</em>.
+
+<li>
+If a particular <em>BeanContextChild</em> is in a state where it is not able to be un-nested from its nesting <em>BeanContext</em> it may throw a <em>PropertyVetoException</em>, upon receipt of this the <em>BeanContext </em>shall revoke the remove operation for this instance and throw <em>IllegalStateException</em>. To avoid infinite recursion, children are not permitted to repeatedly veto subsequent remove notifications. In practice, a child should attempt to resolve the condition (if temporary) that precludes it&#39;s removal from it&#39;s current nesting <em>BeanContext.</em>
+
+<li>
+If the<em> targetChild </em>implements<em> java.beans.beancontext.BeanContextChild</em> then the <em>BeanContext</em> shall de-register itself from that child&#39;s <em>PropertyChangeListener</em> and <em>VetoableChangeListener</em> sources.
+
+<li>
+If the <em>BeanContext</em> had previously registered the object(s) removed as <em>Listeners</em> on events sources implemented by the <em>BeanContext</em> as a side effect of nesting those objects, then the <em>BeanContext</em> shall de-register the newly removed object from the applicable source(s) via the appropriate <em>Listener</em> de-registration method(s)
+
+<li>
+If the <em>BeanContext</em> had previously registered <em>Listener(s)</em> on the object(s) removed then the <em>BeanContext</em> shall remove those Listener(s) from those object(s).
+
+<li>
+Once the <em>targetChild</em> has been removed from the set of children, the <em>BeanContext</em> shall fire a <em>java.beans.beancontext.BeanContextMembershipEvent, </em>containing a reference to the <em>targetChild </em>just removed, to the <em>childrenRemoved</em>() method of all the <em>BeanContextMembershipListeners</em> currently registered.
+
+<li>
+Finally the method shall return the value true if successful.
+
+</ul>
+</ul>
+</blockquote><blockquote>
+<a name="918703"><!-- --></a>
+Note that the lifetime of any child of a nesting <em>BeanContext</em>, is at least for the duration of that child&#39;s containment within a given <em>BeanContext</em>. For simple JavaBeans that are not aware of their containment within a <em>BeanContext</em>, this usually implies that the JavaBean shall exist for at least the lifetime of the nesting <em>BeanContext</em>.<p>
+<a name="920917"><!-- --></a>
+<em>BeanContext</em>&#39;s are not required to implement either <em>addAll()</em>, <em>removeAll</em>(), <em>retainAll</em>() or <em>clear()</em> optional methods defined by <em>java.util.Collection API</em>, however if they do they must implement the semantics defined, per object, for both <em>add</em>() and <em>remove</em>() above. In the failure cases these methods shall revoke any partially applied changes to return the <em>BeanContext</em> to the state it was in prior to the failing composite operation being invoked, no <em>BeanContextEvents</em> shall be fired in the failure case as is consistent with the definition of <em>add()</em> and <em>remove()</em> above.<p>
+<a name="920924"><!-- --></a>
+<em>BeanContextMembershipListeners</em> may be added and removed via invocations of <em>addBeanContextMembershipListener</em>() and <em>removeBeanContextMembershipListener</em>().<p>
+<a name="920925"><!-- --></a>
+The <em>toArray(), </em>method shall return a copy of the current set of JavaBean or <em>BeanContext</em> instances nested within the target <em>BeanContext</em>, and the <em>iterator</em>() method shall supply a <em>java.util.Iterator </em>object over the same set of children.<p>
+<a name="920926"><!-- --></a>
+The <em>contains()</em> method shall return true if the object specified is currently a child of the <em>BeanContext</em>.<p>
+<a name="920927"><!-- --></a>
+The <em>size()</em> method returns the current number of children nested.<p>
+<a name="920928"><!-- --></a>
+The <em>isEmpty</em>() method returns true if the <em>BeanContext</em> has no children.<p>
+<a name="920929"><!-- --></a>
+Note that all the<em> Collection </em>methods all require proper synchronization between each other by a given implementation in order to function correctly in a multi-threaded environment, that is, to ensure that any changes to the membership of the set of JavaBeans nested within a given <em>BeanContext</em> are applied atomically. All implementations are required to synchronized their implementations of these methods with the <em>BeanContext.globalHierarchyLock</em>.<p>
+<a name="920930"><!-- --></a>
+In some situations, <em>add()</em> and <em>remove()</em> (or a variant thereof) operations may occur nested, that is multiple occurrences may appear on the stack of the calling <em>Thread </em>simultaneously<em>, </em>e.g: when <em>BeanContextChild,</em> A, is added (or removed), it&#39;s <em>setBeanContext() </em>method also adds (or removes) another <em>BeanContextChild,</em> B. A particular <em>BeanContext</em> implementation may choose to fire either two <em>BeanContextMembershipListener</em> notifications, one for each <em>add()</em>/<em>remove()</em> operation of B then A (in this order since B is successfully added before A), or coalesce these into a single notification containing both A, and B. Note that should A be unable to be added or removed for any reason it shall not perform, or undo, any add or remove operations upon B as a side-effect, prior to throwing a <em>PropertyVetoException</em> to indicate this condition, that is, it must avoid or undo any side-effect membership changes prior to rejecting any changes to its own membership status.<p>
+<a name="920949"><!-- --></a>
+The <em>instantiateChild()</em> method is a convenience method that may be invoked to instantiate a new JavaBean instance as a child of the target <em>BeanContext</em>. The implementation of the JavaBean is derived from the value of the <em>beanName </em>actual parameter, and is defined by the <em>java.beans.Beans.instantiate()</em> method.<p>
+<a name="920931"><!-- --></a>
+Typically, this shall be implemented by calling the appropriate <em>java.beans.Beans.instantiate() </em>method, using the <em>ClassLoader</em> of the target <em>BeanContext</em>. However a particular <em>BeanContext</em> implementation may interpose side-effects on the instantiate operation in their implementation of this method.<p>
+<a name="920030"><!-- --></a>
+The <em>BeanContextEvent</em> is the abstract root <em>EventObject</em> class for all <em>Events</em> pertaining to changes in state of a <em>BeanContext</em>&#39;s defined semantics. This abstract root class defines the <em>BeanContext</em> that is the source of the notification, and also introduces a mechanism to allow the propagation of <em>BeanContextEvent</em> subclasses through a hierarchy of <em>BeanContexts</em>. The <em>setPropagatedFrom</em>() and <em>getPropagatedFrom</em>() methods allows a <em>BeanContext</em> to identify itself as the source of a propagated Event to the <em>BeanContext</em> to which it subsequently propagates the <em>Event</em> to. This is a general propagation mechanism and should be used with care as it has significant performance implications when propagated through large hierarchies.<p>
+<a name="920016"><!-- --></a>
+The <em>BeanContextMembershipEvent</em> describes changes that occur in the membership of a particular <em>BeanContext</em> instance. This event encapsulates the list of children either added to, or removed from, the membership of a particular <em>BeanContext</em> instance, i.e the delta in the membership set.<p>
+<a name="920017"><!-- --></a>
+Whenever a successful <em>add</em>(), <em>remove</em>(), <em>addAll</em>(), <em>retainAll</em>(), <em>removeAll</em>(), or <em>clear</em>() is invoked upon a particular <em>BeanContext</em> instance, a <em>BeanContextMembershipEvent </em>is fired describing the children effected by the operation.<p>
+</blockquote>
+<br>
+<a name="919576"><!-- --></a>
+<h4><i>2.1.2   Resources.
+</i></h4>
+
+<blockquote>
+<a name="919581"><!-- --></a>
+The <em>BeanContext</em> defines two methods; <em>getResourceAsStream</em>() and <em>getResource</em>() which are analogous to those methods found on <em>java.lang.ClassLoader. BeanContextChild </em>instances nested within a <em>BeanContext</em> shall invoke the methods on their nesting <em>BeanContext</em> in preference for those on <em>ClassLoader</em>, to allow a <em>BeanContext</em> implementation to augment the semantics by interposing behavior between the child and the underlying <em>ClassLoader</em> semantics.<p>
+</blockquote>
+<br>
+<a name="918705"><!-- --></a>
+<h4><i>2.1.3   The BeanContext as a Service Provider
+</i></h4>
+
+<blockquote>
+<a name="919899"><!-- --></a>
+The service facilities of a <em>BeanContext</em> are provided as follows:<p>
+</blockquote>
+<blockquote><pre>
+public interface BeanContextServices
+	   extends   BeanContext,BeanContextServicesListener {
+
+	boolean addService(Class           serviceClass, 
+	                   BeanContextServiceProvider service);
+
+	boolean revokeService(Class           serviceClass,
+	                      BeanContextServiceProvider bcsp,
+	                      boolean         revokeNow
+	);
+
+	boolean hasService(Class serviceClass);
+
+	Object getService(BeanContextChild      bcc,
+	                  Object                requestor.
+	                  Class                 serviceClass,
+	                  Object                serviceSelector,
+	                  BeanContextServicesRevokedListener sl
+	) throws TooManyListenersException;
+
+	void releaseService(BeanContextChild bcc,
+	                    Object           requestor,
+	                    Object           service);
+
+	Iterator getCurrentServiceClasses();
+
+	public Iterator getCurrentServiceSelectors(Class sc);
+
+	addBeanContextServicesListener(
+		BeanContextServicesListener bcsl
+	);
+
+	removeBeanContextServicesListener(
+		BeanContextServicesListener bcsl
+     );
+}
+</pre></blockquote><blockquote>
+The <em>BeanContextServiceProvider</em> interface is defined as follows:<p>
+</blockquote>
+<blockquote><pre>
+public interface BeanContextServiceProvider {
+    Object getService(BeanContext bc,
+	                  Object      requestor,
+	                  Class       serviceCls,
+	                  Object      serviceSelector);
+
+	void releaseService(BeanContext bc,
+	                    Object      requestor,
+	                    Object      service);
+
+	Iterator getCurrentServiceSelectors(BeanContext bc,
+	                                    Class serviceCls);
+}
+</blockquote></pre><blockquote>
+The <em>BeanContextServiceRevokedListener</em> is defined as follows:
+</blockquote>
+<blockquote><pre>
+public interface BeanContextServiceRevokedListener
+	   extends java.util.EventListener {
+	void serviceRevoked(
+		BeanContextServiceRevokedEvent bcsre
+	);
+}
+</pre></blockquote><blockquote>
+The <em>BeanContextServicesListener</em> is defined as follows:<p>
+</blockquote>
+<blockquote><pre>
+public interface BeanContextServicesListener
+	   extends BeanContextServiceRevokedListener {
+	void serviceAvailable(
+		BeanContextServiceAvailableEvent bcsae
+	);
+}
+</pre></blockquote><blockquote>
+The <em>BeanContextServiceAvailableEvent</em> is defined as follows:<p>
+</blockquote>
+<blockquote><pre>
+public class BeanContextServiceAvailableEvent 
+	   extends BeanContextEvent {
+
+	public BeanContextServiceAvailableEvent(
+			BeanContextServices        bcs,
+			Class                      sc
+     );
+
+	BeanContextServices getSourceAsBeanContextServices();
+
+	public Class getServiceClass();
+
+	public boolean isServiceClass(Class serviceClass);
+
+	public Iterator getCurrentServiceSelectors();
+
+}
+</pre></blockquote><blockquote>
+The <em>BeanContextServiceRevokedEvent</em> is defined as follows:<p>
+</blockquote>
+<blockquote><pre>
+public class BeanContextServiceRevokedEvent 
+	   extends BeanContextEvent {
+	public BeanContextServiceRevokedEvent(
+				BeanContextServices        bcs,
+				Class                      sc,
+			    boolean                    invalidNow
+	);
+
+	public BeanContextServices
+			getSourceAsBeanContextServices();
+
+	public Class getServiceClass();
+
+	public boolean isServiceClass(Class service);
+
+	public boolean isCurrentServiceInvalidNow();
+}
+</pre></blockquote><blockquote>
+The  <em>BeanContextServiceProviderBeanInfo</em> is defined as follows:<p>
+</blockquote>
+<blockquote><pre>
+public interface BeanContextServicesProviderBeanInfo
+       extends   java.beans.BeanInfo {
+    java.beans.BeanInfo[] getServicesBeanInfo();
+}
+</pre></blockquote><blockquote>
+<a name="920110"><!-- --></a>
+Apart from providing a structured hierarchy, the other major role of a <em>BeanContext</em> is to provide a standard mechanism for a JavaBean component to obtain context-specific facilities or services from its environment. <p>
+<a name="920128"><!-- --></a>
+A service, represented by a <em>Class</em> object, is typically a reference to either an interface, or to an implementation that is not publicly instantiable. This <em>Class</em> defines an interface protocol or contract between a <em>BeanContextServiceProvider</em>, the factory of the service, and an arbitrary object associated with a <em>BeanContextChild </em>that is currently nested within the <em>BeanContext</em> the service is registered with. Typically such protocols encapsulate some context specific or sensitive behavior that isolates a <em>BeanContextChild</em>&#39;s implementation from such dependencies thus resulting in simpler implementations, greater interoperability and portability. <p>
+<a name="920151"><!-- --></a>
+A <em>BeanContextServiceProvider</em>, is a &#34;factory&#34; for one or more services. It registers itself with a particular <em>BeanContextServices</em> via it&#39;s <em>adService</em>() method, if the service is not already registered with the <em>BeanContextServices</em>, the <em>BeanContextServices</em> associates the service specified with the <em>BeanContextServiceProvider, </em>and<em> </em>fires a <em>BeanContextServiceAvailableEvent</em> via the <em>serviceAvailable</em>() method to those <em>BeanContextServicesListeners </em>currently registered, then returns true, otherwise false indicating that the service is already registered for that <em>BeanContextServices</em>.<p>
+<a name="920167"><!-- --></a>
+Once registered, and until revoked, the service is available via the <em>BeanContextServices</em> <em>getService</em>() method. <p>
+<a name="920771"><!-- --></a>
+The <em>hasService</em>() method may be used to test the presence of a particular service, and the <em>getCurrentServices</em>() method returns an iterator over the currently available services for that <em>BeanContextServices</em>.<p>
+<a name="920196"><!-- --></a>
+A <em>BeanContextChild</em> or any arbitrary object associated with a <em>BeanContextChild</em>, may obtain a reference to a currently registered service from its nesting <em>BeanContextServices</em> via an invocation of the <em>getService</em>() method. The <em>getService</em>() method specifies; the <em>BeanContextChild</em>, the associated <em>requestor</em>,  the <em>Class</em> of the service requested, a service dependent parameter (known as a Service Selector), and a <em>BeanContextServicesRevokedListener</em> used to subsequently notify the requestor that the service class has been revoked by the <em>BeanContextServiceProvider</em>. The <em>Listener</em> is registered automatically with a unicast event source per requestor and service class and is automatically unregistered when a requestor relinquishes all references of a given service class, or as a side effect of the service being &#34;forcibly revoked&#34; by the providing <em>BeanContextServiceProvider</em>.<p>
+<a name="920205"><!-- --></a>
+The <em>BeanContextServices</em> passes this <em>getService</em>() invocation onto the associated <em>BeanContextServiceProvider</em> (if any) to be satisfied via an invocation of its <em>getService</em>() method. The <em>BeanContextServiceProvider</em> is passed the <em>BeanContext</em>, the <em>Class</em> of the service provided, the service dependent service parameter (the Service Selector) and a reference to the object requesting the service. <p>
+<a name="920936"><!-- --></a>
+The reference to the <em>BeanContext</em> is intended to enable the <em>BeanContextServiceProvider</em> to distinguish service requests from multiple sources. A <em>BeanContextServiceProvider</em> is only permitted to retain a weak reference to any <em>BeanContext</em> so obtained.<p>
+<a name="920941"><!-- --></a>
+The Service Selector parameter is a service dependent value used by a service requestor for a particular service in order to parameterize the service to be provided to it by the <em>BeanContextServiceProvider</em>. Some examples of its usage are; a parameter to a constructor for the service implementation class; a value for a particular service&#39;s property, or as a key into a map of existing implementations.<p>
+<a name="920220"><!-- --></a>
+The reference to the requestor is intended to permit the <em>BeanContextServiceProvider</em> to interrogate the state of the requestor in order to perform any customization or parameterization of the service, therefore this reference shall be treated as immutable by the <em>BeanContextServicesProvider</em>. Additionally the <em>BeanContextServiceProvider</em> is permitted to retain only weak and immutable reference to both the <em>requestor</em> and the <em>BeanContextChild</em> after returning from the <em>getService</em>() invocation.<p>
+<a name="920216"><!-- --></a>
+The <em>BeanContextServiceProvider</em> may satisfy the request, returning a reference to an instance of the <em>Class</em> of the requested service (such that the reference returned shall result in the expression: <em>&lt;serviceRefence&gt;</em> instanceof <em>&lt;serviceClass&gt;</em> being true), return null, or throw an unchecked exception. <p>
+<a name="920796"><!-- --></a>
+In the case when a nested <em>BeanContextServices</em> is requested for a particular service that it has no <em>BeanContextServiceProvider</em> for, then the <em>BeanContextServices</em> may delegate the service requested to its own nesting <em>BeanContextServices</em> in order to be satisfied. Thus delegation requests can propagate from the leaf <em>BeanContextServices</em> to the root <em>BeanContextServices.</em><p>
+<a name="920221"><!-- --></a>
+A <em>BeanContextChild</em> may query a particular <em>BeanContextServices</em> for a list of currently available Service Classes (via the <em>getCurrentServiceClasses</em>() method)and any associated Service Selectors, if a particular service <em>Class</em> implements a finite list of apriori values for a Service Class, via its nesting <em>BeanContextServices.getCurrentServiceSelectors</em>() method, which in turn obtains the currently available Service Selectors (if any) via the <em>BeanContextServiceProvider.getCurrentServiceSelectors</em>() method.<p>
+<a name="920224"><!-- --></a>
+If the service in question does not implement a finite set of apriori values for the set of valid Service Selectors it shall return null.<p>
+<a name="920874"><!-- --></a>
+A reference obtained by a <em>BeanContextChild</em> via <em>getService</em>() is valid until the reference is released by the <em>BeanContextChild</em> via an invocation of its nesting <em>BeanContextServices</em> <em>releaseService</em>() method, except in the case where the <em>BeanContextServices</em> fires a <em>BeanContextServiceRevokedEvent</em> and that Event&#39;s <em>isCurrentServiceInvalidNow</em>() method returns true, in this case the <em>BeanContextServices</em> and/or the <em>BeanContextServiceProvider</em> that provided the service has determined that current service references are immediately invalidated, or &#34;forcibly revoked&#34; (this typically occurs in the following situation).<p>
+<a name="920227"><!-- --></a>
+When <em>BeanContextChild</em> instances are removed from a particular <em>BeanContextServices</em> instance, they shall discard all references to any services they obtained from that <em>BeanContextServices </em>by appropriate invocations of <em>releaseService</em>(). If the un-nesting <em>BeanContextChild</em> is also a <em>BeanContextServices</em> instance, and if any of these service references have been exposed to the un-nesting <em>BeanContextServices</em>&#39;s own members as a result of a delegated <em>getService</em>() request as defined above, the <em>BeanContextServiecs</em> shall fire a <em>BeanContextServiceRevokedEvent</em> to notify its nested children that the service(s) are &#34;forcibly revoked&#34;. This immediate invalidation of current references to delegated services at un-nesting is to ensure that services that are dependent upon the structure of the hierarchy are not used by requestors after their location in the structure has changed.<p>
+<a name="920877"><!-- --></a>
+ <em>BeanContextChild</em> instances receiving a &#34;forcable revocation&#34; of a Service Class shall not invoke <em>releaseService</em>() for any references it may hold of that type, since in this case, the <em>BeanContextServiceProvider</em> or the <em>BeanContextServices</em> that provided the service reference to that <em>BeanContextChild</em> has already invalidated all references to that service on their behalf.<p>
+<a name="920228"><!-- --></a>
+A <em>BeanContextServiceProvider</em> may revoke a Service Class at any time after it has registered it with a <em>BeanContextServices</em> by invoking its <em>revokeService</em>() method. Once the <em>BeanContextServices</em> has fired a <em>BeanContextServiceRevokedEvent</em> notifying the currently registered <em>BeanContextServiceRevokedListeners</em> and the <em>BeanContextServicesListeners</em> that the service is now unavailable it shall no longer satisfy any new service requests for the revoked service until (if at all) that Service Class is re-registered. References obtained by <em>BeanContextChild</em> requestors to a service prior to its being revoked remain valid, and therefore the service shall remain valid to satisfy those extant references, until all references to that service are released, unless in exceptional circumstances the <em>BeanContextServiceProvider,</em> or <em>BeanContextServices</em>, when revoking the service, wants to immediately terminate service to all the current references. This immediate revocation is achieved by invoking the <em>BeanContextServices </em>.<em>revokeService</em>() method with an actual parameter value of <em>revokeNow</em> == true. Subsequent to immediate invalidation of current service references the service implementation may throw a service specific unchecked exception in response to any attempts to continue to use the revoked service by service requestors that have erroneously retained references to the service, ignoring the earlier immediate revocation notification.<p>
+<a name="920954"><!-- --></a>
+Note that in order to function correctly (when delegating service requests) in a multi-threaded environment, implementations of <em>BeanContextServices</em> are required to synchronize their implementations of; <em>addService(), hasService(), getCurrentServiceClasses(), getCurrentServiceSelectors(), getService(), releaseService() </em>and<em> revokeService()</em>  with the <em>BeanContext.globalHierarhyLock</em>.<p>
+<a name="921613"><!-- --></a>
+A <em>BeanContextServicesProvider</em> may expose the <em>BeanInfo</em> for the Service Classes it provides implementations for by providing a <em>BeanInfo</em> class that implements <em>BeanContextServicesProviderBeanInfo. </em>Thus exposing an array of <em>BeanInfo</em>&#39;s, one for each Service Class supported. Builder tools can, for example, use this infomation to provide application developers with a palette of Servlice Classes for inclusion in an application.<p>
+</blockquote>
+<br>
+<a name="920139"><!-- --></a>
+<h4><i>2.1.4   The role of a BeanContext in Persistence
+</i></h4>
+
+<blockquote>
+<a name="916796"><!-- --></a>
+Since one of the primary roles of a <em>BeanContext</em> is to represent a logical nested structure of JavaBean component and <em>BeanContext </em>instance hierarchies, it is natural to expect that in many scenarios that hierarchy should be persistent, i.e that the <em>BeanContext</em> should participate in persistence mechanisms, in particular, either <em>java.io.Serializable </em>or <em>java.io.Externalizable (</em>If the latter the <em>BeanContext</em> is responsible for acting as the persistence container for the sub-graph of children, encoding and decoding the class information, and maintaining sub-graph equivalence after deserialization, basically the function(s) provide for serialization by <em>ObjectOutputStream</em> and <em>ObjectInputStream</em>).<p>
+<a name="918473"><!-- --></a>
+In particular <em>BeanContext</em>s shall persist and restore their current children that implement the appropriate persistence interfaces when they themselves are made persistent or subsequently restored.<p>
+<a name="918472"><!-- --></a>
+As a result of the above requirement, persistent <em>BeanContextChil</em>d implementations are required to not persist any references to either their nesting <em>BeanContext</em>, or to any Delegates obtained via its nesting <em>BeanContextServices</em>. <p>
+<a name="919674"><!-- --></a>
+<em>BeanContexts</em> shall, when restoring an instance of <em>BeanContextChild</em> from its persistence state, be required to perform the equivalent of invoking add()on the newly instantiated <em>BeanContextChild,</em>, in order to notify the newly restored instance of its nesting <em>BeanContext</em>, thus allowing that <em>BeanContextChild</em> to fully reestablish its dependencies on its environment.<p>
+<a name="917961"><!-- --></a>
+Also note that since <em>BeanContext</em> implements <em>java.beans.beancontext.BeanContextChild</em> it shall obey the persistence requirements defined below for implementors of that interface.<p>
+</blockquote>
+<br>
+<a name="91998-19994"><!-- --></a>
+<h4><i>2.1.5   BeanContext with associated presentation hierarchies
+</i></h4>
+
+<blockquote>
+<a name="91998-19995"><!-- --></a>
+Although not required, many <em>BeanContext</em>s may be associated within a presentation hierarchy of <em>java.awt.Container</em>s and <em>java.awt.Component</em>s. A <em>Container</em> cannot implement <em>BeanContext </em>directly<a href="#foot2"><sup>2</sup></a> but may be associated with one by implementing the <em>BeanContextProxy</em> interface described herein.<p>
+</blockquote>
+<blockquote><pre>
+public interface BeanContextProxy {
+    BeanContext getBeanContext();
+}
+
+
+</pre></blockquote><blockquote>
+<a name="920973"><!-- --></a>
+For instances of classes that do not (or cannot in the case of <em>Component </em>or subclasses thereof) directly implement the <em>BeanContext</em> interface, but are associated with an instance of such an implementation, (via delegation) such instances may expose this association by implementing the <em>BeanContextProxy</em> interface. By doing so, this enables arbitrary 3rd parties, such as builder tools, to interrogate and discover the <em>BeanContext</em> associated with such objects for the purposes of either nesting objects within that associated <em>BeanContext</em>, observing changes in the membership, or obtaining services thereof.<p>
+<a name="920974"><!-- --></a>
+This also permits multiple distinct objects (e.g: <em>Containers</em>) to share a single <em>BeanContext</em>. [Note though that in this case a shared <em>BeanContext</em> shall not implement <em>BeanContextContainerProxy</em> since that is a peer-to-peer relationship between a single <em>BeanContext</em> and the <em>Container</em> implementing that interface]<p>
+<a name="920975"><!-- --></a>
+The value returned from <em>getBeanContext()</em> is constant for the lifetime of the implementing instance, that is the relationship between a <em>BeanContextProxy</em> and it&#39;s associated <em>BeanContext</em> is static and thus may not change for the lifetime of either participant.<p>
+<a name="920976"><!-- --></a>
+No class may implement both the <em>BeanContext </em>(or<em> BeanContextChild</em>) and the <em>BeanContextProxy</em> interfaces, they are mutually exclusive.<p>
+<a name="920990"><!-- --></a>
+Some <em>BeanContextProxy</em> implementors may also implement <em>java.util.Collection</em>, or some other collection-like API (e.g <em>java.awt.Container</em>), in addition to, and possibly distinct from, maintaining a <em>BeanContext</em> based <em>Collection</em>.<p>
+<a name="920991"><!-- --></a>
+In such cases it is possible to add, or remove, elements from either the <em>BeanContext,</em> via it&#39;s <em>Collection</em> API&#39;s, or the <em>BeanContextProxy</em> implementor using it&#39;s own collection-like API&#39;s (e.g: <em>public boolean java.awt.Container.add(Component)</em>). It is implementation dependent whether or not objects added or removed from either the <em>BeanContext</em>&#39;s <em>Collection</em>, or the <em>BeanContextProxy</em> implementor&#39;s collection are also added or removed from the corresponding object&#39;s collection (i.e: should a <em>Container.add(</em>) also infer a <em>BeanContext.add()</em> and vica-versa?). In such situations both participants (the implementor of <em>BeanContextProxy</em> and the <em>BeanContext</em> itself) are required to; 1) implement the same add/remove semantics as the other (i.e: if <em>x.add(o)</em> has a side effect of <em>x.getBeanContext().add(o)</em> then <em>x.getBeanContext().add(o)</em> should also a have side effect of <em>x.add(o)</em>), and 2) before adding/removing an object to/from the other participants collection, it should test (synchronized) if that object is/is not a member of the other participants collection before proceeding with the operation in question (this is to avoid infinite recursion between collection operations on both participants) (i.e: <em>x.add(o)</em> should not invoke <em>x.getBeanContext().add(o)</em> if <em>x.getBeanContext().contains(o)</em> is true and vica-versa).<p>
+<a name="921595"><!-- --></a>
+It is important to note that if an object that implements <em>BeanContextProxy</em> is added to , or removed from, a <em>BeanContext</em>, that in addition to the operation performed on that object, the same operation should be performed on the <em>BeanContext </em>returned from <em>BeanContextProxy.getBeanContext()</em>. That is an implementor of <em>BeanContextProxy</em> shall be treated as though it directly implemented <em>BeanContext</em> by any nesting <em>BeanContext</em>. (and vica-versa if the operation is applied to the <em>BeanContext</em> its shall also be applied to the corresponding <em>BeanContextProxy</em>)<p>
+<a name="921598"><!-- --></a>
+ The following interface is defined to allow a <em>BeanContext</em> to expose a reference to an associated <em>Container</em> to enable it&#39;s <em>BeanContextChild</em> members to add, or remove, their associated <em>Component</em> objects to/from that <em>Container </em>or to inspect<em> </em>some state on the<em> Container</em>.<p>
+</blockquote>
+<blockquote><pre>
+public interface BeanContextContainerProxy {
+	Container getContainer()
+}
+</pre></blockquote><blockquote>
+<a name="921074"><!-- --></a>
+When a <em>BeanContextChild</em> with an associated <em>Component</em> is added to a <em>BeanContext</em> with an associated <em>Container</em> there are three models of interaction that can occur in relation to the nesting of the <em>Component</em> in the <em>Container</em> as a result:<p>
+</blockquote><a name="921086"><!-- --></a>
+<blockquote>
+<ol>
+<li>If the associated <em>Component</em> was added to the associated <em>Container</em> via a <em>Container</em> API, then the nesting of the <em>BeanContextChild</em> in the <em>BeanContext</em> is a side effect of that and no further action is required.
+<li>If the <em>Component</em> and <em>Container</em> are not nested then the nesting <em>BeanContext</em> may as a side effect cause the <em>Component</em> associated with the <em>BeanContextChild</em> to be added to it&#39;s associated <em>Container</em>.
+<p>
+OR
+<p>
+<li>If the <em>Component</em> and <em>Container</em> are not nested then the <em>BeanContextChild</em> being nested may as a side effect may cause it&#39;s <em>Component</em> to be associated with the <em>Container</em> associated with the nesting <em>BeanContext</em>.
+</ol>
+</blockquote>
+<blockquote>
+<a name="921084"><!-- --></a>
+Thus, for greatest interoperability a <em>BeanContextChild</em> shall always check if its <em>Compoent</em>&#39;s parent is the <em>BeanContext</em> Container, and if it is not, then it may add itself if appropriate. Thus a <em>BeanContextChild</em> may function correctly under all scenarios.<p>
+<a name="921096"><!-- --></a>
+The <em>BeanContextChild</em> is responsible for initially causing itself to eligible to be displayed via an invocation of <em>show</em>() [note that the <em>BeanContextChild</em> may also subsequently repeatedly <em>hide() </em>and<em> show() </em>itself].<p>
+<a name="920295"><!-- --></a>
+The nesting <em>BeanContext</em>, or its associated <em>Container</em>, may subsequently <em>hide</em>() or <em>show</em>() the <em>BeanContextChild</em>&#39;s <em>Component</em> arbitrarily, but it is strongly recommended that it treat that <em>Component</em> as immutable in all other respects with the exception of registering <em>Listeners</em> to obtain event notifications, or where other <em>Component</em>/<em>Container</em> specific protocols permit or require the <em>Container</em> to alter the state of its <em>Component</em> containees. An example of such a permitted interaction would be where a property such as <em>background</em> or <em>foreground</em> color were propagated from <em>Container</em> to <em>Component</em>.<p>
+<a name="920857"><!-- --></a>
+Once a <em>BeanContextChild</em> has been un-nested from it&#39;s <em>BeanContext</em>, it&#39;s associated <em>Component</em> (if any) shall be removed from that <em>BeanContext</em>&#39;s <em>Container </em>as a side effect of the removal operation, this is the responsibility of the <em>BeanContext</em> (typically if the <em>BeanContextChild</em> has been moved to another <em>BeanContext</em> with an associated <em>Container</em> via an invocation of it&#39;s <em>setBeanContext()</em> method, the <em>Component</em> will already have been re-parented as a side effect of that operation by the time the original <em>BeanContext</em> is notified of the change via a <em>PropertyChangeEvent</em> from the child, however the check should be made and the <em>Component</em> removed if it has not already occurred).<p>
+<a name="920883"><!-- --></a>
+To avoid infinite recursion, both a <em>BeanContext</em> and a <em>BeanContextChild</em> that also are associated with a <em>Container</em> and <em>Component</em> nesting relationship should avoid undoing any changes applied to the <em>Component</em> by the other party in the relationship. In general the <em>BeanContext</em> is responsible for the appearance, visibility and relative layout of the <em>BeanContextChild</em>&#39;s <em>Component,</em> and the <em>BeanContextChild</em> is responsible for the <em>Component</em>&#39;s state and content pertaining to the application functionality it is implementing.<p>
+<a name="920839"><!-- --></a>
+The value returned from the <em>getContainer() </em>method is constant for the lifetime of the implementing <em>BeanContext, </em>that is the relationship between a <em>BeanContext</em> and a <em>Container</em> is static for the lifetime of both participants.<p>
+<a name="920805"><!-- --></a>
+In addition the following interface is also defined:<p>
+</blockquote>
+<blockquote><pre>
+public interface BeanContextChildComponentProxy {
+    Component getComponent();
+}
+</pre></blockquote><blockquote>
+<a name="920838"><!-- --></a>
+A <em>BeanContext</em> or a <em>BeanContextChild</em> may implement this interface to expose the GUI <em>Component</em> that it is associated with to it&#39;s nesting <em>BeanContext</em>. A <em>BeanContext</em> may use this method to establish the relationship between references to instances of <em>Component</em> and <em>BeanContextChild</em> that are known to it, where a <em>BeanContextChild</em> and <em>Component</em> are not implemented by the same object instance (that is the <em>BeanContextChild</em> delegates its <em>Component</em> implementation to a distinct object rather than inheriting from <em>Component</em>]. A <em>BeanContext</em> may interrogate the <em>Component</em> reference it obtains from a nested <em>BeanContextChild</em> in order to determine its state, and it may also register <em>Listeners</em> for particular events, however it is strongly recommended that the <em>BeanContext</em> treat the reference as generally immutable to avoid changing the <em>Component</em> state.<p>
+<a name="920843"><!-- --></a>
+The value returned from the <em>getComponent()</em> method is a constant for the lifetime of that <em>BeanContextChild</em>.<p>
+<a name="920884"><!-- --></a>
+In the situation where a <em>BeanContext</em> has an associated <em>Container,</em> but does not wish to expose that <em>Container</em> by implementing the <em>BeanContextContainerProxy</em> interface, but wishes to handle the nesting of an arbitrary <em>BeanContextChild</em>&#39;s associated <em>Component</em> (exposed by the <em>BeanContextChild</em> either implementing the <em>BeanContextChildComponentProxy</em> interface or as direct subclass of <em>Component</em>) the <em>BeanContext</em> is permitted to add/remove that <em>Component</em> to/from its associated <em>Container</em>.In such cases the <em>BeanContextChild</em> and it&#39;s associated <em>Component</em> implementation shall not interfere with this action. <p>
+<a name="920858"><!-- --></a>
+If a class implements both <em>BeanContextChildComponentProxy</em> and <em>BeanContextContainerProxy</em> then the object returned by both <em>getComponent()</em> and <em>getContainer() </em>shall be the same object.<p>
+</blockquote>
+<hr>
+<p>
+<font size="-1">
+<ol>
+<a name="foot1"></a>
+<li>Note, it the <em>remove()</em> was invoked as a result of the 
+<em>BeanContext</em> receiving an unexpected <em>PropertyChangeEvent</em>
+notification as a result of a 3rd party invoking <em>setBeanContext()</em>
+then the remove implementation shall not invoke <em>setBeanContext</em>(null) on
+that child as a part of the <em>remove()</em> semantics, since to do so would
+overwrite the value previously set by the 3rd party.
+<p>
+<a name="foot2"></a>
+<li>Unfortunately because of method name collisions between <em>Component</em>
+and <em>Collection</em> a <em>Component</em> cannot implement 
+<em>BeanContext</em> or <em>Collection</em> directly and must model the 
+capability with a "HasA" rather than an "IsA" relationship.
+</ol>
+</font>
+
+<br>
+</blockquote>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="beancontextTOC.fm.html">CONTENTS</a> | <a href="beancontext.fm1.html">PREV</a>
+ | <a href="beancontext.fm4.html">NEXT</a> 
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1998-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Thu Dec 03 12:39:43 1998-1999 -->
+ 
+
+
+</body>
+</html>

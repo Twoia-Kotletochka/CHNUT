@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="Cp1251"?>
+ <beans>
+  <bean id="root" name="Система криптографической защиты" class="net.soft_systems.integrator.TopicBean">
+   <child-beans>
+    <bean id="structure" name="Статическая модель" class="net.soft_systems.crypto.beans.structure.StructureGroupBean">
+     <child-beans>
+      <bean id="structure-diagram" name="Диаграмма статической модели" class="net.soft_systems.crypto.beans.structure.StructureBean">
+       <child-beans/>
+      </bean>
+      <bean id="resources" name="Защищаемая область O" class="net.soft_systems.crypto.beans.structure.ResourceGroupBean">
+       <child-beans>
+        <bean id="Источник" name="Источник" class="net.soft_systems.crypto.beans.structure.ResourceBean" x="301.33333333333326" y="104.33333333333334"/>
+       </child-beans>
+      </bean>
+      <bean id="subjects" name="Субъекты S" class="net.soft_systems.crypto.beans.structure.SubjectGroupBean">
+       <child-beans>
+        <bean id="Приёмник" name="Приёмник" class="net.soft_systems.crypto.beans.structure.SubjectBean" x="87.99999999999977" y="99.33333333333329"/>
+       </child-beans>
+      </bean>
+      <bean id="threats" name="Область угроз T" class="net.soft_systems.crypto.beans.structure.ThreatGroupBean">
+       <child-beans/>
+      </bean>
+      <bean id="protections" name="Системные защиты M" class="net.soft_systems.crypto.beans.structure.ProtectionGroupBean">
+       <child-beans/>
+      </bean>
+      <bean id="boundaries" name="Набор барьеров B" class="net.soft_systems.crypto.beans.structure.BoundaryGroupBean">
+       <child-beans/>
+      </bean>
+      <bean id="vulnerabilities" name="Множество уязвимостей V" class="net.soft_systems.crypto.beans.structure.VulnerabilityGroupBean">
+       <child-beans/>
+      </bean>
+      <bean id="relations" name="Связи" class="net.soft_systems.crypto.beans.structure.RelationGroupBean">
+       <child-beans>
+        <bean id="Приёмник - Источник" name="Приёмник - Источник" class="net.soft_systems.crypto.beans.structure.RelationBean" subject="Приёмник" resource="Источник"/>
+       </child-beans>
+      </bean>
+     </child-beans>
+    </bean>
+    <bean id="policies" name="Политика безопасности" class="net.soft_systems.crypto.beans.policy.PolicyGroupBean">
+     <child-beans>
+      <bean id="rights" name="Множество прав доступа" class="net.soft_systems.crypto.beans.policy.RightGroupBean">
+       <child-beans>
+        <bean id="r1" name="r1" class="net.soft_systems.crypto.beans.policy.RightBean"/>
+        <bean id="r2" name="r2" class="net.soft_systems.crypto.beans.policy.RightBean"/>
+       </child-beans>
+      </bean>
+      <bean id="hru" name="Дискреционная модель Харрисона-Руззо-Ульмана" class="net.soft_systems.crypto.beans.policy.HRUPolicy">
+       <child-beans>
+        <bean id="right-matrix" name="Матрица прав доступа" class="net.soft_systems.crypto.beans.policy.RightMatrixBean">
+         <access-rights subject="Приёмник" object="Источник">
+          <right><![CDATA[r1]]>          </right>
+          <right><![CDATA[r2]]>          </right>
+         </access-rights>
+         <access-rights subject="Приёмник" object="Приёмник">
+          <right><![CDATA[r1]]>          </right>
+          <right><![CDATA[r2]]>          </right>
+         </access-rights>
+        </bean>
+        <bean id="commands" name="Множество команд" class="net.soft_systems.crypto.beans.policy.CommandGroupBean">
+         <child-beans>
+          <bean id="c1" name="c1" class="net.soft_systems.crypto.beans.policy.CommandBean">
+           <conditions>
+            <bean id="r1 in M[Приёмник,Источник]" name="r1 in M[Приёмник,Источник]" class="net.soft_systems.crypto.beans.policy.ConditionBean" right="r1" subject="Приёмник" object="Источник"/>
+           </conditions>
+           <operations>
+            <bean id="create subject Приёмник" name="create subject Приёмник" class="net.soft_systems.crypto.beans.policy.CreateSubjectOperation" subject="Приёмник"/>
+            <bean id="enter r1 into M[Приёмник,Источник]" name="enter r1 into M[Приёмник,Источник]" class="net.soft_systems.crypto.beans.policy.EnterRightOperation" object="Источник" subject="Приёмник" right="r1"/>
+           </operations>
+          </bean>
+         </child-beans>
+        </bean>
+       </child-beans>
+      </bean>
+     </child-beans>
+    </bean>
+    <bean id="realization" name="Динамическая модель" class="net.soft_systems.integrator.TopicBean">
+     <child-beans>
+      <bean id="process-diagram" name="Диаграмма взаимодействия процессов" class="net.soft_systems.crypto.beans.process.ProcessDiagramBean">
+       <child-beans/>
+      </bean>
+      <bean id="processes" name="Процессы системы" class="net.soft_systems.crypto.beans.process.ProcessGroupBean">
+       <child-beans>
+        <bean id="S" name="S / Ресурс Источник" class="net.soft_systems.crypto.beans.process.ProcessBean" x="87.5" y="40.5" resource="Источник" auto-create="false">
+         <vars><![CDATA[RSA rsa = new RSA();                                                                                        ]]>         </vars>
+         <child-beans>
+          <bean id="nodes" name="Узлы процесса" class="net.soft_systems.crypto.beans.process.NodeGroupBean">
+           <child-beans>
+            <bean id="out" name="S.out / out" class="net.soft_systems.crypto.beans.process.NodeBean" x="117.5" y="57.5" type="2"/>
+            <bean id="key_in" name="S.key_in / in" class="net.soft_systems.crypto.beans.process.NodeBean" x="69.5" y="57.5" type="1"/>
+           </child-beans>
+          </bean>
+          <bean id="methods" name="Методы процесса" class="net.soft_systems.crypto.beans.process.MethodGroupBean">
+           <child-beans>
+            <bean id="onCreate" name="onCreate" class="net.soft_systems.crypto.beans.process.MethodBean">            </bean>
+            <bean id="onDestroy" name="onDestroy" class="net.soft_systems.crypto.beans.process.MethodBean">            </bean>
+            <bean id="onRecieve" name="onRecieve" class="net.soft_systems.crypto.beans.process.MethodBean"><![CDATA[long key[]=(long [])recv("key_in");
+rsa.setOpenKey(key[0],key[1]);
+logDataMessage("Получен открытый ключ","e="+key[0]+" n="+key[1]);                                                                                                            ]]>            </bean>
+            <bean id="do_send" name="do_send" class="net.soft_systems.crypto.beans.process.MethodBean"><![CDATA[long message=12345435;
+logDataMessage("Исходный текст",message);
+long code = rsa.encode( message );
+logDataMessage("Зашифрованный текст",code);
+send("out",new Long(code));
+                                                                                                                                                                                                                                                                                                                                                                                                                         ]]>            </bean>
+           </child-beans>
+          </bean>
+         </child-beans>
+        </bean>
+        <bean id="R" name="R / Субъект Приёмник" class="net.soft_systems.crypto.beans.process.ProcessBean" x="90.5" y="167.0" subject="Приёмник" auto-create="false">
+         <vars><![CDATA[RSA rsa=new RSA();                                                                                 ]]>         </vars>
+         <child-beans>
+          <bean id="nodes" name="Узлы процесса" class="net.soft_systems.crypto.beans.process.NodeGroupBean">
+           <child-beans>
+            <bean id="in" name="R.in / in" class="net.soft_systems.crypto.beans.process.NodeBean" x="72.5" y="184.0" type="1"/>
+            <bean id="key_out" name="R.key_out / out" class="net.soft_systems.crypto.beans.process.NodeBean" x="120.5" y="184.0" type="2"/>
+           </child-beans>
+          </bean>
+          <bean id="methods" name="Методы процесса" class="net.soft_systems.crypto.beans.process.MethodGroupBean">
+           <child-beans>
+            <bean id="onCreate" name="onCreate" class="net.soft_systems.crypto.beans.process.MethodBean">            </bean>
+            <bean id="onDestroy" name="onDestroy" class="net.soft_systems.crypto.beans.process.MethodBean">            </bean>
+            <bean id="onRecieve" name="onRecieve" class="net.soft_systems.crypto.beans.process.MethodBean"><![CDATA[Long lcode=(Long)recv("in");
+long code=lcode.longValue();
+logDataMessage("Шифротекст",code);
+long decode = rsa.decode( code );
+logDataMessage("Расшифрованный текст",decode);
+                                                                                                            ]]>            </bean>
+            <bean id="makeKeys" name="makeKeys" class="net.soft_systems.crypto.beans.process.MethodBean"><![CDATA[long x       = 25000;
+long y       = 30000;
+long fi;
+long p,q,e;
+
+for ( p = x; !Numerical.isPrime( p ); p++ ) ;
+for ( q = y + 2; !Numerical.isPrime( q ); q++ ) ;
+rsa.setSecureKey(p,q);
+logDataMessage("Секретный ключ","p=" + p +" q="+q);
+fi=rsa.getFi();
+for ( e = fi / 10; Numerical.gcd( e, fi ) != 1; e++ ) ;
+rsa.checkOpenKey(e);
+logDataMessage("Открытый ключ", "e=" + e+" n="+rsa.getN() );
+long open_key[]=new long[2];
+open_key[0]=e;
+open_key[1]=rsa.getN();
+send("key_out",open_key);
+                                                                                                            ]]>            </bean>
+           </child-beans>
+          </bean>
+         </child-beans>
+        </bean>
+       </child-beans>
+      </bean>
+      <bean id="channels" name="Каналы передачи данных" class="net.soft_systems.crypto.beans.process.ChannelGroupBean">
+       <child-beans>
+        <bean id="S.out / out -> [R.in / in]" name="S.out / out -> [R.in / in]" class="net.soft_systems.crypto.beans.process.ChannelBean">
+         <src-node process="S" node="out"/>
+         <dst-node process="R" node="in"/>
+        </bean>
+        <bean id="R.key_out / out -> [S.key_in / in]" name="R.key_out / out -> [S.key_in / in]" class="net.soft_systems.crypto.beans.process.ChannelBean">
+         <src-node process="R" node="key_out"/>
+         <dst-node process="S" node="key_in"/>
+        </bean>
+       </child-beans>
+      </bean>
+     </child-beans>
+    </bean>
+    <bean id="modelling" name="Моделирование" class="net.soft_systems.integrator.TopicBean">
+     <child-beans>
+      <bean id="messages" name="Сообщения" class="net.soft_systems.crypto.beans.model.MessageGroupBean"/>
+     </child-beans>
+    </bean>
+    <bean id="config" name="Настройки среды" class="net.soft_systems.crypto.beans.ConfigGroupBean">
+     <child-beans>
+      <bean id="avail-policies" name="Модели политики безопасности" class="net.soft_systems.integrator.TopicBean">
+       <child-beans>
+        <bean id="Дискреционная модель Харрисона-Руззо-Ульмана" name="Дискреционная модель Харрисона-Руззо-Ульмана" class="net.soft_systems.crypto.beans.policy.ClassRefBean" class-ref="net.soft_systems.crypto.beans.policy.HRUPolicy"/>
+       </child-beans>
+      </bean>
+     </child-beans>
+    </bean>
+   </child-beans>
+  </bean>
+ </beans>

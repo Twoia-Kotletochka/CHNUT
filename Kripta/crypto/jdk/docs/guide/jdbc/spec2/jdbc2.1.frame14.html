@@ -1,0 +1,205 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title></title>
+</head>
+<body bgcolor=#ffffff>
+
+<table width=100%><tr>
+<td><font size=-1>
+<a href="jdbc2.1.frame.html">Contents</a>  | <a href="jdbc2.1.frame13.html">Prev</a>  | <a href="jdbc2.1.frame15.html">Next</a>
+</font></td><td align=right><i>JDBC<sup><font size=-2>TM</font></sup> Guide: Getting Started</i></td>
+</tr></table>
+<hr>
+<br>
+ 
+
+<a name="288513"></a>
+<h2>Appendix C:  Change History</h2>
+
+
+<a name="288266"></a>
+<h2>C.1 	  &nbsp;&nbsp; Changes between 0.10 and 0.70:</h2>
+
+<ul><a name="288267"></a>
+<li>Removed references to the <code>java.sql2</code> package. Substituted a proposal that 
+splits the JDBC API into two packages: <code>javax.sql</code> and <code>java.sql.
+</code><br><br>
+<a name="288268"></a>
+<li>Removed descriptions of the classes and intefaces in <code>javax.sql. </code>We plan to 
+add them in again later, or create a separate document for the extended JDBC 
+API.
+<br><br>
+<a name="288277"></a>
+<li>Removed the <code>ScrollableResultSet</code> interface and associated methods on 
+other interfaces. Added methods for scrolling to the <code>ResultSet</code> interface
+<br><br>
+<a name="288278"></a>
+<li>Added result set type, concurrency type, keyset size, fetch size, and fetch 
+direction properties to <code>Connection</code>, <code>Statement</code>, and <code>ResultSet</code> interfaces.
+<br><br>
+<a name="288284"></a>
+<li>Deprecated Statement.setCursorName and ResultSet.getCursorName. Use of 
+"SELECT FOR UPDATE" is also deprecated. The new result set update 
+methods can be used instead.
+<br><br>
+<a name="299844"></a>
+<li>Added SQL99 APIs.
+<br><br>
+<a name="299845"></a>
+<li>Added new metadata for persistent Java objects.
+<br><br>
+</ul>
+<a name="300735"></a>
+<h2>C.2 	  &nbsp;&nbsp; Changes between 0.70 and 0.80</h2>
+
+<ul><a name="300738"></a>
+<li>The Struct interface no longer extends the SQLData interface.
+<br><br>
+<a name="300740"></a>
+<li>All occurrences of the SQLType interface have been removed and replaced with 
+'String'.
+<br><br>
+<a name="300743"></a>
+<li>The Array.getArray() method now returns Object instead of Object[].  This 
+allows an int[] array to be returned, for example.
+<br><br>
+<a name="300747"></a>
+<li>The specification now states that a Java programming language array may be 
+passed as an input parameter via PreparedStatement.setObject().
+<br><br>
+<a name="300750"></a>
+<li>The semantics of ResultSet.isDeleted(), etc. is clarified.
+<br><br>
+<a name="300752"></a>
+<li>The DatabaseMetaData.getClass() method has been dropped due to the 
+difficulties involved in loading classes directly from a database.
+<br><br>
+<a name="300778"></a>
+<li>The ResultSet.getBigDecimal() and CallableStatement.getBigDecimal() 
+methods which take an `int scale' parameter have been deprecated.
+<br><br>
+<a name="300779"></a>
+<li>Statement.getResultSetType() now throws SQLException
+<br><br>
+<a name="300780"></a>
+<li>Added method Array.getBaseTypeName(). Array.getBaseType() now returns 
+an int type code.
+<br><br>
+<a name="300808"></a>
+<li>DatabaseMetaData.getUDTs() now allows a fully qualified SQL name which 
+may contain wildcard characters in the typeNamePattern parameter.
+<br><br>
+</ul>
+<a name="301440"></a>
+<h2>C.3 	  &nbsp;&nbsp; Changes between 0.80 and 0.90</h2>
+
+<ul><a name="301441"></a>
+<li>Section 9.4: Compiled code examples and removed syntax errors.
+<br><br>
+<a name="301458"></a>
+<li>Section 9.4.2: Added note on the independence of the Java programming 
+language and SQL99 inheritance hierarchies.
+<br><br>
+<a name="301464"></a>
+<li>Section 6.1: Removed the requirement that indirect updates, such as those 
+performed by a trigger that is fired, be included in the update counts returned by 
+a batch update.
+<br><br>
+<a name="301491"></a>
+<li>Section 5.6: Clarified some technical details concerning inserting new rows in 
+a result set.
+<br><br>
+<a name="301492"></a>
+<li>Section 7.3.1: Noted that the TYPE_NAME returned by getTypeInfo() may 
+contain a vendor specific type name when the type code is JAVA_ODBECT. 
+Previously, the TYPE_NAME had to be null.
+<br><br>
+<a name="301497"></a>
+<li>Removed method SQLInput.readStruct() and SQLOutput.writeStruct(). Read/
+writeObject() should be used instead.
+<br><br>
+<a name="301676"></a>
+<li>Chapter 5: Revised and simplified the scrollable result set model.
+<br><br>
+<a name="301712"></a>
+<li>Section 11.3: Added note on character conversion.
+<br><br>
+<a name="301829"></a>
+<li>Section 10.3: Added description of time zone support.
+<br><br>
+</ul>
+<a name="301983"></a>
+<h2>C.4 	  &nbsp;&nbsp; Changes between 0.90 and 0.91</h2>
+
+<ul><a name="301984"></a>
+<li>Section 5.5: Added rules for selecting a supported result set type and 
+concurrency type.
+<br><br>
+<a name="302004"></a>
+<li>Section 5.6: Added method ResultSet.cancelRowUpdates.
+<br><br>
+<a name="302005"></a>
+<li>Section 5.6: Added more description on the semantics of the update methods.
+<br><br>
+<a name="302014"></a>
+<li>Added Section 5.9.
+<br><br>
+</ul>
+<a name="302179"></a>
+<h2>C.5 	  &nbsp;&nbsp; Changes between 0.91 and 0.95</h2>
+
+<ul><a name="302180"></a>
+<li>Section 5.6: Added general description of the queries that yield updatable result 
+sets.
+<br><br>
+<a name="302190"></a>
+<li>Section 8.2: Clarified rules for passing blob and clob values as input parameters.
+<br><br>
+<a name="302203"></a>
+<li>Sections 11.4 and 11.5: Added these sections to the document.
+<br><br>
+</ul>
+<a name="302257"></a>
+<h2>C.6 	  &nbsp;&nbsp; Changes between 0.95 and 1.0</h2>
+
+<ul><a name="302258"></a>
+<li>no changes
+<br><br>
+</ul>
+<a name="302520"></a>
+<h2>C.7 	  &nbsp;&nbsp; Changes between 1.0 and 1.1</h2>
+
+<ul><a name="302521"></a>
+<li>Chapter 6: Extended the semantics of executeBatch. Batch processing is now 
+allowed to continue after an element in a batch has failed to execute 
+successfully.
+<br><br>
+<a name="303656"></a>
+<li>Added Section 10.6.
+<br><br>
+</ul>
+
+<br>
+<hr> 
+<font size=-1>
+<a href="jdbc2.1.frame.html">Contents</a>  | <a href="jdbc2.1.frame13.html">Prev</a>  | <a href="jdbc2.1.frame15.html">Next</a>
+</font>
+<hr>
+
+
+
+<address>
+<a href="mailto:jdbc@eng.sun.com">jdbc@eng.sun.com</a>
+or
+<a href="mailto:jdbc-business@eng.sun.com">jdbc-business@eng.sun.com</a>
+</address>
+
+<i><a href="../../../relnotes/SMICopyright.html">
+Copyright</a> &#169; 1996-1999 Sun Microsystems, Inc.   All rights reserved.</i>
+
+
+<!-- HTML generated by Suzette Pelouch on December 01, 1999 -->
+
+</body>
+</html>

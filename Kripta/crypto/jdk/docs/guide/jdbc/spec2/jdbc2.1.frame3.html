@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title></title>
+</head>
+<body bgcolor=#ffffff>
+
+<table width=100%><tr>
+<td><font size=-1>
+<a href="jdbc2.1.frame.html">Contents</a>  | <a href="jdbc2.1.frame2.html">Prev</a>  | <a href="jdbc2.1.frame4.html">Next</a>
+</font></td><td align=right><i>JDBC<sup><font size=-2>TM</font></sup> Guide: Getting Started</i></td>
+</tr></table>
+<hr>
+<br>
+ 
+
+<a name="284645"></a>
+<h2>	3	 Overview of New Features</h2>
+
+<a name="282034"></a>
+This chapter contains an overview of the new features that are being added to the JDBC 
+API.
+<p>
+
+<a name="282396"></a>
+<h3>3.1 	  &nbsp; &nbsp; Result set enhancements</h3>
+<a name="299536"></a>
+	The JDBC 1.0 API provided result sets that had the ability to scroll in a forward direction
+only. Scrollable result sets allow for more flexibility in the processing of results by 
+providing both forward and backward movement through their contents. In addition, 
+scrollable result sets allow for relative and absolute positioning. For example, it's possible
+to move to the fourth row in a scrollable result set directly, or to move directly to 
+the third row following the current row, provided the row exists. 
+<p>
+<a name="299540"></a>
+The JDBC API allows result sets to be directly updatable, as well.
+<p>
+
+<a name="299562"></a>
+<h3>3.2 	  &nbsp; &nbsp; Batch updates</h3>
+<a name="299563"></a>
+The batch update feature allows an application to submit multiple update statements 
+(insert/update/delete) in a single request to the database. This can provide a dramatic 
+increase in performance when a large number of update statements need to be executed.
+<p>
+
+<a name="299552"></a>
+<h3>3.3 	  &nbsp; &nbsp; Advanced data types</h3>
+<a name="299553"></a>
+Increased support for storing persistent Java programming language objects (Java objects
+) and a mapping for SQL99 data types such as binary large objects, and structured 
+types, has been added to the JDBC API. An application may also customize the mapping
+of SQL99 structured types into Java programming language classes.
+<p>
+
+<a name="288219"></a>
+<h3>3.4 	  &nbsp; &nbsp; Rowsets</h3>
+<a name="282422"></a>
+As its name implies, a rowset encapsulates a set of rows. A rowset may or may not 
+maintain an open database connection. When a rowset is `disconnected' from its data 
+source, updates performed on the rowset are propagated to the underlying database using
+an optimistic concurrency control algorithm. 
+<p>
+<a name="284659"></a>
+Rowsets add support to the JDBC API for the JavaBeans component model. A rowset 
+object is a bean. A rowset implementation may be serializable. Rowsets can be created 
+at design time and used in conjunction with other JavaBeans components in a visual 
+builder tool to construct an application. 
+<p>
+
+<a name="282298"></a>
+<h3>3.5 	  &nbsp; &nbsp; JNDI for naming databases</h3>
+<a name="282457"></a>
+The Java Naming and Directory Interface (JNDI) API can be used in addition to a 
+JDBC technology-based driver manager (JDBC driver manager) to obtain a connection 
+to a database. When an application uses the JNDI API, it specifies a logical name that 
+identifies a particular database instance and JDBC driver for accessing that database. 
+This has the advantage of making the application code independent of a particular 
+JDBC driver and JDBC technology URL.
+<p>
+
+<a name="282330"></a>
+<h3>3.6 	  &nbsp; &nbsp; Connection Pooling </h3>
+<a name="282472"></a>
+The JDBC API contains `hooks' that allow connection pooling to be implemented on 
+top of the JDBC driver layer. This allows for a single connection cache that spans the 
+different JDBC drivers that may be in use. Since creating and destroying database connections
+is expensive, connection pooling is important for achieving good performance, 
+especially for server applications.
+<p>
+
+<a name="282470"></a>
+<h3>3.7 	  &nbsp; &nbsp; Distributed transaction support</h3>
+<a name="282485"></a>
+Support for distributed transactions has been added as an extension to the JDBC API. 
+This feature allows a JDBC driver to support the standard 2-phase commit protocol 
+used by the Java Transaction Service (JTS) API.
+<p>
+
+<a name="282309"></a>
+<h3>3.8 	  &nbsp; &nbsp; Other new features</h3>
+<a name="282491"></a>
+Support for character streams has been added. This means that character data can be retrieved
+and sent to the database as a stream of internationalized Unicode characters. 
+Methods to allow <code>java.math.BigDecimal</code> values to be returned with full precision 
+have also been added. Support for time zones has been added.
+<p>
+
+
+<br>
+<hr> 
+<font size=-1>
+<a href="jdbc2.1.frame.html">Contents</a>  | <a href="jdbc2.1.frame2.html">Prev</a>  | <a href="jdbc2.1.frame4.html">Next</a>
+</font>
+<hr>
+
+
+
+<address>
+<a href="mailto:jdbc@eng.sun.com">jdbc@eng.sun.com</a>
+or
+<a href="mailto:jdbc-business@eng.sun.com">jdbc-business@eng.sun.com</a>
+</address>
+
+<i><a href="../../../relnotes/SMICopyright.html">
+Copyright</a> &#169; 1996-1999 Sun Microsystems, Inc.   All rights reserved.</i>
+
+
+<!-- HTML generated by Suzette Pelouch on December 01, 1999 -->
+
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API: 5 - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-image.fm1.html">PREV</a>
+ | <a href="j2d-image.fm3.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="64209"><i>5.2	</i> Immediate Mode Imaging Concepts
+</a></h2>
+
+<blockquote>
+<a name="65688"><!-- --></a>
+The immediate mode imaging model supports fixed-resolution images stored in memory. The model also supports filtering operations on image data. A number of classes and interfaces are used in this model.<p>
+<a name="65861"><!-- --></a>
+<p><center><img src="j2d-image.fm.anc6.gif"></center><p>
+</blockquote>
+<blockquote><p>
+<a name="65690"><!-- --></a>
+<b>Figure 5-1	</b> <kbd>BufferedImage</kbd> and supporting classes
+
+</p>
+</blockquote><blockquote>
+<a name="69065"><!-- --></a>
+As shown in <a href="j2d-image.fm2.html#65690">Figure&#160;5-1</a>, <kbd>BufferedImage</kbd> provides general image management. A <kbd>BufferedImage</kbd> can be created directly in memory and used to hold and manipulate image data retrieved from a file or URL. A <kbd>BufferedImage</kbd> can be displayed using any <kbd>Graphics2D</kbd> object for a screen device, or rendered to any other destination using appropriate <kbd>Graphics2D</kbd> context. A <kbd>BufferedImage</kbd> object contains two other objects: a <kbd>Raster</kbd> and a <kbd>ColorModel</kbd>. <p>
+<a name="65692"><!-- --></a>
+The <kbd>Raster</kbd> class provides image data management. It represents the rectangular coordinates of the image, maintains image data in memory, and provides a mechanism for creating multiple subimages from a single image data buffer. It also provides methods for accessing specific pixels within an image. A Raster object contains two other objects, a <kbd>DataBuffer</kbd> and a <kbd>SampleModel</kbd>.   <p>
+<a name="65694"><!-- --></a>
+The <kbd>DataBuffer</kbd> class holds pixel data in memory. <p>
+<a name="65696"><!-- --></a>
+The <kbd>SampleModel</kbd> class interprets data in the buffer and provides it as individual pixels or rectangular ranges of pixels. <p>
+<a name="65698"><!-- --></a>
+The <kbd>ColorModel</kbd> class provides a color interpretation of pixel data provided by the image&#39;s sample model. <p>
+<a name="67352"><!-- --></a>
+The image package provides additional classes that define filtering operations on <kbd>BufferedImage</kbd> and <kbd>Raster</kbd> objects. Each image processing operation is embodied in a class that implements the <kbd>BufferedImageOp</kbd> interface, the <kbd>RasterOp</kbd> interface, or both interfaces. The operation class defines <kbd>filter</kbd> methods that performs the actual image manipulation. <p>
+<a name="67356"><!-- --></a>
+<a href="j2d-image.fm2.html#67384">Figure&#160;5-2</a> illustrates the basic model for Java 2D<sup>TM</sup> API image processing: <p>
+<a name="67382"><!-- --></a>
+<p><center><img src="j2d-image.fm.anc.gif"></center><p>
+</blockquote>
+<blockquote><p>
+<a name="67384"><!-- --></a>
+<b>Figure 5-2	</b> Image Processing Model
+
+</p>
+</blockquote><blockquote>
+<a name="67385"><!-- --></a>
+The operations supported include:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="67386"><!-- --></a>
+Affine transformation
+</li>
+<li>
+<a name="67387"><!-- --></a>
+Amplitude scaling
+</li>
+<li>
+<a name="67388"><!-- --></a>
+Lookup-table modification
+</li>
+<li>
+<a name="67389"><!-- --></a>
+Linear combination of bands
+</li>
+<li>
+<a name="67390"><!-- --></a>
+Color conversion
+</li>
+<li>
+<a name="67391"><!-- --></a>
+Convolution
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="67350"><!-- --></a>
+Note that if you&#39;re interested just in displaying and manipulating images, you only need to understand the <kbd>BufferedImage</kbd> class and the filtering operation classes. On the other hand, if you&#39;re planning to write filters or otherwise directly access image data, you&#39;ll need to understand the classes associated with <kbd>BufferedImage</kbd>. <p>
+</blockquote>
+<br>
+<h3>
+<a name="65725"><!-- --></a>
+<i>5.2.1	</i> Terminology
+</h3>
+
+<blockquote>
+<a name="65727"><!-- --></a>
+Here are some terms used throughout the following discussions: <p>
+<a name="65758"><!-- --></a>
+Data Elements: primitive types used as units of storage of image data. Data elements are individual members of a <kbd>DataBuffer</kbd> array.   The layout of elements in the data buffer is independent of the interpretation of the data as pixels by an image&#39;s <kbd>SampleModel</kbd>.<p>
+<a name="65729"><!-- --></a>
+Samples: distinct members of the pixels of an image. A <kbd>SampleModel</kbd> provides a mechanism for converting elements in the <kbd>DataBuffer</kbd> to pixels and their samples.   The samples of a pixel may represent primary values in a particular color model. For example, a pixel in an RGB color model consists of three samples: red, green, and blue. <p>
+<a name="69136"><!-- --></a>
+Components: values of pixels independent of color interpretation. The distinction between component and sample is useful with <kbd>IndexColorModel</kbd>, where pixel components are indexes into the <kbd>LookupTable</kbd>.<p>
+<a name="65731"><!-- --></a>
+Band: the set of all samples of one type in an image, such as all red samples or all green samples. Pixel data can be stored in a number of ways, the two supported in the Java 2D API being banded and pixel interleaved. Banded storage organizes image data by bands, and a pixel is made up of sample data from the same position in each band. Pixel interleaved storage organizes image data by pixels, with a single array containing all pixels, and bands consisting of the set of samples at the same index position in each pixel.<p>
+<a name="65733"><!-- --></a>
+Primaries: distinct members of a color value in a specific color model; for example the RGB model forms color values from the primaries red, green, and blue. <p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-image.fm1.html">PREV</a>
+ | <a href="j2d-image.fm3.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Mon Nov 22 09:37:15 1999 -->
+ 
+
+
+</body>
+</html>

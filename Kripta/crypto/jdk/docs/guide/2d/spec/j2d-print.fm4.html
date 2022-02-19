@@ -1,0 +1,181 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API: 7 - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-print.fm3.html">PREV</a>
+ | NEXT <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="418034"><i>7.4	</i> Printing with Pageables and Books
+</a></h2>
+
+<blockquote>
+<a name="418035"><!-- --></a>
+<kbd>Pageable</kbd> jobs are suited for applications that build an explicit representation of a document, page by page. The <kbd>Book</kbd> class is a convenient way to use <kbd>Pageables</kbd>, but you can also build your own <kbd>Pageable</kbd> structur
+es if <kbd>Book</kbd> does not suit your needs. This section shows you how to use <kbd>Book</kbd>.<p>
+<a name="418036"><!-- --></a>
+Although slightly more involved, <kbd>Pageable</kbd> jobs are preferred over <kbd>Printable</kbd> jobs because the printing system has more flexibility. A major advantage of <kbd>Pageables</kbd> is that the number of pages in the document is usually known
+ and can be displayed to the user in the print dialog box. This helps the user to confirm that the job is specified correctly or to select a range of pages for printing.<p>
+<a name="418037"><!-- --></a>
+A <kbd>Book</kbd> represents a collection of pages. The pages in a book do not have to share the same size, orientation, or page painter. For example, a <kbd>Book</kbd> might contain two letter size pages in portrait orientation and a letter size page in 
+landscape orientation.<p>
+<a name="418038"><!-- --></a>
+When a <kbd>Book</kbd> is first constructed, it is empty. To add pages to a <kbd>Book</kbd>, you use the <kbd>append</kbd> method. This method takes a <kbd>PageFormat</kbd> object that defines the page&#39;s size, printable area, and orientation and a pag
+e painter that implements the <kbd>Printable</kbd> interface.<p>
+<a name="418039"><!-- --></a>
+Multiple pages in a <kbd>Book</kbd> can share the same page format and painter. The <kbd>append</kbd> method is overloaded to enable you to add a series of pages that have the same attributes by specifying a third parameter, the number of pages.<p>
+<a name="420434"><!-- --></a>
+If you don&#39;t know the total number of pages in a <kbd>Book</kbd>, you can pass <kbd>UNKNOWN_NUMBER_OF_PAGES</kbd> to the <kbd>append</kbd> method. The printing system will then call your page painters in order of increasing page index until one of the
+m returns <kbd>NO_SUCH_PAGE</kbd>.<p>
+<a name="418041"><!-- --></a>
+The <kbd>setPage</kbd> method can be used to change a page&#39;s page format or painter. The page to be changed is identified by a page index that indicates the page&#39;s location in the <kbd>Book</kbd>.<p>
+<a name="418042"><!-- --></a>
+You call <kbd>setPageable</kbd> and pass in the <kbd>Book</kbd> to prepare the print job. The <kbd>setPageable</kbd> and <kbd>setPrintable</kbd> methods are mutually exclusive; that is, you should call one or the other but not both when preparing the <kbd
+>PrinterJob</kbd>.<p>
+</blockquote>
+<br>
+<h3>
+<a name="421072"><!-- --></a>
+<i>7.4.1	</i> Using a Pageable Job
+</h3>
+
+<blockquote>
+<a name="418043"><!-- --></a>
+In the following example, a <kbd>Book</kbd> is used to reproduce the first simple printing example. (Because this case is so simple, there is little benefit in using a <kbd>Pageable</kbd> job instead of a <kbd>Printable</kbd> job, but it illustrates the b
+asics of using a <kbd>Book</kbd>.) Note that you still have to implement the <kbd>Printable</kbd> interface and perform page rendering in the page painter&#39;s <kbd>print</kbd> method. <p>
+</blockquote><blockquote><pre>
+	import java.awt.*; 
+	import java.awt.print.*;
+
+	public class SimplePrintBook implements Printable {   
+  	   private static Font fnt = new Font("Helvetica",Font.PLAIN,24);
+  	   public static void main(String[] args) {     
+    		// Get a PrinterJob     
+    		PrinterJob job = PrinterJob.getPrinterJob();     
+    		// Set up a book     
+    		Book bk = new Book();     
+    		bk.append(new SimplePrintBook(), job.defaultPage(), 5);     
+    		// Pass the book to the PrinterJob     
+    		job.setPageable(bk);     
+    		// Put up the dialog box     
+    		if (job.printDialog()) {
+      		   // Print the job if the user didn't cancel printing 
+      		   try { job.print(); } 	    
+      		   catch (Exception e) { /* handle exception */ }     
+    		}     
+    		System.exit(0);   
+  	   }
+
+  	   public int print(Graphics g, PageFormat pf, int pageIndex)
+  	      throws PrinterException {     
+    		g.setFont(fnt);     
+    		g.setColor(Color.green);     
+    		g.drawString("Page " + (pageIndex+1), 100, 100);     
+    		return Printable.PAGE_EXISTS;   
+  	   }
+	}
+</pre></blockquote>
+<br>
+<h3>
+<a name="418048"><!-- --></a>
+<i>7.4.2	</i> Using Multiple Page Painters
+</h3>
+
+<blockquote>
+<a name="421071"><!-- --></a>
+In the following example, two different page painters are used: one for a cover page and one for content pages. The cover page is printed in landscape mode and the contents pages are printed in portrait mode.<p>
+</blockquote><blockquote><pre>
+	import java.awt.*; 
+	import java.awt.print.*;
+
+	public class PrintBook {
+  	  public static void main(String[] args) {     
+    		// Get a PrinterJob     
+    		PrinterJob job = PrinterJob.getPrinterJob();     
+    		// Create a landscape page format    
+    		PageFormat pfl = job.defaultPage();  
+    		pfl.setOrientation(PageFormat.LANDSCAPE);     
+    		// Set up a book     
+    		Book bk = new Book();     
+    		bk.append(new PaintCover(), pfl);     
+    		bk.append(new PaintContent(), job.defaultPage(), 2);     
+    		// Pass the book to the PrinterJob     
+    		job.setPageable(bk);     
+    		// Put up the dialog box     
+    		if (job.printDialog()) { 
+      		   // Print the job if the user didn't cancel printing
+      		   try { job.print(); } 
+      		   catch (Exception e) { /* handle exception */ }     
+    		}     
+  		System.exit(0);   
+  	   } 
+	}
+
+	class PaintCover implements Printable {   
+  	   Font fnt = new Font("Helvetica-Bold", Font.PLAIN, 72);
+ 
+  	   public int print(Graphics g, PageFormat pf, int pageIndex)
+  		throws PrinterException {     
+    		g.setFont(fnt);     
+    		g.setColor(Color.black);     
+	 	int yc = (int) (pf.getImageableY() + 
+              	   pf.getImageableHeight()/2);
+    		g.drawString("Widgets, Inc.", 72, yc+36);     
+    		return Printable.PAGE_EXISTS;   
+  	   } 
+	}
+	class PaintContent implements Printable {   
+  	   public int print(Graphics g, PageFormat pf, int pageIndex)
+  		throws PrinterException {    
+    		Graphics2D g2 = (Graphics2D) g;     
+    		int useRed = 0;     
+   		int xo = (int) pf.getImageableX();
+		int yo = (int) pf.getImageableY(); 
+    		// Fill page with circles or squares, alternating red &amp; green
+		for (int x = 0; x+28 &lt; pf.getImageableWidth(); x += 36)
+    		for (int y = 0; y+28 &lt; pf.getImageableHeight(); y += 36){ 
+      		   if (useRed == 0) g.setColor(Color.red);
+      		   else g.setColor(Color.green);
+      		   useRed = 1 - useRed;
+      		   if (pageIndex % 2 == 0) g.drawRect(xo+x+4, yo+y+4, 28, 28);
+      		   else g.drawOval(xo+x+4, yo+y+4, 28, 28);
+    		}     
+    		return   Printable.PAGE_EXISTS;   
+  	   } 
+	}
+</pre></blockquote><blockquote>
+<a name="418055"><!-- --></a>
+<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-print.fm3.html">PREV</a>
+ | NEXT <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Mon Nov 22 09:37:25 1999 -->
+ 
+
+
+</body>
+</html>
+

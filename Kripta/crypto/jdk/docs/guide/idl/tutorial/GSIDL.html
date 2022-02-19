@@ -1,0 +1,315 @@
+<HTML>
+<HEAD>
+   <TITLE>Java IDL Getting Started: Lesson 1</TITLE>
+   <X-SAS-WINDOW TOP=42 BOTTOM=477 LEFT=4 RIGHT=534>
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+
+<H1 ALIGN=CENTER>Lesson 1: Writing the IDL Interface</H1>
+<HR>
+
+<P>It is a good idea to create a temporary directory to hold your 
+tutorial files as you work. 
+
+<P><strong>Note:</strong> You will need to 
+<a href="http://developer.javasoft.com/developer/earlyAccess/jdk12/idltojava.html">download the idltojava compiler</a> in order to perform the 
+tasks in this Lesson. All command and troubleshooting instructions apply to  
+this version of <TT>idltojava</TT> only.
+
+<A name="overview">
+<H2>Lesson Overview</H2></A>
+
+<P>In this lesson, you will write a simple 
+<A href="../jidlGlossary.html#IDL">IDL</A> interface for the Hello
+World program. The IDL interface defines the contract between the client
+and server parts of your application, specifying what operations and attributes are 
+available. OMG IDL is programming-language-independent. 
+You must map it to Java before writing any of the implementation code.
+(Running <TT>idltojava</TT> on the IDL file does this for you
+automatically.)
+
+<P>Included in this lesson are:
+
+<OL>
+<LI><A href="#writing">Writing <TT>Hello.idl</TT></A>
+<LI><A href="#compiling">Mapping <TT>Hello.idl</TT> to Java</A>
+<LI><A href="#understanding">Understanding the Output of
+<TT>idltojava</TT></A>
+</OL>
+
+<P>To see a completed version of the 
+<A href="idl/Hello.idl"><TT>Hello.idl</TT></A> file, follow the link.
+
+<A name="writing">
+<H2>Writing <TT>Hello.idl</TT></H2></A>
+
+<P>OMG IDL is a purely declarative language designed for specifying
+programming-language-independent operational interfaces for distributed
+applications.  OMG specifies a mapping from IDL to several different
+programming languages, including C, C++, Smalltalk, COBOL, Ada, and 
+Java.  When mapped, each statement in OMG IDL is translated to a 
+corresponding statement in the programming language of choice.
+You can use the tool <TT>idltojava</TT> to map
+an IDL interface to Java and implement the 
+<A href="../jidlGlossary.html#client">client</A> class. When you
+map the same IDL to C++ and implement the 
+<A href="../jidlGlossary.html#object server">server</A> in that language, 
+the Java client and C++ server interoperate through the 
+<A href="../jidlGlossary.html#ORB">ORB</A> as though 
+they were written in the same language.
+
+<P>The IDL for Hello World is extremely simple; its single interface has a
+single operation. You need perform only three steps:
+
+<OL>
+<LI><A href="#module">Declare the CORBA IDL module</A>
+<LI><A href="#interface">Declare the interface</A>
+<LI><A href="#operations">Declare the operations</A>
+</OL>
+
+
+<A name="module">
+<H3>Declaring the Module</H3></A>
+
+<P>A CORBA module is a <A href="../jidlGlossary.html#namespace">namespace</A> 
+that acts as a container for related interfaces and declarations. It
+corresponds closely to a Java package.
+Each module statement in an IDL file is mapped to a Java package
+statement.
+
+<OL>
+
+<LI>Start your favorite text editor and create a file named <TT>Hello.idl</TT>.<P>
+
+<LI>In your file, enter the module statement:
+<PRE>
+module HelloApp
+{
+    // Add subsequent lines of code here.
+};
+</PRE>
+
+<LI>Save the file. 
+</OL>
+
+<P>When you run <TT>idltojava</TT> on the IDL, this statement will
+generate a package statement in the Java code.
+
+
+<A name="interface">
+<H3>Declaring the Interface</H3></A>
+
+<P>Like Java interfaces, CORBA interfaces declare the API contract
+an object has with other objects. Each interface statement in the IDL
+maps to a Java interface statement when mapped. 
+
+<P>In your <TT>Hello.idl</TT> file, enter the interface statement:
+<PRE>
+module HelloApp
+{
+  interface Hello  // Add
+  {                // these
+                   // four
+  };               // lines.
+};
+</PRE>
+
+<P>Save the file. When you compile the IDL, this statement will generate an
+interface statement in the Java code. Your client and server classes will 
+implement the Hello interface in different ways.
+
+<A name="operations">
+<H3>Declaring the Operations</H3></A>
+
+<P>CORBA <A href="../jidlGlossary.html#operation,(IDL)">operations</A> 
+are the behavior that servers promise to perform on behalf
+of clients that invoke them. Each operation statement in the IDL generates a
+corresponding method statement in the generated Java interface.
+
+<P>In your <TT>Hello.idl</TT> file, enter the operation statement:
+<PRE>
+module HelloApp
+{
+  interface Hello
+  {
+    string sayHello();  // Add this line.
+  };
+};
+</PRE>
+
+<P>Save the file. Because our little Hello World application has only
+a single operation, <TT>Hello.idl</TT> is now complete. 
+You can close your text editor if you wish.
+
+
+<A name="compiling">
+<H2>Mapping <TT>Hello.idl</TT> from IDL to Java</H2></A>
+
+<P>The tool <code>idltojava</code> reads OMG IDL 
+files and creates the required Java files.
+The <TT>idltojava</TT> defaults are set up so that
+if you need both client and server files
+(as you do for our Hello World program),
+you simply enter the tool name and the name of your IDL file:
+
+<OL>
+<LI>Go to a command line prompt.<P>
+<LI>Change directory to the location of your <TT>Hello.idl</TT> file<P>
+<LI>Enter the compiler command: <BR>
+<PRE>   
+	idltojava Hello.idl
+</PRE>
+</OL>
+
+<P>If you list the contents of the directory, you will see that a directory
+called <TT>HelloApp</TT> has been created and that it contains five files.
+Try opening <TT>Hello.java</TT> in your text editor.  It looks like this:
+<PRE>
+/* Hello.java as generated by idltojava */
+
+package HelloApp;
+public interface Hello
+    extends org.omg.CORBA.Object {
+    String sayHello();
+}
+</PRE>
+
+<P>With an interface this simple, it is easy to see how the IDL 
+statements map to the generated Java statements. 
+
+<P><TABLE cellspacing=4 cellpadding=1>
+<TR>
+<TH ALIGN=left>IDL Statement</TH>
+<TH ALIGN=left>Java Statement</TH>
+</TR>
+
+<TR>
+<TD><TT>module HelloApp</TT></TD>
+<TD><TT>package HelloApp;</TT></TD>
+</TR>
+
+<TR>
+<TD><TT>interface Hello</TT></TD>
+<TD><TT>public interface Hello</TT></TD>
+</TR>
+
+<TR>
+<TD><TT>string sayHello();</TT></TD>
+<TD><TT>String sayHello();</TT></TD>
+</TR>
+
+</TABLE>
+
+<P>The single surprising item is 
+the <TT>extends</TT> statement. All CORBA objects are derived from 
+<TT>org.omg.CORBA.Object</TT> to ensure required CORBA functionality. 
+The required code is generated by <TT>idltojava</TT>;
+you do not need to do any mapping yourself.
+
+
+<A name="understanding">
+<H2>Understanding the idltojava Compiler Output</H2></A>
+
+<P><TT>idltojava</TT> generates a number of files, based on the options
+chosen on the command line. Because these provide standard
+functionality, you can
+ignore them until it is time to deploy and run your program.
+The five files generated by the <TT>idltojava</TT> are: 
+
+<DL>
+<DT><TT>_HelloImplBase.java</TT>
+<DD>This abstract class is the 
+<A href="../jidlGlossary.html#server skeleton">server skeleton</A>, 
+providing basic CORBA 
+functionality for the server. It implements the  <TT>Hello.java</TT> interface. 
+The server class <TT>HelloServant</TT> extends <TT>_HelloImplBase</TT>.
+
+<DT><TT>_HelloStub.java</TT>
+<DD>This class is the 
+<A href="../jidlGlossary.html#client stub">client stub</A>, 
+providing CORBA functionality for the
+client. It implements the <TT>Hello.java</TT> interface.
+
+<DT><TT>Hello.java</TT>
+<DD>This interface contains the Java version of our IDL interface. It contains 
+the single method <TT>sayHello()</TT>. The <TT>Hello.java</TT> interface extends
+<TT>org.omg.CORBA.Object</TT>, providing standard CORBA object functionality as well.
+
+<DT><TT>HelloHelper.java</TT>
+<DD>This final class provides auxiliary functionality, notably the 
+<TT>narrow()</TT> method required to cast CORBA 
+<A href="../jidlGlossary.html#object reference">object references</A> to their 
+proper types.
+
+<DT><TT>HelloHolder.java</TT>
+<DD>This final class holds a public instance member of type <TT>Hello</TT>.  
+It provides operations for 
+<A href="../jidlGlossary.html#parameters"><TT>out</TT> and <TT>inout</TT></A> 
+arguments, which CORBA has but 
+which do not map easily to Java's semantics.
+</DL>
+
+<P>When you write the IDL interface, you do all the programming required to
+generate all these files for your distributed application. The only additional
+work required is the actual implementation of client and server classes. In the
+lessons that follow, you will create <TT>HelloClient.java</TT> and 
+<TT>HelloApplet.java</TT>
+client classes and the <TT>HelloServer.java</TT> class.
+
+<A name="trouble">
+<H2>Troubleshooting</H2></A>
+
+<H3>Error Message: "idltojava" not found</H3>
+If you try to run <TT>idltojava</TT> on the file <TT>Hello.idl</TT> and the
+system cannot find <TT>idltojava</TT>, it is most
+likely not in your path. Make certain that the location of <TT>idltojava</TT>
+is in your path, and try again.
+
+<H3>Error Message: preprocessor failed</H3>
+<TT>idltojava</TT> uses a C/C++ preprocessor by default. 
+You can change the default by setting two environment variables,
+<TT>CPP</TT> and <TT>CPPARGS</TT>.  
+If you do not want to use a preprocessor, you can turn it off
+by adding <TT>-fno-cpp</TT> to the <TT>idltojava</TT> command line.
+
+<A name="info">
+<H2>For More Information</H2></A>
+
+<DL>
+
+<DT><A href="../mapping/jidlMapping.html#overview"">Mapping IDL to Java:&nbsp;Overview</A>
+<DD>Provides the basics on mapping IDL constructs to the corresponding
+Java statements
+
+<DT>Chapter 3 of the 
+<A HREF="http://www.omg.org/corba/corbiiop.htm">OMG CORBA specification</A>
+<DD>Provides the complete
+specification for OMG Interface Definition Language
+
+
+</DL>
+
+
+<P><HR>
+<CENTER><P><A href="GSapp.html">Next lesson</A> | 
+<A href="../GShome.html">Tutorial home</A> | 
+<A href="idl/Hello.idl"><TT>Hello.idl</TT></A>
+
+<TABLE cellpadding=8 cellspacing=4>
+<TR>
+  <TD ALIGN=CENTER><A href="../index.html">
+Home</A></TD>
+</TR></TABLE></CENTER>
+
+<HR>
+<FONT
+SIZE="-2"><A HREF="http://www.sun.com/share/text/SMICopyright.html">Copyright
+&copy;</A></FONT><FONT SIZE="-2"> 1996, 1997 Sun Microsystems, Inc.,
+2550 Garcia Ave., Mtn. View, CA. 94043-1100 USA., All rights
+reserved.</FONT></P>
+
+</BODY>
+</HTML>
+
+

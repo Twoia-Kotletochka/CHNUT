@@ -1,0 +1,146 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Remote Method Invocation:  - Exceptions In RMI
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="rmiTOC.html">CONTENTS</a> | <a href="rmi-exceptions3.html">PREV</a>
+ | <a href="rmi-exceptions5.html">NEXT</a> 
+<!-- /font --></td><td align=right><i>Java Remote Method Invocation</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="5112"><i>	A.3	</i> Exceptions or Errors During Return
+</a></h2>
+
+<blockquote>
+<a name="5102"><!-- --></a>
+<br><br>
+<Table Border="1" Cellpadding="5">
+<caption></caption>
+
+<tr><td><a name="4916"><!-- --></a>
+<b>Exception</b><br>
+
+</td><td><a name="4918"><!-- --></a>
+<b>Context</b><br>
+
+</td></tr>
+<tr valign="top"><td><a name="4920"><!-- --></a>
+<p><code>java.rmi.UnmarshalException		</code>
+
+</td>
+<td>
+<a name="4922"><!-- --></a>
+<p>Corrupted stream leads to either an I/O or protocol error when:
+<p>
+<a name="5077"><!-- --></a>
+<dd><li>Marshaling return header</li>
+</p>
+
+
+<p>
+<a name="5085"><!-- --></a>
+<dd><li>Checking return type</li>
+</p>
+
+
+<p>
+<a name="5086"><!-- --></a>
+<dd><li>Checking return code</li>
+</p>
+
+
+<p>
+<a name="5087"><!-- --></a>
+<dd><li>Unmarshaling return</li>
+</p>
+
+
+<dl>
+<a name="5056"><!-- --></a><p>
+<p>Return value class not found.
+</dl>
+</td>
+</tr>
+<tr valign="top"><td><a name="4925"><!-- --></a>
+<p><code>java.rmi.UnexpectedException		</code>
+
+</td>
+<td><a name="4927"><!-- --></a>
+<p>An exception not mentioned in the method signature occurred (excluding runtime exceptions). The <code>UnexpectedException</code> exception object contains the underlying exception that was thrown by the server.
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4929"><!-- --></a>
+<p><code>java.rmi.ServerError</code>
+
+</td>
+<td><a name="4931"><!-- --></a>
+<p>Any error that occurs while the server is executing a remote method. The <code>ServerError</code> exception object contains the underlying error that was thrown by the server,
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4933"><!-- --></a>
+<p><code>java.rmi.ServerException</code>
+
+</td>
+<td><a name="4935"><!-- --></a>
+<p>Any remote exception that occurs while the server is executing a remote method. For examples, see <a href="rmi-exceptions5.html">Section&#160;A.3.1, &#34;Possible Causes of java.rmi.ServerException&#34;</a>.
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4937"><!-- --></a>
+<p><code>java.rmi.ServerRuntimeException</code>		
+
+<a name="5116"><!-- --></a>
+<p><em>note: this exception is deprecated as of </em>Java 2 SDK, Standard Edition, v1.2
+
+</td>
+<td><a name="4939"><!-- --></a>
+<p>This exception is not thrown by servers running Java 2 SDK, Standard Edition, v1.2-compatible versions. A <code>RuntimeException</code> are propagated to clients in tact.
+
+</td>
+</tr>
+
+</Table>
+ 
+<Table>
+<tr><td></td>
+</tr>
+</Table><p>
+
+</a></h2>
+
+
+</ul>
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="rmiTOC.html">CONTENTS</a> | <a href="rmi-exceptions3.html">PREV</a>
+ | <a href="rmi-exceptions5.html">NEXT</a> 
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF=http://java.sun.com/products/jdk/1.3/docs/relnotes/SMICopyright.html>Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Susan Snyder -->
+<!-- Last updated: Wednesday November 10 04 11:11:27 1999 -->
+ 
+
+
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 4 - Class Descriptors	
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="class.doc5.html">PREV</a>
+ | <a href="version.doc.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="4100"><i>	4.6	</i> Stream Unique Identifiers
+</a></h2>
+
+<blockquote>
+<a name="3128"><!-- --></a>
+Each versioned class must identify the original class version for which it is capable of writing streams and from which it can read. For example, a versioned class must declare:<p>
+<a name="3129"><!-- --></a>
+<pre>    private static final long serialVersionUID = 3487495895819393L;
+</pre>
+
+
+<a name="5432"><!-- --></a>
+The stream-unique identifier is a 64-bit hash of the class name, interface class names, methods, and fields. The value must be declared in all versions of a class except the first. It may be declared in the original class bu
+t is not required. The value is fixed for all compatible classes. If the SUID is not declared for a class, the value defaults to the hash for that class. <code>Serializable</code> classes do not need to anticipate versioning; however, <code>Externalizable
+</code> classes do. <p>
+</blockquote>
+<blockquote>
+<blockquote><hr noshade size="1">
+<b><a name="5440">Note - </a></b>It is strongly recommended that serializable classes that are inner classes or which contain inner classes declare the serialVersionUID data member. This is because different implementations of compilers could use differen
+t names for synthetic members that are generated for the implementation of inner classes, and these names are used in the current computation of SUIDs. 
+<hr noshade size="1">
+</blockquote>
+</blockquote>
+<blockquote>
+<a name="5441"><!-- --></a>
+The initial version of an <code>Externalizable</code> class must output a stream data format that is extensible in the future. The initial version of the method <code>readExternal</code> has to be able to read the output format of all future versions of t
+he method <code>writeExternal</code>.<p>
+<a name="3169"><!-- --></a>
+The <code>serialVersionUID</code> is computed using the signature of a stream of bytes that reflect the class definition. The National Institute of Standards and Technology (NIST) Secure Hash Algorithm (SHA-1) is used to compute a signature for the stream
+. The first two 32-bit quantities are used to form a 64-bit hash. A <code>java.lang.DataOutputStream</code> is used to convert primitive data types to a sequence of bytes. The values input to the stream are defined by the Java<sup><font size="-2">TM</font
+></sup> Virtual Machine (VM) specification for classes.<p>
+<a name="5385"><!-- --></a>
+The sequence of items in the stream is as follows:<p>
+</blockquote><ol>
+<li>
+<a name="5315"><!-- --></a>
+The class name written using UTF encoding.
+</li>
+
+<li>
+<a name="5316"><!-- --></a>
+The class modifiers written as a 32-bit integer.
+</li>
+
+<li>
+<a name="5317"><!-- --></a>
+The name of each interface sorted by name written using UTF encoding.
+</li>
+
+<li>
+<a name="5318"><!-- --></a>
+For each field of the class sorted by field name (except private static and private transient fields):
+</li>
+
+<ol type=a>
+<li >
+<a name="5319"><!-- --></a>
+The name of the field in UTF encoding.
+</li>
+
+<li >
+<a name="5320"><!-- --></a>
+The modifiers of the field written as a 32-bit integer.
+</li>
+
+<li >
+<a name="5321"><!-- --></a>
+The descriptor of the field in UTF encoding
+</li>
+
+</ol>
+<li>
+<a name="5322"><!-- --></a>
+If a class initializer exists, write out the following:
+</li>
+
+<ol type=a>
+<li >
+<a name="5323"><!-- --></a>
+The name of the method, <code>&lt;clinit&gt;</code>, in UTF encoding.
+</li>
+
+<li >
+<a name="5324"><!-- --></a>
+The modifier of the method, <em>java.lang.reflect.Modifier.STATIC</em>,  written as a 32-bit integer.
+</li>
+
+<li >
+<a name="5325"><!-- --></a>
+The descriptor of the method, <code>()V</code>, in UTF encoding.
+</li>
+
+</ol>
+<li>
+<a name="5326"><!-- --></a>
+For each non-private constructor sorted by method name and signature:
+</li>
+
+<ol type=a>
+<li >
+<a name="5327"><!-- --></a>
+The name of the method, <code>&lt;init&gt;</code>, in UTF encoding.
+</li>
+
+<li >
+<a name="5328"><!-- --></a>
+The modifiers of the method written as a 32-bit integer.
+</li>
+
+<li >
+<a name="5329"><!-- --></a>
+The descriptor of the method in UTF encoding.
+</li>
+
+</ol>
+<li>
+<a name="5330"><!-- --></a>
+For each non-private method sorted by method name and signature:
+</li>
+
+<ol type=a>
+<li >
+<a name="5331"><!-- --></a>
+The name of the method in UTF encoding.
+</li>
+
+<li >
+<a name="5332"><!-- --></a>
+The modifiers of the method written as a 32-bit integer.
+</li>
+
+<li >
+<a name="5333"><!-- --></a>
+The descriptor of the method in UTF encoding.
+</li>
+
+</ol>
+<li>
+<a name="5334"><!-- --></a>
+The SHA-1 algorithm is executed on the stream of bytes produced by DataOutputStream and produces five 32-bit values sha[0..4].
+</li>
+
+<li>
+<a name="5335"><!-- --></a>
+The hash value is assembled from the first and second 32-bit values of the SHA-1 message digest.  If the result of the message digest, the five 32-bit words H0 H1 H2 H3 H4, is in an array of five int values named <code>sha</code>, the hash value would be 
+computed as follows:     <em>long hash = ((sha[0] &gt;&gt;&gt; 24) &amp; 0xFF) |             ((sha[0] &gt;&gt;&gt; 16) &amp; 0xFF) &lt;&lt; 8 |             ((sha[0] &gt;&gt;&gt; 8) &amp; 0xFF) &lt;&lt; 16 |             ((sha[0] &gt;&gt;&gt; 0) &amp; 0xFF)
+ &lt;&lt; 24 |             ((sha[1] &gt;&gt;&gt; 24) &amp; 0xFF) &lt;&lt; 32 |             ((sha[1] &gt;&gt;&gt; 16) &amp; 0xFF) &lt;&lt; 40 |             ((sha[1] &gt;&gt;&gt; 8) &amp; 0xFF) &lt;&lt; 48 |             ((sha[1] &gt;&gt;&gt; 0) &amp; 0xFF) 
+&lt;&lt; 56;</em>
+</li>
+
+</ol>
+
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="class.doc5.html">PREV</a>
+ | <a href="version.doc.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:48:04 1999 -->
+ 
+
+
+</body>
+</html>

@@ -1,0 +1,69 @@
+<HTML>
+<HEAD>
+   <TITLE>Java(tm) Platform Debugger Architecture - Beta 2 Readme</TITLE>
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+<center>
+<H1>Java<sup><font size="-2">TM</font></sup> Platform Debugger Architecture
+<br>Known Bugs and Limitations</H1>
+</center>
+<P>
+
+<UL>
+<LI>The debugged VM can crash when very large numbers of events are
+generated. This is especially noticeable if you enable all method entry
+and exit events for a large application.
+<LI>Some events that occur at the same location are not properly combined
+into event sets; instead, they are reported separately as single-element
+event sets. This happens when events of different kinds occur at the same
+thread and location.
+<LI>The setValue method sometimes fails with an incorrect 
+ClassNotLoadedException when the destination Field, LocalVariable, or 
+ArrayReference element has an array type.
+<LI>An attempt to use a StackFrame that is no longer valid (i.e. its thread
+has been resumed since it was retrieved), can result in a crash in the 
+target VM.
+<LI>Generated parser files for JDB use deprecated APIs from the
+Java 2 Platform libraries.
+<LI>Synthetic fields and methods are not suppressed nor are they
+distinguished from non-synthetic members.
+<LI>In-process debugging through the JDI is not supported.
+<LI>Constructors have the name "&lt;init&gt;" and method style signatures, 
+for example the default constructor has the signature "()V".
+</UL>
+
+<p>
+The following bugs exist in the current Win32 classic VM JVMDI implementation 
+and in the Solaris Reference VM implementation.
+They will be fixed in the first maintenance release of the 
+Java 2 SDK.
+<UL>
+<LI>For classes compiled without -g, JDI responds to queries for 
+local variables with empty lists instead of throwing the appropriate
+AbsentInformationException. 
+<LI>Some breakpoints at the start of methods are not reported if
+you are also stepping over the method invocation.
+<LI>Incorrect local variable values are reported during method exit events.
+<LI>Redundant step events are generated when instruction stepping through
+quicked instructions for the first time. 
+</UL>
+<p>The current production release of the Sun 
+Solaris<font size="-2"><sup>TM</sup></font> VM  cannot be 
+used with this release. The Solaris Reference implementation can be used, 
+however, with the limitations listed above. 
+
+<HR SIZE=3 NOSHADE>
+<TABLE BORDER=0 WIDTH="100%" >
+<TR VALIGN=TOP>
+<TD><FONT SIZE=-2>Copyright &copy; 1999 <A HREF="http://www.sun.com/">Sun
+Microsystems, Inc.</A> All Rights Reserved.</FONT>&nbsp;
+
+<P><FONT SIZE=-1>Please send comments to: <A HREF="mailto:java-debugger@java.sun.com">java-debugger@java.sun.com</A>&nbsp;</FONT></TD>
+
+<TD ALIGN=RIGHT><IMG SRC="../../images/sunlogo64x30.gif" ALT="Sun" BORDER=0 WIDTH=64 HEIGHT=30></TD>
+</TR>
+</TABLE>
+
+</BODY>
+</HTML>
+

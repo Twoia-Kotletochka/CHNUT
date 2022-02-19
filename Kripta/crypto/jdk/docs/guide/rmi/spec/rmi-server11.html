@@ -1,0 +1,97 @@
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Remote Method Invocation: 5 - Server Interfaces
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="rmiTOC.html">CONTENTS</a> | <a href="rmi-server10.html">PREV</a>
+ | <a href="rmi-server12.html">NEXT</a> 
+<!-- /font --></td><td align=right><i>Java Remote Method Invocation</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="5112"><i>	5.10	</i> The <code>LogStream</code> Class
+</a></h2>
+
+<blockquote>
+<a name="5102"><!-- --></a>
+<blockquote>
+<a name="4827"><!-- --></a>
+The class <code>LogStream</code> presents a mechanism for logging errors that are of possible interest to those monitoring the system. This class is used internally for server call logging.<p>
+</blockquote><blockquote><pre>package java.rmi.server;
+
+public class LogStream extends java.io.PrintStream {
+
+	public static LogStream log(String name);
+	public static synchronized PrintStream getDefaultStream();
+	public static synchronized void setDefaultStream(
+		PrintStream newDefault);
+	public synchronized OutputStream getOutputStream();
+	public synchronized void setOutputStream(OutputStream out);
+	public void write(int b);
+	public void write(byte b[], int off, int len);
+	public String toString();
+	public static int parseLevel(String s);<p>
+	// constants for logging levels
+	public static final int SILENT  = 0;
+	public static final int BRIEF   = 10;
+	public static final int VERBOSE = 20;
+}
+</pre></blockquote>
+<blockquote>
+<blockquote><hr noshade size="1">
+<b><a name="6161">Note - </a></b>The <code>LogStream</code> class is deprecated in the Java 2 platform. 
+<hr noshade size="1">
+</blockquote>
+</blockquote>
+<blockquote>
+<a name="8127"><!-- --></a>
+The method <code>log</code> returns the LogStream identified by the given name. If a log corresponding to name does not exist, a log using the default stream is created.<p>
+<a name="6171"><!-- --></a>
+The method <code>getDefaultStream</code> returns the current default stream for new logs.<p>
+<a name="6176"><!-- --></a>
+The method <code>setDefaultStream</code> sets the default stream for new logs.<p>
+<a name="6181"><!-- --></a>
+The method <code>getOutputStream</code> returns current stream to which output from this log is sent.<p>
+<a name="6186"><!-- --></a>
+The method <code>setOutputStream</code> sets the stream to which output from this log is sent.<p>
+<a name="6191"><!-- --></a>
+The first form of the method <code>write</code> writes a byte of data to the stream. If it is not a new line, then the byte is appended to the internal buffer. If it is a new line, then the currently buffered line is sent to the log's output stream with the appropriate logging prefix. The second form of the method <code>write</code> writes a subarray of bytes.<p>
+<a name="6203"><!-- --></a>
+The method <code>toString</code> returns log name as string representation.<p>
+<a name="6208"><!-- --></a>
+The method <code>parseLevel</code> converts a string name of a logging level to its internal integer representation.<p>
+</blockquote>
+
+</ul>
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="rmiTOC.html">CONTENTS</a> | <a href="rmi-server10.html">PREV</a>
+ | <a href="rmi-server12.html">NEXT</a> 
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF=http://java.sun.com/products/jdk/1.3/docs/relnotes/SMICopyright.html>Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Susan Snyder -->
+<!-- Last updated: Monday November 15 11:11:27 1999 -->
+ 
+
+
+</body>
+</html>

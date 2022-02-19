@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<process>
+	<src-basedir>sources</src-basedir>
+	<package>net.soft_systems.model.processes</package>
+	<imports>
+		<item>net.soft_systems.model.base.*</item>
+		<item>net.soft_systems.integrator.*</item>
+		<item>net.soft_systems.crypto.algo.*</item>
+		<item>net.soft_systems.crypto.beans.process.*</item>
+	</imports>
+    <basename>Process_</basename>
+    <superclass>net.soft_systems.model.base.ProcessModelImpl</superclass>
+    <implementations>
+    	<!--item></item-->
+    </implementations>
+    <constructors>
+	<item visibility="public" throws="java.rmi.RemoteException">
+		<params>ProcessBean processBean</params>
+    		<code>
+		super(processBean);
+	        </code>
+	</item>
+    </constructors>
+    <declarations>
+    	<item>
+		
+        </item>
+    </declarations>
+    <methods>
+    	<item name="*" visibility="public" return="void">
+		<params>
+		</params>
+    		<start-code>
+	        </start-code>
+    	    <end-code>
+	        </end-code>
+        </item>
+    	<item name="onCreate" visibility="public" return="void">
+		<params>
+		</params>
+    		<start-code>
+            	logMessage("Событие onCreate");
+	        </start-code>
+    	    <end-code>
+	        </end-code>
+        </item>
+    	<item name="onDestroy" visibility="public" return="void">
+		<params>
+		</params>
+    		<start-code>
+	            logMessage("Событие onDestroy");
+	        </start-code>
+    	    <end-code>
+	        </end-code>
+        </item>
+    	<item name="onRecieve" visibility="public" return="void">
+		<params>String nodeId</params>
+    		<start-code>		
+            	logMessage("Событие onRecieve в узле "+nodeId);
+	        </start-code>
+    	    <end-code>
+	        </end-code>
+        </item> 
+    </methods>
+</process>

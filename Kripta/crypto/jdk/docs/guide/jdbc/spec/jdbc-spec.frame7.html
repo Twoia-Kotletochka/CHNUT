@@ -1,0 +1,445 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title></title>
+</head>
+<body bgcolor=#ffffff>
+
+<table width=600><tr>
+<td><font size=-1>
+<a href="jdbc-spec.frame.html">Contents</a>  | <a href="jdbc-spec.frame6.html">Prev</a>  | <a href="jdbc-spec.frame8.html">Next</a>
+</font></td><td align=right><i>JDBC<sup><font size=-2>TM</font></sup> Guide: Getting Started</i></td>
+</tr></table>
+<hr>
+<br>
+ 
+
+<a name="20376"></a>
+<h2>	7	 Passing parameters and receiving results</h2>
+
+<a name="4677"></a>
+For the full interface descriptions see the separate JDBC API documents.
+<p>
+<a name="5514"></a>
+<strong>See also the rejected "Holder" mechanism described in Appendix <a href="jdbc-spec.frame15.html#3883">A</a>.
+</strong><p>
+
+<a name="4149"></a>
+<h3>7.1 	  &nbsp; &nbsp; Query results</h3>
+<a name="4150"></a>
+The result of executing a query Statement is a set of rows that are accessible via a java.sql.ResultSet
+object. The ResultSet object provides a set of "get" methods that allow access to the 
+various columns of the current row. The ResultSet.next method can be used to move between 
+the rows of the ResultSet.
+<p>
+<pre><code>// We're going to execute a SQL statement that will return a
+</code></pre>
+<pre><code>// collection of rows, with column 1 as an int, column 2 as
+</code></pre>
+<pre><code>// a String, and column 3 as an array of bytes.
+</code></pre>
+<pre><code>java.sql.Statement stmt = conn.createStatement();
+</code></pre>
+<pre><code>ResultSet r = stmt.executeQuery("SELECT a, b, c FROM Table1");
+</code></pre>
+<pre><code>while (r.next()) {
+</code></pre>
+<pre><code>	// print the values for the current row.
+</code></pre>
+<pre><code>	int i = r.getInt("a");
+</code></pre>
+<pre><code>	String s = r.getString("b");
+</code></pre>
+<pre><code>	byte b[] = r.getBytes("c");
+</code></pre>
+<pre><code>	System.out.println("ROW = " + i + " " + s + " " + b[0]);
+</code></pre>
+<pre><code>}
+</code></pre>
+<a name="20264"></a>
+There are two alternative ways of specifying columns. You can either use column indexes (for 
+greater efficiency) or column names (for greater convenience). Thus for example there is both 
+a getString method that takes a column index and a getString method that takes a column name.
+<p>
+<a name="26252"></a>
+<strong>Reviewer input convinced us that we had to support both column indexes and column names. 
+Some reviewers were extremely emphatic that they require highly efficient database access and 
+therefore preferred column indexes, other reviewers insisted that they wanted the convenience 
+of using column names.  (Note that certain SQL queries can return tables without column names 
+or with multiple identical column names.  In these cases, programmers should use column numbers.)
+
+</strong><p>
+<a name="26253"></a>
+For maximum portability, columns within a row should be read in left-to-right order, and each 
+column should only be read once. This reflects implementation limitations in some underlying 
+database protocols.
+<p>
+
+<a name="26308"></a>
+<h4>	7.1.1	 Data conversions on query results</h4>
+<a name="28699"></a>
+The ResultSet.getXXX methods will attempt to convert whatever SQL type was returned by 
+the database to whatever Java type is returned by the getXXX method.
+<p>
+<a name="28700"></a>
+Table <a href="jdbc-spec.frame7.html#30717">1 on page 21</a> lists the supported conversions from SQL types to Java types via getXXX 
+methods. For example, it is possible to attempt to read a SQL VARCHAR value as an integer 
+using getInt, but it is not possible to read a SQL FLOAT as a java.sql.Date.
+<p>
+<a name="29990"></a>
+If you attempt an illegal conversion, or if a data conversion fails (for example if you did a getInt 
+on a SQL VARCHAR value of "foo"), then a SQLException will be raised.
+<p>
+<a name="30761"></a>
+
+<p>
+<a name="30758"></a>
+ 
+<center><img src="table1.gif"></center>
+
+<p>
+
+<a name="30760"></a>
+<h4>	7.1.2	 Null result values</h4>
+<a name="16700"></a>
+To determine if a given result value is SQL "NULL" you must first read the column and then 
+use the ResultSet.wasNull method to discover if the read returned a SQL "NULL". (See also 
+Appendix <a href="jdbc-spec.frame15.html#25317">A.9</a>).
+<p>
+<a name="25307"></a>
+When you read a SQL "NULL" using one of the ResultSet.getXXX methods, you will receive:
+<p>
+
+<ul><a name="26541"></a>
+<li>A Java "null" value for those getXXX methods that return Java objects.
+<br><br>
+<a name="26542"></a>
+<li>A zero value for getByte, getShort, getInt, getLong, getFloat, and getDouble
+<br><br>
+<a name="27824"></a>
+<li>A false value for getBoolean.
+<br><br>
+</ul>
+<a name="27826"></a>
+<h4>	7.1.3	 Retrieving very large row values.</h4>
+<a name="27827"></a>
+JDBC allows arbitrarily large LONGVARBINARY or LONGVARCHAR data to be retrieved 
+using getBytes and getString, up to the limits imposed by the Statement.getMaxFieldSize value.
+However, application programmers may often find it convenient to retrieve very large data 
+in smaller fixed size chunks.
+<p>
+<a name="13490"></a>
+To accommodate this, the ResultSet class can return java.io.Input streams from which data can 
+be read in chunks. However each of these streams must be accessed immediately as they will 
+be automatically closed on the next "get" call on the ResultSet. <strong>This behavior reflects underlying
+implementation constraints on large blob access.
+</strong><p>
+<a name="25069"></a>
+Java streams return untyped bytes and can (for example) be used for both ASCII and Unicode. 
+We define three separate methods for getting streams. GetBinaryStream returns a stream which 
+simply provides the raw bytes from the database without any conversion. GetAsciiStream returns
+a stream which provides one byte ASCII characters. GetUnicodeStream returns a stream 
+which provides 2 byte Unicode characters.
+<p>
+<a name="25098"></a>
+For example:
+<p>
+<pre><code>java.sql.Statement stmt = conn.createStatement();
+</code></pre>
+<pre><code>ResultSet r = stmt.executeQuery("SELECT x FROM Table2");
+</code></pre>
+<pre><code>// Now retrieve the column 1 results in 4 K chunks:
+</code></pre>
+<pre><code>byte[] buff = new byte[4096];
+</code></pre>
+<pre><code>while (r.next()) {
+</code></pre>
+<pre><code>	java.io.InputStream fin = r.getAsciiStream("x");
+</code></pre>
+<pre><code>	for (;;) {
+</code></pre>
+<pre><code>		int size = fin.read(buff);
+</code></pre>
+<pre><code>		if (size == -1) {
+</code></pre>
+<pre><code>			break;
+</code></pre>
+<pre><code>		}
+</code></pre>
+<pre><code>		// Send the newly filled buffer to some ASCII output stream:
+</code></pre>
+<pre><code>		output.write(buff, 0, size);
+</code></pre>
+<pre><code>	}
+</code></pre>
+<pre><code>}
+</code></pre>
+
+<a name="4517"></a>
+<h4>	7.1.4	 Optional or multiple ResultSets</h4>
+<a name="5918"></a>
+Normally we expect that SQL statements will be executed using either executeQuery (which 
+returns a single ResultSet) or executeUpdate (which can be used for any kind of database modification
+statement and which returns a count of the rows updated).
+<p>
+<a name="20214"></a>
+However under some circumstances an application may not know whether a given statement 
+will return a ResultSet until the statement has executed. In addition, some stored procedures 
+may return several different ResultSets and/or update counts.
+<p>
+<a name="20231"></a>
+To accommodate these needs we provide a mechanism so that an application can execute a 
+statement and then process an arbitrary collection of ResultSets and update counts. This mechanism
+is based on a fully general "execute" method, supported by three other methods, getResultSet,
+getUpdateCount, and getMoreResults. These methods allow an application to explore 
+the statement results one at a time and to determine if a given result was a ResultSet or an update
+count.
+<p>
+
+<a name="20240"></a>
+<h3>7.2 	  &nbsp; &nbsp; Passing IN parameters</h3>
+<a name="4064"></a>
+To allow you to pass parameters to a SQL statement, the java.sql.PreparedStatement class provides
+a series of setXXX methods. These can be used before each statement execution to fill in 
+parameter fields. Once a parameter value has been defined for a given statement, it can be used 
+for multiple executions of that statement, until it is cleared by a call on PreparedStatement.clearParameters.
+
+<p>
+<pre><code>java.sql.PreparedStatement stmt = conn.prepareStatement(
+</code></pre>
+<pre><code>					"UPDATE table3 SET m = ? WHERE x = ?");
+</code></pre>
+<pre><code>// We pass two parameters. One varies each time around the for loop,
+</code></pre>
+<pre><code>// the other remains constant.
+</code></pre>
+<pre><code>stmt.setString(1, "Hi");
+</code></pre>
+<pre><code>for (int i = 0; i &lt; 10; i++) {
+</code></pre>
+<pre><code>	stmt.setInt(2, i);
+</code></pre>
+<pre><code>	int rows = stmt.executeUpdate();
+</code></pre>
+<pre><code>}
+</code></pre>
+
+<a name="26386"></a>
+<h4>	7.2.1	 Data type conformance on IN parameters</h4>
+<a name="26387"></a>
+The PreparedStatement.setXXX methods do not perform any general data type conversions. 
+Instead the Java value is simply mapped to the corresponding SQL type (following the mapping
+specified in Table <a href="jdbc-spec.frame8.html#28688">3 on page 28</a>) and that value is sent to the database.
+<p>
+<a name="26388"></a>
+It is the programmer's responsibility to make sure that the java type of each argument  maps to 
+a SQL type that is compatible with the SQL data type expected by the database. For maximum 
+portability programmers, should use Java types that correspond to the exact SQL types expected
+by the database.
+<p>
+<a name="26392"></a>
+If programmers require data type conversions for IN parameters, they may use the PreparedStatement.setObject
+method which converts a Java Object to a specified SQL type before sending
+the value to the database.
+<p>
+
+<a name="4088"></a>
+<h4>	7.2.2	 Sending SQL NULLs as IN parameters</h4>
+<a name="26381"></a>
+The PreparedStatement.setNull method allows you to send a SQL NULL value to the database 
+as an IN parameter. Note, however, that you must specify the SQL type of the parameter.
+<p>
+<a name="45061"></a>
+In addition, for those setXXX methods that take Java objects as arguments, if a Java null value 
+is passed to a setXXX method, then a SQL NULL will be sent to the database.
+<p>
+
+<a name="26375"></a>
+<h4>	7.2.3	 Sending very large parameters</h4>
+<a name="4089"></a>
+JDBC itself defines no limits on the amount of data that may be sent with a setBytes or setString 
+call. However, when dealing with large blobs, it may be convenient for application programmers
+to pass in very large data in smaller chunks.
+<p>
+<a name="4090"></a>
+To accommodate this, we allow programmers to supply Java IO streams as parameters. When 
+the statement is executed the JDBC driver will make repeated calls on these IO streams to read 
+their contents and transmit these as the actual parameter data.
+<p>
+<a name="26145"></a>
+Separate setXXX methods are provided for streams containing uninterpreted bytes, for streams 
+containing ASCII characters, and for streams containing Unicode characters.
+<p>
+<a name="17495"></a>
+When setting a stream as an input parameter, the application programmer must specify the 
+number of bytes to be read from the stream and sent to the database. 
+<p>
+<a name="17535"></a>
+<sup><font size=-1>We dislike requiring that the data transfer size be specified in advance; however, this is necessary because some databases
+need to know the total transfer size in advance of any data being sent.
+</font></sup><p>
+<a name="4091"></a>
+An example of using a stream to send the contents of a file as an IN parameter:
+<p>
+<pre><code>java.io.File file = new java.io.File("/tmp/foo");
+</code></pre>
+<pre><code>int fileLength = file.length();
+</code></pre>
+<pre><code>java.io.InputStream fin = new java.io.FileInputStream(file);
+</code></pre>
+<pre><code>java.sql.PreparedStatement stmt = conn.prepareStatement(
+</code></pre>
+<pre><code>			"UPDATE Table5 SET stuff = ? WHERE index = 4");
+</code></pre>
+<pre><code>stmt.setBinaryStream(1, fin, fileLength);
+</code></pre>
+<pre><code>// When the statement executes, the "fin" object will get called
+</code></pre>
+<pre><code>// repeatedly to deliver up its data.
+</code></pre>
+<pre><code>stmt.executeUpdate();
+</code></pre>
+<pre><code>
+</code></pre>
+
+<a name="26268"></a>
+<h3>7.3 	  &nbsp; &nbsp; Receiving OUT parameters</h3>
+<a name="26269"></a>
+If you are executing a stored procedure call, then you should use the CallableStatement class. 
+CallableStatement is a subtype of PreparedStatement.
+<p>
+<a name="36276"></a>
+To pass in any IN parameters you can use the setXXX methods defined in PreparedStatement 
+as described in Section <a href="jdbc-spec.frame7.html#20240">7.2</a> above.
+<p>
+<a name="36283"></a>
+However, if your stored procedure returns OUT parameters, then for each OUT parameter you 
+must use the CallableStatememt.registerOutParameter method to register the SQL type of the 
+OUT parameter before you execute the statement. (See Appendix <a href="jdbc-spec.frame15.html#20152">A.6</a>.) Then after the statement
+has executed, you must use the corresponding CallableStatement.getXXX method to retrieve
+the parameter value.
+<p>
+<pre><code>java.sql.CallableStatement stmt = conn.prepareCall(
+</code></pre>
+<pre><code>					"{call getTestData(?, ?)}");
+</code></pre>
+<pre><code>stmt.registerOutParameter(1,java.sql.Types.TINYINT);
+</code></pre>
+<pre><code>stmt.registerOutParameter(2,java.sql.types.DECIMAL, 2);
+</code></pre>
+<pre><code>stmt.executeUpdate();
+</code></pre>
+<pre><code>byte x = stmt.getByte(1);
+</code></pre>
+<pre><code>BigDecimal n = stmt.getBigDecimal(2,2);
+</code></pre>
+
+<a name="26428"></a>
+<h4>	7.3.1	 Data type conformance on OUT parameters</h4>
+<a name="26429"></a>
+The CallableStatement.getXXX methods do not perform any general data type conversions. Instead
+the registerOutParameter call must specify the SQL type that will be returned by the database
+and the programmer must then subsequently call the getXXX method whose Java type 
+corresponds to that SQL type, as specified in Table <a href="jdbc-spec.frame8.html#27081">2 on page 27</a>.
+<p>
+
+<a name="26512"></a>
+<h4>	7.3.2	 Retrieving NULL values as OUT parameters</h4>
+<a name="26517"></a>
+As with ResultSets, in order to determine if a given OUT parameter value is SQL "NULL" you 
+must first read the parameter and then use the CallableStatement.wasNull method to discover 
+if the read returned a SQL "NULL".
+<p>
+<a name="26521"></a>
+When you read a SQL "NULL" value using one of the CallableStatement.getXXX methods, 
+you will receive a value of null, zero, or false, following the same rules specified in section 
+<a href="jdbc-spec.frame7.html#30760">7.1.2</a> for the ResultSet.getXXX methods. 
+<p>
+
+<a name="4099"></a>
+<h4>	7.3.3	 Retrieving very large out parameters</h4>
+<a name="4100"></a>
+We do not provide any mechanism for retrieving OUT parameters as streams. 
+<p>
+<a name="4101"></a>
+Instead we recommend that programmers retrieve very large values through ResultSets.
+<p>
+
+<a name="50881"></a>
+<h4>	7.3.4	 Retrieve out parameters after results</h4>
+<a name="50883"></a>
+If a stored procedure returns both results and out parameters, for maximum portability, the results
+should be retrieved prior to retrieving the out parameters.
+<p>
+
+<a name="20964"></a>
+<h3>7.4 	  &nbsp; &nbsp; Data truncation</h3>
+<a name="20968"></a>
+Under some circumstances data may be truncated when it is being read from or written to the 
+database. How this is handled will depend on the circumstances, but in general data truncation 
+on a database read will result in a warning, whereas data truncation on a database write will 
+result in a SQLException.
+<p>
+
+<a name="20990"></a>
+<h4>	7.4.1	 Exceeding the Connection maxFieldSize limit</h4>
+<a name="20991"></a>
+If an application uses Connection.setMaxFieldSize to impose a limit on the maximum size of 
+a field, then attempts to read or write a field larger than this will result in the data being silently 
+truncated to the maxFieldSize size, without any SQLException or SQLWarning.
+<p>
+
+<a name="20974"></a>
+<h4>	7.4.2	 Data truncation on reads</h4>
+<a name="20984"></a>
+In general data truncation errors during data reads will be uncommon with JDBC as the API 
+does not require the programmer to pass in fixed size buffers, but rather allocates appropriate 
+data space as needed. However in some circumstances drivers may encounter internal implementation
+limits, so there is still a possibility for data truncation during reads.
+<p>
+<a name="21001"></a>
+If data truncation occurs during a read from a ResultSet then a DataTruncation object (a subtype
+of SQLWarning) will get added to the ResultSet's warning list and the method will return 
+as much data as it was able to read. Similarly, if a data truncation occurs while an OUT parameter
+is being received from the database, then a DataTruncation object will get added to the 
+CallableStatement's warning list and the method will return as much data as it was able to read.
+<p>
+
+<a name="21004"></a>
+<h4>	7.4.3	 Data truncation on writes</h4>
+<a name="21002"></a>
+During writes to the database there is a possibility that the application may attempt to send 
+more data than the driver or the database is prepared to accept. In this case the failing method 
+should raise a DataTruncation exception as a SQLException.
+<p>
+<a name="21010"></a>
+
+<p>
+<a name="21009"></a>
+
+<p>
+
+
+<br>
+<hr> 
+<font size=-1>
+<a href="jdbc-spec.frame.html">Contents</a>  | <a href="jdbc-spec.frame6.html">Prev</a>  | <a href="jdbc-spec.frame8.html">Next</a>
+</font>
+<hr>
+
+
+
+<address>
+<a href="mailto:jdbc@wombat.eng.sun.com">jdbc@wombat.eng.sun.com</a>
+or
+<a href="mailto:jdbc-odbc@wombat.eng.sun.com">jdbc-odbc@wombat.eng.sun.com</a>
+</address>
+
+<a href="../../../relnotes/SMICopyright.html">
+<font size=-1><i>Copyright &#169; 1996, 1997 Sun Microsystems, Inc.   All rights reserved.</i></font>
+</a>
+
+<!-- HTML generated by Suzette Pelouch on April 10, 1998 -->
+
+</body>
+</html>

@@ -1,0 +1,348 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+
+<HTML>
+<HEAD>
+<!--changed by vlc, 6/27/97-->
+   <TITLE>Java IDL: Initialization</TITLE>
+   <META NAME=GENERATOR CONTENT="Claris Home Page 2.0">
+   <X-SAS-WINDOW TOP=160 BOTTOM=480 LEFT=4 RIGHT=535>
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<H1 ALIGN=CENTER>Initialization</H1>
+<HR>
+
+<P>Before a Java program can use CORBA objects, it must initialize
+itself as follows:</P>
+
+<UL>
+   <LI>Create an ORB object.
+   
+   <LI>Obtain one or more initial object 
+   references, typically at
+   least a <A HREF="jidlNaming.html#nameserver">naming context</A>.
+</UL>
+
+<P>Topics in this section include:
+
+<UL>
+<LI><A href="#creatingorb">Creating an ORB Object</A>
+  <UL>
+  <LI><A HREF="#orbsforapps">Creating an ORB for an Application</A>
+  <LI><A HREF="#orbsforapplets">Creating an ORB for an Applet</A>
+  <LI><A HREF="#initargs">Arguments to ORB.init()</A>
+  <LI><A HREF="#systempropertiesobject">System Properties</A>
+  </UL>
+<LI><A href="#obtaininginitial">Obtaining Initial Object References</A>
+  <UL>
+  <LI><A HREF="#stringifiedobjref">Stringified Object References</A>
+  <LI><A HREF="#gettingobjref">Getting References from an ORB</A>
+  </UL>
+</UL>
+  
+
+
+<!--************CREATING AN ORB OBJECT**********-->
+
+<A NAME="creatingorb">
+<H2>Creating an ORB Object</H2></A>
+
+<P>Before it can create or invoke a CORBA object, an applet or
+application must first create an ORB object. Doing so introduces the
+applet or application to the ORB and obtains access to important
+operations that are defined on the ORB object.</P>
+
+<P>Applets and applications create ORB instances slightly
+differently, because their parameters, which must be passed in the
+<TT>ORB.init()</TT> call, are arranged differently.</P>
+
+
+<A NAME="orbsforapps">
+<H3>Creating an ORB for an Application</H3></A>
+
+<P>This fragment shows how an application might create an ORB:</P>
+
+<PRE>    import org.omg.CORBA.ORB;
+&nbsp;
+    public static void main(String args[])
+    {
+      try{
+        ORB orb = ORB.init(args, null); 
+    // code continues
+</PRE>
+
+
+<A NAME="orbsforapplets">
+<H3>Creating an ORB for an Applet</H3></A>
+
+<P>An applet creates an ORB like this:</P>
+
+<PRE>
+    import org.omg.CORBA.ORB;
+&nbsp;
+    public void init() {
+      try {
+        ORB orb = ORB.init(this, null);
+    // code continues
+</PRE>
+
+
+<P>Some web browsers have an ORB built directly into them.  This can cause
+problems if that ORB is not perfectly compliant. In this case, special steps 
+must be taken to initialize the Java&nbsp;IDL ORB specifically.  
+For example, because of 
+missing classes in the installed ORB in Netscape Communicator&nbsp;4.01, 
+an applet displayed in that browser must contain code similar to the
+following in its <TT>init()</TT> method:
+
+<PRE>
+    import java.util.Properties;
+    import org.omg.CORBA.*;
+
+    public class MyApplet extends java.applet.Applet {
+      public void init()
+      {
+        // Instantiate the Java IDL ORB, passing in this applet 
+        // so that the ORB can retrieve the applet properties.
+        Properties props = new Properties();
+        props.put("org.omg.CORBA.ORBClass", "com.sun.CORBA.iiop.ORB");
+        ORB orb = ORB.init(this, props);
+        ...
+      }
+    }
+&nbsp;</PRE>  
+
+
+<A NAME="initargs">
+<H3>Arguments to ORB.init()</H3>
+
+<P>For both applications and applets, the arguments for the initialization 
+method are:
+
+<DL>
+<DT><B>args</B> or <B>this</B>
+<DD>Provides the ORB access to the application's arguments or 
+applet's parameters.
+<DT><B>null</B>
+<DD>A <TT>java.util.Properties</TT> object.
+</DL>
+
+<P>The <TT>init()</TT> operation uses these parameters, as well as the
+system properties, to obtain information it needs to configure
+the ORB. It searches for ORB configuration
+properties in the following places and order:</P>
+
+<OL>
+   <LI>The application or applet parameters (first argument)
+   
+   <LI>A <TT>java.util.Properties</TT> object (second argument), if one has been
+   supplied
+   
+   <LI>The <TT>java.util.Properties</TT> object returned by 
+   <TT>System.getProperties()</TT>
+</OL>
+
+<P>The first value found for a particular property is the value the
+<TT>init()</TT> operation uses. If a configuration property cannot be
+found in any of these places, the <TT>init()</TT> operation assumes
+an implementation-specific value for it. For maximum portability
+among ORB implementations, applets and applications should explicitly
+specify configuration property values that affect their operation,
+rather than relying on the assumptions of the ORB they happen to be
+running in.</P>
+
+
+<A NAME="systempropertiesobject">
+<H3>System Properties</H3></A>
+
+<P>With respect to the system <TT>Properties</TT> object, note that Sun's Java
+virtual machine<B>*</B> adds <TT>-D</TT> command line arguments to it.  
+Other Java virtual machines may or may not do the same.</P>
+
+<P>Currently, the following configuration properties are defined for all
+ORB implementations:</P>
+
+<DL>
+   <DT><TT>org.omg.CORBA.ORBClass</TT>
+   
+   <DD>The name of a Java class that implements the
+   <TT>org.omg.CORBA.ORB</TT> interface. Applets and applications do not
+   need to supply this property unless they must have a particular
+   ORB implementation. The value for the Java&nbsp;IDL ORB is
+   <TT>com.sun.CORBA.iiop.ORB</TT>.
+   
+   <DT><TT>org.omg.CORBA.ORBSingletonClass</TT>
+   
+   <DD>The name of a Java class that implements the
+   <TT>org.omg.CORBA.ORB</TT> interface. This is the object returned
+   by a call to <TT>orb.init()</TT> with no arguments. It is used primarily to 
+   create typecode instances than can be shared across untrusted code (such as
+   unsigned applets) in a secured environment. 
+  
+</DL>
+
+<P>In addition to the standard properties listed above, Java&nbsp;IDL
+also supports the following properties:</P>
+
+<DL>
+   <DT><A NAME="orbhost"></A><TT>org.omg.CORBA.ORBInitialHost</TT>
+   
+   <DD>The host name of a machine running a server or daemon that provides
+   initial bootstrap services, such as a name service. The default value for
+   this property is <TT>localhost</TT> for applications. For applets
+   it is the applet host, equivalent to
+   <TT>getCodeBase().getHost()</TT>.
+   
+   <DT><TT><A NAME="orbport"></A>org.omg.CORBA.ORBInitialPort</TT>
+   
+   <DD>The port the initial naming service listens to. The default
+   value is <TT>900</TT>.
+   
+</DL>
+
+<P><HR>
+<B>Note:</B> When specifying a property as a command-line argument to a Java&nbsp;IDL 
+application, omit the <TT>org.omg.CORBA.</TT> portion of 
+the property name.  For 
+example, a command line that starts an application looks like this:  
+<PRE>
+    -ORBInitialPort 800
+</PRE>
+<P>Applet parameters should specify the full property names.  The 
+conventions for applications differ from applets so as not to expose 
+language-specific details in command-line invocations. 
+<HR></P>
+
+
+<!--***************INITIAL OBJREFS******************-->
+
+<A name="obtaininginitial">
+<H2>Obtaining Initial Object References</H2></A>
+
+<P>To invoke a CORBA object, an applet or application must have a
+reference for it. There are three ways to get a reference for a CORBA
+object:</P>
+
+<UL>
+   <LI>From a string that was specially created from an object
+   reference
+   
+   <LI>From another object, such as a naming context
+   <LI>From the <TT>ORB</TT> operation <TT>resolve_initial_references()</TT>
+</UL>
+
+
+<A name="stringifiedobjref">
+<H3>Stringified Object References</H3></A>
+
+<P>The first technique, converting a stringified reference to an
+actual object reference, is ORB-implementation independent. No matter
+what Java ORB an applet or application runs on, it can convert a
+stringified object reference. However, it is up to the applet or
+application developer to: </P>
+
+<UL>
+   <LI>Ensure that the object referred to is in fact accessible from
+   where the applet or application is running. 
+   
+   <LI>Obtain the stringified reference, perhaps from a file or a
+   parameter.
+</UL>
+
+<P>The following fragment shows how a server converts a CORBA object 
+reference to a string:</P>
+
+<BLOCKQUOTE>
+<PRE>
+org.omg.CORBA.ORB orb =    // get an ORB object
+org.omg.CORBA.Object obj = // create the object reference
+String str = orb.object_to_string(obj);
+// make the string available to the client
+</PRE>
+</BLOCKQUOTE>
+
+<P>This code fragment shows how a client converts the stringified
+object reference back to an object:
+
+<BLOCKQUOTE>
+<PRE>
+org.omg.CORBA.ORB orb =    // get an ORB object
+String stringifiedref =    // read string
+org.omg.CORBA.Object obj = orb.string_to_object(stringifiedref);
+</PRE>
+</BLOCKQUOTE>
+
+
+<A name="gettingobjref">
+<H3>Getting References from an ORB</H3></A>
+
+<P>If you don't use a stringified reference to get an initial CORBA
+object, you use the ORB itself to produce an initial object
+reference. However, doing so may make your applet or application
+ORB-dependent, because, although the CORBA specification defines the
+interface for getting initial object references, it doesn't yet
+provide enough information for ORB vendors to implement it
+in a standard way. Applet and application developers should therefore be
+cautious when using this operation until the standard is more tightly
+specified. To <I>guarantee</I> ORB-implementation-independence, use
+the stringified object reference technique instead.</P>
+
+<P>The ORB interface defines an operation called
+<TT>resolve_initial_references()</TT> that is intended for
+bootstrapping object references into a newly started application or
+applet. The operation takes a string argument that names one of a few
+recognized objects; it returns a CORBA Object, which must be narrowed
+to the type the applet or application knows it to be. Two string
+values are presently defined:</P>
+
+<DL>
+   <DT><TT>NameService</TT>
+   
+   <DD>Passing this value returns a reference to a root
+   <A HREF="jidlNaming.html#nameserver">naming context</A> which, after narrowing,
+   can be used to look up references for objects whose names are known
+   to the applet or application (assuming those objects are
+   registered by those names in the root or subordinate naming
+   contexts).
+   
+   <DT><TT>InterfaceRepository</TT>
+   
+   <DD>This value returns a reference to an interface repository, a
+   CORBA object that contains interface definitions.  The current release of
+   Java&nbsp;IDL does not include an implementation of the interface
+   repository.  If you are using another server-side orb, you can still
+   use "InterfaceRepository" as the argument to <TT>resolve_initial_references()</TT>.
+</DL>
+
+<P>The Java&nbsp;IDL implementation of
+<TT>resolve_initial_references()</TT> requires an already-running
+naming service whose host and port are identified by the
+<TT><A HREF="#orbhost">ORBInitialHost</A></TT> and
+<TT><A HREF="#orbport">ORBInitialPort</A></TT> properties described
+previously, or by their default values. 
+See <A HREF="jidlNaming.html#startingnameserver">Naming Service</A> 
+for details on starting the Java&nbsp;IDL name server.</P>
+
+<P>
+<FONT SIZE="-1"><B>*As used on this web site, the terms "Java Virtual Machine" 
+or "JVM" mean a virtual machine for the Java platform.</B></FONT>
+<P>
+
+<HR>
+<CENTER><P>
+
+
+<TABLE cellpadding=8 cellspacing=4>
+<TR>
+  <TD ALIGN=CENTER><A href="index.html">Home</A></TD>
+</TR></TABLE>
+
+<HR><FONT
+SIZE="-2">
+<A HREF="http://www.sun.com/share/text/SMICopyright.html">Copyright
+&copy;</A></FONT><FONT SIZE="-2"> 1996, 1997 Sun Microsystems, Inc.,
+2550 Garcia Ave., Mtn. View, CA. 94043-1100 USA., All rights
+reserved.</FONT></P>
+</CENTER>
+</BODY>
+</HTML>

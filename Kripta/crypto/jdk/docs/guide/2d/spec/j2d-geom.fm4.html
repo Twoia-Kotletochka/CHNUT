@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API: 3 - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-geom.fm3.html">PREV</a>
+ | <a href="j2d-fonts.fm.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="64250"><i>3.4	</i> Creating a Custom Shape
+</a></h2>
+
+<blockquote>
+<a name="61818"><!-- --></a>
+You can implement the <kbd>Shape</kbd> interface to create a class that defines a new type of shape. It doesn&#39;t matter how you represent the shape internally, as long as you can implement the <kbd>Shape</kbd> interface methods. The <kbd>Shape</kbd> must be able to generate a path that specifies its contour.<p>
+<a name="63526"><!-- --></a>
+For example, you could create a simple implementation of <kbd>Shape</kbd> that represents polygons as arrays of points. Once the polygon is built, it could be passed to <kbd>draw</kbd>, <kbd>setClip</kbd>, or any other method that expects a <kbd>Shape</kbd> object as an argument.<p>
+<a name="61819"><!-- --></a>
+The <kbd>PolygonPath</kbd> class must implement the <kbd>Shape</kbd> interface methods:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="61820"><!-- --></a>
+<kbd>contains</kbd>
+</li>
+<li>
+<a name="61821"><!-- --></a>
+<kbd>getBounds</kbd>
+</li>
+<li>
+<a name="61822"><!-- --></a>
+<kbd>getBounds2D</kbd>
+</li>
+<li>
+<a name="61823"><!-- --></a>
+<kbd>getPathIterator</kbd>
+</li>
+<li>
+<a name="61824"><!-- --></a>
+<kbd>intersects</kbd>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="64684"><!-- --></a>
+<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-geom.fm3.html">PREV</a>
+ | <a href="j2d-fonts.fm.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Mon Nov 22 09:37:04 1999 -->
+ 
+
+
+</body>
+</html>

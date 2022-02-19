@@ -1,0 +1,234 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Drag and Drop: API</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="dnd1TOC.doc.html">CONTENTS</a> | <a href="dnd1.doc6.html">PREV</a>
+ | <a href="dnd1.doc8.html">NEXT</a> <!-- | <a href="dnd1.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Drag and Drop</i></td>
+</tr></table>
+<br>
+ 
+
+<br>
+<h3>
+<a name="919804"><!-- --></a>
+<i>2.5  </i> Data Transfer Phase
+</h3>
+
+<blockquote>
+<a name="920244"><!-- --></a>
+In the case where a valid drop occurs, the <em>DropTargetListener&#39;s drop()</em> method is responsible for undertaking the transfer of the data associated with the gesture. The <em>DropTargetDropEvent</em> provides a means to obtain a <em>Transferable</em> object that represent that data object(s) to be transferred. <p>
+<a name="923041"><!-- --></a>
+From the <em>drop</em>() method, the <em>DropTargetListener</em> shall initially either <em>rejectDrop</em>() (immediately returning thereafter) or <em>acceptDrop</em>() specifying the selected operation from those returned by <em>getSourceActions</em>().<p>
+<a name="923042"><!-- --></a>
+Subsequent to an <em>acceptDrop</em>(), but not before, <em>getTransferable</em>() may be invoked, and any data transfers performed via the returned <em>Transferable</em>&#39;s <em>getTransferData</em>() method. Finally, once the destination of the drop has completed the transfer(s) of the objects from the source it shall signal the success, or immediate failure, of the transfer(s) via an invocation of <em>DropTargetContext.ropComplete</em>().<p>
+<a name="920249"><!-- --></a>
+Upon returning from the <em>DropTargetContext.dropComplete</em>() method the <em>Transferable</em> and <em>DragSourceContext</em> instances are no longer guaranteed to be valid and all references to them shall be discarded by the recipient to allow them to be subsequently garbage collected.<p>
+<a name="923051"><!-- --></a>
+When using the <i><b>ACTION_REFERENCE</b></i> operation the source and destination should take care to agree upon the object and the associated semantics of the transfer. Typically in intra-JVM transfers a live object reference would be passed between source and destination, but in the case of inter-JVM transfers, or transfers between native and Java applications, live object references do not make sense, so some other `reference&#39; type should be exchanged such as a URI for example. Both the <em>DragSource</em> and <em>DropTarget</em> can detect if the transfer is intra-JVM or not.<p>
+</blockquote>
+<br>
+<a name="923066"><!-- --></a>
+<h4><i>2.5.1   FlavorMap and SystemFlavorMap
+</i></h4>
+
+<blockquote>
+<a name="922863"><!-- --></a>
+All the target DnD platforms represent their transfer data types using a similar mechanism, however the representations do differ. The Java platform uses MIME types encapsulated within a <em>DataFlavor</em> to represent its data types. Unfortunately in order to permit the transfer of data between Java and platform native applications the existence of these platform names need to be exposed, thus a mechanism is required in order to create an extensible (platform independent) mapping between these platform dependent type names, their representations, and the Java MIME based <em>DataFlavors</em>.<p>
+<a name="922864"><!-- --></a>
+The implementation will provide a mechanism to externally specify a mapping between platform native data types (strings) and MIME types (strings) used to construct <em>DataFlavors</em>. This external mapping will be used by the underlying platform specific implementation code in order to expose the appropriate <em>DataFlavors</em> (MIME types), exported by the source, to the destination, via the underlying platform DnD mechanisms.<p>
+<a name="922867"><!-- --></a>
+Both the <em>DragSource</em> and <em>DropTarget</em> classes provide access for the underlying system to map platform dependent names to and from <em>DataFlavors</em>.<p>
+<a name="922951"><!-- --></a>
+<p>
+</blockquote><blockquote><pre>
+public interface java.awt.datatransfer.FlavorMap {
+	java.util.Map getNativesForFlavors(DataFlavor[] dfs);
+	java.util.Map getFlavorsForNatives(String[] natives);
+}
+
+
+</pre></blockquote><blockquote>
+<a name="922953"><!-- --></a>
+The <em>getNativesForFlavors</em>() method takes an array of <em>DataFlavor</em>s and returns a <em>Map</em> object containing zero or more keys of type <em>DataFlavor</em>, from the actual parameter <em>dfs</em>, with associated values of type <em>String</em>, which correspond to the platform dependent type name for that MIME type.<p>
+<a name="922957"><!-- --></a>
+The <em>getFlavorsForNatives</em>() method takes an array of <em>String</em> types and returns a Map object containing zero or more keys of type <em>String</em>, from the actual parameter natives, with associated values of type <em>DataFlavor</em>, which correspond to the platform independent type for that platform dependent type name.<p>
+<a name="922958"><!-- --></a>
+The <em>Map</em> object returned by both methods may be mutable but is not required to be.<p>
+<a name="924197"><!-- --></a>
+If NULL is passed to either of these methods they should return their current map of all keys and values known to the implementation at the time of the call.<p>
+<a name="922956"><!-- --></a>
+For example on Win32 the Clipboard Format Name for simple text is &#34;CF_TEXT&#34; (actually it is the integer 1) and on Motif it is the X11 Atom named &#34;STRING&#34;, the MIME type one may use to represent this would be &#34;text/plain charset=us-ascii&#34;. Therefore a platform portable <em>FlavorMap</em> would map between these names; CF_TEXT on win32 and STRING on Motif/X11.<p>
+<a name="922940"><!-- --></a>
+Typically, as implemented in the <em>SystemFlavorMap</em> these mappings are held in an external persistent configuration format (a properties file or URL) and are loaded from the platform to configure the <em>FlavorMap</em> appropriately for a given platform.<p>
+<a name="922947"><!-- --></a>
+The <em>SystemFlavorMap</em> class is provided to implement a simple, platform configurable mechanism for specifying a system-wide set of common mappings, and is defined as follows:<p>
+</blockquote><blockquote><pre>
+public class      java.awt.datatransfer.SystemFlavorMap 
+       implements FlavorMap {
+	public static FlavorMap getSystemFlavorMap();
+
+	public synchronized Map 
+		getNativesForFlavors(DataFlavor[] dfs);
+
+	public synchronized Map
+		getFlavorsForNatives(String[] natives);
+
+	public static String
+		encodeJavaMIMEType(DataFlavor df);
+
+	public static String
+		encodeJavaMimeType(java.util.mime.MimeType mime);
+
+	public static boolean
+		isEncodedJavaMimeType(String mimeStr);
+
+	public static DataFlavor
+		createFlavorFromEncodedJavaMimeType(String ejmts);
+
+	public static java.util.mime.MimeType
+		createMimeTypeFromEncodedJavaMimeType(
+							String ejmts
+		);
+}
+
+</pre></blockquote><blockquote>
+<a name="923029"><!-- --></a>
+The <em>SystemFlavorMap</em> class provides a simple implementation, using a properties file (see <em>java.awt.Properties</em>), of a persistent platform <em>FlavorMap</em>. Using the value of the AWT property &#34;AWT.flavorMapFileURL&#34; (see <em>Toolkit.getProperty</em>()) or the default file location of <em>System.getProperty(&#34;</em>java.home&#34;) + File.separator + &#34;lib&#34; + File.separator + &#34;flavormap.properties&#34;, this class creates the appropriate <em>Map</em>s from the properties found therein.<p>
+<a name="923034"><!-- --></a>
+In addition the class provides several static convenience functions used to encode and decode Java <em>MimeType</em>s to and from a platform dependent namespace. The syntax of the properties file is:<p>
+<a name="923040"><!-- --></a>
+{ &lt;platform_type_name&gt; `=&#39; &lt;IETF_MIME_RFC_conformant_specification&gt; &lt;nl&gt; } *<p>
+<a name="923039"><!-- --></a>
+The default implementations of <em>DragSource</em> and <em>DropTarget</em> return the <em>SystemFlavorMap</em> from their <em>getFlavorMap</em>() method, unless they have been provided with an overriding implementation.<p>
+</blockquote>
+<br>
+<a name="924198"><!-- --></a>
+<h4><i>2.5.2   Transferring Data across the JVM boundary
+</i></h4>
+
+<blockquote>
+<a name="924352"><!-- --></a>
+Since one of the primary goals of this API is to allow Drag and Drop of data between Java and native applications this has some significant consequences upon the method and mechanism of the actual data encoding and exchange when data is passed across the boundary of the Java Virtual Machine<B>*</B>
+.<p>
+<a name="924357"><!-- --></a>
+Since one of the participants in such an exchange may be a native application, and thus has no knowledge of the Java type system, the Drag and Drop system cannot just exchange a Java object reference since the other participant may have no knowledge of, or capability to manipulate such a type.<p>
+<a name="924363"><!-- --></a>
+When any exchange occurs, it can only do so, regardless of the implementation of the participants, if and only if both participants are agreed upon a familiar data type and encoding. Thus, sadly the burden of the exchange is born mostly by the participants themselves.<p>
+<a name="924367"><!-- --></a>
+What this means in practical terms is that for &#34;native&#34; data formats, such as platform dependent image, document, or other &#34;Content-Types&#34; the encoding and decoding of their associated external data format is the responsibility of the source and destination of the transfer.<p>
+<a name="924368"><!-- --></a>
+The Drag and Drop system shall expose the external representation of such &#34;native&#34; data types across the boundary of the Java Virtual Machine as encapsulated within a <em>java.io.InputStream </em>or a subclass thereof.<p>
+<a name="924369"><!-- --></a>
+This means that any <em>DataFlavor</em> with a representation class that extends <em>java.io.InputStream</em> can be transferred, and will be exposed for transfer, across the Java Virtual Machine boundary.<p>
+<a name="924371"><!-- --></a>
+To implement the exchange of such a native data type, a developer would define a <em>DataFlavor</em> with a MIME &#34;Content-Type&#34; that describes the nature of the &#34;native&#34; data type, with a representation class that extends a <em>java.io.InputStream</em> class that encodes the data encapsulated into a stream of bytes.<p>
+<a name="924409"><!-- --></a>
+In particular such <em>InputStream</em> subclasses shall implement the following semantics:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="924410"><!-- --></a>
+Provide a public constructor with a single argument of type <em>java.io.InputStream.</em>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="924411"><!-- --></a>
+<p>
+<a name="924412"><!-- --></a>
+Provision of this constructor by a subclass of <em>java.io.InputStream</em> will allow the Drag and Drop system (associated with the <em>DropTarget</em>) to automatically re-construct an instance of the representation class specified by the requested <em>DataFlavor</em>, and initialize it with an <em>InputStream</em> containing the encapsulated data formatted according to the expectations of that subclass. Once initialized this instance is returned to the caller of the Transferable.getTransferData() method, thus allowing the caller to subsequently re-read and interpret the formatted content of the data stream transferred.<p>
+<a name="924429"><!-- --></a>
+<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="924413"><!-- --></a>
+Provide an implementation of <em>InputStream.read(byte b[], int off, int len)</em>.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="924416"><!-- --></a>
+<p>
+<a name="924421"><!-- --></a>
+Provision of this method (or inheriting a superclasses implementation) enables the Drag and Drop system (associated with the <em>DragSource</em>) to automatically extract an encoded stream of the encapsulated data from the <em>Transferable</em>, thus enabling the transfer of the data across the JVM<B>*</B> boundary as a simple byte stream to the requestor of the particular <em>DataFlavor</em>.<p>
+</blockquote>
+<br>
+<a name="924199"><!-- --></a>
+<h4><i>2.5.3   Transferring lists of files across the JVM boundary.
+</i></h4>
+
+<blockquote>
+<a name="924343"><!-- --></a>
+A typical subject of a Drag and Drop transfer is a list of one or more platform dependent filenames. In order to ease the programming task of developers either producing or consuming such lists the Drag and Drop system treats them as a special case.<p>
+<a name="924344"><!-- --></a>
+If a <em>DataFlavor</em> is specified with a MIME &#34;Content-Type&#34; of application/x-java-file-list;class=java.util.List the Drag and Drop system will expect the list elements to be a homogeneous list of objects of type <em>java.io.File</em>. Thus a source shall, if supporting the transfer of a list of files, construct such a <em>List</em> of <em>File</em> objects when such a <em>DataFlavor</em> is requested, and a recipient shall expect such a <em>List</em> of <em>File</em> objects if it requests such a valid <em>DataFlavor</em> from it&#39;s source. This special case provides a simple mechanism for the transfer of lists of files between source and target.<p>
+</blockquote>
+<br>
+<a name="924336"><!-- --></a>
+<h4><i>2.5.4   Transferring java.rmi.Remote references across the JVM boundary.
+</i></h4>
+
+<blockquote>
+<a name="924436"><!-- --></a>
+It is possible to Drag and Drop object references between JVMs&#39; by using the facilities of the RMI mechanism. The Drag and Drop system will automatically arrange for the transfer of any object reference that adheres to these requirements:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="924439"><!-- --></a>
+The representation class of interface associated with the requested <em>DataFlavor</em> implements both <em>java.rmi.Remote</em> and <em>java.io.Serializable</em>. 
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="924445"><!-- --></a>
+(the MIME &#34;Content-Type&#34; can be any suitable, arbitrary type or application/x-java-remote-object)<p>
+<a name="924444"><!-- --></a>
+<p>
+<a name="924446"><!-- --></a>
+(effectively the object implementation class transferred should be extended from <em>java.rmi.server.UnicastRemoteObject </em>since the RMI system implements some required initialization, without which the transfer will not complete properly).<p>
+<a name="924447"><!-- --></a>
+<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="924443"><!-- --></a>
+The drop action is ACTION_LINK.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="924448"><!-- --></a>
+If these conditions are met, then if an appropriate <em>DataFlavor</em> is requested, then the object returned to the requestor (if it is in a difference JVM from the source) will be an RMI reference to an instance of the <em>Remote</em> object subinterface specified as the representation class of the <em>DataFlavor</em>.<p>
+</blockquote>
+
+<P>
+<FONT SIZE="-1"><B>*As used on this web site, the terms "Java Virtual Machine" 
+or "JVM" mean a virtual machine for the Java platform.</B></FONT>
+<P>
+
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="dnd1TOC.doc.html">CONTENTS</a> | <a href="dnd1.doc6.html">PREV</a>
+ | <a href="dnd1.doc8.html">NEXT</a> <!-- | <a href="dnd1.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997, 1998 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Doug Kramer -->
+<!-- Last updated: Thu Nov 19 14:12:35 1998 -->
+ 
+
+
+</body>
+</html>

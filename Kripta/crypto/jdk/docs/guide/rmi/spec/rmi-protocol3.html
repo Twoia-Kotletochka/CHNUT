@@ -1,0 +1,497 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Remote Method Invocation: 10 - RMI Wire Protocol
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="rmiTOC.html">CONTENTS</a> | <a href="rmi-protocol2.html">PREV</a>
+ | <a href="rmi-protocol4.html">NEXT</a> 
+<!-- /font --></td><td align=right><i>Java Remote Method Invocation</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="5112"><i>	10.2	</i> RMI Transport Protocol
+</a></h2>
+
+
+<blockquote>
+<a name="3250"><!-- --></a>
+	The wire format for RMI is represented by a <em>Stream</em>. The terminology adopted here reflects a client perspective. <em>Out</em> refers to output messages and <em>In</em> refers to input messages. The contents of the transport header are <em>not</em> formatted using object serialization. 
+
+<br><br>
+<Table Border="0" Cellpadding="5">
+<caption></caption>
+
+<tr><td colspan=2 rowspan=1><a name="4231"><!-- --></a>
+<b><em>Stream:</em></b><br>
+
+</td></tr>
+<tr valign="top"><td><a name="4235"><!-- --></a>
+<p>
+
+</td>
+<td><a name="4237"><!-- --></a>
+<p><em>Out</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4239"><!-- --></a>
+<p>
+
+</td>
+<td><a name="4265"><!-- --></a>
+<p><em>In</em>
+
+</td>
+</tr>
+
+</Table>
+ 
+<p>
+<a name="5719"><!-- --></a>
+		The input and output streams used by RMI are paired. Each <em>Out</em> stream has a corresponding <em>In</em> stream. An <em>Out</em> stream in the grammar maps to the output stream of a socket (from the client&#39;s perspective). An <em>In</em> stream (in the grammar) is paired with the corresponding socket&#39;s input stream. Since output and input streams are paired, the only header information needed on an input stream is an acknowledgment as to whether the protocol is understood; other header information (such as the magic number and version number) can be implied by the context of stream pairing.<p>
+</blockquote>
+<br>
+<h3>
+<a name="3252"><!-- --></a>
+<i>	10.2.1	</i> Format of an Output Stream
+</h3>
+
+<blockquote>
+<a name="3253"><!-- --></a>
+An output stream in RMI consists of transport <em>Header</em> information followed by a sequence of <em>Messages</em>. Alternatively, an output stream can contain an invocation embedded in the HTTP protocol.<p>
+<a name="3254"><!-- --></a>
+
+
+<Table Border="0" Cellpadding="5">
+<caption></caption>
+
+<tr valign="top"><td colspan=2 rowspan=1><a name="4276"><!-- --></a>
+<p><em>Out:</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4280"><!-- --></a>
+<p>
+
+</td>
+<td><a name="4282"><!-- --></a>
+<p><em>Header Messages</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4284"><!-- --></a>
+<p>
+
+</td>
+<td><a name="4286"><!-- --></a>
+<p><em>HttpMessage</em>
+
+</td>
+</tr>
+<tr valign="top"><td colspan=2 rowspan=1><a name="4288"><!-- --></a>
+<p><em>Header:</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4292"><!-- --></a>
+<p>
+
+</td>
+<td><a name="4294"><!-- --></a>
+<p><em>0x4a 0x52 0x4d 0x49</em><em> Version Protocol</em>
+
+</td>
+</tr>
+<tr valign="top"><td colspan=2 rowspan=1><a name="4296"><!-- --></a>
+<p><em>Version:</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4300"><!-- --></a>
+<p>
+
+</td>
+<td><a name="4302"><!-- --></a>
+<p><em>0x00 0x01</em>
+
+</td>
+</tr>
+<tr valign="top"><td colspan=2 rowspan=1><a name="4304"><!-- --></a>
+<p><em>Protocol:</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4308"><!-- --></a>
+<p>
+
+</td>
+<td><a name="4310"><!-- --></a>
+<p><em>StreamProtocol</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4312"><!-- --></a>
+<p>
+
+</td>
+<td><a name="4314"><!-- --></a>
+<p><em>SingleOpProtocol</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4316"><!-- --></a>
+<p>
+
+</td>
+<td><a name="4318"><!-- --></a>
+<p><em>MultiplexProtocol</em>
+
+</td>
+</tr>
+<tr valign="top"><td colspan=2 rowspan=1><a name="4320"><!-- --></a>
+<p><em>StreamProtocol:</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4324"><!-- --></a>
+<p>
+
+</td>
+<td><a name="4326"><!-- --></a>
+<p><em>0x4b</em>
+
+</td>
+</tr>
+<tr valign="top"><td colspan=2 rowspan=1><a name="4328"><!-- --></a>
+<p><em>SingleOpProtocol:</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4332"><!-- --></a>
+<p>
+
+</td>
+<td><a name="4334"><!-- --></a>
+<p><em>0x4c</em>
+
+</td>
+</tr>
+<tr valign="top"><td colspan=2 rowspan=1><a name="4336"><!-- --></a>
+<p><em>MultiplexProtocol:</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4340"><!-- --></a>
+<p>
+
+</td>
+<td><a name="4342"><!-- --></a>
+<p><em>0x4d</em>
+
+</td>
+</tr>
+<tr valign="top"><td colspan=2 rowspan=1><a name="4344"><!-- --></a>
+<p><em>Messages:</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4348"><!-- --></a>
+<p>
+
+</td>
+<td><a name="4350"><!-- --></a>
+<p><em>Message</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4352"><!-- --></a>
+<p>
+
+</td>
+<td><a name="4354"><!-- --></a>
+<p><em>Messages Message</em>
+
+</td>
+</tr>
+
+</Table>
+ 
+<p>
+<a name="3258"><!-- --></a>
+The <em>Messages</em> are wrapped within a particular protocol as specified by <em>Protocol</em>. For the <em>SingleOpProtocol</em>, there may only be one <em>Message</em> after the <em>Header</em>, and there is no additional data that the <em>Message</em> is wrapped in. The <em>SingleOpProtocol</em> is used for invocation embedded in HTTP requests, where interaction beyond a single request and response is not possible.<p>
+<a name="3966"><!-- --></a>
+For the <em>StreamProtocol</em> and the <em>MultiplexProtocol</em>, the server must respond with a a byte <em>0x4e</em> acknowledging support for the protocol, and an <em>EndpointIdentifier</em> that contains the host name and port number that the server can see is being used by the client. The client can use this information to determine its host name if it is otherwise unable to do that for security reasons. The client must then respond with another <em>EndpointIdentifier</em> that contains the client&#39;s default endpoint for accepting connections. This can be used by a server in the <em>MultiplexProtocol</em> case to identify the client.<p>
+<a name="3967"><!-- --></a>
+For the <em>StreamProtocol</em>, after this endpoint negotiation, the <em>Messages</em> are sent over the output stream without any additional wrapping of the data. For the <em>MultiplexProtocol</em>, the socket connection is used as the concrete connection for a multiplexed connection, as described in <a href="rmi-protocol7.html">Section&#160;10.6, &#34;RMI&#39;s Multiplexing Protocol</a>.&#34; Virtual connections initiated over this multiplexed connection consist of a series of <em>Messages</em> as described below.<p>
+<a name="3965"><!-- --></a>
+There are three types of output messages: <em>Call</em>, <em>Ping</em> and <em>DgcAck</em>. A <em>Call</em> encodes a method invocation. A <em>Ping</em> is a transport-level message for testing liveness of a remote virtual machine. A <em>DGCAck</em> is an acknowledgment directed to a server&#39;s distributed garbage collector that indicates that remote objects in a return value from a server have been received by the client.
+
+<br><br>
+<Table Border="0" Cellpadding="5">
+<caption></caption>
+
+<tr valign="top"><td colspan=2 rowspan=1><a name="4491"><!-- --></a>
+<p><em>Message:</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4495"><!-- --></a>
+<p>
+
+</td>
+<td><a name="4497"><!-- --></a>
+<p><em>Call</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4499"><!-- --></a>
+<p>
+
+</td>
+<td><a name="4501"><!-- --></a>
+<p><em>Ping</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4503"><!-- --></a>
+<p>
+
+</td>
+<td><a name="4505"><!-- --></a>
+<p><em>DgcAck</em>
+
+</td>
+</tr>
+<tr valign="top"><td colspan=2 rowspan=1><a name="4507"><!-- --></a>
+<p><em>Call:</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4511"><!-- --></a>
+<p>
+
+</td>
+<td><a name="4513"><!-- --></a>
+<p><em>0x50</em><em> CallData</em>
+
+</td>
+</tr>
+<tr valign="top"><td colspan=2 rowspan=1><a name="4515"><!-- --></a>
+<p><em>Ping:</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4519"><!-- --></a>
+<p>
+
+</td>
+<td><a name="4521"><!-- --></a>
+<p><em>0x52</em>
+
+</td>
+</tr>
+<tr valign="top"><td colspan=2 rowspan=1><a name="4523"><!-- --></a>
+<p><em>DgcAck:</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4527"><!-- --></a>
+<p>
+
+</td>
+<td><a name="4529"><!-- --></a>
+<p><em>0x54</em><em> UniqueIdentifier</em>
+
+</td>
+</tr>
+
+</Table>
+ 
+</blockquote>
+<br>
+<h3>
+<a name="4598"><!-- --></a>
+<i>	10.2.2	</i> 	Format of an Input Stream
+</h3>
+
+<blockquote>
+<a name="3264"><!-- --></a>
+There are currently three types of input messages: <em>ReturnData</em>, <em>HttpReturn</em> and <em>PingAck</em>. <em>ReturnData</em> is the result of a &#34;normal&#34; RMI call. An <em>HttpReturn</em> is a return result from an invocation embedded in the HTTP protocol. A <em>PingAck</em> is the acknowledgment for a <em>Ping</em> message.<p>
+<a name="3265"><!-- --></a>
+
+
+<Table Border="0" Cellpadding="5">
+<caption></caption>
+
+<tr valign="top"><td colspan=2 rowspan=1><a name="4603"><!-- --></a>
+<p><em>In:</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4607"><!-- --></a>
+<p>
+
+</td>
+<td><a name="4609"><!-- --></a>
+<p><em>ProtocolAck Returns</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4611"><!-- --></a>
+<p>
+
+</td>
+<td><a name="4613"><!-- --></a>
+<p><em>ProtocolNotSupported</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4615"><!-- --></a>
+<p>
+
+</td>
+<td><a name="4617"><!-- --></a>
+<p><em>HttpReturn</em>
+
+</td>
+</tr>
+<tr valign="top"><td colspan=2 rowspan=1><a name="4619"><!-- --></a>
+<p><em>ProtocolAck:</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4623"><!-- --></a>
+<p>
+
+</td>
+<td><a name="4625"><!-- --></a>
+<p><em>0x4e</em>
+
+</td>
+</tr>
+<tr valign="top"><td colspan=2 rowspan=1><a name="4627"><!-- --></a>
+<p><em>ProtocolNotSupported:</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4631"><!-- --></a>
+<p>
+
+</td>
+<td><a name="4633"><!-- --></a>
+<p><em>0x4f</em>
+
+</td>
+</tr>
+<tr valign="top"><td colspan=2 rowspan=1><a name="4635"><!-- --></a>
+<p><em>Returns:</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4639"><!-- --></a>
+<p>
+
+</td>
+<td><a name="4641"><!-- --></a>
+<p><em>Return</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4643"><!-- --></a>
+<p>
+
+</td>
+<td><a name="4645"><!-- --></a>
+<p><em>Returns Return</em>
+
+</td>
+</tr>
+<tr valign="top"><td colspan=2 rowspan=1><a name="4647"><!-- --></a>
+<p><em>Return:</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4651"><!-- --></a>
+<p>
+
+</td>
+<td><a name="4653"><!-- --></a>
+<p><em>ReturnData</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4655"><!-- --></a>
+<p>
+
+</td>
+<td><a name="4657"><!-- --></a>
+<p><em>PingAck</em>
+
+</td>
+</tr>
+<tr valign="top"><td colspan=2 rowspan=1><a name="4659"><!-- --></a>
+<p><em>ReturnData:</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4663"><!-- --></a>
+<p>
+
+</td>
+<td><a name="4665"><!-- --></a>
+<p><em>0x51</em><em> ReturnValue</em>
+
+</td>
+</tr>
+<tr valign="top"><td colspan=2 rowspan=1><a name="4667"><!-- --></a>
+<p><em>PingAck:</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="4671"><!-- --></a>
+<p>
+
+</td>
+<td><a name="4673"><!-- --></a>
+<p><em>0x53</em>
+
+</td>
+</tr>
+
+</Table>
+ 
+<p>
+</blockquote>
+
+</ul>
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="rmiTOC.html">CONTENTS</a> | <a href="rmi-protocol2.html">PREV</a>
+ | <a href="rmi-protocol4.html">NEXT</a> 
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF=http://java.sun.com/products/jdk/1.3/docs/relnotes/SMICopyright.html>Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Susan Snyder -->
+<!-- Last updated: Monday November 15 11:11:27 1999 -->
+ 
+
+
+</body>
+</html>

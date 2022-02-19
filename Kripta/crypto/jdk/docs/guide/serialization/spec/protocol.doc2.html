@@ -1,0 +1,154 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 6 - Object Serialization Stream Protocol
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="protocol.doc1.html">PREV</a>
+ | <a href="protocol.doc3.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="8299"><i>	6.2	</i> Stream Elements
+</a></h2>
+
+<blockquote>
+<a name="9605"><!-- --></a>
+A basic structure is needed to represent objects in a stream. Each attribute of the object needs to be represented: its classes, its fields, and data written and later read by class-specific methods. The representation of objects in the stream can be described with a grammar. There are special representations for null objects, new objects, classes, arrays, strings, and back references to any object already in the stream. Each object written to the stream is assigned a handle that is used to refer back to the object. Handles are assigned sequentially starting from 0x7E0000. The handles restart at 0x7E0000 when the stream is reset.<p>
+<a name="4499"><!-- --></a>
+A class object is represented by the following:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="8441"><!-- --></a>
+Its <code>ObjectStreamClass</code> object.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="8442"><!-- --></a>
+An <code>ObjectStreamClass</code> object for a Class that is not a dynamic proxy class is represented by the following:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="7811"><!-- --></a>
+The Stream Unique Identifier (SUID) of compatible classes.
+</li>
+<li>
+<a name="7812"><!-- --></a>
+A flag indicating if the class had <code>writeObject</code>/<code>readObject</code> methods
+</li>
+<li>
+<a name="8445"><!-- --></a>
+The number of serializable fields
+</li>
+<li>
+<a name="9726"><!-- --></a>
+The array of fields of the class that are serialized by the default mechanismFor arrays and object fields, the type of the field is included as a string.
+</li>
+<li>
+<a name="9733"><!-- --></a>
+Optional block-data records or objects written by the <code>annotateClass</code> method
+</li>
+<li>
+<a name="9734"><!-- --></a>
+The <code>ObjectStreamClass</code> of its supertype (null if the superclass is not serializable)
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="53671"><!-- --></a>
+An <code>ObjectStreamClass</code> object for a dynamic proxy class is represented by the following:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="53672"><!-- --></a>
+The number of interfaces that the dynamic proxy class implements
+</li>
+<li>
+<a name="53673"><!-- --></a>
+The names of all of the interfaces implemented by the dynamic proxy class, listed in the order that they are returned by invoking the <code>getInterfaces</code> method on the Class object.
+</li>
+<li>
+<a name="53674"><!-- --></a>
+Optional block-data records or objects written by the <code>annotateProxyClass</code> method.
+</li>
+<li>
+<a name="53675"><!-- --></a>
+The ObjectStreamClass of its supertype, <code>java.lang.reflect.Proxy</code>.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="53679"><!-- --></a>
+The representation of <code>String</code> objects depends on the length of the UTF encoded string.  If the UTF encoding of the given <code>String</code> is less than 65536 bytes in length, the <code>String</code> is written in the standard Java UTF-8 format.  Starting with the Java<sup><font size="-2">TM</font></sup> 2 SDK, Standard Edition, v1.3, strings for which the UTF encoding length is greater than or equal to 65536 bytes are written in a variant &#34;long&#34; UTF format.  The &#34;long&#34; UTF format is identical to the standard Java UTF-8 format, except that it uses 8 bytes to write the length of the UTF string, instead of 2 bytes.  The typecode preceding the <code>String</code> in the serialization stream indicates which format was used to write the <code>String</code>.<p>
+<a name="4523"><!-- --></a>
+Arrays are represented by the following:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="7824"><!-- --></a>
+Their <code>ObjectStreamClass</code> object.
+</li>
+<li>
+<a name="7825"><!-- --></a>
+The number of elements.
+</li>
+<li>
+<a name="7826"><!-- --></a>
+The sequence of values. The type of the values is implicit in the type of the array. for example the values of a byte array are of type byte.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="8447"><!-- --></a>
+New objects in the stream are represented by the following:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="8448"><!-- --></a>
+The most derived class of the object.
+</li>
+<li>
+<a name="8449"><!-- --></a>
+Data for each serializable class of the object, with the highest superclass first.For each class the stream contains the following:
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul><li>The serializable fields.See <a href="serial-arch.doc5.html#6250">Section&#160;1.5, &#34;Defining Serializable Fields for a Class</a>.&#34;</li><li>If the class has <code>writeObject</code>/<code>readObject</code> methods, there may be optional objects and/or block-data records of primitive types written by the <code>writeObject</code> method followed by an <code>endBlockData</code> code.</li></blockquote>
+</ul><blockquote>
+<a name="7842"><!-- --></a>
+All primitive data written by classes is buffered and wrapped in block-data records, regardless if the data is written to the stream within a <code>writeObject</code> method or written directly to the stream from outside a <code>writeObject</code> method. This data can only be read by the corresponding <code>readObject</code> methods or be read directly from the stream. Objects written by the <code>writeObject</code> method terminate any previous block-data record and are written either as regular objects or null or back references, as appropriate. The block-data records allow error recovery to discard any optional data. When called from within a class, the stream can discard any data or objects until the <code>endBlockData</code>.<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="protocol.doc1.html">PREV</a>
+ | <a href="protocol.doc3.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:48:11 1999 -->
+ 
+
+
+</body>
+</html>

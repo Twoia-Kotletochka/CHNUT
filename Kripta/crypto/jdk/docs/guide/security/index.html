@@ -1,0 +1,272 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+
+<HTML>
+
+<HEAD>
+
+     <TITLE>Security</TITLE>
+
+</HEAD>
+
+
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" VLINK="#000077" ALINK="#FF0000">
+
+
+
+<TABLE BORDER="0" WIDTH="100%">
+
+<TR>
+
+<TD WIDTH="60">
+
+   <IMG SRC="../../images/javalogo52x88.gif" ALT="Java" BORDER=0 WIDTH=52 HEIGHT=88>
+
+</TD>
+
+
+
+<TD>
+
+<center>
+
+           <h1>Security</h1>
+
+</center>
+
+</TD>
+
+
+
+<TD ALIGN=RIGHT VALIGN=TOP>
+
+   <font size="-1"><a href="../../index.html">Documentation Contents</a></font>
+
+</TD>
+
+</TR>
+
+</TABLE>
+
+
+
+<!-- Body text begins here -->
+
+<blockquote>
+
+<b><font size="+1">Java<sup><font size=-2>TM</font></sup> 2 Platform Security
+Introduced:</font></b> 
+
+<ul>
+
+   <li>Policy-based, easily-configurable, fine-grained access control. 
+      When code is loaded, it is assigned "permissions" based on the
+      security policy currently in effect. Each permission specifies 
+      a permitted access to a particular resource (such as "read" and
+      "write" access to a specified file or directory, "connect" access
+      to a given host and port, etc.). The policy, specifying which permissions
+      are available for code from various signers/locations, can be initialized
+      from an external configurable policy file. Unless
+      a permission is explicitly granted to code, it cannot access the resource
+      that is guarded by that permission. <br>
+      These new concepts of permission and policy enable the
+      Java 2 Platform 
+      to offer fine-grain, highly configurable, flexible, and extensible
+      access control. Such access control can now not only be specified for
+      applets, but also for all Java code, including applications, beans, and
+      servlets.<p>
+
+
+<li>Certificate interfaces</b> for parsing and managing certificates, and 
+X.509 v3 implementation of the certificate interfaces.<p>
+
+<li>Three new tools: <tt>keytool</tt> is used to create public/private keys; to
+display, import, and export certificates; and to generate
+X.509 v1 self-signed certificates. <tt>jarsigner</tt> signs JAR (Java 
+Archive Format) files, and verifies the signature(s) of signed JAR files. 
+<tt>policytool</tt> creates and modifies the external policy configuration files that define your installation's Java security policy.
+
+</ul>
+
+
+<b><font size="+1">Security enhancements for Java<sup>
+<font size=-2>TM</font></sup> 2 SDK, Standard Edition, v 1.3</font></b>
+<ul>
+<li>Lists the <a href="enhancements.html">enhancements and changes to Java<sup><font size=-2>TM</font></sup> 2
+Platform Security</a> 
+introduced with this release.
+</ul>
+
+</blockquote>
+
+
+
+
+
+
+
+<font size="+2"><b>Security Guides</b></font>
+
+<ul>
+
+   <LI><a href="spec/security-spec.doc.html"><b>Security Architecture</b></a>
+
+   <LI><a href="CryptoSpec.html"><b>Cryptography Architecture</b></a>
+
+   <LI><a href="HowToImplAProvider.html"><b>How to Implement a Provider 
+for the Java Cryptography Architecture</b></a> 
+
+   <LI><a href="permissions.html"><b>Policy Permissions</b></a>
+
+   <LI><a href="PolicyFiles.html"><b>Default Policy Implementation and Policy File Syntax</b></a>
+  
+   <LI><a href="doprivileged.html"><b>New API for Privileged Blocks</b></a>
+
+   <LI><a href="cert3.html"><b>X.509 Certificates and Certificate Revocation Lists</b></a>
+
+   <LI><a href="smPortGuide.html"><b>Security Managers and the Java<sup><font size=-2>TM</font></sup> 2 SDK</b></a>
+
+</ul>
+
+
+
+<br>
+
+<font size="+2"><b>Security API Specification</b></font><br>
+
+<font size="-1">(javadoc)</font>
+
+<ul>
+
+   <LI><b><a href="../../api/java/security/package-summary.html">java.security Package</a></b>
+
+<!--
+   <LI><b><!a href="../../api/java/security/acl/package-summary.html">java.security.acl Package</a></b> 
+
+Removed because (1) no major work is done there for 1.2 and 
+
+(2) it has nothing to do with the new features and may confuse people.
+
+-->
+
+   <LI><b><a href="../../api/java/security/cert/package-summary.html">java.security.cert Package</a></b>
+
+   <LI><b><a href="../../api/java/security/interfaces/package-summary.html">java.security.interfaces Package</a></b>
+
+   <LI><b><a href="../../api/java/security/spec/package-summary.html">java.security.spec Package</a></b>
+
+</ul>
+
+<br>
+
+<font size="+2"><b>Security Tools</b></font><br>
+
+<ul>
+
+   <LI><a href="SecurityToolsSummary.html"><b>Security Tools Summary</b></a>
+
+   <LI><b>keytool</b> 
+(<a href="../../tooldocs/solaris/keytool.html">for Solaris</a>) (<a href="../../tooldocs/win32/keytool.html">for Windows</a>)
+
+   <LI><b>jarsigner</b> 
+(<a href="../../tooldocs/solaris/jarsigner.html">for Solaris</a>) (<a href="../../tooldocs/win32/jarsigner.html">for Windows</a>)
+
+   <LI><b>policytool</b> 
+(<a href="../../tooldocs/solaris/policytool.html">for Solaris</a>) (<a href="../../tooldocs/win32/policytool.html">for Windows</a>)
+
+</ul>
+
+
+
+
+<br>
+
+<font size="+2"><b>For More Information</b></font><br>
+
+<p>
+
+<blockquote>
+
+<b>Located on the Java Software web site:</b>
+
+</blockquote>
+
+<ul>
+
+<li>The <a href="http://java.sun.com/docs/books/tutorial/security1.2/index.html">
+<b>Java<sup><font size=-2>TM</font></sup> 2 Platform Security</b></a> trail of the
+<a href="http://java.sun.com/docs/books/tutorial/trailmap.html">
+<b>Java Tutorial</b></a>
+
+<li>The <a href="http://java.sun.com/security/index.html"><b>Security Home Page</b></a>
+
+</ul>
+
+<p>
+
+
+
+
+
+<!-- Body text ends here -->
+
+<!-- ============================================================== -->
+
+<HR SIZE=3 NOSHADE>
+
+
+
+<TABLE BORDER="0" WIDTH="100%">
+
+<TR VALIGN=TOP>
+
+
+
+<TD>
+
+<P><FONT SIZE="-2">
+
+   <A HREF="../../relnotes/SMICopyright.html">Copyright &#169;</A> 1995-99
+
+   <A HREF="http://www.sun.com/">Sun Microsystems, Inc.</A>
+
+    All Rights Reserved.</FONT></P>
+
+   <FONT SIZE="-1">
+
+   Please send comments to: <a href="mailto:java-security@sun.com">java-security@sun.com</a>. This is not a subscription list.
+
+   </FONT>
+
+</TD>
+
+
+
+<TD ALIGN=RIGHT>
+
+   <IMG SRC="../../images/sunlogo64x30.gif" ALT="Sun" BORDER=0 WIDTH=64 HEIGHT=30>
+
+   <BR>
+
+   <FONT SIZE="+1">
+
+   <i>Java Software</i>
+
+   </FONT>
+
+</TD>
+
+
+
+</TR>
+
+</TABLE>
+
+
+
+</BODY>
+
+</HTML>
+
+
+

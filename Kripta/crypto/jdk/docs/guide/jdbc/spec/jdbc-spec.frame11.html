@@ -1,0 +1,271 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title></title>
+</head>
+<body bgcolor=#ffffff>
+
+<table width=600><tr>
+<td><font size=-1>
+<a href="jdbc-spec.frame.html">Contents</a>  | <a href="jdbc-spec.frame10.html">Prev</a>  | <a href="jdbc-spec.frame12.html">Next</a>
+</font></td><td align=right><i>JDBC<sup><font size=-2>TM</font></sup> Guide: Getting Started</i></td>
+</tr></table>
+<hr>
+<br>
+ 
+
+<a name="7105"></a>
+<h2>	11	 SQL Extensions</h2>
+
+<a name="17021"></a>
+Certain SQL features beyond SQL-2 Entry Level are widely supported and are desirable to include
+as part of our JDBC compliance definition so that applications can depend on the portability
+of these features. However, SQL-2 Transitional Level, the next higher level of SQL 
+compliance defined by ANSI, is not widely supported. Where Transitional Level semantics <em>are 
+</em>supported, the syntax is often different across DBMSs.
+<p>
+<a name="36101"></a>
+We therefore define two kinds of extensions to SQL-2 Entry Level that must be supported by 
+a JDBC-Compliant(TM) driver:
+<p>
+
+<ul><a name="36102"></a>
+<li>Selective Transitional Level syntax and semantics must be supported. We currently 
+demand just one such feature: the DROP TABLE command is required for JDBC 
+compliance.
+<br><br>
+<a name="36034"></a>
+<li>Selective Transitional Level semantics must be supported through an escape syntax that 
+a driver can easily scan for and translate into DBMS-specific syntax. We discuss these 
+escapes in the remainder of Section <a href="jdbc-spec.frame11.html#7105">11</a>. Note that these escapes need only be supported 
+where the underyling database supports the corresponding Transitional Level 
+semantics.
+<br><br>
+</ul><a name="36086"></a>
+An ODBC driver that supports ODBC Core SQL as defined by Microsoft complies with JDBC 
+SQL as defined in this section.
+<p>
+
+<a name="36019"></a>
+<h3>11.1 	  &nbsp; &nbsp; SQL Escape Syntax</h3>
+<a name="36015"></a>
+JDBC supports the same DBMS-independent escape syntax as ODBC for stored procedures, 
+scalar functions, dates, times, and outer joins. A driver maps this escape syntax into DBMS-
+specific syntax, allowing portability of application programs that require these features. The 
+DBMS-independent syntax is based on an escape clause demarcated by curly braces and a keyword:
+
+<p>
+<pre><code>{keyword ... parameters ...}
+</code></pre>
+<a name="25493"></a>
+
+<p>
+<a name="25513"></a>
+This ODBC-compatible escape syntax is in general <em>not</em> the same as has been adopted by ANSI 
+in SQL-2 Transitional Level for the same functionality. In cases where all of the desired 
+DBMSs support the standard SQL-2 syntax, the user is encouraged to use that syntax instead 
+of these escapes. When enough DBMSs support the more advanced SQL-2 syntax and semantics
+these escapes should no longer be necessary.
+<p>
+
+<a name="16957"></a>
+<h3>11.2 	  &nbsp; &nbsp; Stored Procedures</h3>
+<a name="16920"></a>
+The syntax for invoking a stored procedure in JDBC is:
+<p>
+<pre><code>{call procedure_name[(argument1, argument2, ...)]}
+</code></pre>
+<a name="16978"></a>
+
+<p>
+<a name="16991"></a>
+or, where a procedure returns a result parameter:
+<p>
+<pre><code>{?= call procedure_name[(argument1, argument2, ...)]}
+</code></pre>
+<a name="16995"></a>
+
+<p>
+<a name="16998"></a>
+Input arguments may be either literals or parameters. To determine if stored procedures are 
+supported, call DatabaseMetaData.supportsStoredProcedure.
+<p>
+<a name="16992"></a>
+
+<p>
+
+<a name="16922"></a>
+<h3>11.3 	  &nbsp; &nbsp; Time and Date Literals</h3>
+<a name="16924"></a>
+DBMSs differ in the syntax they use for date, time, and timestamp literals. JDBC supports ISO 
+standard format for the syntax of these literals, using an escape clause that the driver must 
+translate to the DBMS representation.
+<p>
+<a name="17040"></a>
+For example, a date is specified in a JDBC SQL statement with the syntax
+<p>
+<pre><code>{d 'yyyy-mm-dd'}
+</code></pre>
+<a name="17006"></a>
+
+<p>
+<a name="17014"></a>
+where yyyy-mm-dd provides the year, month, and date, e.g. 1996-02-28. The driver will replace
+this escape clause with the equivalent DBMS-specific representation, e.g. 'Feb 28, 1996' 
+for Oracle.
+<p>
+<a name="17002"></a>
+There are analogous escape clauses for TIME and TIMESTAMP:
+<p>
+<pre><code>{t 'hh:mm:ss'}
+</code></pre>
+<pre><code>
+</code></pre>
+<pre><code>{ts 'yyyy-mm-dd hh:mm:ss.f...'}
+</code></pre>
+<a name="17106"></a>
+
+<p>
+<a name="20739"></a>
+The fractional seconds (.f...) portion of the TIMESTAMP can be omitted.
+<p>
+
+<a name="17045"></a>
+<h3>11.4 	  &nbsp; &nbsp; Scalar Functions</h3>
+<a name="17046"></a>
+JDBC supports numeric, string, time, date, system, and conversion functions on scalar values. 
+These functions are indicated by the keyword "fn" followed by the name of the desired function 
+and its arguments. For example, two strings can be concatenated using the concat function
+<p>
+<pre><code>{fn concat("Hot", "Java")}
+</code></pre>
+<a name="17048"></a>
+
+<p>
+<a name="17080"></a>
+
+<p>
+<a name="17088"></a>
+The name of the current user can be obtained through the syntax
+<p>
+<pre><code>{fn user()}
+</code></pre>
+<a name="17049"></a>
+
+<p>
+<a name="17161"></a>
+See the X/Open CLI or ODBC specifications for specifications of the semantics of the scalar 
+functions. The functions supported are listed here for reference. Some drivers may not support 
+all of these functions; to find out which functions are supported, use the folowing DatabaseMe
+tadata methods: getNumericFunctions() returns a comma separated list of the names of 
+the numeric functions supported, getStringFunctions() does the same for the string functions, 
+and so on.
+<p>
+<a name="17143"></a>
+The numeric functions are ABS(number), ACOS(float), ASIN(float), ATAN(float), 
+ATAN2(float1, float2), CEILING(number), COS(float), COT(float), DEGREES(number), 
+EXP(float), FLOOR(number), LOG(float), LOG10(float), MOD(integer1, integer2), PI(), 
+POWER(number, power), RADIANS(number), RAND(integer), ROUND(number, places), 
+SIGN(number), SIN(float), SQRT(float), TAN(float), and TRUNCATE(number, places).
+<p>
+<a name="17574"></a>
+The string functions are ASCII(string), CHAR(code), CONCAT(string1, string2), DIFFERENCE(string1,
+string2), INSERT(string1, start, length, string2), LCASE(string), LEFT(string, 
+count), LENGTH(string), LOCATE(string1, string2, start), LTRIM(string), REPEAT(string, 
+count), REPLACE(string1, string2, string3), RIGHT(string, count), RTRIM(string), SOUNDEX(string),
+SPACE(count), SUBSTRING(string, start, length), and UCASE(string). 
+<p>
+<a name="17144"></a>
+The time and date functions are CURDATE(), CURTIME(), DAYNAME(date), DAYOFMONTH(date),
+DAYHOFWEEK(date), DAYOFYEAR(date), HOUR(time), MINUTE(time), 
+MONTH(time), MONTHNAME(date), NOW(), QUARTER(date), SECOND(time), TIMESTAMPADD(interval,
+count, timestamp), TIMESTAMPDIFF(interval, timestamp1, 
+timpestamp2), WEEK(date), and YEAR(date).
+<p>
+<a name="17147"></a>
+The system functions are DATABASE(), IFNULL(expression, value), and USER().
+<p>
+<a name="17148"></a>
+There is also a CONVERT(value, SQLtype) expression, where type may be BIGINT, BINARY,
+BIT, CHAR, DATE, DECIMAL, DOUBLE, FLOAT, INTEGER, LONGVARBINARY, 
+LONGVARCHAR, REAL, SMALLINT, TIME, TIMESTAMP, TINYINT, VARBINARY, 
+and VARCHAR.
+<p>
+<a name="17127"></a>
+Again, these functions are supported by DBMSs with slightly different syntax, and the driver's 
+job is either to  map these into the appropriate syntax or to implement the function directly in 
+the driver.
+<p>
+
+<a name="25549"></a>
+<h3>11.5 	  &nbsp; &nbsp; LIKE Escape Characters</h3>
+<a name="25562"></a>
+The characters "%" and "_" have special meaning in SQL LIKE clauses (to match zero or more 
+characters, or exactly one character, respectively). In order to interpret them literally, they can 
+be preceded with a special escape character in strings, e.g. "\". In order to specify the escape 
+character used to quote these characters, include the following syntax on the end of the query:
+<p>
+<pre><code>{escape '<em>escape-character</em>'}
+</code></pre>
+<a name="25552"></a>
+
+<p>
+<a name="25553"></a>
+For example, the query
+<p>
+<pre><code>SELECT NAME FROM IDENTIFIERS WHERE ID LIKE '\_%' {escape '\'}
+</code></pre>
+<a name="25569"></a>
+
+<p>
+<a name="25577"></a>
+finds identifier names that begin with an underbar.
+<p>
+
+<a name="25527"></a>
+<h3>11.6 	  &nbsp; &nbsp; Outer Joins</h3>
+<a name="17181"></a>
+The syntax for an outer join is
+<p>
+<pre><code>{oj outer-join}
+</code></pre>
+<a name="16914"></a>
+
+<p>
+<a name="17191"></a>
+where outer-join is of the form
+<p>
+<pre><code>table LEFT OUTER JOIN {table | outer-join} ON search-condition
+</code></pre>
+<a name="17192"></a>
+
+<p>
+<a name="25489"></a>
+See the SQL grammar for an explanation of outer joins. Three boolean DatabaseMetaData 
+methods are provided to determine the kinds of outer joins supported by a driver.
+<p>
+
+
+<br>
+<hr> 
+<font size=-1>
+<a href="jdbc-spec.frame.html">Contents</a>  | <a href="jdbc-spec.frame10.html">Prev</a>  | <a href="jdbc-spec.frame12.html">Next</a>
+</font>
+<hr>
+
+
+
+<address>
+<a href="mailto:jdbc@wombat.eng.sun.com">jdbc@wombat.eng.sun.com</a>
+or
+<a href="mailto:jdbc-odbc@wombat.eng.sun.com">jdbc-odbc@wombat.eng.sun.com</a>
+</address>
+
+<a href="../../../relnotes/SMICopyright.html">
+<font size=-1><i>Copyright &#169; 1996, 1997 Sun Microsystems, Inc.   All rights reserved.</i></font>
+</a>
+
+<!-- HTML generated by Suzette Pelouch on April 10, 1998 -->
+
+</body>
+</html>

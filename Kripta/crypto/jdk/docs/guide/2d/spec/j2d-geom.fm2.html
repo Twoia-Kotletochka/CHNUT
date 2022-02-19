@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API: 3 - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-geom.fm1.html">PREV</a>
+ | <a href="j2d-geom.fm3.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="63719"><i>3.2	</i> Geometry Concepts
+</a></h2>
+
+<blockquote>
+<a name="63720"><!-- --></a>
+A <kbd>Shape</kbd> is an instance of any class that implements the <kbd>Shape</kbd> interface, such as <kbd>GeneralPath</kbd> or <kbd>Rectangle2D.Float</kbd>. A <kbd>Shape</kbd>&#39;s contour (outline) is referred to as its <em>path</em>. <p>
+<a name="63732"><!-- --></a>
+When a <kbd>Shape</kbd> is drawn, the pen style defined by the <kbd>Stroke</kbd> object in the <kbd>Graphics2D</kbd> context is applied to the <kbd>Shape</kbd>&#39;s path. When a <kbd>Shape</kbd> is filled, the <kbd>Paint</kbd> in the 
+<kbd>Graphics2D</kbd> context is applied to the area within its path. For more information, see <a href="j2d-awt.fm.html#70028">&#34;Rendering with Graphics2D&#34;</a>.<p>
+<a name="62875"><!-- --></a>
+A <kbd>Shape</kbd>&#39;s path can be also used to define a <em>clipping path</em>. A clipping path determines what pixels are rendered&#45;&#45;only those pixels that lie within the area defined by the clipping path are rendered. The clipping path is part
+
+ of the <kbd>Graphics2D</kbd> context. For more information, see <a href="j2d-awt.fm3.html#70241">&#34;Setting the Clipping Path&#34;</a>.<p>
+<a name="63725"><!-- --></a>
+A <kbd>GeneralPath</kbd> is a shape that can be used to represent any two-dimensional object that can be constructed from lines and quadratic or cubic curves. For convenience,<kbd> java.awt.geom</kbd> provides additional implementations of the 
+<kbd>Shape</kbd> interface that represent common geometric objects such as
+rectangles, ellipses, arcs, and curves. The Java 2D<sup>TM</sup> API also provides a special type of shape that supports constructive area geometry. <p>
+</blockquote>
+<br>
+<h3>
+<a name="63798"><!-- --></a>
+<i>3.2.1	</i> Constructive Area Geometry
+</h3>
+
+<blockquote>
+<a name="63799"><!-- --></a>
+Constructive Area Geometry (CAG) is the process of creating new geometric objects by performing boolean operations on existing objects. In the Java 2D API, a special type of <kbd>Shape</kbd> called an <kbd>Area</kbd> supports boolean operations. You can c
+
+onstruct an <kbd>Area</kbd> from any <kbd>Shape</kbd>. <p>
+<a name="63800"><!-- --></a>
+<kbd>Areas</kbd> support the following Boolean operations:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="63801"><!-- --></a>
+Union
+</li>
+<li>
+<a name="63802"><!-- --></a>
+Intersection
+</li>
+<li>
+<a name="63803"><!-- --></a>
+Subtraction
+</li>
+<li>
+<a name="64208"><!-- --></a>
+Exclusive OR (XOR)
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="64215"><!-- --></a>
+These operations are illustrated in <a href="j2d-geom.fm2.html#64217">Figure&#160;3-1</a>.<p>
+<a name="64221"><!-- --></a>
+<p><center><img src="j2d-geom.fm.anc.gif"></center> <p>
+</blockquote>
+<blockquote><p>
+<a name="64217"><!-- --></a>
+<b>Figure 3-1	</b> Boolean Operations
+
+</p>
+</blockquote>
+<br>
+<h3>
+<a name="63262"><!-- --></a>
+<i>3.2.2	</i> Bounds and Hit Testing
+</h3>
+
+<blockquote>
+<a name="63263"><!-- --></a>
+A <em>bounding box</em> is a rectangle that fully encloses a shape&#39;s geometry. Bounding boxes are used to determine whether or not an object has been selected or &#34;hit&#34; by the user. <p>
+<a name="63285"><!-- --></a>
+The <kbd>Shape</kbd> interface defines two methods for retrieving a shape&#39;s bounding box, <kbd>getBounds</kbd> and <kbd>getBounds2D</kbd>. The <kbd>getBounds2D</kbd> method returns a <kbd>Rectangle2D</kbd> instead of a <kbd>Rectangle</kbd>, providing 
+
+a higher-precision description of the shape&#39;s bounding box.<p>
+<a name="63280"><!-- --></a>
+<kbd>Shape</kbd> also provides methods for determining whether or not:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="63312"><!-- --></a>
+A specified point lies within the bounds of the shape (<kbd>contains</kbd>)
+</li>
+<li>
+<a name="63313"><!-- --></a>
+A specified rectangle lies totally within the bounds of the shape (<kbd>contains</kbd>)
+</li>
+<li>
+<a name="63314"><!-- --></a>
+A specified rectangle intersects the shape (<kbd>intersects</kbd>)
+</li>
+</ul>
+</blockquote>
+
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-geom.fm1.html">PREV</a>
+ | <a href="j2d-geom.fm3.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Mon Nov 22 09:37:04 1999 -->
+ 
+
+
+</body>
+</html>

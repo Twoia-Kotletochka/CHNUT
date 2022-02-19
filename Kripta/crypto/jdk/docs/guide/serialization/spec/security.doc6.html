@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification:  - Security in Object Serialization
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="security.doc5.html">PREV</a>
+ | <a href="security.doc7.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="4271"><i>	A.6	</i> Guarding Unshared Deserialized Objects
+</a></h2>
+
+<blockquote>
+<a name="4275"><!-- --></a>
+If a class has any private or package private object reference fields, and the class depends on the fact that these object references are not available outside the class (or package), the referenced objects must be defensively copied as part of the deserialization process.  That is to say, the sub-objects deserialized from the stream should be treated as "untrusted input": newly created objects, initialized to have the same value as the deserialized sub-objects, should be substituted for the sub-objects by the <code>readObject</code> method.  For example, suppose an object has a private byte array field, b, that must remain private:<p>
+<a name="4291"><!-- --></a>
+<pre>    private void readObject(ObjectInputStream s)
+        throws IOException, ClassNotFoundException
+    {
+        s.defaultReadObject();
+
+        b = (byte[])b.clone();
+
+        if (&lt;invariants are not satisfied&gt;)
+            throw new java.io.StreamCorruptedException();
+    }
+</pre>
+
+
+<a name="4300"><!-- --></a>
+This issue is particularly important when considering serialization of immutable objects containing internal (necessarily private) references to mutable sub-objects.  If no special measures are taken to copy the sub-objects during deserialization of the container object, then a malicious party with write access to the serialization stream may violate the container object&#39;s immutability by forging references to its mutable sub-objects, and using these references to change the internal state of the container object.  Thus, in this case it is imperative that the immutable container class provide a class-specific deserialization method which makes private copies of each mutable component object it deserializes.  Note that for the purpose of maintaining immutability, it is unnecessary to copy immutable component objects.<p>
+<a name="4312"><!-- --></a>
+It is also important to note that calling <code>clone</code> may not always be the right way to defensively copy a sub-object.  If the <code>clone</code> method cannot be counted on to produce an independent copy (and not to "steal" a reference to the copy), an alternative means should be used to produce the copy.  An alternative means of copying should always be used if the class of the sub-object is not final, since the <code>clone</code> method or helper methods that it calls may be overridden by subclasses.<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="security.doc5.html">PREV</a>
+ | <a href="security.doc7.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:48:17 1999 -->
+ 
+
+
+</body>
+</html>

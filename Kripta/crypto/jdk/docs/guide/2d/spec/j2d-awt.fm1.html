@@ -1,0 +1,200 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API: 2 - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-awt.fm.html">PREV</a>
+ | <a href="j2d-awt.fm2.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="68318"><i>2.1	</i> Interfaces and Classes
+</a></h2>
+
+<blockquote>
+<a name="68838"><!-- --></a>
+The following tables list the interfaces and classes used in conjunction with the <kbd>Graphics2D</kbd> context, including the classes that represent state attributes. Most of these classes are part of the <kbd>java.awt</kbd> package. <p>
+<a name="65733"><!-- --></a>
+
+
+<br><br>
+<Table Border="1" Cellpadding="5">
+<caption></caption>
+
+<tr><th><a name="63965"><!-- --></a>
+<blockquote><hr noshade size="1"><b>Interface</b> 
+<hr noshade size="1"></blockquote>
+</th><th><a name="63967"><!-- --></a>
+<blockquote><hr noshade size="1"><b>Description</b> 
+<hr noshade size="1"></blockquote>
+</th></tr>
+<tr><td><a name="63969"><!-- --></a>
+<p><code>Composite</code>
+
+</td><td><a name="63971"><!-- --></a>
+<p>Defines methods to compose a draw primitive with the underlying graphics area. Implemented by <code>AlphaComposite</code>.
+
+</td></tr>
+<tr><td><a name="63973"><!-- --></a>
+<p><code>CompositeContext</code>
+
+</td><td><a name="63975"><!-- --></a>
+<p>Defines the encapsulated and optimized environment for a composite operation. Used by programmers implementing custom compositing rules.
+
+</td></tr>
+<tr><td><a name="63977"><!-- --></a>
+<p><code>Paint</code>
+
+</td><td><a name="63979"><!-- --></a>
+<p>Extends: <code>Transparency</code>
+
+<a name="63980"><!-- --></a>
+<p>Defines colors for a <code>draw</code> or <code>fill</code> operation. Implemented by <code>Color</code>, <code>GradientPaint</code> and <code>TexturePaint</code>. 
+
+</td></tr>
+<tr><td><a name="63982"><!-- --></a>
+<p><code>PaintContext</code>
+
+</td><td><a name="63984"><!-- --></a>
+<p>Defines the encapsulated and optimized environment for a paint operation. Used by programmers implementing custom paint operations.
+
+</td></tr>
+<tr><td><a name="63990"><!-- --></a>
+<p><code>Stroke</code>
+
+</td><td><a name="63992"><!-- --></a>
+<p>Generates a <code>Shape</code> that encloses the outline of the <code>Shape</code> to be rendered. Implemented by <code>BasicStroke</code>.
+
+</td></tr>
+
+</Table>
+ 
+<Table>
+<tr><td></td>
+</tr>
+</Table><p>
+<p>
+<a name="65734"><!-- --></a>
+
+
+<br><br>
+<Table Border="1" Cellpadding="5">
+<caption></caption>
+
+<tr><th><a name="63345"><!-- --></a>
+<blockquote><hr noshade size="1"><b>Class</b> 
+<hr noshade size="1"></blockquote>
+</th><th><a name="63347"><!-- --></a>
+<blockquote><hr noshade size="1"><b>Description</b> 
+<hr noshade size="1"></blockquote>
+</th></tr>
+<tr><td><a name="68194"><!-- --></a>
+<p><code>AffineTransform</code>
+
+<a name="68195"><!-- --></a>
+<p><code>(java.awt.geom)</code>
+
+</td><td><a name="68175"><!-- --></a>
+<p>Represents a 2D affine transform, which performs a linear mapping from 2D coordinates to other 2D coordinates.
+
+</td></tr>
+<tr><td><a name="63404"><!-- --></a>
+<p><code>AlphaComposite</code>
+
+</td><td><a name="63467"><!-- --></a>
+<p>Implements: <code>Composite</code> 
+
+<a name="63468"><!-- --></a>
+<p>Implements basic alpha composite rules for shapes, text, and images. 
+
+</td></tr>
+<tr><td><a name="63406"><!-- --></a>
+<p><code>BasicStroke</code>
+
+</td><td><a name="63472"><!-- --></a>
+<p>Implements: <code>Stroke</code>
+
+<a name="63473"><!-- --></a>
+<p>Defines the &#34;pen style&#34; to be applied to the outline of a <code>Shape</code>.
+
+</td></tr>
+<tr><td><a name="69586"><!-- --></a>
+<p><code>Color</code>
+
+</td><td><a name="69588"><!-- --></a>
+<p>Implements: <code>Paint</code>
+
+<a name="69596"><!-- --></a>
+<p>Defines a solid color fill for a <code>Shape</code>. 
+
+</td></tr>
+<tr><td><a name="63412"><!-- --></a>
+<p><code>GradientPaint</code>
+
+</td><td><a name="69633"><!-- --></a>
+<p>Implements: <code>Paint</code>
+
+<a name="63488"><!-- --></a>
+<p>Defines a linear color gradient fill pattern for a <code>Shape</code>. This fill pattern changes from color C1 at point P1 to color C2 at point P2.
+
+</td></tr>
+<tr><td><a name="63414"><!-- --></a>
+<p><code>Graphics2D</code>
+
+</td><td><a name="63492"><!-- --></a>
+<p>Extends: <code>Graphics</code>
+
+<a name="63493"><!-- --></a>
+<p>Fundamental class for 2D rendering. Extends the original <code>java.awt.Graphics</code> class.
+
+</td></tr>
+<tr><td><a name="63426"><!-- --></a>
+<p><code>TexturePaint</code>
+
+</td><td><a name="63514"><!-- --></a>
+<p>Implements: <code>Paint</code>
+
+<a name="63515"><!-- --></a>
+<p>Defines a texture or pattern fill for a <code>Shape</code>. The texture or pattern is generated from a <code>BufferedImage</code>.
+
+</td></tr>
+
+</Table>
+ 
+<Table>
+<tr><td></td>
+</tr>
+</Table><p>
+<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-awt.fm.html">PREV</a>
+ | <a href="j2d-awt.fm2.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Mon Nov 22 12:29:53 1999 -->
+ 
+
+
+</body>
+</html>

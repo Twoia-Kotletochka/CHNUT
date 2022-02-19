@@ -1,0 +1,431 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title></title>
+</head>
+<body bgcolor=#ffffff>
+
+<table width=600><tr>
+<td><font size=-1>
+<a href="jdbc-spec.frame.html">Contents</a>  | <a href="jdbc-spec.frame17.html">Prev</a>  | Next
+</font></td><td align=right><i>JDBC<sup><font size=-2>TM</font></sup> Guide: Getting Started</i></td>
+</tr></table>
+<hr>
+<br>
+ 
+
+<a name="25168"></a>
+<h2>Appendix D:  Change History</h2>
+
+<a name="20070"></a>
+Changes between 0.50 and 0.60:
+<p>
+
+<ul><a name="20071"></a>
+<li>Revised the description of transactions to remove references to the obsolete 
+beginTransaction method (<a href="jdbc-spec.frame9.html#11734">9.3</a>).
+<br><br>
+<a name="20075"></a>
+<li>Fixed various minor spelling errors, miscapitalizations, and inconsistencies in method 
+names, particularly in the DatabaseMetaData interface.
+<br><br>
+<a name="20285"></a>
+<li>Added methods to SQLWarning for managing chains.
+<br><br>
+<a name="20508"></a>
+<li>Specified that metadata methods should throw exceptions rather than returning null 
+ResultSets if you try to retrieve catalog information that isn't available. (See comment 
+at the head of DatabaseMetaData.java).
+<br><br>
+<a name="20509"></a>
+<li>Moved various historical notes from the main text to Appendix A.
+<br><br>
+<a name="20192"></a>
+<li>Added Statement.executeUpdate and modified Statement.execute. Broadly speaking, 
+the execute method is intended for dynamic programming whereas executeQuery and 
+executeUpdate are intended for simple statement execution.
+<br><br>
+<a name="20489"></a>
+<li>Rewrote Section <a href="jdbc-spec.frame5.html#20404">5.3</a> to clarify security requirements for JDBC driver implementors.
+<br><br>
+<a name="20523"></a>
+<li>Added DriverManager.println for logging to the JDBC log stream.
+<br><br>
+<a name="20497"></a>
+<li>Removed DriverManager.loadDriver and modified Section <a href="jdbc-spec.frame6.html#4731">6.6</a> to advise that you use 
+Class.forName to load drivers (this reflects Java classloader implementation issues.)
+<br><br>
+<a name="20738"></a>
+<li>Clarifications in Section 11 but no interface changes.
+<br><br>
+<a name="20774"></a>
+<li>Removed ParameterMetadata. The contents were a subset of the information returned 
+by DatabaseMetaData.getProcedureColumns and the latter interface is much more 
+complete.
+<br><br>
+<a name="20797"></a>
+<li>Renamed Environment to DriverManager. This name better reflects the final 
+functionality of this class.
+<br><br>
+<a name="20942"></a>
+<li>Stated that JDBC will do space padding for CHAR(n) fields (Section <a href="jdbc-spec.frame8.html#15953">8.3</a>).
+<br><br>
+<a name="21054"></a>
+<li>Added section <a href="jdbc-spec.frame7.html#20964">7.4</a> to describe data truncation rules.
+<br><br>
+<a name="21055"></a>
+<li>Removed ResultSet.getRowNumber. This is easy for application to do themselves.
+<br><br>
+<a name="21059"></a>
+<li>Changed constant values for transaction isolation levels to be the same as ODBC.
+<br><br>
+<a name="21065"></a>
+<li>Removed ResultSet.getRowCount. Several reviewers had expressed concern that this 
+was prohibitively expensive to implement.
+<br><br>
+<a name="21069"></a>
+<li>Removed ResultSet.getColumnCount. This method is unnecessary as there is already a 
+ResultSetMetaData.getColumnCount method and programmers requiring to know the 
+number of columns are also likely to require other column metadata.
+<br><br>
+<a name="21097"></a>
+<li>By popular demand added additional ResultSet methods to retrieve values by column 
+name.
+<br><br>
+<a name="24833"></a>
+<li>Made ResultSet an abstract class (rather than an interface) so we could provide default 
+implementations of the methods that take column names. (Note: we are nervous about 
+the implications of this and are still reviewing this decision.)
+<br><br>
+<a name="24834"></a>
+<li>Added Statement.setCursorName
+<br><br>
+<a name="24843"></a>
+<li>Added Java "doc comment" stylized comments to many of the API descriptions.
+<br><br>
+</ul><a name="24855"></a>
+
+<p>
+<a name="24860"></a>
+Changes between 0.60 and 0.70
+<p>
+
+<ul><a name="24856"></a>
+<li>Added separate ResultSet warning chain (and access methods) in addition to the 
+Statement warning chain.
+<br><br>
+<a name="25102"></a>
+<li>Clarified the behaviour of getAscciStream and getUnicodeStream on ResultSets.
+<br><br>
+<a name="25119"></a>
+<li>Clarified the behaviour of setAsciiStream and setUnicodeStream on 
+PreparedStatements.
+<br><br>
+<a name="25147"></a>
+<li>Stated explicitly that LONGVARCHAR and LONGVARBINARY are not supported 
+for stored procedure OUT parameters (see <a href="jdbc-spec.frame7.html#4099">7.3.3</a> and <a href="jdbc-spec.frame14.html#6552">14.2</a>).
+<br><br>
+<a name="25160"></a>
+<li>Removed getLongVarChar and getLongVarBinary from CallableStatement.
+<br><br>
+<a name="25161"></a>
+<li>Changed ResultSet back to an interface (rather than an abstract class). We now provide 
+an specimen implementation of ResultSet.findColumn as reference material in 
+Appendix <a href="jdbc-spec.frame17.html#20043">C</a>.
+<br><br>
+<a name="25289"></a>
+<li>Replaced ResultSet.isNull with ResultSet.wasNull. We prefer the isNull style, but early 
+JDBC implementors discovered that it was impossible to implement isNull reliably on 
+some databases for some data types. Unfortunately on these databases it is necessary to 
+first attempt a read and then to check if the read returned null.
+<br><br>
+<a name="25313"></a>
+<li>Similarly replaced CallableStatement.isNull with CallableStatement.wasNull.
+<br><br>
+<a name="25342"></a>
+<li>Added Driver.jdbcCompliant to report if driver is fully JDBC COMPLIANT (tm).
+<br><br>
+<a name="25368"></a>
+<li>Added specification of jdbc:odbc sub-protocol URL syntax (<a href="jdbc-spec.frame6.html#25343">6.3.6</a>).
+<br><br>
+<a name="25593"></a>
+<li>Added LIKE escape characters (11.4).
+<br><br>
+<a name="25595"></a>
+<li>Added Driver.acceptURL and DriverManager.getDriver
+<br><br>
+<a name="25603"></a>
+<li>Stated that auto-close only applied to PreparedStatements, CallableStatements, and 
+ResultSets and doesn't affect simple Statements (<a href="jdbc-spec.frame9.html#11734">9.3</a>).
+<br><br>
+<a name="25609"></a>
+<li>Added Driver.getPropertyInfo method and DriverPropertyInfo class to allow generic 
+GUI applications to discover what connection properties a driver expects.
+<br><br>
+<a name="25610"></a>
+<li>Removed the SQLWarning type NullData. The wasNull method can be used to check 
+if null data has been read.
+<br><br>
+<a name="25622"></a>
+<li>Clarified that ResultSet warnings are cleared on each call to "next".
+<br><br>
+<a name="25716"></a>
+<li>Clarified that Statement warnings are cleared each time a statement is (re)executed.
+<br><br>
+<a name="25717"></a>
+<li>Replaced all methods of the format getXXX or setXXX with analogous methods whose 
+names are based on the Java type returned rather than the SQL type. Thus, for example, 
+getTinyInt becomes getByte. See Section <a href="jdbc-spec.frame7.html#20376">7</a> and also Appendix <a href="jdbc-spec.frame15.html#25724">A.10</a>. This is a fairly 
+substantial change which we made because of reviewer input that showed widespread 
+confusion over the use of SQL types in the method names, and a widely stated 
+preference for Java type names.
+<br><br>
+<a name="25754"></a>
+<li>Added additional getObject/setObject methods and extra explanatory text (<a href="jdbc-spec.frame14.html#6552">14.2</a>).
+<br><br>
+<a name="25755"></a>
+<li>Added sections to clarify when data conversions are and are not performed (<a href="jdbc-spec.frame7.html#26308">7.1.1</a>, <a href="jdbc-spec.frame7.html#26386">7.2.1</a>, 
+and <a href="jdbc-spec.frame7.html#26428">7.3.1</a>).
+<br><br>
+<a name="26468"></a>
+<li>Added extra tables to clarify Java to SQL type mappings (Tables <a href="jdbc-spec.frame8.html#28688">3</a> and <a href="jdbc-spec.frame14.html#30877">5</a>).
+<br><br>
+</ul><a name="35944"></a>
+
+<p>
+<a name="35945"></a>
+
+<p>
+<a name="35946"></a>
+
+<p>
+<a name="35947"></a>
+Changes between 0.70 and 0.95
+<p>
+
+<ul><a name="35952"></a>
+<li>Changed the default mapping for SQL FLOAT to be Java double or Double (Tables <a href="jdbc-spec.frame7.html#30717">1</a>, 
+<a href="jdbc-spec.frame8.html#27081">2</a>, <a href="jdbc-spec.frame14.html#6941">4</a>). 
+<br><br>
+<a name="35963"></a>
+<li>Changed the default mapping for Java float and Float to be SQL REAL (Tables <a href="jdbc-spec.frame8.html#28688">3</a>, <a href="jdbc-spec.frame14.html#30877">5</a>).
+<br><br>
+<a name="35992"></a>
+<li>Clarified that network protocol security is not a JDBC issue (Section 5).
+<br><br>
+<a name="35993"></a>
+<li>Renamed SQL Escape section, explaining extensions and clarifying relationship to 
+SQL levels defined by ANSI and Microsoft's ODBC.
+<br><br>
+<a name="36112"></a>
+<li>Added sentence clarifying positioned updates (Section 10).
+<br><br>
+<a name="36120"></a>
+<li>Removed old Section 7.1 "Parameters and results in ODBC" and various other 
+comparisons with ODBC. While this was useful for early reviewers, it's not terribly 
+useful in the finished spec.
+<br><br>
+<a name="36250"></a>
+<li>Clarified that all JDBC compliant drivers must support CallableStatement but need not 
+support the methods relating to OUT parameters (<a href="jdbc-spec.frame3.html#15569">3.2</a>, <a href="jdbc-spec.frame12.html#4182">12.1</a>).
+<br><br>
+<a name="36291"></a>
+<li>Replaced disableAutoClose with setAutoClose
+<br><br>
+<a name="36290"></a>
+<li>Added Connection.getAutoClose and Connection.getAutoCommit
+<br><br>
+<a name="37384"></a>
+<li>Added Table <a href="jdbc-spec.frame14.html#37019">6</a> to document conversions in PreparedStatement.setObject.
+<br><br>
+<a name="37413"></a>
+<li>Removed the versions of ResultSet.getObject and CallableStatement.getObject that 
+took a target SQL type. (We still retain the simpler getObject methods.) These methods 
+were hard to implement and hard to explain and there appeared to be no real demand 
+for them.
+<br><br>
+<a name="37469"></a>
+<li>Added advice on finalizers in Appendix <a href="jdbc-spec.frame17.html#25211">C.2</a>.
+<br><br>
+</ul><a name="45048"></a>
+Changes between 0.95 and 1.00
+<p>
+
+<ul><a name="45049"></a>
+<li>Clarified that when retrieving ResultSet column values by column name then the first 
+matching column will be returned in cases where there are several columns with the 
+same name.
+<br><br>
+<a name="45057"></a>
+<li>Clarified that if you pass a Java null to one of the PreparedSattement.setXXX methods 
+then this will cause a SQL NULL to be sent to the database.
+<br><br>
+<a name="45058"></a>
+<li>Added an extra column SQL_DATA_TYPE to the DatabaseMetaData.getColumns 
+results.
+<br><br>
+<a name="45106"></a>
+<li>Removed the transaction isolation level TRANSCTION_VERSIONING
+<br><br>
+<a name="50261"></a>
+<li>Noted that if a stored procedure returns both ResultSets and OUT parameters then the 
+ResultSets must be read and processed before the OUT parameters are read (<a href="jdbc-spec.frame7.html#26268">7.3</a>).
+<br><br>
+<a name="50271"></a>
+<li>Noted that for maximum portability the columns of a ResultSet should be retrieved in 
+left-to-right order (<a href="jdbc-spec.frame7.html#4149">7.1</a>).
+<br><br>
+<a name="50754"></a>
+<li>Reworded some of the introduction that was written before we first released the spec.
+<br><br>
+</ul><a name="50751"></a>
+Changes between 1.00 and 1.01 - all of the changes are clarificationsand errata; no actual 
+changes to the specification have been made. Most of the clarifications only affect the API documentation.
+
+<p>
+
+<ul><a name="50750"></a>
+<li>Removed getBinary for CHAR types from ResultSet conversion table. These were 
+simply in error.
+<br><br>
+<a name="50781"></a>
+<li>Noted that the precision used for setXXX and setObject is a maximum precision value 
+chosen by the driver.
+<br><br>
+<a name="50789"></a>
+<li>The description of the various SQL identifier case sensitivity and case storage modes 
+were clarified and the JDBC driver requirements were adjusted.
+<br><br>
+<a name="50812"></a>
+<li>Added a note that JDBC java.io.stream.available() may return 0 whether or note data is 
+available. JDBC drivers may not be able to provide an accurate count of available data.
+<br><br>
+<a name="50827"></a>
+<li>Statement.getMoreResults termination conditions were not documented correctly. This 
+was corrected.
+<br><br>
+<a name="50843"></a>
+<li>Noted that Statement.executeUpdate implicitly closes the statement's current result set. 
+<br><br>
+<a name="50836"></a>
+<li>The Driver comments were changed to note that a static section should create an 
+instance and register it. This was a documentation error.
+<br><br>
+<a name="50850"></a>
+<li>Fixed parameters for getCrossReference. They were documented in error.
+<br><br>
+<a name="50853"></a>
+<li>Noted that a SQLException should be thrown if the driver does not support a 
+DatabaseMetaData method.
+<br><br>
+<a name="50854"></a>
+<li>Noted that executeQuery never returns a null ResultSet ref
+<br><br>
+<a name="50857"></a>
+<li>Clarified the semantics of auto commit for the case of statements that return results.
+<br><br>
+<a name="50864"></a>
+<li>Removed ColumnName from the getTablePrivileges ResultSet; this was added in error.
+<br><br>
+<a name="50873"></a>
+<li>Noted that CallableStatement ResultSets and update counts should be processed prior 
+to getting output parameter values.
+<br><br>
+</ul><a name="50894"></a>
+
+<p>
+<a name="50981"></a>
+The following changes have been made to JDBC 1.10. All of these changes are minor clarifications
+or additions. Unfortunately, although the removal of auto close and the java.sql.Numeric
+name change are minor they are not backward compatible. In particular, the name change 
+requires that drivers must be updated to work with JDBC 1.1.
+<p>
+
+<ul><a name="50897"></a>
+<li>Revised isolation level description
+<br><br>
+<a name="50899"></a>
+<li> Revised getTablePrivileges description to note that a privilege applies to one or more 
+columns of the table.
+<br><br>
+<a name="50902"></a>
+<li>Revised preserve across commit/rollback metadata to specify positive case while 
+allowing negative case result in partial preservation.
+<br><br>
+<a name="50904"></a>
+<li>Added NO ACTION and SET DEFAULT values for getImportedKeys, 
+getExportedKeys and getCrossReference ON DELETE and ON UPDATE
+<br><br>
+<a name="50906"></a>
+<li>Added DEFERRABILITY attribute to getImportedKeys, getExportedKeys and 
+getCrossReference
+<br><br>
+<a name="50908"></a>
+<li>Removed the auto close facility
+<br><br>
+<a name="50910"></a>
+<li>Rename java.sql.Numeric to java.lang.Bignum
+<br><br>
+<a name="50912"></a>
+<li> Note that for maximum portability values less than 256 should not be used for 
+setMaxFieldSize
+<br><br>
+<a name="50915"></a>
+<li>Changed initialization of SQLState to null from "" to agree with initialization of reason.
+<br><br>
+<a name="50917"></a>
+<li>Clarify definition of Date, Time and Timestamp
+<br><br>
+<a name="50919"></a>
+<li> Added private constructor to DriverManager and Types to prevent instantiation.
+<br><br>
+<a name="50921"></a>
+<li> Added millis constructor for Date, Time and Timestamp
+<br><br>
+<a name="50923"></a>
+<li>Clarified default values for the SQLException, SQLWarning, DriverPropertyInfo and 
+DataTruncation constructors.
+<br><br>
+</ul><a name="51217"></a>
+The following changes were made to JDBC 1.2:
+<p>
+
+<ul><a name="51218"></a>
+<li>The java.lang.Bignum class was replaced by the java.math.BigDecimal class. All 
+Bignum parameters were changed to BigDecimal; all operation names that included the 
+term Bignum were changed to use BigDecimal.
+<br><br>
+<a name="51228"></a>
+<li>The driver property name was incorrect. The correct name is `jdbc.drivers'; it was 
+incorrectly noted as `sql.drivers'.
+<br><br>
+</ul><a name="50895"></a>
+
+<p>
+<a name="567"></a>
+
+<p>
+
+<br>
+<hr> 
+<font size=-1>
+<a href="jdbc-spec.frame.html">Contents</a>  | <a href="jdbc-spec.frame17.html">Prev</a>  | Next
+</font>
+<hr>
+
+
+
+<address>
+<a href="mailto:jdbc@wombat.eng.sun.com">jdbc@wombat.eng.sun.com</a>
+or
+<a href="mailto:jdbc-odbc@wombat.eng.sun.com">jdbc-odbc@wombat.eng.sun.com</a>
+</address>
+
+<a href="../../../relnotes/SMICopyright.html">
+<font size=-1><i>Copyright &#169; 1996, 1997 Sun Microsystems, Inc.   All rights reserved.</i></font>
+</a>
+
+<!-- HTML generated by Suzette Pelouch on April 10, 1998 -->
+
+</body>
+</html>

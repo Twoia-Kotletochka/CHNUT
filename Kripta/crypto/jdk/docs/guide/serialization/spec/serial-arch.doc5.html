@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 1 - System Architecture
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="serial-arch.doc4.html">PREV</a>
+ | <a href="serial-arch.doc6.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="6250"><i>	1.5	</i> Defining Serializable Fields for a Class
+</a></h2>
+
+<blockquote>
+<a name="6289"><!-- --></a>
+The serializable fields of a class can be defined two different ways. Default serializable fields of a class are defined to be the non-transient and non-static fields. This default computation can be overridden by declaring a special field in the <code>Serializable</code> class, <code>serialPersistentFields</code>. This field must be initialized with an array of <code>ObjectStreamField</code> objects that list the names and types of the serializable fields. The modifiers for the field are required to be private, static, and final.<p>
+<a name="6852"><!-- --></a>
+For example, the following declaration duplicates the default behavior.<p>
+<a name="6853"><!-- --></a>
+<pre>class List implements Serializable {
+    List next;
+
+    private static final ObjectStreamField[] serialPersistentFields
+                 = {new ObjectStreamField(&#34;next&#34;, List.class)};
+</pre>
+
+
+<a name="6854"><!-- --></a>
+<pre>}
+</pre>
+
+
+<a name="7105"><!-- --></a>
+By using <code>serialPersistentFields</code> to define the Serializable fields for a class, there no longer is a limitation that a serializable field must be a field within the current definition of the <code>Serializable</code> class. The <code>writeObject</code> and <code>readObject</code> methods of the <code>Serializable</code> class can map the current implementation of the class to the serializable fields of the class using the interface that is described in <a href="serial-arch.doc7.html#5253">Section&#160;1.7, &#34;Accessing Serializable Fields of a Class</a>.&#34; Therefore, the fields for a <code>Serializable</code> class can change in a later release, as long as it maintains the mapping back to its Serializable fields that must remain compatible across release boundaries.<p>
+</blockquote>
+<blockquote>
+<blockquote><hr noshade size="1">
+<b><a name="7110">Note - </a></b>There is, however, a limitation to the use of this mechanism to specify serializable fields for inner classes. Inner classes can only contain final static fields that are initialized to constants or expressions built up from constants.  Consequently, it is not possible to set <code>serialPersistentFields</code> for an inner class (though it is possible to set it for nested top-level classes). 
+<hr noshade size="1">
+</blockquote>
+</blockquote>
+
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="serial-arch.doc4.html">PREV</a>
+ | <a href="serial-arch.doc6.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:47:50 1999 -->
+ 
+
+
+</body>
+</html>

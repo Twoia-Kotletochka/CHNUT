@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API: 4 - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-fonts.fm4.html">PREV</a>
+ | <a href="j2d-fonts.fm6.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="66677"><i>4.5	</i> Implementing a Custom Text Layout Mechanism
+</a></h2>
+
+<blockquote>
+<a name="67334"><!-- --></a>
+The <kbd>GlyphVector</kbd> class provides a way to display the results of custom layout mechanisms. A <kbd>GlyphVector</kbd> object can be thought of as the output of an algorithm that takes a string and computes exactly how the string should be displayed. The system has a built-in algorithm and the Java 2D<sup>TM</sup> API lets advanced clients define their own algorithms. <p>
+<a name="72890"><!-- --></a>
+A <kbd>GlyphVector</kbd> object is basically an array of glyphs and glyph locations. Glyphs are used instead of characters to provide total control over layout characteristics such as kerning and ligatures. For example, when displaying the string &#34;final&#34;, you might want to replace the leading fi substring with the ligature <em>fi.</em> In this case, the <kbd>GlyphVector</kbd> object will have fewer glyphs than the number of characters in the original string.   <p>
+<a name="72925"><!-- --></a>
+<a href="j2d-fonts.fm5.html#67409">Figure&#160;4-13</a> and <a href="j2d-fonts.fm5.html#67469">Figure&#160;4-14</a> illustrate how <kbd>GlyphVector</kbd> objects are used by layout mechanisms. <a href="j2d-fonts.fm5.html#67409">Figure&#160;4-13</a> shows the default layout mechanism. When <kbd>drawString</kbd> is called on a <kbd>String</kbd>, the built-in layout algorithm:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="72938"><!-- --></a>
+Uses the current <kbd>Font</kbd> in the <kbd>Graphics2D</kbd> context to determine which glyphs to use.
+</li>
+<li>
+<a name="72941"><!-- --></a>
+Calculates where each glyph should be placed.
+</li>
+<li>
+<a name="72944"><!-- --></a>
+Stores the resulting glyph and position information in a <kbd>GlyphVector</kbd>.
+</li>
+<li>
+<a name="72945"><!-- --></a>
+Passes the <kbd>GlyphVector</kbd> to a glyph rendering routine that does the actual drawing.<p><center><img src="j2d-fonts.fm.anc.gif"></center>
+</li>
+</ul>
+</blockquote>
+
+<blockquote><p>
+<a name="67409"><!-- --></a>
+<b>Figure 4-13	</b> Using the Built-in Layout Algorithm
+
+</p>
+</blockquote><blockquote>
+<a name="67413"><!-- --></a>
+<a href="j2d-fonts.fm5.html#67469">Figure&#160;4-14</a> shows the process for using a custom layout algorithm. To use a custom layout algorithm, you must assemble all of the information necessary to lay out the text. The basic process is the same:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="72962"><!-- --></a>
+Using the <kbd>Font</kbd>, determine which glyphs to use 
+</li>
+<li>
+<a name="72965"><!-- --></a>
+Determine where to place the glyphs 
+</li>
+<li>
+<a name="72968"><!-- --></a>
+Store this layout information in a <kbd>GlyphVector</kbd>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="72970"><!-- --></a>
+To render the text, you pass the <kbd>GlyphVector</kbd> to <kbd>drawString</kbd>, which in turn passes it to the glyph renderer. In <a href="j2d-fonts.fm5.html#67469">Figure&#160;4-14</a>, the custom layout algorithm replaces the fi substring with the ligature <em>fi</em>. <p><center><img src="j2d-fonts.fm.anc1.gif"></center><p>
+</blockquote>
+<blockquote><p>
+<a name="67469"><!-- --></a>
+<b>Figure 4-14	</b> Using a Custom Layout Algorithm
+
+</p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-fonts.fm4.html">PREV</a>
+ | <a href="j2d-fonts.fm6.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Mon Nov 22 09:37:08 1999 -->
+ 
+
+
+</body>
+</html>

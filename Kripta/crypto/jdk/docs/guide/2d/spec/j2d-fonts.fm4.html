@@ -1,0 +1,327 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API: 4 - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-fonts.fm3.html">PREV</a>
+ | <a href="j2d-fonts.fm5.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="74623"><i>4.4	</i> Managing Text Layout
+</a></h2>
+
+<blockquote>
+<a name="67703"><!-- --></a>
+The<kbd> TextLayout </kbd>class supports text that contains multiple styles and characters from different writing systems, including Arabic and Hebrew. (Arabic and Hebrew are particularly difficult to display because you must reshape and reorder the text 
+
+
+to achieve an acceptable representation.)<p>
+<a name="67659"><!-- --></a>
+<kbd>TextLayout</kbd> simplifies the process of displaying and measuring text even if you are working with English-only text. By using <kbd>TextLayout</kbd>, you can achieve high-quality typography with no extra effort.
+
+<br><br>
+<Table Border="1" Cellpadding="5">
+<caption></caption>
+
+<tr><th><a name="67656"><!-- --></a>
+<blockquote><hr noshade size="1"><b>Text Layout Performance</b> 
+<hr noshade size="1"></blockquote>
+</th></tr>
+<tr><td><a name="68644"><!-- --></a>
+<p><kbd>TextLayout</kbd> is designed so that there is no significant performance impact when it&#39;s used to display simple, monodirectional text. There is some additional processing overhead when <kbd>TextLayout</kbd> is used to display Arabic or Hebrew
+
+
+ text. However, it&#39;s typically on the order of microseconds per character and is dominated by the execution of normal drawing code.
+
+</td></tr>
+
+</Table>
+ 
+<Table>
+<tr><td></td>
+</tr>
+</Table><p>
+<p>
+<a name="65533"><!-- --></a>
+The <kbd>TextLayout</kbd> class manages the positioning and ordering of glyphs for you. You can use <kbd>TextLayout</kbd> to:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="65535"><!-- --></a>
+Lay out monodirectional and bidirectional text
+</li>
+<li>
+<a name="73543"><!-- --></a>
+Display and move carets 
+</li>
+<li>
+<a name="65524"><!-- --></a>
+Perform hit testing on text
+</li>
+<li>
+<a name="65525"><!-- --></a>
+Highlight text selections
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="67682"><!-- --></a>
+In some situations, you might want to compute the text layout yourself, so that you can control exactly which glyphs are used and where they are placed. Using information such as glyph sizes, kerning tables, and ligature information, you can construct you
+r own algorithms for computing the text layout, bypassing the system&#39;s layout mechanism. For more information, see <a href="j2d-fonts.fm5.html#66677">&#34;Implementing a Custom Text Layout Mechanism&#34;</a>.<p>
+</blockquote>
+<br>
+<h3>
+<a name="67652"><!-- --></a>
+<i>4.4.1	</i> Laying Out Text
+</h3>
+
+<blockquote>
+<a name="67708"><!-- --></a>
+<kbd>TextLayout</kbd> automatically lays out text, including bidirectional (BIDI) text, with the correct shaping and ordering. To correctly shape and order the glyphs representing a line of text, <kbd>TextLayout</kbd> must know the full context of the tex
+
+
+t:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="67714"><!-- --></a>
+If the text fits on a single line, such as a single-word label for a button or a line in a dialog box, you can construct a <kbd>TextLayout</kbd> directly from the text. 
+</li>
+<li>
+<a name="67715"><!-- --></a>
+If you have more text than can fit on a single line or want to break text on a single line into tabbed segments, you cannot construct a <kbd>TextLayout</kbd> directly. You must use a <kbd>LineBreakMeasurer</kbd> to provide sufficient context.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="67814"><!-- --></a>
+The base direction of the text is normally set by an attribute (style) on the text. If that attribute is missing, <kbd>TextLayout</kbd> follows the Unicode bidirectional algorithm and derives the base direction from the initial characters in the paragraph
+
+
+.<p>
+</blockquote>
+<br>
+<h3>
+<a name="63814"><!-- --></a>
+<i>4.4.2	</i> Displaying Dual Carets
+</h3>
+
+<blockquote>
+<a name="69369"><!-- --></a>
+<kbd>TextLayout</kbd> maintains caret information such as the caret <kbd>Shape</kbd>, position, and angle. You can use this information to easily display carets in both monodirectional and bidirectional text. When you&#39;re drawing carets for bidirection
+
+
+al text, using <kbd>TextLayout</kbd> ensures that the carets will be positioned correctly. <p>
+<a name="69399"><!-- --></a>
+<kbd>TextLayout</kbd> provides default caret <kbd>Shapes</kbd> and automatically supports dual carets. For italic and oblique glyphs, <kbd>TextLayout</kbd> produces angled carets, as shown in <a href="j2d-fonts.fm4.html#69408">Figure&#160;4-12</a>. These 
+
+
+caret positions are also used as the boundaries between glyphs for highlighting and hit testing, which helps produce a consistent user experience.<p>
+<a name="69406"><!-- --></a>
+<p><center><img src="j2d-fonts.fm.anc4.gif"></center><p>
+</blockquote>
+<blockquote><p>
+<a name="69408"><!-- --></a>
+<b>Figure 4-12	</b> Angled Carets
+
+</p>
+</blockquote><blockquote>
+<a name="67933"><!-- --></a>
+Given an insertion offset, the <kbd>getCaretShapes</kbd> method returns a two-element array of <kbd>Shapes</kbd>: element 0 contains the strong caret and element 1 contains the weak caret, if one exists. To display dual carets, you simply draw both caret 
+
+
+<kbd>Shapes</kbd>; the carets will be automatically be rendered in the correct positions. <p>
+<a name="69421"><!-- --></a>
+If you want to use custom caret <kbd>Shapes</kbd>, you can retrieve the position and angle of the carets from the <kbd>TextLayout </kbd>and draw them yourself.<p>
+<a name="69356"><!-- --></a>
+In the following example, the default strong and weak caret <kbd>Shapes</kbd> are drawn in different colors. This is a common way to differentiate dual carets.<p>
+</blockquote><blockquote><pre>
+	Shape[] caretShapes = layout.getCaretShapes(hit);
+	g2.setColor(PRIMARY_CARET_COLOR); 
+	g2.draw(caretShapes[0]);
+	if (caretShapes[1] != null){  
+  	   g2.setColor(SECONDARY_CARET_COLOR); 
+  	   g2.draw(caretShapes[1]); 
+	}
+</pre></blockquote>
+<br>
+<h3>
+<a name="74427"><!-- --></a>
+<i>4.4.3	</i> Moving the Caret
+</h3>
+
+<blockquote>
+<a name="74429"><!-- --></a>
+You can also use<kbd> TextLayout </kbd>to determine the resulting insertion offset when a user presses the left or right arrow key. Given a <kbd>TextHitInfo</kbd> object that represents the current insertion offset, the <kbd>getNextRightHit</kbd> method r
+
+
+eturns a <kbd>TextHitInfo</kbd> object that represents the correct insertion offset if the right arrow key is pressed. The <kbd>getNextLeftHit</kbd> method provides the same information for the left arrow key. <p>
+<a name="68359"><!-- --></a>
+In the following example, the current insertion offset is moved in response to a right arrow key. <p>
+</blockquote><blockquote><pre>
+	TextHitInfo newInsertionOffset = 
+            layout.getNextRightHit(insertionOffset); 
+	if (newInsertionOffset != null) { 
+  	   Shape[] caretShapes =   
+          	layout.getCaretShapes(newInsertionOffset);
+  	   // draw carets
+  	   ...
+  	   insertionOffset = newInsertionOffset;
+	}
+</pre></blockquote>
+<br>
+<h3>
+<a name="68373"><!-- --></a>
+<i>4.4.4	</i> Hit Testing
+</h3>
+
+<blockquote>
+<a name="68092"><!-- --></a>
+<kbd>TextLayout </kbd>provides a simple mechanism for hit testing text. The <kbd>hitTestChar</kbd> method takes <em>x</em> and <em>y</em> coordinates from the mouse as arguments and returns a <kbd>TextHitInfo</kbd> object. The <kbd>TextHitInfo</kbd> conta
+
+
+ins the insertion offset for the specified position and the side that the hit was on. The insertion offset is the offset closest to the hit: if the hit is past the end of the line, the offset at the end of the line is returned.<p>
+<a name="69476"><!-- --></a>
+In the following example, <kbd>hitTestChar</kbd> is called on a <kbd>TextLayout</kbd> and then <kbd>getInsertIndex</kbd> is used to retrieve the offset.<p>
+</blockquote><blockquote><pre>
+	TextHitInfo hit = layout.hitTestChar(x, y);
+	int insertIndex = hit.getInsertIndex();
+</pre></blockquote>
+<br>
+<h3>
+<a name="68115"><!-- --></a>
+<i>4.4.5	</i> Highlighting Selections
+</h3>
+
+<blockquote>
+<a name="68159"><!-- --></a>
+You can get a <kbd>Shape</kbd> that represents the highlight region from the <kbd>TextLayout</kbd>. <kbd>TextLayout</kbd> automatically takes the context into account when calculating the dimensions of the highlight region. <kbd>TextLayout</kbd> supports 
+
+
+both logical and visual highlighting.<p>
+<a name="68271"><!-- --></a>
+In the following example, the highlight region is filled with the highlight color and then the <kbd>TextLayout</kbd> is drawn over the filled region. This is one simple way to display highlighted text.<p>
+</blockquote><blockquote><pre>
+	Shape highlightRegion = layout.getLogicalHighlightShape(hit1, hit2); 
+	graphics.setColor(HIGHLIGHT_COLOR); 
+	graphics.fill(highlightRegion); 
+	graphics.drawString(layout, 0, 0);
+</pre></blockquote>
+<br>
+<h3>
+<a name="63976"><!-- --></a>
+<i>4.4.6	</i> Querying Layout Metrics
+</h3>
+
+<blockquote>
+<a name="63978"><!-- --></a>
+<kbd>TextLayout</kbd> provides access to graphical metrics for the entire range of text it represents. Metrics available from <kbd>TextLayout</kbd> include the ascent, descent, leading, advance, visible advance, and the bounding rectangle.<p>
+<a name="63985"><!-- --></a>
+More than one <kbd>Font</kbd> can be associated with a <kbd>TextLayout</kbd>: different style runs can use different fonts. The ascent and descent values for a <kbd>TextLayout</kbd> are the maximum values of all of the fonts used in the 
+<kbd>TextLayout</kbd>. The computation of the <kbd>TextLayout</kbd>'s leading is more complicated; it&#39;s not just the maximum leading value.<p>
+<a name="63988"><!-- --></a>
+The advance of a <kbd>TextLayout</kbd> is its length: the distance from the left edge of the leftmost glyph to the right edge of the rightmost glyph. The advance is sometimes referred to as the <em>total advance</em>. The <em>visible advance</em> is the l
+
+
+ength of the <kbd>TextLayout</kbd> without its trailing whitespace.<p>
+<a name="66438"><!-- --></a>
+The bounding box of a <kbd>TextLayout</kbd> encloses all of the text in the layout. It includes all the visible glyphs and the caret boundaries. (Some of these might hang over the origin or origin + advance). The bounding box is relative to the origin of 
+
+
+the <kbd>TextLayout</kbd>, not to any particular screen position. <p>
+<a name="66419"><!-- --></a>
+In the following example, the text in a <kbd>TextLayout</kbd> is drawn within the layout&#39;s bounding box.<p>
+</blockquote><blockquote><pre>
+	graphics.drawString(layout, 0, 0); 
+	Rectangle2D bounds = layout.getBounds(); 
+	graphics.drawRect(bounds.getX()-1, bounds.getY()-1, 
+           bounds.getWidth()+2, bounds.getHeight()+2);
+</pre></blockquote>
+<br>
+<h3>
+<a name="64005"><!-- --></a>
+<i>4.4.7	</i> Drawing Text Across Multiple Lines
+</h3>
+
+<blockquote>
+<a name="64007"><!-- --></a>
+<kbd>TextLayout</kbd> can also be used to display a piece of text that spans multiple lines. For example, you might take a paragraph of text, line-wrap the text to a certain width, and display the paragraph as multiple lines of text. <p>
+<a name="66482"><!-- --></a>
+To do this, you do not directly create the <kbd>TextLayouts</kbd> that represent each line of text&#45;&#45;<kbd>LineBreakMeasurer</kbd> generates them for you. Bidirectional ordering cannot always be performed correctly unless all of the text in a paragr
+
+
+aph is available. <kbd>LineBreakMeasurer</kbd> encapsulates enough information about the context to produce correct <kbd>TextLayouts</kbd>.<p>
+<a name="64011"><!-- --></a>
+When text is displayed across multiple lines, the length of the lines is usually determined by the width of the display area. Line breaking (line wrapping) is the process of determining where lines begin and end, given a graphical width in which the lines
+
+
+ must fit. <p>
+<a name="66480"><!-- --></a>
+The most common strategy is to place as many words on each line as will fit. This strategy is implemented in <kbd>LineBreakMeasurer</kbd>. Other more complex line break strategies use hyphenation, or attempt to minimize the differences in line length with
+
+
+in paragraphs. The Java 2D<sup>TM</sup> API does not provide implementations of these strategies.<p>
+<a name="64020"><!-- --></a>
+To break a paragraph of text into lines, you construct a <kbd>LineBreakMeasurer</kbd> with the entire paragraph and then call <kbd>nextLayout</kbd> to step through the text and generate <kbd>TextLayouts</kbd> for each line. <p>
+<a name="64022"><!-- --></a>
+To do this,<kbd> LineBreakMeasurer</kbd> maintains an offset within the text. Initially, the offset is at the beginning of the text. Each call to <kbd>nextLayout</kbd> moves the offset by the character count of the <kbd>TextLayout</kbd> that was created. 
+
+
+When this offset reaches the end of the text, <kbd>nextLayout</kbd> returns <kbd>null</kbd>.<p>
+<a name="66620"><!-- --></a>
+The visible advance of each <kbd>TextLayout </kbd>that the<kbd> LineBreakMeasurer </kbd>creates doesn&#39;t exceed the specified line width. By varying the width you specify when you call <kbd>nextLayout</kbd>, you can break text to fit complicated areas,
+
+
+ such as an HTML page with images in fixed positions or tab-stop fields. You can also pass in a <kbd>BreakIterator</kbd> to tell <kbd>LineBreakMeasurer</kbd> where valid breakpoints are; if you don't supply one the <kbd>BreakIterator</kbd> for the default
+
+
+ locale is used. <p>
+<a name="66516"><!-- --></a>
+In the following example, a bilingual text segment is drawn line by line. The lines are aligned to either to the left margin or right margin, depending on whether the base text direction is left-to-right or right-to-left.<p>
+</blockquote><blockquote><pre>
+	Point2D pen = initialPosition; 
+	LineBreakMeasurer measurer = new LineBreakMeasurer(styledText, 
+		myBreakIterator);
+	while (true) {
+  	   TextLayout layout = measurer.nextLayout(wrappingWidth);
+  	   if (layout == null) break;
+    	   pen.y += layout.getAscent(); 
+    	   float dx = 0;
+    	   if (layout.isLeftToRight())
+      	   dx = wrappingWidth - layout.getAdvance(); 
+    	   layout.draw(graphics, pen.x + dx, pen.y); 
+    	   pen.y += layout.getDescent() + layout.getLeading();
+	}
+</pre></blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-fonts.fm3.html">PREV</a>
+ | <a href="j2d-fonts.fm5.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Mon Nov 22 09:37:08 1999 -->
+ 
+
+
+</body>
+</html>

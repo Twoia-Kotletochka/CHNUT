@@ -1,0 +1,204 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API: 2 - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-awt.fm3.html">PREV</a>
+ | <a href="j2d-awt.fm5.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="68381"><i>2.4	</i> Rendering Graphics Primitives
+</a></h2>
+
+<blockquote>
+<a name="68382"><!-- --></a>
+<kbd>Graphics2D</kbd> provides rendering methods for <kbd>Shapes</kbd>, <kbd>Text</kbd>, and <kbd>Images</kbd>:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="68383"><!-- --></a>
+<kbd>draw</kbd>&#45;&#45;strokes a <kbd>Shape</kbd>&#39;s path using the <kbd>Stroke</kbd> and <kbd>Paint</kbd> objects in the <kbd>Graphics2D</kbd> context.
+</li>
+<li>
+<a name="68384"><!-- --></a>
+<kbd>fill</kbd>&#45;&#45;fills a <kbd>Shape</kbd> using the <kbd>Paint</kbd> in the <kbd>Graphics2D</kbd> context.
+</li>
+<li>
+<a name="68385"><!-- --></a>
+<kbd>drawString</kbd>&#45;&#45;renders the specified text string using the <kbd>Paint</kbd> in the <kbd>Graphics2D</kbd> context.
+</li>
+<li>
+<a name="68386"><!-- --></a>
+<kbd>drawImage</kbd>&#45;&#45;renders the specified image.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="68387"><!-- --></a>
+To stroke and fill a shape, you must call both the <kbd>draw</kbd> and <kbd>fill</kbd> methods.<kbd></kbd><p>
+<a name="68388"><!-- --></a>
+<kbd>Graphics2D</kbd> also supports the draw and fill methods from previous versions of the JDK software, such as <kbd>drawOval</kbd> and <kbd>fillRect</kbd>.<p>
+</blockquote>
+<br>
+<h3>
+<a name="68389"><!-- --></a>
+<i>2.4.1	</i> Drawing a Shape
+</h3>
+
+<blockquote>
+<a name="68390"><!-- --></a>
+The outline of any <kbd>Shape</kbd> can be rendered with the <kbd>Graphics2D.draw</kbd> method. The draw methods from previous versions of the JDK software are also supported: <kbd>drawLine</kbd>, <kbd>drawRect</kbd>, <kbd>drawRoundRect</kbd>, <kbd>drawOv
+
+al</kbd>, <kbd>drawArc</kbd>, <kbd>drawPolyline</kbd>, <kbd>drawPolygon</kbd>, <kbd>draw3DRect</kbd>.<p>
+<a name="68391"><!-- --></a>
+When a <kbd>Shape</kbd> is drawn, its path is stroked with the <kbd>Stroke</kbd> object in the <kbd>Graphics2D</kbd> context. (See <a href="j2d-awt.fm2.html#61854">&#34;Stroke Attributes&#34;</a> for more information.) By setting an approp
+
+riate <kbd>BasicStroke</kbd> object in the <kbd>Graphics2D</kbd> context, you can draw lines of any width or pattern. The <kbd>BasicStroke</kbd> object also defines the line&#39;s endcap and join attributes.<p>
+<a name="68395"><!-- --></a>
+To render shape&#39;s outline:<p>
+</blockquote><blockquote><ol>
+<li>
+<a name="68396"><!-- --></a>
+Create a <kbd>BasicStroke</kbd> object
+</li>
+
+<li>
+<a name="68397"><!-- --></a>
+Call <kbd>Graphics2D.setStroke</kbd>
+</li>
+
+<li>
+<a name="68398"><!-- --></a>
+Create the <kbd>Shape</kbd>.
+</li>
+
+<li>
+<a name="68399"><!-- --></a>
+Call <kbd>Graphics2D.draw(shape)</kbd>.
+</li>
+
+</ol></blockquote>
+<blockquote>
+<a name="68400"><!-- --></a>
+In the following example, a <kbd>GeneralPath</kbd> object is used to define a star and a <kbd>BasicStroke</kbd> object is added to the <kbd>Graphics2D</kbd> context to define the star&#39;s line with and join attributes.<p>
+</blockquote><blockquote><pre>
+	public void paint(Graphics g) {
+  		Graphics2D g2 = (Graphics2D) g;
+
+  		// create and set the stroke
+  		g2.setStroke(new BasicStroke(4.0f));
+
+  		// Create a star using a general path object
+  		GeneralPath p = new GeneralPath(GeneralPath.NON_ZERO);
+  		p.moveTo(- 100.0f, - 25.0f);
+  		p.lineTo(+ 100.0f, - 25.0f);
+  		p.lineTo(- 50.0f, + 100.0f);
+  		p.lineTo(+ 0.0f, - 100.0f);
+  		p.lineTo(+ 50.0f, + 100.0f);
+  		p.closePath();
+
+  		// translate origin towards center of canvas
+  		g2.translate(100.0f, 100.0f);
+  
+  		// render the star's path
+  		g2.draw(p);
+	}
+</pre></blockquote>
+<br>
+<h3>
+<a name="68422"><!-- --></a>
+<i>2.4.2	</i> Filling a Shape
+</h3>
+
+<blockquote>
+<a name="68423"><!-- --></a>
+The<kbd> Graphics2D.fill</kbd> method can be used to <em>fill</em> any <kbd>Shape</kbd>. When a <kbd>Shape</kbd> is filled, the area within its path is rendered with the <kbd>Graphics2D</kbd> context&#39;s current <kbd>Paint</kbd> attribute&#45;&#45;a <kb
+
+d>Color</kbd>, <kbd>TexturePaint</kbd>, or <kbd>GradientPaint</kbd>. <p>
+<a name="68424"><!-- --></a>
+The fill methods from previous versions of the JDK software are also supported: <kbd>fillRect</kbd>, <kbd>fill3DRect</kbd>, <kbd>fillRoundRect</kbd>, <kbd>fillOval</kbd>, <kbd>fillArc</kbd>, <kbd>fillPolygon</kbd>, <kbd>clearRect</kbd>.<p>
+<a name="68425"><!-- --></a>
+To fill a <kbd>Shape</kbd>:<p>
+</blockquote><blockquote><ol>
+<li>
+<a name="68426"><!-- --></a>
+Set the fill color or pattern on the graphics context using  <kbd>Graphics2D.setColor </kbd>or <kbd>Graphics2D.setPaint.</kbd>
+</li>
+
+<li>
+<a name="68427"><!-- --></a>
+Create the <kbd>Shape</kbd>.
+</li>
+
+<li>
+<a name="68428"><!-- --></a>
+Call <kbd>Graphics2D.fill</kbd> to render the <kbd>Shape</kbd>.
+</li>
+
+</ol></blockquote>
+<blockquote>
+<a name="68429"><!-- --></a>
+In the following example, <kbd>setColor</kbd> is called to define a green fill for a <kbd>Rectangle2D</kbd>.<p>
+</blockquote><blockquote><pre>
+	public void paint(Graphics g) {
+  		Graphics2D g2 = (Graphics2D) g;
+
+  		g2.setPaint(Color.green);
+  		Rectangle2D r2 = new Rectangle2D.Float(25,25,150,150);
+
+   		g2.fill(r2);
+	}
+</pre></blockquote>
+<br>
+<h3>
+<a name="68438"><!-- --></a>
+<i>2.4.3	</i> Rendering Text
+</h3>
+
+<blockquote>
+<a name="68439"><!-- --></a>
+To render a text string, you call <kbd>Graphics2D.drawString</kbd>, passing in the string that you want to render. For more information about rendering text and selecting fonts, see <a href="j2d-fonts.fm.html#73059">&#34;Fonts and Text Layout&#34; 
+</a>.<p>
+</blockquote>
+<br>
+<h3>
+<a name="68443"><!-- --></a>
+<i>2.4.4	</i> Rendering Images
+</h3>
+
+<blockquote>
+<a name="68444"><!-- --></a>
+To render an <kbd>Image</kbd>, you create the <kbd>Image</kbd> and call<kbd> Graphics2D.drawImage</kbd>. For more information about processing and rendering images, see <a href="j2d-image.fm.html#65661">&#34;Imaging&#34;</a>.<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-awt.fm3.html">PREV</a>
+ | <a href="j2d-awt.fm5.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Mon Nov 22 12:29:53 1999 -->
+ 
+
+
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 4 - Class Descriptors	
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="class.doc1.html">PREV</a>
+ | <a href="class.doc3.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="5419"><i>	4.2	</i> Dynamic Proxy Class Descriptors
+</a></h2>
+
+<blockquote>
+<a name="5420"><!-- --></a>
+ObjectStreamClass descriptors are also used to provide information about dynamic proxy classes (e.g., classes obtained via calls to the getProxyClass method of java.lang.reflect.Proxy) saved in a serialization stream. A dynamic proxy class itself has no serializable fields and a serialVersionUID of 0L. In other words, when the Class object for a dynamic proxy class is passed to the static lookup method of ObjectStreamClass, the returned ObjectStreamClass instance will have the following properties:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="5422"><!-- --></a>
+Invoking its getSerialVersionUID method will return 0L.
+</li>
+<li>
+<a name="5423"><!-- --></a>
+Invoking its getFields method will return an array of length zero.
+</li>
+<li>
+<a name="5424"><!-- --></a>
+Invoking its getField method with any String argument will return null.
+</li>
+</ul>
+</blockquote>
+
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="class.doc1.html">PREV</a>
+ | <a href="class.doc3.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:48:04 1999 -->
+ 
+
+
+</body>
+</html>

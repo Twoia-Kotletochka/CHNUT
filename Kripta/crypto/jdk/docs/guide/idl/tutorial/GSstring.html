@@ -1,0 +1,295 @@
+<HTML>
+<HEAD>
+   <TITLE>Java IDL Getting Started: Lesson 5</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF">
+
+<H1 ALIGN=CENTER>Lesson 5: Using Stringified Object References</H1>
+<HR>
+
+<P>To invoke an operation on a CORBA object, a client application needs a
+reference to the object. You can get such references in a number of ways, 
+such as calling <TT>ORB.resolve_initial_references()</TT> or using another CORBA
+object (like the name service). In previous lessons, you used both of these
+methods to get an initial object reference.
+
+<P>Often, however, there is no naming service available in the distributed
+environment.  In that situation, CORBA clients use a 
+<A href="../jidlGlossary.html#stringified object reference"><I>stringified</I> 
+object reference</A> to find their first object.
+
+<P>In this lesson, you will learn how to create a stringified object reference
+as a part of the server startup, and how the client gets that reference and
+destringifies it for use as a real object reference.
+
+<P>The steps in this lesson are:
+
+<OL>
+<LI><A href="#make">Making a Stringified Object Reference</A>
+<LI><A href="#get">Getting a Stringified Object Reference</A>
+<LI><A href="#destring">Destringifying the Object Reference</A>
+<LI><A href="#compile&run">Compiling and Running a Stringified Hello World</A>
+</OL>
+
+<P>To see completed versions of the source code, follow the links to
+<A href="string/HelloServer.java"><TT>HelloServer.java</TT></A> and 
+<A href="string/HelloClient.java"><TT>HelloClient.java</TT></A>.
+
+
+<!--**************************-->
+<A name="make">
+<H2>Making a Stringified Object Reference</H2></A>
+
+For a stringified object reference to be available to the client, the server
+must create it and store it somewhere that the client can access. Your reference
+will be written to disk in the form of a text file.
+
+<OL>
+<LI>Copy your existing file <TT>HelloServer.java</TT> (or take a copy from
+<TT>[Path_to_JDK]/docs/guide/idl/tutorial/server</TT>).<P>
+
+<LI>Because the new server will write a file to disk, you need to add an
+import statement.  Add the following:
+<PRE>
+import java.io.*; // needed for output to the file system.
+</PRE>
+
+<LI>The new server won't use the naming service, so you don't need the 
+<TT>CosNaming</TT> packages. Delete these lines from the code:
+<PRE>
+import org.omg.CosNaming.*;                       // not needed for stringified version
+import org.omg.CosNaming.NamingContextPackage.*;  // remove from code
+</PRE>
+
+<LI>Delete the code that gets the initial naming context and resolves the reference
+to a <TT>Hello</TT> object:
+<PRE>
+      // Get the root naming context
+      org.omg.CORBA.Object objRef = orb.resolve_initial_references("NameService");
+      NamingContext ncRef = NamingContextHelper.narrow(objRef);
+      
+      // Bind the object reference in naming
+      NameComponent nc = new NameComponent("Hello", " ");
+      NameComponent path[] = {nc};
+      ncRef.rebind(path, helloRef);
+</PRE>
+
+<LI>Call the ORB's <TT>object_to_string()</TT> method and pass it the
+reference to the servant object. This returns the object reference in a string
+form that can be saved in a file on disk.
+
+<PRE>
+      String ior = orb.object_to_string(helloRef);
+</PRE>
+
+<LI>Build the path to the file that will be stored, using system properties to
+determine the path structure and syntax.
+<PRE>
+      String filename = System.getProperty("user.home")+
+            System.getProperty("file.separator")+"HelloIOR";
+</PRE>
+
+<LI>Use standard Java operations to write the stringified <TT>ior</TT> 
+to disk:
+<PRE>
+      FileOutputStream fos = new FileOutputStream(filename);
+      PrintStream ps = new PrintStream(fos);
+      ps.print(ior);
+      ps.close();
+</PRE>
+</OL>
+
+When <TT>HelloServer</TT> runs, instead of calling the ORB and 
+registering the servant
+object with naming, it creates the text file <TT>HelloIOR</TT> 
+containing a stringified
+reference to the servant. The file is stored in your home directory.
+
+
+<!--**************************-->
+<A name="get">
+<H2>Getting a Stringified Object Reference</H2></A>
+<P>Note to Windows users:  You should substitute
+backslashes (\) for the slashes (/) in all paths in this document.
+
+<OL>
+<LI>Copy your existing file <TT>HelloClient.java</TT> (or take a copy from
+<TT>[Path_to_JDK]/docs/guide/idl/tutorial/app</TT>).<P>
+
+<LI>Because the new client will read a file from the disk, 
+you need to change the import statements.  Add the following:
+<PRE>
+import java.io.*; // needed for input from the file system.
+</PRE>
+
+<LI>The new client won't use the naming service, so you don't need the 
+<TT>CosNaming</TT> package. Delete this line from the code:
+
+<PRE>
+import org.omg.CosNaming;*  // not needed for stringified version
+</PRE>
+
+<LI>Delete the code that gets the initial naming context and registers the
+servant with the naming service:
+<PRE>
+      // Get the root naming context
+      org.omg.CORBA.Object objRef = orb.resolve_initial_references("NameService");
+      NamingContext ncRef = NamingContextHelper.narrow(objRef);
+      
+      // Resolve the object reference in naming
+      NameComponent nc = new NameComponent("Hello", " ");
+      NameComponent path[] = {nc};
+      Hello helloRef = HelloHelper.narrow(ncRef.resolve(path));
+</PRE>
+
+<LI>Use standard Java operations to read the file that has the 
+object reference. Note that client and server programs must know the name
+of the file and where it is stored.
+<PRE>
+      String filename = System.getProperty("user.home")+
+            System.getProperty("file.separator")+"HelloIOR";
+      FileInputStream fis = new FileInputStream(filename);
+      DataInputStream dis = new DataInputStream(fis);
+      String ior = dis.readLine();
+</PRE>
+</OL>
+
+<P>The <TT>HelloClient</TT> application now has a <TT>String</TT> object 
+containing the stringified object reference.
+
+
+<!--**************************-->
+<A name="destring">
+<H2>Destringifying the Object Reference</H2></A>
+
+<P>To destringify the object reference in <TT>ior</TT>, call the standard ORB method:
+<PRE>
+      org.omg.CORBA.Object obj = orb.string_to_object(ior);
+</PRE>
+
+<P>Finally, narrow the CORBA object to its proper type, so that the client can
+invoke on it:
+<PRE>
+      Hello helloRef = HelloHelper.narrow(obj);
+</PRE>
+
+The rest of the client code stays the same.
+
+
+<!--**************************-->
+<A name="compile&run">
+<H2>Compiling and Running a Stringified Hello World</H2></A>
+
+<P>Compiling and running the new version of Hello World requires most of the
+same steps as for the naming service version.
+
+
+<A name="setup">
+<H3>Hello World Setup</H3></A>
+
+<OL>
+<LI>Create a new project directory, called <TT>String</TT>.<P>
+
+<LI>Copy your stringified versions of <TT>HelloServer.java</TT> and 
+<TT>HelloClient.java</TT> into the <TT>String</TT> directory.<P>
+
+<LI>Copy <TT>[Path_to_JDK]/docs/guide/idl/tutorial/string/helloApp</TT>
+and its entire
+contents to the <TT>String</TT> directory.
+
+</OL>
+
+<P>Your project directory should look like this:
+<BLOCKQUOTE>
+<PRE>
+string
+ |-HelloServer.java
+ |-HelloClient.java
+ |-HelloApp
+    |-_HelloImplBase.class
+    |-_HelloStub.class
+    |-Hello.class
+    |-HelloHelper.class
+    |-HelloHolder.class
+</PRE>
+</BLOCKQUOTE><BR>
+
+
+<A name="compile">
+<H3>Compiling Hello World</H3></A>
+
+<OL>
+<LI>Change directory to the <TT>String</TT> directory you created.<P>
+
+<LI>Run the Java compiler on your source code:
+<PRE>
+javac *.java
+</PRE>
+
+
+<LI>Correct any errors in your files and recompile if necessary. (You can copy
+the files from the 
+<TT>[Path_to_JDK]/docs/guide/idl/tutorial/string</TT> directory if you have trouble finding
+your typographical errors.)<P>
+
+<LI>You should see <TT>HelloServer.class</TT>, <TT>HelloServant.class</TT>, 
+and <TT>HelloClient.class</TT> in the <TT>String</TT> directory.
+</OL>
+
+<A name="run">
+<H3>Running Hello World</H3></A>
+
+<P>To be certain that you are running your own server, check that all Hello 
+server and name server processes have been stopped.  Stop them if they are
+running.
+
+<OL>
+   <LI>Start the Hello server:
+   
+   <PRE>
+java HelloServer -ORBInitialPort 1050 &</PRE>
+   
+   <LI>Run the Hello application client from another window:
+   
+   <P>java HelloClient -ORBInitialPort 1050</PRE>
+
+   <P>The string prints to the command line:
+   <PRE>Hello world!!</PRE>
+</OL>
+
+
+<!--**************************************-->
+<A name="information">
+<H2>For More Information</H2></A>
+
+<DL>
+
+<DT><A href="../jidlInitialization.html#obtaininginitial">Initialization: Obtaining 
+Initial Object References</A>
+<DD>Explains the various ways of getting an initial object reference
+
+</DL>
+<P><HR>
+<CENTER><P><A href="GSserver.html">Previous lesson</A> | 
+<A href="../GShome.html">Tutorial home</A> | 
+<A href="string/HelloClient.java"><TT>HelloClient.java</TT></A> | 
+<A href="string/HelloServer.java"><TT>HelloServer.java</TT></A>
+
+<TABLE cellpadding=8 cellspacing=4>
+<TR>
+  <TD ALIGN=CENTER><A href="../index.html">
+Home</A></TD>
+</TR></TABLE></CENTER
+
+<HR>
+<FONT
+SIZE="-2"><A HREF="http://www.sun.com/share/text/SMICopyright.html">Copyright
+&copy;</A></FONT><FONT SIZE="-2"> 1996, 1997 Sun Microsystems, Inc.,
+2550 Garcia Ave., Mtn. View, CA. 94043-1100 USA., All rights
+reserved.</FONT></P>
+
+</BODY>
+</HTML>
+
+

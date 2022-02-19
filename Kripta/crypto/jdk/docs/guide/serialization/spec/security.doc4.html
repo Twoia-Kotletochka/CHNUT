@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification:  - Security in Object Serialization
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="security.doc3.html">PREV</a>
+ | <a href="security.doc5.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="4214"><i>	A.4	</i> Preventing Serialization of Sensitive Data
+</a></h2>
+
+<blockquote>
+<a name="4216"><!-- --></a>
+Fields containing sensitive data should not be serialized; doing so exposes their values to any party with access to the serialization stream.  There are several methods for preventing a field from being serialized:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="4220"><!-- --></a>
+Declare the field as private transient.
+</li>
+<li>
+<a name="4222"><!-- --></a>
+Define the <code>serialPersistentFields</code> field of the class in question, and omit the field from the list of field descriptors.
+</li>
+<li>
+<a name="4225"><!-- --></a>
+Write a class-specific serialization method (i.e., <code>writeObject</code> or <code>writeExternal</code>) which does not write the field to the serialization stream (i.e., by not calling <code>ObjectOutputStream.defaultWriteObject</code>).
+</li>
+</ul>
+</blockquote>
+
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="security.doc3.html">PREV</a>
+ | <a href="security.doc5.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:48:17 1999 -->
+ 
+
+
+</body>
+</html>

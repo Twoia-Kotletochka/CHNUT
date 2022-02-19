@@ -1,0 +1,344 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title> </title>
+</head>
+<body bgcolor=#ffffff>
+
+<table width=600><tr>
+<td><a href="jniTOC.doc.html">Contents</a> | <a href="copyright.doc.html">Prev</a> | <a href="design.doc.html">Next</a> 
+</td><td align=right><i>Java Native Interface Specification
+</i></td>
+</tr></table>
+ 
+
+<hr><br>
+ 
+<h1><a name="16170"></a>
+<strong> 1 -  Introduction
+ </strong></h1>
+<hr><p><a name="16173"></a>
+This chapter introduces the <em>Java Native Interface</em> (JNI). The JNI is a native 
+programming interface. It allows Java code that runs inside a Java Virtual Machine<B>*</B> (VM) 
+to interoperate with applications and libraries written in other 
+programming languages, such as C, C++, and assembly.
+<p><a name="426"></a>
+The most important benefit of the JNI is that it imposes no restrictions on the 
+implementation of the underlying Java VM. Therefore, Java VM vendors can 
+add support for the JNI without affecting other parts of the VM. Programmers 
+can write one version of a native application or library and expect it to work 
+with all Java VMs supporting the JNI.
+<p><a name="514"></a>
+This chapter covers the following topics:
+<p><ul><a name="560"></a>
+<li><a href="intro.doc.html#16635"><em>Java Native Interface Overview</em></a>
+
+<a name="586"></a>
+<li><a href="intro.doc.html#16230"><em>Background</em></a>
+
+<a name="565"></a>
+<li><a href="intro.doc.html#16410"><em>Objectives</em></a>
+
+<a name="569"></a>
+<li><a href="intro.doc.html#16465"><em>Java Native Interface Approach</em></a>
+
+<a name="573"></a>
+<li><a href="intro.doc.html#16539"><em>Programming to the JNI</em></a>
+<a name="00001"></a>
+<li><a href="intro.doc.html#00002"><em>Changes in JDK 1.1.2</em></a>
+
+</ul><hr align=left><a name="16635"></a>
+<h1> Java Native Interface Overview
+</h1>
+<a name="16636"></a>
+While you can write applications entirely in Java, there are situations where 
+Java alone does not meet the needs of your application. Programmers use the 
+JNI to write <em>Java native methods</em> to handle those situations when an application 
+cannot be written entirely in Java. 
+<p><a name="16650"></a>
+The following examples illustrate when you need to use Java native methods:
+<p><ul><a name="16651"></a>
+<li>The standard Java class library does not support the platform-dependent 
+features needed by the application. 
+
+<a name="16654"></a>
+<li>You already have a library written in another language, and wish to make it 
+accessible to Java code through the JNI. 
+
+<a name="16656"></a>
+<li>You want to implement a small portion of time-critical code in a lower-level 
+language such as assembly.
+
+</ul><a name="16395"></a>
+By programming through the JNI, you can use native methods to:
+<p><ul><a name="16398"></a>
+<li>Create, inspect, and update Java objects (including arrays and strings).
+
+<a name="16396"></a>
+<li>Call Java methods.
+
+<a name="16404"></a>
+<li>Catch and throw exceptions.
+
+<a name="16407"></a>
+<li>Load classes and obtain class information.
+
+<a name="16659"></a>
+<li>Perform runtime type checking.
+
+</ul><a name="16360"></a>
+You can also use the JNI with the <em>Invocation API</em> to enable an arbitrary native 
+application to embed the Java VM. This allows programmers to easily make 
+their existing applications Java-enabled without having to link with the VM 
+source code.
+<p><hr align=left><a name="16230"></a>
+<h1> Background
+</h1>
+<a name="16412"></a>
+Currently, VMs from different vendors offer different native method interfaces. 
+These different interfaces force programmers to produce, maintain, and 
+distribute multiple versions of native method libraries on a given platform. 
+<p><a name="16679"></a>
+We briefly examine some of the existing native method interfaces, such as:
+<p><ul><a name="16685"></a>
+<li>JDK 1.0 native method interface
+
+<a name="16688"></a>
+<li>Netscape's Java Runtime Interface
+
+<a name="16689"></a>
+<li>Microsoft's Raw Native Interface and Java/COM interface
+
+</ul><br><a name="16684"></a>
+<h2>		 JDK 1.0 Native Method Interface
+</h2>
+<a name="16555"></a>
+JDK 1.0 shipped with a native method interface. Unfortunately, there are two 
+major reasons that this interface is unsuitable for adoption by other Java VMs. 
+<p><a name="16700"></a>
+First, the native code accesses fields in Java objects as members of C structures. 
+However, the <em>Java Language Specification</em> does not define how objects are laid 
+out in memory. If a Java VM lays out objects differently in memory, then the 
+programmer would have to recompile the native method libraries. 
+<p><a name="16705"></a>
+Second, JDK 1.0's native method interface relies on a conservative garbage 
+collector. The unrestricted use of the <code>unhand</code> macro, for example, makes it 
+necessary to conservatively scan the native stack.
+<p><br><a name="16413"></a>
+<h2>		 Java Runtime Interface
+</h2>
+<a name="16706"></a>
+Netscape proposed the Java Runtime Interface (JRI), a general interface for 
+services provided in the Java virtual machine. JRI is designed with portability 
+in mind---it makes few assumptions about the implementation details in the 
+underlying Java VM. The JRI addresses a wide range of issues, including 
+native methods, debugging, reflection, embedding (invocation), and so on.
+<p><br><a name="16442"></a>
+<h2>		 Raw Native Interface and Java/COM Interface
+</h2>
+<a name="16707"></a>
+The Microsoft Java VM supports two native method interfaces. At the low 
+level, it provides an efficient Raw Native Interface (RNI). The RNI offers a high 
+degree of source-level backward compatibility with the JDK's native method 
+interface, although it has one major difference. Instead of relying on 
+conservative garbage collection, the native code must use RNI functions to 
+interact explicitly with the garbage collector. 
+<p><a name="16713"></a>
+At a higher level, Microsoft's Java/COM interface offers a language-
+independent standard binary interface to the Java VM. Java code can use a 
+COM object as if it were a Java object. A Java class can also be exposed to the 
+rest of the system as a COM class.
+<p><hr align=left><a name="16410"></a>
+<h1> Objectives
+</h1>
+<a name="16664"></a>
+We believe that a uniform, well-thought-out standard interface offers the 
+following benefits for everyone:
+<p><ul><a name="16184"></a>
+<li>Each VM vendor can support a larger body of native code.
+
+<a name="16186"></a>
+<li>Tool builders will not have to maintain different kinds of native method 
+interfaces.
+
+<a name="16268"></a>
+<li>Application programmers will be able to write one version of their native 
+code and this version will run on different VMs.
+
+</ul><a name="16250"></a>
+The best way to achieve a standard native method interface is to involve all 
+parties with an interest in Java VMs. Therefore we organized a series of 
+discussions among the Java licensees on the design of a uniform native method 
+interface. It is clear from the discussions that the standard native method 
+interface must satisfy the following requirements:
+<p><ul><a name="16251"></a>
+<li>Binary compatibility - The primary goal is binary compatibility of native 
+method libraries across all Java VM implementations on a given platform. 
+Programmers should maintain only one version of their native method 
+libraries for a given platform. 
+
+<a name="16463"></a>
+<li>Efficiency - To support time-critical code, the native method interface must 
+impose little overhead. All known techniques to ensure VM-independence 
+(and thus binary compatibility) carry a certain amount of overhead. We 
+must somehow strike a compromise between efficiency and VM-
+independence.
+
+<a name="16464"></a>
+<li>Functionality - The interface must expose enough Java VM internals to 
+allow native methods to accomplish useful tasks.
+
+</ul><hr align=left><a name="16465"></a>
+<h1> <strong></strong>Java Native Interface Approach
+</h1>
+<a name="16528"></a>
+We hoped to adopt one of the existing approaches as the standard interface, 
+because this would have imposed the least burden on programmers who had 
+to learn multiple interfaces in different VMs. Unfortunately, no existing 
+solutions are completely satisfactory in achieving our goals.
+<p><a name="16473"></a>
+Netscape's JRI is the closest to what we envision as a portable native method 
+interface, and was used as the starting point of our design. Readers familiar 
+with the JRI will notice the similarities in the API naming convention, the use 
+of method and field IDs, the use of local and global references, and so on. 
+Despite our best efforts, however, the JNI is not binary-compatible with the JRI, 
+although a VM can support both the JRI and the JNI.
+<p><a name="16835"></a>
+Microsoft's RNI is an improvement over JDK 1.0 because it solves the problem 
+of native methods working with a nonconservative garbage collector. The RNI, 
+however, is not suitable as a VM-independent native method interface. Like the 
+JDK, RNI native methods access Java objects as C structures. This leads to two 
+problems:
+<p><ul><a name="438"></a>
+<li>RNI exposes the layout of internal Java objects to native code.
+
+<a name="452"></a>
+<li>Direct access of Java objects as C structures makes it impossible to efficiently 
+incorporate "write barriers," which are necessary in advanced garbage 
+collection algorithms.
+
+</ul><a name="16838"></a>
+As a binary standard, COM ensures complete binary compatibility across 
+different VMs. Invoking a COM method requires only an indirect call, which 
+carries little overhead. In addition, COM objects are a great improvement over 
+dynamic-link libraries in solving versioning problems. 
+<p><a name="16815"></a>
+The use of COM as the standard Java native method interface, however, is 
+hampered by a few factors: 
+<p><ul><a name="343"></a>
+<li>First, the Java/COM interface lacks certain desired functions, such as 
+accessing private fields and raising general exceptions. 
+
+<a name="456"></a>
+<li>Second, the Java/COM interface automatically provides the standard 
+IUnknown and IDispatch COM interfaces for Java objects, so that native 
+code can access public methods and fields. Unfortunately, the IDispatch 
+interface does not deal with overloaded Java methods and is case-
+insensitive in matching method names. Furthermore, all Java methods 
+exposed through the IDispatch interface are wrapped to perform dynamic 
+type checking and coercion. This is because the IDispatch interface is 
+designed with weakly-typed languages (such as Basic) in mind.
+
+<a name="344"></a>
+<li>Third, instead of dealing with individual low-level functions, COM is 
+designed to allow software components (including full-fledged applications) 
+to work together. We believe that it is not appropriate to treat all Java classes 
+or low-level native methods as software components. 
+
+<a name="345"></a>
+<li>Fourth, the immediate adoption of COM is hampered by the lack of its 
+support on UNIX platforms.
+
+</ul><a name="16519"></a>
+Although we do not expose Java objects to the native code as COM objects, the 
+JNI interface itself is binary-compatible with COM. We use the same jump 
+table structure and calling convention that COM does. <em>This means that, as soon 
+as cross-platform support for COM is available, the JNI can become a COM interface 
+to the Java VM.
+</em><p><a name="16492"></a>
+We do not believe that the JNI should be the only native method interface 
+supported by a given Java VM. A standard interface benefits programmers 
+who would like to load their native code libraries into different Java VMs. In 
+some cases, the programmer may have to use a lower-level, VM-specific 
+interface to achieve top efficiency. In other cases, the programmer might use a 
+higher-level interface to build software components. Indeed, we hope that, as 
+the Java environment and component software technologies become more 
+mature, native methods will gradually lose their significance.
+<p><hr align=left><a name="16539"></a>
+<h1> Programming to the JNI
+</h1>
+<a name="16540"></a>
+Native method programmers should start programming to the JNI. 
+Programming to the JNI insulates you from unknowns, such as the vendor's 
+VM that the end user might be running. By conforming to the JNI standard, 
+you will give a native library the best chance to run in a given Java VM. For 
+example, although JDK 1.1 will continue to support the old-style native 
+method interface that was implemented in JDK 1.0, it is certain that future 
+versions of the JDK will stop supporting the old-style native method interface. 
+Native methods relying on the old-style interface will have to be rewritten.
+<p><a name="16546"></a>
+If you are implementing a Java VM, you should implement the JNI. We 
+(Javasoft and the licensees) have tried our best to ensure that the JNI does not 
+impose any overhead or restrictions on your VM implementation, including 
+object representation, garbage collection scheme, and so on. Please let us know 
+if you run into any problems we might have overlooked.
+<p><hr align=left><a name="00002"></a>
+<h1> Changes in JDK 1.1.2
+</h1>
+
+<p>
+To better support the Java Runtime Environment (JRE), the Invocation
+API has been extended in JDK 1.1.2 in a few minor ways. The changes do
+not break any existing code. The JNI Native Method Interface has not
+been changed.
+
+<ul>
+<li>
+The <code>reserved0</code> field in the <code>JDK1_1InitArgs</code>
+structure has been renamed to <code>version</code>. The
+<code>JDK1_1InitArgs</code> structure holds the initialization
+arguments to <code>JNI_CreateJavaVM</code>. Callers of
+<code>JNI_GetDefaultJavaVMInitArgs</code> and
+<code>JNI_CreateJavaVM</code> must set the version field to
+<code>0x00010001</code>. <code>JNI_GetDefaultJavaVMInitArgs</code> has
+been changed to return a <code>jint</code> indicating whether the
+requested version is supported.
+
+<li>
+The <code>reserved1</code> field in the <code>JDK1_1InitArgs</code>
+structure has been renamed to <code>properties</code>. This is a
+<code>NULL</code>-terminated array of strings. Each string has the
+format:
+
+<blockquote>
+name=value 
+</blockquote>
+
+indicating a system property. (This facility corresponds to the -D
+option in the java command line.)
+
+<li>In JDK 1.1.1, the thread calling <code>DestroyJavaVM</code> must
+be the only user thread in the VM. JDK 1.1.2 has lifted this
+restriction. If <code>DestroyJavaVM</code> is called when there is
+more than one user thread, the VM waits until the current thread is
+the only user thread, and then tries to destroy itself.
+</ul>
+<p><a name="469"></a>
+
+<P>
+<FONT SIZE="-1"><B>*As used on this web site, the terms "Java Virtual Machine" 
+or "JVM" mean a virtual machine for the Java platform.</B></FONT>
+<P>
+
+<hr>
+<!-- This inserts footnotes--><p>
+<a href="jniTOC.doc.html">Contents</a> | <a href="copyright.doc.html">Prev</a> | <a href="design.doc.html">Next</a> 
+
+<p>
+<font size=-1>Java Native Interface Specification (HTML generated by dkramer on March 15, 1997)<br>
+<i><a href="copyright.doc.html">Copyright &#169 1996, 1997 Sun Microsystems, Inc.</a>
+All rights reserved</i>
+<br>
+Please send any comments or corrections to <a href="mailto:jni@java.sun.com">jni@java.sun.com</a>
+</font>
+</body></html>

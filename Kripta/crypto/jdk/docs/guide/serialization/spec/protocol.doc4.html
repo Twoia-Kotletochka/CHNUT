@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 6 - Object Serialization Stream Protocol
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="protocol.doc3.html">PREV</a>
+ | <a href="protocol.doc5.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="10258"><i>	6.4	</i> Grammar for the Stream Format
+</a></h2>
+
+<blockquote>
+<a name="4999"><!-- --></a>
+The table below contains the grammar for the stream format. Nonterminal symbols are shown in italics. Terminal symbols in a <em>fixed width font</em>. Definitions of nonterminals are followed by a &#34;:&#34;. The definition is followed by one or more alternatives, each on a separate line. The following table describes the notation:
+
+<br><br>
+<Table Border="1" Cellpadding="5">
+<caption></caption>
+
+<tr><td><a name="10013"><!-- --></a>
+<b> Notation</b><br>
+
+</td><td><a name="10015"><!-- --></a>
+<b> Meaning</b><br>
+
+</td></tr>
+<tr valign="bottom"><td><a name="10017"><!-- --></a>
+<p><em> (datatype</em>)	
+
+</td>
+<td><a name="10019"><!-- --></a>
+<p> This token has the data type specified, such as byte.
+
+</td>
+</tr>
+<tr valign="bottom"><td><a name="10021"><!-- --></a>
+<p><em> token[n]</em>
+
+</td>
+<td><a name="10023"><!-- --></a>
+<p>	 A predefined number of occurrences of the token, that is an array.
+
+</td>
+</tr>
+<tr valign="bottom"><td><a name="10025"><!-- --></a>
+<p><em> x0001</em>	
+
+</td>
+<td><a name="10027"><!-- --></a>
+<p> A literal value expressed in hexadecimal. The number of hex digits reflects the size of the value.
+
+</td>
+</tr>
+<tr valign="bottom"><td><a name="10029"><!-- --></a>
+<p> &lt;<em>xxx</em>&gt;
+
+</td>
+<td><a name="10031"><!-- --></a>
+<p>		 A value read from the stream used to indicate the length of an array.
+
+</td>
+</tr>
+
+</Table>
+ 
+<Table>
+<tr><td></td>
+</tr>
+</Table><p>
+<p>
+<a name="9298"><!-- --></a>
+Note that the symbol (long-utf) is used to designate a string written in &#34;long&#34; UTF format.  For details, refer to <a href="protocol.doc2.html#8299">Section&#160;6.2, &#34;Stream Elements</a>&#34;.<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="protocol.doc3.html">PREV</a>
+ | <a href="protocol.doc5.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:48:11 1999 -->
+ 
+
+
+</body>
+</html>

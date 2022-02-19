@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification: 5 - Versioning of Serializable Objects
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="version.doc1.html">PREV</a>
+ | <a href="version.doc3.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="4569"><i>	5.2	</i> Goals
+</a></h2>
+
+<blockquote>
+<a name="4570"><!-- --></a>
+The goals are to:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="9359"><!-- --></a>
+Support bidirectional communication between different versions of a class operating in different virtual machines by:
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul><li>Defining a mechanism that allows Java<sup><font size="-2">TM</font></sup> classes to read streams written by older versions of the same class.</li></blockquote>
+</ul><a name="4581"><!-- --></a>
+<TABLE BORDER=0 WIDTH="100%">
+<TR ALIGN=LEFT>
+<TD WIDTH="8%" ALIGN="LEFT" >&nbsp;</TD>
+<TD WIDTH="3%" ALIGN="LEFT" VALIGN="BOTTOM">
+-
+</TD>
+<TD WIDTH="89%" ALIGN="LEFT" VALIGN="BOTTOM">Defining a mechanism that allows Java<sup><font size="-2">TM</font></sup> classes to write streams intended to be read by older versions of the same class.</TD>
+</TR>
+</TABLE>
+
+<blockquote>
+<ul><li>
+<a name="7270"><!-- --></a>
+Provide default serialization for persistence and for RMI.
+</li>
+<li>
+<a name="4579"><!-- --></a>
+Perform well and produce compact streams in simple cases, so that RMI can use serialization.
+</li>
+<li>
+<a name="4584"><!-- --></a>
+Be able to identify and load classes that match the exact class used to write the stream.
+</li>
+<li>
+<a name="4585"><!-- --></a>
+Keep the overhead low for nonversioned classes.
+</li>
+<li>
+<a name="4832"><!-- --></a>
+Use a stream format that allows the traversal of the stream without having to invoke methods specific to the objects saved in the stream.
+</li>
+</ul>
+</blockquote>
+
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="version.doc1.html">PREV</a>
+ | <a href="version.doc3.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:48:07 1999 -->
+ 
+
+
+</body>
+</html>

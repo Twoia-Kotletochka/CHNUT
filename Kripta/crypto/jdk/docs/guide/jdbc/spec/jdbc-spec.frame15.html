@@ -1,0 +1,346 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title></title>
+</head>
+<body bgcolor=#ffffff>
+
+<table width=600><tr>
+<td><font size=-1>
+<a href="jdbc-spec.frame.html">Contents</a>  | <a href="jdbc-spec.frame14.html">Prev</a>  | <a href="jdbc-spec.frame16.html">Next</a>
+</font></td><td align=right><i>JDBC<sup><font size=-2>TM</font></sup> Guide: Getting Started</i></td>
+</tr></table>
+<hr>
+<br>
+ 
+
+<a name="3883"></a>
+<h2>Appendix A:  Rejected design choices</h2>
+
+
+<a name="3884"></a>
+<h3>A.1 	  &nbsp; &nbsp; Use Holder types rather than get/set methods.</h3>
+<a name="3937"></a>
+In earlier drafts of JDBC we used a mechanism of "Holder" types to pass parameters and to 
+obtain results. This mechanism was an attempt to provide a close analogue to the use of pointers
+to variables in ODBC. However as we tried to write test examples we found the need to 
+create and bind Holder types fairly irksome, particularly when processing simple row results.
+<p>
+<a name="4118"></a>
+We therefore came up with the alternative design using the getXXX and setXXX methods that 
+is described in Sections <a href="jdbc-spec.frame7.html#20240">7.2</a> and <a href="jdbc-spec.frame7.html#4149">7.1</a>. After comparing various example programs we decided 
+that the getXXX/setXXX mechanism seemed to be simpler for programmers to use. It also removed
+the need to define a dozen or so Holder types as part of the JDBC API. So we decided 
+to use the getXXX/setXXX mechanism and not to use Holders.
+<p>
+
+<a name="4026"></a>
+<h4>	A.1.1	 Using Holder types to pass parameters</h4>
+<a name="3932"></a>
+As part of the java.sql API, we define a set of Holder types to hold parameters to SQL statements.
+There is an abstract base class Holder, and then specific subtypes for different Java 
+types that may be used with SQL. For example, there is a StringHolder to hold a String parameter
+and a ByteHolder to hold a byte parameter.
+<p>
+<a name="3897"></a>
+To allow parameters to be passed to SQL statements, the java.sql.Statement class allows you 
+to associate Holder objects with particular parameters. When the statement is executed any IN 
+or INOUT parameter values will be read from the corresponding Holder objects, and when the 
+statement completes, then any OUT or INOUT parameters will get written back to the corresponding
+Holder objects.
+<p>
+<a name="3898"></a>
+An example of IN parameters using Holders:
+<p>
+<pre><code>java.sql.Statement stmt = conn.createStatement();
+</code></pre>
+<pre><code>// We pass two parameters. One varies each time around
+</code></pre>
+<pre><code>// the for loop, the other remains constant.
+</code></pre>
+<pre><code>IntHolder ih = new IntHolder();
+</code></pre>
+<pre><code>stmt.bindParameter(1, ih);
+</code></pre>
+<pre><code>StringHolder sh = new StringHolder();
+</code></pre>
+<pre><code>stmt.bindParameter(2, sh);
+</code></pre>
+<pre><code>sh.value ="Hi"
+</code></pre>
+<pre><code>for (int i = 0; i &lt; 10; i++) {
+</code></pre>
+<pre><code>	ih.value = i;
+</code></pre>
+<pre><code>	stmt.executeUpdate("UPDATE Table2 set a = ? WHERE b = ?");
+</code></pre>
+<pre><code>}
+</code></pre>
+<pre><code>
+</code></pre>
+<a name="3912"></a>
+An example of OUT parameters using Holders:
+<p>
+<pre><code>java.sql.Statement stmt = conn.createStatement();
+</code></pre>
+<pre><code>IntHolder ih = new IntHolder();
+</code></pre>
+<pre><code>stmt.bindParameter(1, ih);
+</code></pre>
+<pre><code>StringHolder sh = new StringHolder();
+</code></pre>
+<pre><code>stmt.bindParameter(2, sh);
+</code></pre>
+<pre><code>for (int i = 0; i &lt; 10; i++) {
+</code></pre>
+<pre><code>	stmt.executeUpdate("{CALL testProcedure(?, ?)}");
+</code></pre>
+<pre><code>	byte x = ih.value;
+</code></pre>
+<pre><code>	String s = sh.value;
+</code></pre>
+<pre><code>}
+</code></pre>
+
+<a name="4002"></a>
+<h4>	A.1.2	 Getting row results using Holder objects</h4>
+<a name="4003"></a>
+Before executing a statement, we can allow the application programmers to bind Holder objects
+to particular columns. After the statement has executed, the application program can iterate
+over the ResultSet using ResultSet.next() to move to successive rows. As the application 
+moves to each row, the Holder objects will be populated with the values in that row. This is 
+similar to the SQLBindColumn mechanism used in ODBC.
+<p>
+<a name="4004"></a>
+Here's a simple example:
+<p>
+<pre><code>// We're going to execute a SQL statement that will return a
+</code></pre>
+<pre><code>// collection of rows, with column 1 as an int, column 2 as
+</code></pre>
+<pre><code>// a String, and column 3 as an array of bytes.
+</code></pre>
+<pre><code>java.sql.Statement stmt = conn.createStatement();
+</code></pre>
+<pre><code>IntHolder ih = new IntHolder();
+</code></pre>
+<pre><code>stmt.bindHolder(1, ih);
+</code></pre>
+<pre><code>StringHolder sh = new StringHolder();
+</code></pre>
+<pre><code>stmt.bindHolder(2, sh);
+</code></pre>
+<pre><code>BytesHolder bh = new BytesHolder();
+</code></pre>
+<pre><code>stmt.bindHolder(3, bh);
+</code></pre>
+<pre><code>ResultSet r = stmt.executeQuery("SELECT a, b, c FROM Table7");
+</code></pre>
+<pre><code>while (r.next()) {
+</code></pre>
+<pre><code>	// print the values for the current row.
+</code></pre>
+<pre><code>	int i = ih.value;
+</code></pre>
+<pre><code>	String s = sh.value;
+</code></pre>
+<pre><code>	byte b[] = bh.value;
+</code></pre>
+<pre><code>	System.out.println("ROW = " + i + " " + s + " " + b[0]);
+</code></pre>
+<pre><code>}
+</code></pre>
+<pre><code>
+</code></pre>
+
+<a name="3891"></a>
+<h3>A.2 	  &nbsp; &nbsp; Design Alternative: Don't use types such as fooHolder, instead use foo[]</h3>
+<a name="4124"></a>
+<strong>At some point in the future we would probably like to add support for some form of column-wise 
+binding, so that a bunch of rows can be read at once. When we were using the Holder design, 
+we considered the following design alternative that would allow for column-wise binding.
+</strong><p>
+<a name="3262"></a>
+Holder objects are capable of holding single instances of various Java types. However an array 
+of a single element could instead be used as a holder. This approach has several disadvantages, 
+but one major advantage.
+<p>
+<a name="3264"></a>
+The first disadvantage is that people may be confused if they read "foo f[] = new foo[1];". The 
+corresponding holder declaration "fooHolder f = new fooHolder();" gives a better clue as to 
+what f is and why we are allocating it.
+<p>
+<a name="3265"></a>
+The second disadvantage is that we would have to replace the single method Statement.bindColumn
+with a distinct method for each array type. This is because all our Holder types inherit 
+from java.sql.Holder and can therefore be passed as arguments to a generic method that takes 
+a java.sql.Holder argument. (On the other hand at least we avoid defining the dozen or so holder
+classes.)
+<p>
+<a name="3266"></a>
+The last disadvantage is that using foo[] only gives us the raw Java type information. By defining
+a specific set of holder types for use with SQL, we can define extra fields and/or semantics, 
+e.g. for the CurrencyHolder type.
+<p>
+<a name="3267"></a>
+The corresponding major advantage is that if we use foo[1] as the container for a parameter 
+then it is very natural to allow foo[x] as a way of binding multiple rows of a table in column-
+wise binding. This would let us add support for column-wise binding without having to remodel
+the interface.
+<p>
+<a name="3254"></a>
+If we use arrays instead of Holders, them the bindColumn mechanism makes it easier to scale 
+up to column-wise binding.
+<p>
+
+<a name="17410"></a>
+<h3>A.3 	  &nbsp; &nbsp; Support for retrieving multiple rows at once</h3>
+<a name="17411"></a>
+Currently we provide methods for retrieving individual columns within individual rows, a field 
+at a time. We anticipate that drivers will normally prefetch rows in larger chunks so as to reduce 
+the number of interactions with the target database. However, it might also be useful to allow 
+programmers to retrieve data in larger chunks through the JDBC API.
+<p>
+<a name="17412"></a>
+The easiest mechanism to support in Java would probably be to support some form of column-
+wise binding where a programmer can specify a set of arrays to hold (say) the next 20 values 
+in each of the columns, and then read all 20 rows at once.
+<p>
+<a name="20119"></a>
+However we do not propose to provide such a mechanism in the first version of JDBC. We do 
+recommend that drivers should normally prefetch rows in suitable chunks.
+<p>
+
+<a name="20127"></a>
+<h3>A.4 	  &nbsp; &nbsp; Columns numbers in ResultSet.get methods</h3>
+<a name="20136"></a>
+In an earlier version of the JDBC spec, the various "get" methods took no arguments, but merely
+returned the next column value in left-to-right order. We (re)introduced a column number 
+argument because we were unsatisfied with the readability of the resulting example code. We 
+frequently found ourselves having to count through the various "get" calls in order to match 
+them up with the columns specified in the SELECT statement.
+<p>
+
+<a name="20141"></a>
+<h3>A.5 	  &nbsp; &nbsp; Method overloading for set methods</h3>
+<a name="20144"></a>
+In an earlier version of the design we used method overloading so that rather than having methods
+with different names such as setByte, setBoolean, etc., all these methods were simply 
+called setParameter, and were distinguished only by their different argument types. While this 
+is a legal thing to do in Java, several reviewers commented that it was confusing and was likely 
+to lead to error, particularly in cases where the mapping between SQL types and Java types is 
+ambiguous. On reflection we agreed with them.
+<p>
+
+<a name="20152"></a>
+<h3>A.6 	  &nbsp; &nbsp; That wretched registerOutParameter method</h3>
+<a name="20155"></a>
+We dislike the need for a registerOutParameter method. During the development of JDBC we 
+made a determined attempt to avoid it and instead proposed that the drivers should use database 
+metadata to determine the OUT parameter types. However reviewer input convinced us that for 
+performance reasons it was more appropriate to require the use of registerOutParameter to 
+specify OUT parameter types.
+<p>
+
+<a name="20172"></a>
+<h3>A.7 	  &nbsp; &nbsp; Support for large OUT parameters.</h3>
+<a name="20168"></a>
+We don't currently support very large OUT parameters. If we were to provide a mechanism for 
+very large OUT parameters, it would probably consist of allowing programmers to register java.io.OutputStreams
+into which the JDBC runtimes could send the OUT parameter's data 
+when the statement executes. However, this seems to be harder to explain than it is worth, given 
+that there is a already a mechanism for handling large results as part of ResultSet.
+<p>
+
+<a name="20169"></a>
+<h3>A.8 	  &nbsp; &nbsp; Support for GetObject versus getXXX</h3>
+<a name="24865"></a>
+Because of the overlap between the various get/set methods and the generic getObject/setObject
+methods we looked at discarding our get/set methods and simply using getObject/setObject.
+However for the simple common cases where a programmer know the SQL types, the 
+resulting casts and extracts are extremely tedious:
+<p>
+<a name="24866"></a>
+	int i = ((Integer)r.getObject(1, java.sql.Types.INTEGER)).intValue()
+<p>
+<a name="24863"></a>
+We therefore decided to bend our minimalist principles a little in this case and retain the various 
+get/set methods as the preferred interface for the majority of applications programmers, while 
+also adding the getObject/setObject methods for tool builders and sophisticated applications
+<p>
+
+<a name="25317"></a>
+<h3>A.9 	  &nbsp; &nbsp; isNull versus wasNull</h3>
+<a name="25318"></a>
+We had some difficulty in determining a good way of handling SQL NULLs. However by 
+JDBC 0.50 we had designed a ResultSet.isNull method that seemed fairly pleasant to use. The 
+isNull method could be called on any column to check for NULL before (or after) reading the 
+column.
+<p>
+<pre><code>if (!ResultSet(isNull(3)) {
+</code></pre>
+<pre><code>	count += ResultSet.getInt(3);
+</code></pre>
+<pre><code>}
+</code></pre>
+<pre><code>
+</code></pre>
+<a name="25322"></a>
+Unfortunately, harsh reality intervened and it emerged that "isNull" could not be implemented 
+reliably on all databases. Some databases have no separate means for determining if a column 
+is null other than reading the column and they would only permit a given column to be read 
+once. We looked at reading the column value and "remembering" it for later use, but this 
+caused problems when data conversions were required.
+<p>
+<a name="25327"></a>
+After examining a number of different solutions we reluctantly decided to replace the isNull 
+method with the wasNull method. The wasNull method merely reports whether the last value 
+read from the given ResultSet (or CallableStatement) was SQL NULL.
+<p>
+
+<a name="25724"></a>
+<h3>A.10 	  &nbsp; &nbsp; Use of Java type names v SQL type names.</h3>
+<a name="25735"></a>
+In an earlier version of the spec we used getXXX and setXXX method for retrieving results and 
+accessing parameters, where the XXX was a SQL type name. In revision 0.70 of JDBC we 
+changed to use getXXX and setXXX methods where the XXX was a Java type name.
+<p>
+<a name="25736"></a>
+Thus for example, getChar was replaced by getString and setSmallInt by setShort.
+<p>
+<a name="25737"></a>
+The new methods have essentially the same semantics as the methods that they replace. However
+the use of Java type names makes the meaning of each of the methods clearer to Java programmers.
+
+<p>
+<a name="20150"></a>
+
+<p>
+<a name="20120"></a>
+
+<p>
+
+
+<br>
+<hr> 
+<font size=-1>
+<a href="jdbc-spec.frame.html">Contents</a>  | <a href="jdbc-spec.frame14.html">Prev</a>  | <a href="jdbc-spec.frame16.html">Next</a>
+</font>
+<hr>
+
+
+
+<address>
+<a href="mailto:jdbc@wombat.eng.sun.com">jdbc@wombat.eng.sun.com</a>
+or
+<a href="mailto:jdbc-odbc@wombat.eng.sun.com">jdbc-odbc@wombat.eng.sun.com</a>
+</address>
+
+<a href="../../../relnotes/SMICopyright.html">
+<font size=-1><i>Copyright &#169; 1996, 1997 Sun Microsystems, Inc.   All rights reserved.</i></font>
+</a>
+
+<!-- HTML generated by Suzette Pelouch on April 10, 1998 -->
+
+</body>
+</html>

@@ -1,0 +1,155 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Remote Method Invocation: 5 - Server Interfaces
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="rmiTOC.html">CONTENTS</a> | <a href="rmi-server6.html">PREV</a>
+ | <a href="rmi-server8.html">NEXT</a> 
+<!-- /font --></td><td align=right><i>Java Remote Method Invocation</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="5112"><i>	5.6	</i> The <code>RMIClassLoader</code> Class
+</a></h2>
+
+
+<blockquote>
+<a name="8180"><!-- --></a>
+The <code>java.rmi.server.RMIClassLoader</code> class provides a set of public static utility methods for supporting network-based class loading in RMI. These methods are called by RMI&#39;s internal marshal streams to implement the dynamic class loading of types for RMI parameters and return values, but they also may be called directly by applications in order to mimic RMI&#39;s class loading behavior. The <code>RMIClassLoader</code> class has no publicly-accessible constructors and thus cannot be instantiated.<p>
+</blockquote><blockquote><pre>package java.rmi.server;
+
+public class RMIClassLoader {
+	public static String getClassAnnotation(Class cl);
+	public static ClassLoader getClassLoader(String codebase)
+	    throws java.net.MalformedURLException, SecurityException;
+	public static Object getSecurityContext(ClassLoader loader);
+        public static Class loadClass(String name)
+	    throws java.net.MalformedURLException, 
+		   ClassNotFoundException;
+	public static Class loadClass(String codebase, String name)
+	    throws java.net.MalformedURLException, 
+		   ClassNotFoundException;
+    	public static Class loadClass(URL codebase, String name) 
+	    throws java.net.MalformedURLException, 
+		   ClassNotFoundException;
+}
+</pre></blockquote><blockquote>
+<a name="8151"><!-- --></a>
+The <code>getClassAnnotation</code> method returns a <code>String</code> representing the network codebase path that a remote endpoint should use for downloading the definition of the indicated class. The RMI runtime uses <code>String</code> objects returned by this method as the annotations for class descriptors in its marshal streams. The format of this codebase string is a path of codebase URL strings delimited by spaces.<p>
+<a name="8152"><!-- --></a>
+The codebase string returned depends on the class loader of the supplied class:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="8153"><!-- --></a>
+If the class loader is one of the following:
+</li>
+</ul>
+</blockquote>
+<a name="8154"><!-- --></a>
+<TABLE BORDER=0 WIDTH="100%">
+<TR ALIGN=LEFT>
+<TD WIDTH="16%" ALIGN="LEFT" >&nbsp;</TD>
+<TD WIDTH="3%" ALIGN="LEFT" VALIGN="TOP">
+-
+</TD>
+<TD WIDTH="81%" ALIGN="LEFT" VALIGN="TOP">	the &#34;system class loader&#34; (the class loader used to load 	classes in the application&#39;s &#34;class path&#34; and returned by the method 	<code>ClassLoader.getSystemClassLoader</code>),</TD>
+</TR>
+</TABLE>
+<a name="8155"><!-- --></a>
+<TABLE BORDER=0 WIDTH="100%">
+<TR ALIGN=LEFT>
+<TD WIDTH="16%" ALIGN="LEFT" >&nbsp;</TD>
+<TD WIDTH="3%" ALIGN="LEFT" VALIGN="TOP">
+-
+</TD>
+<TD WIDTH="81%" ALIGN="LEFT" VALIGN="TOP">a parent of the &#34;system class loader&#34; such as the class 	loader used for installed extensions,</TD>
+</TR>
+</TABLE>
+<a name="8156"><!-- --></a>
+<TABLE BORDER=0 WIDTH="100%">
+<TR ALIGN=LEFT>
+<TD WIDTH="16%" ALIGN="LEFT" >&nbsp;</TD>
+<TD WIDTH="3%" ALIGN="LEFT" VALIGN="TOP">
+-
+</TD>
+<TD WIDTH="81%" ALIGN="LEFT" VALIGN="TOP">	or <code>null</code> (the &#34;boot class loader&#34; used to load JVM classes),</TD>
+</TR>
+</TABLE>
+<p><a name="8157"><!-- --></a>
+<ul><ul>then the value of the <code>java.rmi.server.codebase</code> property is returned, or <code>null</code> is returned if that property is not set.
+<p>
+</ul></ul>
+
+<blockquote>
+<ul><li>
+<a name="8158"><!-- --></a>
+Otherwise, if the class loader is an instance of the class <code>java.net.URLClassLoader</code>, then the codebase string returned is a space-separated list of the external forms of the URLs returned by invoking the <code>getURLs</code> methods on the class loader. If the <code>URLClassLoader</code> was created by the RMI runtime to service an invocation of one of the <code>RMIClassLoader.loadClass</code> methods, then no permissions are necessary to get the associated codebase string. If it is an arbitrary <code>URLClassLoader</code> instance, the caller must have permission to connect to all of the URLs in the codebase path, as determined by calling <code>openConnection().getPermission()</code> on each <code>URL</code> instance returned by the <code>getURLs</code> method.
+</li>
+<li>
+<a name="8159"><!-- --></a>
+Finally, if the class loader is not an instance of <code>URLClassLoader</code>, then the value of the <code>java.rmi.server.codebase</code> property is returned, or <code>null</code> is returned if that property is not set.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="8160"><!-- --></a>
+The <code>getClassLoader</code> method returns a class loader that loads classes from the given <em>codebase</em> URL path, a list of space-separated URLs. The class loader returned is the class loader that the <code>loadClass(String,String)</code> method would use to load classes from the given <em>codebase</em>. If a class loader with the same <em>codebase</em> URL path already exists for the RMI runtime, it will be returned; otherwise a new class loader will be created. If the given codebase is <code>null</code>, it returns the class loader used to load classes via the <code>loadClass(String)</code> method. The method throws <code>MalformedURLException</code> if the <em>codebase</em> parameter contains an invalid non-<code>null</code> URL and throws <code>SecurityException</code> if the caller does not have permission to connect to all of the URLs in the <em>codebase</em> URL path.<p>
+<a name="8232"><!-- --></a>
+The <code>getSecurityContext</code> method is deprecated because it is no longer applicable to the Java 2 platform security model; it was used internally in JDK1.1 to implement class loader-based security checks. If the indicated class loader was created by the RMI runtime to service an invocation of one of the <code>RMIClassLoader.loadClass</code> methods, the first URL in the class loader&#39;s codebase path is returned; otherwise, <code>null</code> is returned.<p>
+<a name="8161"><!-- --></a>
+The three <code>loadClass</code> methods all attempt to load the class with the specified name using the current thread&#39;s context class loader and, if there is a security manager set, an internal <code>URLClassLoader</code> for a particular codebase path (depending on the method):<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="8162"><!-- --></a>
+The <code>loadClass</code> method that only takes one parameter (the class <em>name</em>) implicitly uses the value of the <code>java.rmi.server.codebase</code> property as the codebase path to use. This version of the <code>loadClass</code> method has been deprecated because this use of the <code>java.rmi.server.codebase</code> property is discouraged; use the following, more general version instead.
+</li>
+<li>
+<a name="8163"><!-- --></a>
+The <code>loadClass</code> method with the <code>String</code> <em>codebase</em> parameter uses it as the codebase path; the codebase string must be a space-separated list of URLs, as would be returned by the <code>getClassAnnotation</code> method.
+</li>
+<li>
+<a name="8164"><!-- --></a>
+The <code>loadClass</code> method with the<code> java.net.URL</code> <em>codebase</em> parameter uses that single <code>URL</code> as the codebase.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="8165"><!-- --></a>
+For all of the <code>loadClass</code> methods, the codebase path is used in conjunction with the current thread&#39;s context class loader (determined by invoking <code>getContextClassLoader</code> on the current thread) to determine the internal class loader instance to attempt to load the class from. The RMI runtime maintains a table of internal class loader instances, keyed by the pair consisting of the parent class loader and the loader&#39;s codebase path (an ordered list of URLs). A <code>loadClass</code> method looks in the table for a <code>URLClassLoader</code> instance with the desired codebase path and the current thread&#39;s context class loader as its parent. If no such loader exists, then one is created and added to the table. Finally, the <code>loadClass</code> method is called on the chosen class loader with the specified class <em>name</em>.<p>
+<a name="8166"><!-- --></a>
+If there is a security manager set (<code>System.getSecurityManager</code> does not return <code>null</code>), the caller of <code>loadClass</code> must have permission to connect to all of the URLs in the codebase path, or a <code>ClassNotFoundException</code> will be thrown. In order to prevent arbitrary untrusted code from being loaded into a JVM with no security manager, if there is no security manager set, all of the <code>loadClass</code> methods will ignore the particular codebase path and only attempt to load the class with the specified <em>name</em> from the current thread&#39;s context class loader. <p>
+</blockquote>
+
+</ul>
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="rmiTOC.html">CONTENTS</a> | <a href="rmi-server6.html">PREV</a>
+ | <a href="rmi-server8.html">NEXT</a> 
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF=http://java.sun.com/products/jdk/1.3/docs/relnotes/SMICopyright.html>Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Susan Snyder -->
+<!-- Last updated: Monday November 15 11:11:27 1999 -->
+ 
+
+
+</body>
+</html>

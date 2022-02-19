@@ -1,0 +1,127 @@
+<html><head><title> Java IDL: 7 -  Server-Side Mapping 
+</title></head>
+<body bgcolor=#ffffff>
+ 
+
+<br><br>
+ 
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tr valign="top">
+<td align="left">
+<a name="509889">
+<h1><font size=7> 
+ Server-Side Mapping 
+</font></h1>
+</a></td>
+<td><a name="509891">
+<h1 align="right"><font size=7>
+7 
+</font></h1>
+</a></td>
+<td align="right"> <img src="chars/chapnumbar.gif"></td>
+</tr></table>
+<hr size="3" width="100%" align="left" noshade><a name="998512">
+<p>
+<h2><font size=6>	7.1	 Introduction
+</font></h2>
+</a>
+<a name="998513">
+This chapter discusses how implementations create and register objects with the ORB runtime.<p>
+</a>
+<a name="998514">
+It will be patterned after the server framework architecture to be described by the final submission to the Server Side Portability RFP.<p>
+</a>
+<a name="998506">
+<blockquote><hr noshade size="1"><b><i>Issue -  This chapter is subject to revision pending the outcome of the Portability RFP submission</i></b> 
+<hr noshade size="1"></blockquote>
+</a><a name="997859">
+<p>
+<h2><font size=6>	7.2	 Transient Objects
+</font></h2>
+</a>
+<a name="998529">
+For this initial submission only a minimal API to allow application developers to implement transient ORB objects is described. We do not expect there to be major changes as a result of the Portability work.<p>
+</a>
+<a name="998527">
+<h3><font size=5> 	7.2.1	Servant Base Class
+</font></h3>
+</a>
+<a name="998533">
+For each IDL interface <code><strong>&lt;interface_name&gt;</strong></code> the mapping defines a Java class as follows:<p>
+</a>
+<a name="998585">
+<code><strong><pre>// Java
+</pre>
+</strong></code></a>
+<a name="998586">
+<code><strong><pre>public class _<em><strong>&lt;interface_name&gt;</strong></em>ImplBase implements <em><strong>&lt;interface_name&gt;</strong></em> {
+</pre>
+</strong></code></a>
+<a name="998592">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="998560">
+<p>
+</a>
+<a name="998545">
+<h3><font size=5> 	7.2.2	Servant Class
+</font></h3>
+</a>
+<a name="998565">
+For each interface, the developer must write a servant class. Instances of the servant class implement ORB objects. Each instance implements a single ORB object, and each ORB object is implemented by a single servant.<p>
+</a>
+<a name="998566">
+Each object implementation implements ORB objects that supports a most derived IDL interface. If this interface is <strong>&lt;interface_name&gt;</strong>, then the servant class must extend _<em><strong>&lt;interface_name&gt;</strong></em><code><strong>ImplBase</strong></code>.<p>
+</a>
+<a name="998567">
+The servant class must define public methods corresponding to the operations and attributes of the IDL interface supported by the object implementation, as defined by the mapping specification for IDL interfaces. Providing these methods is sufficient to satisfy all abstract methods defined by _<em><strong>&lt;interface_name&gt;</strong></em><code><strong>ImplBase</strong></code>.<p>
+</a>
+<a name="998548">
+<h3><font size=5> 	7.2.3	Creating A Transient ORB Object
+</font></h3>
+</a>
+<a name="998571">
+To create an instance of an object implementation, the developer instantiates the servant class.<p>
+</a>
+<a name="998549">
+<h3><font size=5> 	7.2.4	Connecting a Transient ORB Object
+</font></h3>
+</a>
+<a name="998683">
+Object implementations (object references) may be explicitly connected to the ORB by calling the ORB&#39;s <code><strong>connect()</strong></code> method (see <a href="pseudo.fm.html#998501">Section&#160;6.12, &#34;ORB"</a>). <p>
+</a>
+<a name="998696">
+An object implementation may also be automatically and implicitly connected to the ORB if it is passed as a (mapped IDL) parameter to a (mapped) IDL operation that is itself not implemented as a local (Java) object. I.e., it has to be marshaled and sent outside of the process address space. Note, a vendor is free to connect such an object implementation &#34;earlier&#34; (e.g. upon instantiation), but it must connect the implementation to the ORB when it is passed as described above.<p>
+</a>
+<a name="998708">
+Note that calling <code><strong>connect()</strong></code> when an object is already connected has no effect.<p>
+</a>
+<a name="998550">
+<h3><font size=5> 	7.2.5	Disconnecting a Transient ORB Object
+</font></h3>
+</a>
+<a name="998582">
+The servant may disconnect itself from the ORB by invoking the ORB&#39;s <code><strong>disconnect()</strong></code> method (see <a href="pseudo.fm.html#998501">Section&#160;6.12, &#34;ORB"</a>). After this method returns, incoming requests will be rejected by the ORB by raising the <strong>CORBA::OBJECT_NOT_EXIST</strong> exception. The effect of this method is to cause the ORB object to appear to be destroyed from the point of view of remote clients.<p>
+</a>
+<a name="998715">
+Note that calling <code><strong>disconnect()</strong></code> when the object is not connected has no effect.<p>
+</a>
+<a name="998583">
+Note however, that requests issued using the servant directly (e.g. using the implementatioon&#39;s this pointer) do not pass through the ORB; these requests will continue to be processed by the servant.<p>
+</a>
+<a name="998709">
+<p>
+</a>
+<a name="998580">
+<p>
+<h2><font size=6>	7.3	 Persistent Objects
+</font></h2>
+</a>
+<a name="998665">
+<blockquote><hr noshade size="1"><b><i>Issue -  dependent upon the Portability specification</i></b> 
+<hr noshade size="1"></blockquote>
+</a>
+
+</BODY>
+</HT<L>

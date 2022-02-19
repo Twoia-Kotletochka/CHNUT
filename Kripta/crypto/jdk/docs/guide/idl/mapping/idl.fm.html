@@ -1,0 +1,3689 @@
+<html><head><title>Java IDL: Contents</title></head>
+<body bgcolor=#ffffff>
+ 
+
+
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tr valign="top">
+<td align="left">
+<a name="509889">
+<h1><font size=7> 
+Mapping IDL to Java 
+</font></h1>
+</a></td>
+<td><a name="509891">
+<h1 align="right"><font size=7>
+5 
+</font></h1>
+</a></td>
+<td align="right"> <img src="chars/chapnumbar.gif"></td>
+</tr></table>
+<hr size="3" width="100%" align="left" noshade><a name="997211">
+<p>
+<h2><font size=6>	5.1	 Introduction
+</font></h2>
+</a>
+<a name="1002602">
+This section describes the complete mapping of IDL into the Java language.<p>
+</a>
+<a name="1002603">
+The rationale for design decisions can be found in Chapter 4, &#34;Overall Design Rationale".<p>
+</a>
+<a name="1002604">
+In most cases examples of the mapping are provided. It should be noted that the examples are code fragments that try to illustrate only the language construct being described. Normally they will be embedded in some module and hence will be mapped into a Java package.<p>
+</a>
+<a name="998469">
+<p>
+<h2><font size=6>	5.2	  Names
+</font></h2>
+</a>
+<a name="1000208">
+In general IDL names and identifiers are mapped to Java names and identifiers 
+with no change. If a name collision could be generated in the mapped Java 
+code, the name collision is resolved by prepending an underscore (_) to the 
+mapped name.<p>
+</a>
+<a name="1000211">
+In addition, because of the nature of the Java language, a single IDL 
+construct may be mapped to several (differently named) Java constructs. 
+The &#34;additional&#34; names are constructed by appending a descriptive 
+suffix. For example, the IDL interface <strong>foo</strong> is mapped to 
+the Java interface <code><strong>foo</strong></code>, and additional Java 
+classes <code><strong>fooHelper</strong></code> and 
+<code><strong>fooHolder</strong></code>.<p>
+</a>
+<a name="1003969">
+In those exceptional cases that the &#34;additional&#34; names could 
+conflict with other mapped IDL names, the resolution rule described 
+above is applied to the other mapped IDL names. I.e., the naming and 
+use of required &#34;additional&#34; names takes precedence.<p>
+</a>
+<a name="1005780">
+For example, an interface whose name is<strong> fooHelper</strong> or 
+<strong>fooHolder</strong> is mapped to 
+<code><strong>_fooHelper</strong></code> or 
+<code><strong>_fooHolder</strong></code> respectively, 
+regardless of whether an interface named <strong>foo</strong> 
+exists.  The helper and holder classes for interface 
+<strong>fooHelper</strong> are named 
+<code><strong>_fooHelperHelper</strong></code> and 
+<code><strong>_fooHelperHolder</strong></code>.<p>
+</a>
+<a name="1005778">
+IDL names that would normally be mapped unchanged to Java identifiers 
+that conflict with Java reserved words will have the collision rule applied.<p>
+</a>
+<a name="1002041">
+<h3><font size=5> 	5.2.1	Reserved Names
+</font></h3>
+</a>
+<a name="1000230">
+The mapping in effect reserves the use of several names for its own purposes. 
+These are:<p>
+</a>
+<ul><a name="1001130">
+<p><li>The Java class <em><strong>&lt;type&gt;</strong></em><code><strong>Helper</strong></code>, where <em><strong>&lt;type&gt;</strong></em> is the name of IDL user defined type.
+</a>
+<a name="1001131">
+<p><li>The Java class <em><strong>&lt;type&gt;</strong></em><code><strong>Holder</strong></code>, where <em><strong>&lt;type&gt;</strong></em> is the name of an IDL defined type (with certain exceptions such as typedef aliases).
+</a>
+<a name="1001132">
+<p><li>The Java classes <em><strong>&lt;basicJavaType&gt;</strong></em><code><strong>Holder</strong></code>, where <em><strong>&lt;basicJavaType&gt;</strong></em> is one of the Java primitive datatypes that is used by one of the IDL basic datatypes (<a href="idl.fm.html#999756">Section&#160;5.4.1.2, &#34;Holder Classes</a>).
+</a>
+<a name="1004333">
+<p><li>The nested scope Java package name <em><strong>&lt;interface&gt;</strong></em><code><strong>Package</strong></code>, where <em><strong>&lt;interface&gt;</strong></em> is the name of an IDL interface (<a href="idl.fm.html#1001198">Section&#160;5.15, &#34;Mapping for Certain Nested Types</a>).
+</a>
+<a name="1932">
+<p><li>The keywords in the Java language:
+
+<P><Table Border="1" Cellpadding="5">
+<caption></caption>
+
+<tr valign="baseline"><td><a name="4260">
+<p><code><strong>abstract</strong></code>
+</a>
+<td><a name="4262">
+<p><code><strong>default</strong></code>
+</a>
+<td><a name="4264">
+<p><code><strong>if</strong></code>
+</a>
+<td><a name="4266">
+<p><code><strong>private</strong></code>
+</a>
+<td><a name="4268">
+<p><code><strong>throw</strong></code>
+</a>
+
+<tr valign="baseline"><td><a name="4270">
+<p><code><strong>boolean</strong></code>
+</a>
+<td><a name="4272">
+<p><code><strong>do</strong></code>
+</a>
+<td><a name="4274">
+<p><code><strong>implements</strong></code>
+</a>
+<td><a name="4276">
+<p><code><strong>protected</strong></code>
+</a>
+<td><a name="4278">
+<p><code><strong>throws</strong></code>
+</a>
+
+<tr valign="baseline"><td><a name="4280">
+<p><code><strong>break</strong></code>
+</a>
+<td><a name="4282">
+<p><code><strong>double</strong></code>
+</a>
+<td><a name="4284">
+<p><code><strong>import</strong></code>
+</a>
+<td><a name="4286">
+<p><code><strong>public</strong></code>
+</a>
+<td><a name="4288">
+<p><code><strong>transient</strong></code>
+</a>
+
+<tr valign="baseline"><td><a name="4290">
+<p><code><strong>byte</strong></code>
+</a>
+<td><a name="4292">
+<p><code><strong>else</strong></code>
+</a>
+<td><a name="4294">
+<p><code><strong>instanceof</strong></code>
+</a>
+<td><a name="4296">
+<p><code><strong>return</strong></code>
+</a>
+<td><a name="4298">
+<p><code><strong>try</strong></code>
+</a>
+
+<tr valign="baseline"><td><a name="4300">
+<p><code><strong>case</strong></code>
+</a>
+<td><a name="4302">
+<p><code><strong>extends</strong></code>
+</a>
+<td><a name="4304">
+<p><code><strong>int</strong></code>
+</a>
+<td><a name="4306">
+<p><code><strong>short</strong></code>
+</a>
+<td><a name="4308">
+<p><code><strong>void</strong></code>
+</a>
+
+<tr valign="baseline"><td><a name="4310">
+<p><code><strong>catch</strong></code>
+</a>
+<td><a name="4312">
+<p><code><strong>final</strong></code>
+</a>
+<td><a name="4314">
+<p><code><strong>interface</strong></code>
+</a>
+<td><a name="4316">
+<p><code><strong>static</strong></code>
+</a>
+<td><a name="4318">
+<p><code><strong>volatile</strong></code>
+</a>
+
+<tr valign="baseline"><td><a name="4320">
+<p><code><strong>char</strong></code>
+</a>
+<td><a name="4322">
+<p><code><strong>finally</strong></code>
+</a>
+<td><a name="4324">
+<p><code><strong>long</strong></code>
+</a>
+<td><a name="4326">
+<p><code><strong>super</strong></code>
+</a>
+<td><a name="4328">
+<p><code><strong>while</strong></code>
+</a>
+
+<tr valign="baseline"><td><a name="4330">
+<p><code><strong>class</strong></code>
+</a>
+<td><a name="4332">
+<p><code><strong>float</strong></code>
+</a>
+<td><a name="4334">
+<p><code><strong>native</strong></code>
+</a>
+<td><a name="4336">
+<p><code><strong>switch</strong></code>
+</a>
+<td><a name="4338">
+<p><code><strong>&nbsp;</strong></code>
+</a>
+
+<tr valign="baseline"><td><a name="4340">
+<p><code><strong>const</strong></code>
+</a>
+<td><a name="4342">
+<p><code><strong>for</strong></code>
+</a>
+<td><a name="4344">
+<p><code><strong>new</strong></code>
+</a>
+<td><a name="4346">
+<p><code><strong>synchronized</strong></code>
+</a>
+<td><a name="4348">
+<p><code><strong>&nbsp;</strong></code>
+</a>
+
+<tr valign="baseline"><td><a name="4350">
+<p><code><strong>continue</strong></code>
+</a>
+<td><a name="4352">
+<p><code><strong>goto</strong></code>
+</a>
+<td><a name="4354">
+<p><code><strong>package</strong></code>
+</a>
+<td><a name="4356">
+<p><code><strong>this</strong></code>
+</a>
+<td><a name="4358">
+<p><code><strong>&nbsp;</strong></code>
+</a>
+</Table>
+</ul>
+
+<a name="1943">
+The use of any of these names for a user defined IDL type or interface (assuming it is also a legal IDL name) will result in the mapped name having an (<code><strong>_</strong></code>) prepended.<p>
+</a>
+<a name="998470">
+<p>
+<h2><font size=6>	5.3	 Mapping of Module
+</font></h2>
+</a>
+<a name="1000233">
+An IDL module is mapped to a Java package with the same name. All IDL type declarations within the module are mapped to corresponding Java class or interface declarations within the generated package.<p>
+</a>
+<a name="1000234">
+IDL declarations not enclosed in any modules are mapped into the (unnamed) Java global scope.<p>
+</a>
+<a name="1000244">
+<h3><font size=5> 	5.3.1	Example
+</font></h3>
+</a>
+<a name="1000239">
+<strong><pre>// IDL
+</pre>
+</strong></a>
+<a name="1000240">
+<strong><pre>module Example {...}
+</pre>
+</strong></a>
+<a name="1000241">
+<code><strong><pre>// generated Java
+</pre>
+</strong></code></a>
+<a name="1000242">
+<code><strong><pre>package Example;
+</pre>
+</strong></code></a>
+<a name="1000243">
+<code><strong><pre>	...
+</pre>
+</strong></code></a>
+<a name="1000232">
+<p>
+<h2><font size=6>	5.4	 Mapping for Basic Types
+</font></h2>
+</a>
+<a name="999126">
+<h3><font size=5> 	5.4.1	Introduction
+</font></h3>
+</a>
+<a name="999757">
+The following table shows the basic mapping. In some cases where there is a potential mismatch between an IDL type and its mapped Java type, the Exceptions column lists the standard CORBA exceptions that may be (or is) raised. See <a href="idl.fm.html#998476">Section&#160;5.13, &#34;Mapping for Exception</a> for details on how IDL system exceptions are mapped.<p>
+</a>
+<a name="1004579">
+The potential mismatch can occur when the range of the Java type is &#34;larger&#34; than IDL. The value must be effectively checked at runtime when it is marshaled as an in parameter (or on input for an inout), e.g. Java chars are a superset of IDL chars.<p>
+</a>
+<a name="1002639">
+Users should be careful when using unsigned types in Java. Because there is no support in the Java language for unsigned types, a user is responsible for ensuring that large unsigned IDL type values are handled correctly as negative integers in Java.<p>
+</a>
+<a name="999785">
+<p><center><h5>Figure &#160;5-1	 Basic Type Mappings<br><Table Border="1" Cellpadding="5">
+<caption></caption>
+
+<tr align="left" valign="baseline"><td><a name="999789">
+<b><strong>IDL Type</strong></b><br>
+</a>
+<td><a name="999791">
+<b><strong>Java type</strong></b><br>
+</a>
+<td><a name="1004576">
+<b><strong>Exceptions</strong></b><br>
+</a>
+
+<tr valign="baseline"><td><a name="999795">
+<p><strong>boolean</strong>
+</a>
+<td><a name="999797">
+<p><code><strong>boolean</strong></code>
+</a>
+<td><a name="999799">
+<p>&nbsp;
+</a>
+
+<tr valign="baseline"><td><a name="999801">
+<p><strong>char</strong>
+</a>
+<td><a name="999803">
+<p><code><strong>char</strong></code>
+</a>
+<td><a name="999805">
+<p><strong>CORBA::DATA_CONVERSION</strong>
+</a>
+
+<tr valign="baseline"><td><a name="999807">
+<p><strong>wchar</strong>
+</a>
+<td><a name="999809">
+<p><code><strong>char</strong></code>
+</a>
+<td><a name="999811">
+<p>&nbsp;
+</a>
+
+<tr valign="baseline"><td><a name="999813">
+<p><strong>octet</strong>
+</a>
+<td><a name="999815">
+<p><code><strong>byte</strong></code>
+</a>
+<td><a name="999817">
+<p>&nbsp;
+</a>
+
+<tr valign="baseline"><td><a name="999819">
+<p><strong>string</strong>
+</a>
+<td><a name="999821">
+<p><code><strong>java.lang.String</strong></code>
+</a>
+<td><a name="999823">
+<p><strong>CORBA::MARSHAL</strong>
+</a>
+<a name="1005584">
+<p><strong>CORBA::DATA_CONVERSION</strong>
+</a>
+
+<tr valign="baseline"><td><a name="999825">
+<p><strong>wstring</strong>
+</a>
+<td><a name="999827">
+<p><code><strong>java.lang.String</strong></code>
+</a>
+<td><a name="999829">
+<p><strong>CORBA::MARSHAL</strong>
+</a>
+
+<tr valign="baseline"><td><a name="999831">
+<p><strong>short</strong>
+</a>
+<td><a name="999833">
+<p><code><strong>short</strong></code>
+</a>
+<td><a name="999835">
+<p>&nbsp;
+</a>
+
+<tr valign="baseline"><td><a name="999837">
+<p><strong>unsigned short</strong>
+</a>
+<td><a name="999839">
+<p><code><strong>short</strong></code>
+</a>
+<td><a name="999841">
+<p>&nbsp;
+</a>
+
+<tr valign="baseline"><td><a name="999843">
+<p><strong>long</strong>
+</a>
+<td><a name="999845">
+<p><code><strong>int</strong></code>
+</a>
+<td><a name="999847">
+<p>&nbsp;
+</a>
+
+<tr valign="baseline"><td><a name="999849">
+<p><strong>unsigned long</strong>
+</a>
+<td><a name="999851">
+<p><code><strong>int</strong></code>
+</a>
+<td><a name="999853">
+<p>&nbsp;
+</a>
+
+<tr valign="baseline"><td><a name="999855">
+<p><strong>long long</strong>
+</a>
+<td><a name="999857">
+<p><code><strong>long</strong></code>
+</a>
+<td><a name="999859">
+<p>&nbsp;
+</a>
+
+<tr valign="baseline"><td><a name="999861">
+<p><strong>unsigned long long</strong>
+</a>
+<td><a name="999863">
+<p><code><strong>long</strong></code>
+</a>
+<td><a name="999865">
+<p>&nbsp;
+</a>
+
+<tr valign="baseline"><td><a name="999867">
+<p><strong>float</strong>
+</a>
+<td><a name="999869">
+<p><code><strong>float</strong></code>
+</a>
+<td><a name="999871">
+<p>&nbsp;
+</a>
+
+<tr valign="baseline"><td><a name="999873">
+<p><strong>double</strong>
+</a>
+<td><a name="999875">
+<p><code><strong>double</strong></code>
+</a>
+<td><a name="999877">
+<p>&nbsp;
+</a>
+
+
+</Table>
+ 
+<Table>
+<tr><td>
+</Table><p>
+
+</h5></center>
+</a><a name="1002653">
+Additional details are described in the sections following.<p>
+</a>
+<a name="1001932">
+<h4><font size=4> 	5.4.1.1	 Future Support
+</font></h4>
+</a>
+<a name="1002654">
+In the future we expect the &#34;new&#34; extended IDL types fixed, and possibly long double, to be supported directly by Java. Currently there is no support for them in JDK 1.0.2, and as a practical matter, they are not yet widely supported by ORB vendors. We would expect them to be mapped as follows:<br><br><Table Border="1" Cellpadding="5">
+<caption></caption>
+
+<tr align="left" valign="baseline"><td><a name="1002674">
+<b><strong>IDL Type</strong></b><br>
+</a>
+<td><a name="1002676">
+<b><strong>Java type</strong></b><br>
+</a>
+<td><a name="1002678">
+<b><strong>Exceptions</strong></b><br>
+</a>
+
+<tr valign="baseline"><td><a name="1002764">
+<p><strong>long double</strong>
+</a>
+<td><a name="1002766">
+<p><code><strong>???</strong></code>
+</a>
+<td><a name="1002768">
+<p>&nbsp;
+</a>
+
+<tr valign="baseline"><td><a name="1002770">
+<p><strong>fixed</strong>
+</a>
+<td><a name="1002772">
+<p><code><strong>java.math.BigDecimal</strong></code>
+</a>
+<td><a name="1002774">
+<p><strong>CORBA::DATA_CONVERSION</strong>
+</a>
+
+
+</Table>
+ 
+<Table>
+<tr><td>
+</Table><p>
+<p>
+</a>
+<a name="1002649">
+A future revision of this specification should make support of this mapping normative.<p>
+</a>
+<a name="999756">
+<h4><font size=4> 	5.4.1.2	 Holder Classes
+</font></h4>
+</a>
+<a name="1004339">
+Support for out and inout parameter passing modes requires the use of additional &#34;holder&#34; classes. These classes are available for all of the basic IDL datatypes in the <code><strong>org.omg.CORBA</strong></code> package and are generated for all named user defined types except those defined by typedefs. <p>
+</a>
+<a name="1004071">
+For user defined IDL types, the holder class name is constructed by appending <code><strong>Holder</strong></code> to the mapped (Java) name of the type. <p>
+</a>
+<a name="1004078">
+For the basic IDL datatypes, the holder class name is the Java type name (with its initial letter capitalized) to which the datatype is mapped with an appended <code><strong>Holder</strong></code>, e.g. <code><strong>IntHolder</strong></code>. See <a href="idl.fm.html#998469">Section&#160;5.2, &#34;Names</a>&#34; for a description of the implications on possible collisions with user defined names.<p>
+</a>
+<a name="1000389">
+Each holder class has a constructor from an instance, a default constructor, and has a public instance member, <code><strong>value</strong></code>, which is the typed value. The default constructor sets the value field to the default value for the type as defined by the Java language: <code><strong>false</strong></code> for boolean, <code><strong>0</strong></code> for numeric and char types, <code><strong>null</strong></code> for strings, null for object references.<p>
+</a>
+<a name="1004082">
+In order to support portable stubs and skeletons, holder classes for user defined types also have to implement the <code><strong>org.omg.CORBA.portable.Streamable</strong></code> interface.<p>
+</a>
+<a name="1000791">
+The holder classes for the basic types are defined below. Note that they do not implement the <code><strong>Streamable</strong></code> interface. They are in the <code><strong>org.omg.CORBA</strong></code> package.<p>
+</a>
+<a name="1000390">
+<code><strong><pre>// Java
+</pre>
+</strong></code></a>
+<a name="1000391">
+<code><strong><pre>package org.omg.CORBA;
+</pre>
+</strong></code></a>
+<a name="1000832">
+<code><strong><pre>final public class ShortHolder {
+</pre>
+</strong></code></a>
+<a name="1000833">
+<code><strong><pre>	public short value;
+</pre>
+</strong></code></a>
+<a name="1000834">
+<code><strong><pre>	public ShortHolder() {}
+</pre>
+</strong></code></a>
+<a name="1000835">
+<code><strong><pre>	public ShortHolder(short initial) {
+</pre>
+</strong></code></a>
+<a name="1003419">
+<code><strong><pre>		value = initial;
+</pre>
+</strong></code></a>
+<a name="1003420">
+<code><strong><pre>	}
+</pre>
+</strong></code></a>
+<a name="1003422">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1003421">
+<code><strong><pre>final public class IntHolder {
+</pre>
+</strong></code></a>
+<a name="1000997">
+<code><strong><pre>	public int value;
+</pre>
+</strong></code></a>
+<a name="1000998">
+<code><strong><pre>	public IntHolder() {}
+</pre>
+</strong></code></a>
+<a name="1000999">
+<code><strong><pre>	public IntHolder(int initial) {
+</pre>
+</strong></code></a>
+<a name="1001000">
+<code><strong><pre>		value = initial;
+</pre>
+</strong></code></a>
+<a name="1003426">
+<code><strong><pre>	}
+</pre>
+</strong></code></a>
+<a name="1003427">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1000933">
+<code><strong><pre>final public class LongHolder {
+</pre>
+</strong></code></a>
+<a name="1000934">
+<code><strong><pre>	public long value;
+</pre>
+</strong></code></a>
+<a name="1000935">
+<code><strong><pre>	public LongHolder() {}
+</pre>
+</strong></code></a>
+<a name="1000852">
+<code><strong><pre>	public LongHolder(long initial) {
+</pre>
+</strong></code></a>
+<a name="1000853">
+<code><strong><pre>		value = initial;
+</pre>
+</strong></code></a>
+<a name="1003431">
+<code><strong><pre>	}
+</pre>
+</strong></code></a>
+<a name="1003432">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1000869">
+<code><strong><pre>final public class ByteHolder {
+</pre>
+</strong></code></a>
+<a name="1000870">
+<code><strong><pre>	public byte value;
+</pre>
+</strong></code></a>
+<a name="1000871">
+<code><strong><pre>	public ByteHolder() {}
+</pre>
+</strong></code></a>
+<a name="1000872">
+<code><strong><pre>	public ByteHolder(byte initial) {
+</pre>
+</strong></code></a>
+<a name="1000873">
+<code><strong><pre>		value = initial;
+</pre>
+</strong></code></a>
+<a name="1003436">
+<code><strong><pre>	}
+</pre>
+</strong></code></a>
+<a name="1003437">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1000876">
+<code><strong><pre>final public class FloatHolder {
+</pre>
+</strong></code></a>
+<a name="1000877">
+<code><strong><pre>	public float value;
+</pre>
+</strong></code></a>
+<a name="1000878">
+<code><strong><pre>	public FloatHolder() {}
+</pre>
+</strong></code></a>
+<a name="1000879">
+<code><strong><pre>	public FloatHolder(float initial) {
+</pre>
+</strong></code></a>
+<a name="1000880">
+<code><strong><pre>		value = initial;
+</pre>
+</strong></code></a>
+<a name="1003441">
+<code><strong><pre>	}
+</pre>
+</strong></code></a>
+<a name="1003442">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1000883">
+<code><strong><pre>final public class DoubleHolder {
+</pre>
+</strong></code></a>
+<a name="1000884">
+<code><strong><pre>	public double value;
+</pre>
+</strong></code></a>
+<a name="1000885">
+<code><strong><pre>	public DoubleHolder() {}
+</pre>
+</strong></code></a>
+<a name="1000886">
+<code><strong><pre>	public DoubleHolder(double initial) {
+</pre>
+</strong></code></a>
+<a name="1000887">
+<code><strong><pre>		value = initial;
+</pre>
+</strong></code></a>
+<a name="1003446">
+<code><strong><pre>	}
+</pre>
+</strong></code></a>
+<a name="1003447">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1000890">
+<code><strong><pre>final public class CharHolder {
+</pre>
+</strong></code></a>
+<a name="1000891">
+<code><strong><pre>	public char value;
+</pre>
+</strong></code></a>
+<a name="1000892">
+<code><strong><pre>	public CharHolder() {}
+</pre>
+</strong></code></a>
+<a name="1000893">
+<code><strong><pre>	public CharHolder(char initial) {
+</pre>
+</strong></code></a>
+<a name="1000894">
+<code><strong><pre>		value = initial;
+</pre>
+</strong></code></a>
+<a name="1003451">
+<code><strong><pre>	}
+</pre>
+</strong></code></a>
+<a name="1003452">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1000897">
+<code><strong><pre>final public class BooleanHolder {
+</pre>
+</strong></code></a>
+<a name="1000898">
+<code><strong><pre>	public boolean value;
+</pre>
+</strong></code></a>
+<a name="1000899">
+<code><strong><pre>	public BooleanHolder() {}
+</pre>
+</strong></code></a>
+<a name="1000900">
+<code><strong><pre>	public BooleanHolder(boolean initial) {
+</pre>
+</strong></code></a>
+<a name="1000901">
+<code><strong><pre>		value = initial;
+</pre>
+</strong></code></a>
+<a name="1003456">
+<code><strong><pre>	}
+</pre>
+</strong></code></a>
+<a name="1003457">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1000904">
+<code><strong><pre>final public class StringHolder {
+</pre>
+</strong></code></a>
+<a name="1000905">
+<code><strong><pre>	public java.lang.String value;
+</pre>
+</strong></code></a>
+<a name="1000906">
+<code><strong><pre>	public StringHolder() {}
+</pre>
+</strong></code></a>
+<a name="1000907">
+<code><strong><pre>	public StringHolder(java.lang.String initial) {
+</pre>
+</strong></code></a>
+<a name="1000908">
+<code><strong><pre>		value = initial;
+</pre>
+</strong></code></a>
+<a name="1003461">
+<code><strong><pre>	}
+</pre>
+</strong></code></a>
+<a name="1003462">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1001010">
+<code><strong><pre>final public class ObjectHolder {
+</pre>
+</strong></code></a>
+<a name="1001011">
+<code><strong><pre>	public org.omg.CORBA.Object value;
+</pre>
+</strong></code></a>
+<a name="1001012">
+<code><strong><pre>	public ObjectHolder() {}
+</pre>
+</strong></code></a>
+<a name="1001013">
+<code><strong><pre>	public ObjectHolder(org.omg.CORBA.Object initial) {
+</pre>
+</strong></code></a>
+<a name="1001014">
+<code><strong><pre>		value = initial;
+</pre>
+</strong></code></a>
+<a name="1003466">
+<code><strong><pre>	}
+</pre>
+</strong></code></a>
+<a name="1003467">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1002057">
+<code><strong><pre>final public class AnyHolder {
+</pre>
+</strong></code></a>
+<a name="1002058">
+<code><strong><pre>	public Any value;
+</pre>
+</strong></code></a>
+<a name="1002059">
+<code><strong><pre>	public AnyHolder() {}
+</pre>
+</strong></code></a>
+<a name="1002060">
+<code><strong><pre>	public AnyHolder(Any initial) {
+</pre>
+</strong></code></a>
+<a name="1002061">
+<code><strong><pre>		value = initial;
+</pre>
+</strong></code></a>
+<a name="1003471">
+<code><strong><pre>	}
+</pre>
+</strong></code></a>
+<a name="1003472">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1002064">
+<code><strong><pre>final public class TypeCodeHolder {
+</pre>
+</strong></code></a>
+<a name="1002065">
+<code><strong><pre>	public TypeCode value;
+</pre>
+</strong></code></a>
+<a name="1002082">
+<code><strong><pre>	public typeCodeHolder() {}
+</pre>
+</strong></code></a>
+<a name="1002083">
+<code><strong><pre>	public TypeCodeHolder(TypeCode initial) {
+</pre>
+</strong></code></a>
+<a name="1002084">
+<code><strong><pre>		value = initial;
+</pre>
+</strong></code></a>
+<a name="1003476">
+<code><strong><pre>	}
+</pre>
+</strong></code></a>
+<a name="1003477">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1004602">
+<code><strong><pre>final public class PrincipalHolder {
+</pre>
+</strong></code></a>
+<a name="1004603">
+<code><strong><pre>	public Principal value;
+</pre>
+</strong></code></a>
+<a name="1004604">
+<code><strong><pre>	public PrincipalHolder() {}
+</pre>
+</strong></code></a>
+<a name="1004605">
+<code><strong><pre>	public PrincipalHolder(Principal initial) {
+</pre>
+</strong></code></a>
+<a name="1004606">
+<code><strong><pre>		value = initial;
+</pre>
+</strong></code></a>
+<a name="1004607">
+<code><strong><pre>	}
+</pre>
+</strong></code></a>
+<a name="1004608">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1004083">
+The Holder class for a user defined type &lt;foo&gt; is shown below:<p>
+</a>
+<a name="1004084">
+<code><strong><pre>// Java
+</pre>
+</strong></code></a>
+<a name="1004085">
+<code><strong><pre>final public class &lt;foo&gt;Holder 
+</pre>
+</strong></code></a>
+<a name="1004094">
+<code><strong><pre>	implements org.omg.CORBA.portable.Streamable {
+</pre>
+</strong></code></a>
+<a name="1004086">
+<code><strong><pre>	public &lt;foo&gt; value;
+</pre>
+</strong></code></a>
+<a name="1005397">
+<code><strong><pre>	public &lt;foo&gt;Holder() {}
+</pre>
+</strong></code></a>
+<a name="1005398">
+<code><strong><pre>	public &lt;foo&gt;Holder(&lt;foo&gt; initial) {}
+</pre>
+</strong></code></a>
+<a name="1005399">
+<code><strong><pre>	public void _read(org.omg.CORBA.portable.InputStream i)
+</pre>
+</strong></code></a>
+<a name="1004438">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004435">
+<code><strong><pre>	public void _write(org.omg.CORBA.portable.OutputStream o)
+</pre>
+</strong></code></a>
+<a name="1004439">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004101">
+<code><strong><pre>	public org.omg.CORBA.TypeCode _type() {...}
+</pre>
+</strong></code></a>
+<a name="1004091">
+<code><strong><pre>	}
+</pre>
+</strong></code></a>
+<a name="1000386">
+<h4><font size=4> 	5.4.1.3	 Use of Java <code><strong>null</strong></code>
+</font></h4>
+</a>
+<a name="1004343">
+The Java <code><strong>null</strong></code> may only be used to represent the &#34;null&#34; object reference. For example, a zero length string, rather than <code><strong>null</strong></code> must be used to represent the empty string. Similarly for arrays.<p>
+</a>
+<a name="1004342">
+<h3><font size=5> 	5.4.2	Boolean    
+</font></h3>
+</a>
+<a name="999136">
+The IDL boolean constants <strong>TRUE</strong> and <strong>FALSE</strong> are mapped to the corresponding Java boolean literals <code><strong>true</strong></code> and <code><strong>false</strong></code>. <p>
+</a>
+<a name="999128">
+<h3><font size=5> 	5.4.3	Character Types         
+</font></h3>
+</a>
+<a name="999129">
+IDL characters are 8-bit quantities representing elements of a character set while Java characters are 16-bit unsigned quantities representing Unicode characters. In order to enforce type-safety, the Java CORBA runtime asserts range validity of all Java <code><strong>chars</strong></code> mapped from IDL <strong>chars</strong> when parameters are marshaled during method invocation. If the <code><strong>char</strong></code> falls outside the range defined by the character set, a <strong>CORBA::DATA_CONVERSION</strong> exception shall be thrown.<p>
+</a>
+<a name="999156">
+The IDL <strong>wchar</strong> maps to the Java primitive type <code><strong>char</strong></code>. <p>
+</a>
+<a name="999160">
+<h3><font size=5> 	5.4.4	Octet 
+</font></h3>
+</a>
+<a name="999161">
+The IDL type <strong>octet</strong>, an 8-bit quantity, is mapped to the Java type <code><strong>byte</strong></code>. <p>
+</a>
+<a name="999162">
+<h3><font size=5> 	5.4.5	String Types        
+</font></h3>
+</a>
+<a name="999163">
+The IDL <strong>string</strong>, both bounded and unbounded variants, are mapped to <code><strong>java.lang.String</strong></code>. Range checking for characters in the string as well as bounds checking of the string shall be done at marshal time. Character range violations cause a <strong>CORBA::DATA_CONVERSION</strong> exception to be raised. Bounds violations cause a <strong>CORBA::</strong> <strong>MARSHAL</strong> exception to be raised. <p>
+</a>
+<a name="999475">
+The IDL <strong>wstring</strong>, both bounded and unbounded variants, are mapped to <code><strong>java.lang.String</strong></code>. Bounds checking of the string shall be done at marshal time. Bounds violations cause a <strong>CORBA::</strong> <strong>MARSHAL</strong> exception to be raised.<p>
+</a>
+<a name="1002823">
+<h3><font size=5> 	5.4.6	Integer Types
+</font></h3>
+</a>
+<a name="1002824">
+The integer types map as shown in <a href="idl.fm.html#999785">Figure&#160;5-1</a>.<p>
+</a>
+<a name="1002826">
+<h3><font size=5> 	5.4.7	Floating Point Types
+</font></h3>
+</a>
+<a name="999898">
+The IDL float and double map as shown in <a href="idl.fm.html#999785">Figure&#160;5-1</a>.<p>
+</a>
+<a name="999899">
+<h3><font size=5> 	5.4.8	Future Fixed Point Types
+</font></h3>
+</a>
+<a name="999698">
+The IDL <strong>fixed</strong> type is mapped to the Java <code><strong>java.math.BigDecimal</strong></code> class. Size violations raises a <strong>CORBA::DATA_CONVERSION</strong> exception.<p>
+</a>
+<a name="1002833">
+This is left for a future revision.<p>
+</a>
+<a name="1004344">
+<h3><font size=5> 	5.4.9	Future Long Double Types
+</font></h3>
+</a>
+<a name="1004345">
+There is no current support in Java for the IDL <strong>long double</strong> type. It is not clear at this point whether and when this type will be added either as a primitive type, or as a new package in <code><strong>java.math.*</strong></code>, possibly as <code><strong>java.math.BigFloat</strong></code>.<p>
+</a>
+<a name="1004350">
+This is left for a future revision.<p>
+</a>
+<a name="1004775">
+<p>
+<h2><font size=6>	5.5	 Helper Classes
+</font></h2>
+</a>
+<a name="1004776">
+All user defined IDL types have an additional &#34;helper&#34; Java class with the suffix <code><strong>Helper</strong></code> appended to the type name generated. Several static methods needed to manipulate the type are supplied. These include <strong>Any</strong> insert and extract operations for the type, getting the repository id, getting the typecode, and reading and writing the type from and to a stream.<p>
+</a>
+<a name="1004777">
+For any user defined IDL type, &lt;<strong>typename&gt;</strong>, the following is the Java code generated for the type. In addition, the helper class for a mapped IDL interface also has a narrow operation defined for it.<p>
+</a>
+<a name="1004778">
+<code><strong><pre>// generated Java helper
+</pre>
+</strong></code></a>
+<a name="1004779">
+<code><strong><pre>public class <em><strong>&lt;typename&gt;</strong></em>Helper {
+</pre>
+</strong></code></a>
+<a name="1004780">
+<code><strong><pre>	public static void 
+</pre>
+</strong></code></a>
+<a name="1004781">
+<code><strong><pre>		insert(org.omg.CORBA.Any a, <em><strong>&lt;typename&gt;</strong></em> t) {...}
+</pre>
+</strong></code></a>
+<a name="1004782">
+<code><strong><pre>	public static <em><strong>&lt;typename&gt;</strong></em> extract(Any a) {...}
+</pre>
+</strong></code></a>
+<a name="1004783">
+<code><strong><pre>	public static org.omg.CORBA.TypeCode type() {...}
+</pre>
+</strong></code></a>
+<a name="1004784">
+<code><strong><pre>	public static String id() {...}
+</pre>
+</strong></code></a>
+<a name="1005418">
+<code><strong><pre>	public static <em><strong>&lt;typename&gt;</strong></em> read(
+</pre>
+</strong></code></a>
+<a name="1004786">
+<code><strong><pre>		org.omg.CORBA.portable.InputStream istream)
+</pre>
+</strong></code></a>
+<a name="1005580">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004787">
+<code><strong><pre>	public static void write(
+</pre>
+</strong></code></a>
+<a name="1004788">
+<code><strong><pre>		org.omg.CORBA.portable.OutputStream ostream,
+</pre>
+</strong></code></a>
+<a name="1005579">
+<code><strong><pre>		<em><strong>&lt;typename&gt; </strong></em>value) 
+</pre>
+</strong></code></a>
+<a name="1005415">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004789">
+<code><strong><pre>
+</pre>
+</strong></code></a>
+<a name="1004790">
+<code><strong><pre>	// only for interface helpers
+</pre>
+</strong></code></a>
+<a name="1004791">
+<code><strong><pre>	public static 
+</pre>
+</strong></code></a>
+<a name="1004792">
+<code><strong><pre><em><strong>		&lt;typename&gt;</strong></em> narrow(org.omg.CORBA.Object obj);
+</pre>
+</strong></code></a>
+<a name="1004796">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1005680">
+The helper class associated with an IDL interface also has the narrow method (see <a href="idl.fm.html#1000753">Section&#160;5.12, &#34;Mapping for Interface</a>).<p>
+</a>
+<a name="1005688">
+<h3><font size=5> 	5.5.1	Examples
+</font></h3>
+</a>
+<a name="1005675">
+<strong><pre>// IDL - named type
+</pre>
+</strong></a>
+<a name="1005676">
+<strong><pre>struct st {long f1; string f2;};
+</pre>
+</strong></a>
+<a name="1005677">
+<code><strong><pre>// generated Java
+</pre>
+</strong></code></a>
+<a name="1004810">
+<code><strong><pre>public class stHelper {
+</pre>
+</strong></code></a>
+<a name="1005548">
+<code><strong><pre>	public static void insert(org.omg.CORBA.Any any,
+</pre>
+</strong></code></a>
+<a name="1005552">
+<code><strong><pre>		st s) {...}
+</pre>
+</strong></code></a>
+<a name="1005550">
+<code><strong><pre>	public static st extract(Any a) {...}
+</pre>
+</strong></code></a>
+<a name="1004813">
+<code><strong><pre>	public static org.omg.CORBA.TypeCode type() {...}
+</pre>
+</strong></code></a>
+<a name="1004814">
+<code><strong><pre>	public static String id() {...}
+</pre>
+</strong></code></a>
+<a name="1004815">
+<code><strong><pre>	public static st read(org.omg.CORBA.InputStream is) {...}
+</pre>
+</strong></code></a>
+<a name="1004816">
+<code><strong><pre>	public static void write(org.omg.CORBA.OutputStream os,
+</pre>
+</strong></code></a>
+<a name="1004817">
+<code><strong><pre>		 st s) {...}
+</pre>
+</strong></code></a>
+<a name="1004818">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1004819">
+<strong><pre>// IDL - typedef sequence
+</pre>
+</strong></a>
+<a name="1004820">
+<strong><pre>typedef sequence &lt;long&gt; IntSeq;
+</pre>
+</strong></a>
+<a name="1004821">
+<code><strong><pre>// generated Java helper
+</pre>
+</strong></code></a>
+<a name="1004822">
+<code><strong><pre>public class IntSeqHelper {
+</pre>
+</strong></code></a>
+<a name="1004823">
+<code><strong><pre>	public static void insert(org.omg.CORBA.Any any,
+</pre>
+</strong></code></a>
+<a name="1004824">
+<code><strong><pre>		int[] seq);
+</pre>
+</strong></code></a>
+<a name="1004825">
+<code><strong><pre>	public static int[] extract(Any a){...}
+</pre>
+</strong></code></a>
+<a name="1004826">
+<code><strong><pre>	public static org.omg.CORBA.TypeCode type(){...}
+</pre>
+</strong></code></a>
+<a name="1004827">
+<code><strong><pre>	public static String id(){...}
+</pre>
+</strong></code></a>
+<a name="1004828">
+<code><strong><pre>	public static int[] read(
+</pre>
+</strong></code></a>
+<a name="1005568">
+<code><strong><pre>		org.omg.CORBA.portable.InputStream is)
+</pre>
+</strong></code></a>
+<a name="1005576">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004829">
+<code><strong><pre>	public static void write(
+</pre>
+</strong></code></a>
+<a name="1005571">
+<code><strong><pre>		org.omg.CORBA.portable.OutputStream os,
+</pre>
+</strong></code></a>
+<a name="1005577">
+<code><strong><pre>		int[] seq)
+</pre>
+</strong></code></a>
+<a name="1005578">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004831">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="998471">
+<p>
+<h2><font size=6>	5.6	 Mapping for Constant
+</font></h2>
+</a>
+<a name="1000245">
+Constants are mapped differently depending upon the scope in which they appear.<p>
+</a>
+<a name="1003981">
+<h3><font size=5> 	5.6.1	Constants Within An Interface
+</font></h3>
+</a>
+<a name="1003982">
+Constants declared within an IDL interface are mapped to <code><strong>public static final</strong></code> fields in the Java interface corresponding to the IDL interface.<p>
+</a>
+<a name="1003983">
+<h4><font size=4> 	5.6.1.1	 Example
+</font></h4>
+</a>
+<a name="1003984">
+<strong><pre>// IDL
+</pre>
+</strong></a>
+<a name="1003985">
+<strong><pre>module Example {
+</pre>
+</strong></a>
+<a name="1003986">
+<strong><pre>		interface Face {
+</pre>
+</strong></a>
+<a name="1003987">
+<strong><pre>		const long aLongerOne = -321;
+</pre>
+</strong></a>
+<a name="1003988">
+<strong><pre>	};
+</pre>
+</strong></a>
+<a name="1003989">
+<strong><pre>};
+</pre>
+</strong></a>
+<a name="1003990">
+<code><strong><pre>// generated Java
+</pre>
+</strong></code></a>
+<a name="1003991">
+<code><strong><pre>package Example;
+</pre>
+</strong></code></a>
+<a name="1003992">
+<code><strong><pre>public interface Face {
+</pre>
+</strong></code></a>
+<a name="1003993">
+<code><strong><pre>	public static final int aLongerOne = (int) (-321L);
+</pre>
+</strong></code></a>
+<a name="1003994">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1000246">
+<h3><font size=5> 	5.6.2	Constants Not Within An Interface
+</font></h3>
+</a>
+<a name="1003356">
+Constants not declared within an IDL interface are mapped to a <code><strong>public interface</strong></code> with the same name as the constant and containing a <code><strong>public static final</strong></code> field, named <code><strong>value</strong></code>, that holds the contant&#39;s value. Note that the Java compiler will normally inline the value when the class is used in other Java code.<p>
+</a>
+<a name="1000259">
+<h4><font size=4> 	5.6.2.1	 Example
+</font></h4>
+</a>
+<a name="1000260">
+<strong><pre>// IDL
+</pre>
+</strong></a>
+<a name="1000263">
+<strong><pre>module Example {
+</pre>
+</strong></a>
+<a name="1000264">
+<strong><pre>	const long aLongOne = -123;
+</pre>
+</strong></a>
+<a name="1000268">
+<strong><pre>	};
+</pre>
+</strong></a>
+<a name="1003361">
+<code><strong><pre>package Example;
+</pre>
+</strong></code></a>
+<a name="1003362">
+<code><strong><pre>public interface aLongOne {
+</pre>
+</strong></code></a>
+<a name="1003363">
+<code><strong><pre>	public static final int value = (int) (-123L);
+</pre>
+</strong></code></a>
+<a name="1003364">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="999916">
+<p>
+<h2><font size=6>	5.7	 Mapping for Enum
+</font></h2>
+</a>
+<a name="1002848">
+An IDL <strong>enum</strong> is mapped to a Java <code><strong>final class</strong></code> with the same name as the enum type which declares a value method, two static data members per label, an integer conversion method, and a  private constructor as follows:<p>
+</a>
+<a name="1003635">
+<code><strong><pre>// generated Java
+</pre>
+</strong></code></a>
+<a name="1003636">
+<code><strong><pre>public final class <em><strong>&lt;enum_name&gt;</strong></em> {
+</pre>
+</strong></code></a>
+<a name="1003637">
+<code><strong><pre>	// one pair for each label in the enum	
+</pre>
+</strong></code></a>
+<a name="1003631">
+<code><strong><pre>	public static final int <em><strong>_&lt;label&gt;</strong></em> = <em><strong>&lt;value&gt;</strong></em>;
+</pre>
+</strong></code></a>
+<a name="1003632">
+<code><strong><pre>	public static final <em><strong>&lt;enum_name&gt;</strong></em> <em><strong>&lt;label&gt;</strong></em> = 
+</pre>
+</strong></code></a>
+<a name="1004003">
+<code><strong><pre>		new <em><strong>&lt;enum_name&gt;</strong></em>(_<em><strong>&lt;label&gt;</strong></em>);
+</pre>
+</strong></code></a>
+<a name="1004428">
+<code><strong><pre>	public int value() {...}
+</pre>
+</strong></code></a>
+<a name="1005703">
+<code><strong><pre>	// get enum with specified value
+</pre>
+</strong></code></a>
+<a name="1005704">
+<code><strong><pre>	public static <em><strong>&lt;enum_name&gt; </strong></em>from_int(<code><strong>int value</strong></code>);
+</pre>
+</strong></code></a>
+<a name="1004431">
+<code><strong><pre>	// constructor
+</pre>
+</strong></code></a>
+<a name="1004429">
+<code><strong><pre>	private <em><strong>&lt;enum_name&gt;</strong></em>(<code><strong>int</strong></code>) { ... }
+</pre>
+</strong></code></a>
+<a name="1004430">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1003523">
+One of the members is a <code><strong>public static final</strong></code> that has the same name as the IDL enum label. The other has an underscore (_) prepended and is intended to be used in switch statements.<p>
+</a>
+<a name="1003550">
+The value method returns the integer value. Values are assigned sequentially starting with 0. Note: there is no conflict with the <code><strong>value()</strong></code> method in Java even if there is a label named value<p>
+</a>
+<a name="1004017">
+There shall be only one instance of an enum. Since there is only one instance,  equality tests will work correctly. I.E. the default java.lang.Object implementation of <code><strong>equals()</strong></code> and <code><strong>hash()</strong></code> will automatically work correctly for an enum&#39;s singleton object.<p>
+</a>
+<a name="1005708">
+The Java class for the enum has an additional method  <code><strong>from_int()</strong></code>, which returns the enum with the specified value.<p>
+</a>
+<a name="1004654">
+The holder class for the enum is also generated. Its name is the enum&#39;s mapped Java classname with <code><strong>Holder</strong></code> appended to it as follows:<p>
+</a>
+<a name="1004655">
+<code><strong><pre>public class <em><strong>&lt;enum_name&gt;</strong></em>Holder implements 
+</pre>
+</strong></code></a>
+<a name="1004656">
+<code><strong><pre>		org.omg.CORBA.portable.Streamable {
+</pre>
+</strong></code></a>
+<a name="1004657">
+<code><strong><pre>	public <em><strong>&lt;enum_name&gt;</strong></em> value;
+</pre>
+</strong></code></a>
+<a name="1004658">
+<code><strong><pre>	public <em><strong>&lt;enum_name&gt;</strong></em>Holder() {}
+</pre>
+</strong></code></a>
+<a name="1004659">
+<code><strong><pre>	public <em><strong>&lt;enum_name&gt;</strong></em>Holder(<em><strong>&lt;enum_name&gt;</strong></em> initial) {...}
+</pre>
+</strong></code></a>
+<a name="1004660">
+<code><strong><pre>	public void _read(org.omg.CORBA.portable.InputStream i)
+</pre>
+</strong></code></a>
+<a name="1005565">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1005566">
+<code><strong><pre>	public void _write(org.omg.CORBA.portable.OutputStream o)
+</pre>
+</strong></code></a>
+<a name="1005567">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004664">
+<code><strong><pre>	public org.omg.CORBA.TypeCode _type() {...}
+</pre>
+</strong></code></a>
+<a name="1004665">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="999918">
+<h3><font size=5> 	5.7.1	Example
+</font></h3>
+</a>
+<a name="999919">
+<strong><pre>// IDL
+</pre>
+</strong></a>
+<a name="999920">
+<strong><pre>enum EnumType {a, b, c};
+</pre>
+</strong></a>
+<a name="999921">
+<code><strong><pre>// generated Java
+</pre>
+</strong></code></a>
+<a name="999922">
+<code><strong><pre>public final class EnumType {
+</pre>
+</strong></code></a>
+<a name="1003567">
+<code><strong><pre>	public static final int _a = 0;
+</pre>
+</strong></code></a>
+<a name="1003565">
+<code><strong><pre>	public static final EnumType a = new EnumType(_a);
+</pre>
+</strong></code></a>
+<a name="1003581">
+<code><strong><pre>	public static final int _b = 1;
+</pre>
+</strong></code></a>
+<a name="1003582">
+<code><strong><pre>	public static final EnumType b = new EnumType(_b);
+</pre>
+</strong></code></a>
+<a name="1003583">
+<code><strong><pre>	public static final int _c = 2;
+</pre>
+</strong></code></a>
+<a name="1003573">
+<code><strong><pre>	public static final EnumType c = new EnumType(_c);
+</pre>
+</strong></code></a>
+<a name="1003616">
+<code><strong><pre>	public int value() {...}
+</pre>
+</strong></code></a>
+<a name="1005718">
+<code><strong><pre>	public static EnumType from_int(<code><strong>int value</strong></code>) {...};
+</pre>
+</strong></code></a>
+<a name="1004028">
+<code><strong><pre>	
+</pre>
+</strong></code></a>
+<a name="1004422">
+<code><strong><pre>	// constructor
+</pre>
+</strong></code></a>
+<a name="1004421">
+<code><strong><pre>	private EnumType(int) {...}
+</pre>
+</strong></code></a>
+<a name="1004029">
+<code><strong><pre>
+</pre>
+</strong></code></a>
+<a name="1003619">
+<code><strong><pre>	};
+</pre>
+</strong></code></a>
+<a name="1002858">
+<p>
+<h2><font size=6>	5.8	 Mapping for Struct
+</font></h2>
+</a>
+<a name="1002859">
+An IDL <strong>struct</strong> is mapped to a final Java class with the same name that provides instance variables for the fields in IDL member ordering and a constructor for all values. A null constructor is also provided so that the fields can be filled in later.<p>
+</a>
+<a name="1001036">
+The holder class for the struct is also generated. Its name is the struct&#39;s mapped Java classname with <code><strong>Holder</strong></code> appended to it as follows:<p>
+</a>
+<a name="1001044">
+<code><strong><pre>final public class <em><strong>&lt;class&gt;</strong></em>Holder implements 
+</pre>
+</strong></code></a>
+<a name="1004112">
+<code><strong><pre>		org.omg.CORBA.portable.Streamable {
+</pre>
+</strong></code></a>
+<a name="1001045">
+<code><strong><pre>	public <em><strong>&lt;class&gt;</strong></em> value;
+</pre>
+</strong></code></a>
+<a name="1001046">
+<code><strong><pre>	public <em><strong>&lt;class&gt;</strong></em>Holder() {}
+</pre>
+</strong></code></a>
+<a name="1001047">
+<code><strong><pre>	public <em><strong>&lt;class&gt;</strong></em>Holder(<em><strong>&lt;class&gt;</strong></em> initial) {...}
+</pre>
+</strong></code></a>
+<a name="1004117">
+<code><strong><pre>	public void _read(org.omg.CORBA.portable.InputStream i)
+</pre>
+</strong></code></a>
+<a name="1004126">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004127">
+<code><strong><pre>	public void _write(org.omg.CORBA.portable.OutputStream o)
+</pre>
+</strong></code></a>
+<a name="1004133">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004134">
+<code><strong><pre>	public org.omg.CORBA.TypeCode _type() {...}
+</pre>
+</strong></code></a>
+<a name="1004136">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1004135">
+<h3><font size=5> 	5.8.1	Example
+</font></h3>
+</a>
+<a name="999953">
+<strong><pre>// IDL
+</pre>
+</strong></a>
+<a name="999961">
+<strong><pre>struct StructType {
+</pre>
+</strong></a>
+<a name="999962">
+<strong><pre>	long field1;
+</pre>
+</strong></a>
+<a name="999963">
+<strong><pre>	string field2;
+</pre>
+</strong></a>
+<a name="999964">
+<strong><pre>};
+</pre>
+</strong></a>
+<a name="1005013">
+<code><strong><pre>// generated Java
+</pre>
+</strong></code></a>
+<a name="1005014">
+<code><strong><pre>final public class StructType {
+</pre>
+</strong></code></a>
+<a name="1005023">
+<code><strong><pre>	// instance variables
+</pre>
+</strong></code></a>
+<a name="999973">
+<code><strong><pre>	public int field1;
+</pre>
+</strong></code></a>
+<a name="999974">
+<code><strong><pre>	public String field2;
+</pre>
+</strong></code></a>
+<a name="999978">
+<code><strong><pre>	// constructors
+</pre>
+</strong></code></a>
+<a name="999979">
+<code><strong><pre>	public StructType() {}
+</pre>
+</strong></code></a>
+<a name="999980">
+<code><strong><pre>	public StructType(int field1, String field2)
+</pre>
+</strong></code></a>
+<a name="999981">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004686">
+<code><strong><pre>	}
+</pre>
+</strong></code></a>
+<a name="1004687">
+<code><strong><pre>final public class StructTypeHolder
+</pre>
+</strong></code></a>
+<a name="1005030">
+<code><strong><pre>		implements org.omg.CORBA.portable.Streamable {
+</pre>
+</strong></code></a>
+<a name="1005028">
+<code><strong><pre>	public StructType value;
+</pre>
+</strong></code></a>
+<a name="1001064">
+<code><strong><pre>	public StructTypeHolder() {}
+</pre>
+</strong></code></a>
+<a name="1001065">
+<code><strong><pre>	public StructTypeHolder(StructType initial) {...}
+</pre>
+</strong></code></a>
+<a name="1004147">
+<code><strong><pre>	public void _read(org.omg.CORBA.portable.InputStream i)
+</pre>
+</strong></code></a>
+<a name="1004143">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004144">
+<code><strong><pre>	public void _write(org.omg.CORBA.portable.OutputStream o)
+</pre>
+</strong></code></a>
+<a name="1004145">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004146">
+<code><strong><pre>	public org.omg.CORBA.TypeCode _type() {...}
+</pre>
+</strong></code></a>
+<a name="1001067">
+<code><strong><pre>
+</pre>
+</strong></code></a>
+<a name="998473">
+<p>
+<h2><font size=6>	5.9	 Mapping for Union
+</font></h2>
+</a>
+<a name="999988">
+An IDL <strong>union</strong> is mapped to a final Java class with the same name that has:<p>
+</a>
+<ul><a name="999989">
+<p><li>a default constructor
+</a>
+<a name="999990">
+<p><li>an accessor method for the discriminator, named <code><strong>discriminator()</strong></code>
+</a>
+<a name="999991">
+<p><li>an accessor method for each branch
+</a>
+<a name="999992">
+<p><li>a modifier method for branch
+</a>
+<a name="999993">
+<p><li>a modifier method for each branch which has more than one case label.
+</a>
+<a name="1003690">
+<p><li>a default modifier method if needed
+</a>
+</ul><a name="1000004">
+The normal name conflict resolution rule is used (prepend an &#34;_&#34;) for the discriminator if there is a name clash with the mapped uniontype name or any of the field names.<p>
+</a>
+<a name="1003689">
+The branch accessor and modifier methods are overloaded and named after the branch. Accessor methods shall raise<em><strong><font size="+1"> </font></strong></em>the<em><strong><font size="+1"> </font></strong></em><strong>CORBA::BAD_OPERATION</strong> system exception if the expected branch has not been set.<p>
+</a>
+<a name="1000005">
+If there is more than one case label corresponding to a branch, the simple modifier method for that branch sets the discriminant to the value of the first case label. In addition, an extra modifier method which takes an explicit discriminator parameter is generated.<p>
+</a>
+<a name="1003054">
+If the branch corresponds to the <strong>default</strong> case label, then the modifier method sets the discriminant to a value that does not match any other case labels.<p>
+</a>
+<a name="1003380">
+It is illegal to specify a union with a default case label if the set of case labels completely covers the possible values for the discriminant. It is the responsibility of the Java code generator (e.g., the IDL complier, or other tool) to detect this situation and refuse to generate illegal code.<p>
+</a>
+<a name="1003691">
+A default modifier method, named <code><strong>default()</strong></code> ( <code><strong>_default()</strong></code> if name conflict) is created if there is no explicit default case label, and the set of case labels does not completely cover the possible values of the discriminant. It will set the value of the union to be an out-of-range value.<p>
+</a>
+<a name="1004030">
+The holder class for the union is also generated. Its name is the union&#39;s mapped Java classname with <code><strong>Holder</strong></code> appended to it as follows:<p>
+</a>
+<a name="1004031">
+<code><strong><pre>final public class <em><strong>&lt;union_class&gt;</strong></em>Holder
+</pre>
+</strong></code></a>
+<a name="1005036">
+<code><strong><pre>			implements org.omg.CORBA.portable.Streamable {
+</pre>
+</strong></code></a>
+<a name="1004032">
+<code><strong><pre>	public <em><strong>&lt;union_class&gt;</strong></em> value;
+</pre>
+</strong></code></a>
+<a name="1001097">
+<code><strong><pre>	public <em><strong>&lt;union_class&gt;</strong></em>Holder() {}
+</pre>
+</strong></code></a>
+<a name="1001098">
+<code><strong><pre>	public <em><strong>&lt;union_class&gt;</strong></em>Holder(<em><strong>&lt;union_class&gt;</strong></em> initial) {...}
+</pre>
+</strong></code></a>
+<a name="1004158">
+<code><strong><pre>	public void _read(org.omg.CORBA.portable.InputStream i)
+</pre>
+</strong></code></a>
+<a name="1004159">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004160">
+<code><strong><pre>	public void _write(org.omg.CORBA.portable.OutputStream o)
+</pre>
+</strong></code></a>
+<a name="1004161">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004162">
+<code><strong><pre>	public org.omg.CORBA.TypeCode _type() {...}
+</pre>
+</strong></code></a>
+<a name="1004156">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1002098">
+<h3><font size=5> 	5.9.1	Example
+</font></h3>
+</a>
+<a name="1002099">
+<strong><pre>// IDL
+</pre>
+</strong></a>
+<a name="1000018">
+<strong><pre>union UnionType switch (EnumType) {               
+</pre>
+</strong></a>
+<a name="1000019">
+<strong><pre>		case first: long win;                 
+</pre>
+</strong></a>
+<a name="1000020">
+<strong><pre> 		case second: short place;                  
+</pre>
+</strong></a>
+<a name="1000021">
+<strong><pre>		case third:                  
+</pre>
+</strong></a>
+<a name="1000022">
+<strong><pre>		case fourth: octet show;                  
+</pre>
+</strong></a>
+<a name="1000023">
+<strong><pre>		default:     boolean other;               
+</pre>
+</strong></a>
+<a name="1000002">
+<strong><pre>	};    
+</pre>
+</strong></a>
+<a name="1000028">
+<code><strong><pre>// generated Java
+</pre>
+</strong></code></a>
+<a name="1000032">
+<code><strong><pre>final public class UnionType {              
+</pre>
+</strong></code></a>
+<a name="1000033">
+<code><strong><pre>	// constructor              
+</pre>
+</strong></code></a>
+<a name="1000034">
+<code><strong><pre>	public UnionType() {....}
+</pre>
+</strong></code></a>
+<a name="1000035">
+<code><strong><pre>	// discriminator accessor               
+</pre>
+</strong></code></a>
+<a name="1000036">
+<code><strong><pre>	public <em><strong>&lt;switch-type&gt;</strong></em> discriminator() {....}
+</pre>
+</strong></code></a>
+<a name="1000037">
+<code><strong><pre>	// win               
+</pre>
+</strong></code></a>
+<a name="1000038">
+<code><strong><pre>	public int win() {....}
+</pre>
+</strong></code></a>
+<a name="1000039">
+<code><strong><pre>	public void win(int value) {....} 
+</pre>
+</strong></code></a>
+<a name="1000040">
+<code><strong><pre>	// place               
+</pre>
+</strong></code></a>
+<a name="1000041">
+<code><strong><pre>	public short place() {....}
+</pre>
+</strong></code></a>
+<a name="1000042">
+<code><strong><pre>	public void place(short value) {....}
+</pre>
+</strong></code></a>
+<a name="1000044">
+<code><strong><pre>	// show              
+</pre>
+</strong></code></a>
+<a name="1000045">
+<code><strong><pre>	public byte show() {....}
+</pre>
+</strong></code></a>
+<a name="1000046">
+<code><strong><pre>	public void show(byte value) {....} 
+</pre>
+</strong></code></a>
+<a name="1000047">
+<code><strong><pre>	public void show(int discriminator, byte value){....}
+</pre>
+</strong></code></a>
+<a name="1000049">
+<code><strong><pre>	// other
+</pre>
+</strong></code></a>
+<a name="1000050">
+<code><strong><pre>	public boolean other() {....}
+</pre>
+</strong></code></a>
+<a name="1000051">
+<code><strong><pre>	public void other(boolean value) {....}
+</pre>
+</strong></code></a>
+<a name="1000085">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1001102">
+<code><strong><pre>final public class <code><strong>UnionTypeHolder
+</strong></code></pre>
+</strong></code></a>
+<a name="1005038">
+<code><strong><pre>		implements org.omg.CORBA.portable.Streamable {
+</pre>
+</strong></code></a>
+<a name="1001103">
+<code><strong><pre>	public UnionType value;
+</pre>
+</strong></code></a>
+<a name="1001104">
+<code><strong><pre>	public UnionTypeHolder() {}
+</pre>
+</strong></code></a>
+<a name="1001105">
+<code><strong><pre>	public UnionTypeHolder(UnionType initial) {...}
+</pre>
+</strong></code></a>
+<a name="1004168">
+<code><strong><pre>   	public void _read(org.omg.CORBA.portable.InputStream i)
+</pre>
+</strong></code></a>
+<a name="1004169">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004170">
+<code><strong><pre>	public void _write(org.omg.CORBA.portable.OutputStream o)
+</pre>
+</strong></code></a>
+<a name="1004171">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004172">
+<code><strong><pre>	public org.omg.CORBA.TypeCode _type() {...}
+</pre>
+</strong></code></a>
+<a name="1000080">
+<code><strong><pre>}      
+</pre>
+</strong></code></a>
+<a name="1000026">
+<strong><pre>
+</pre>
+</strong></a>
+<a name="999983">
+<p>
+<h2><font size=6>	5.10	 Mapping for Sequence
+</font></h2>
+</a>
+<a name="1000093">
+An IDL <strong>sequence</strong> is mapped to a Java array with the same name. In the mapping, everywhere the sequence type is needed, an array of the mapped type of the sequence element is used. Bounds checking shall be done on bounded sequences when they are marshaled as parameters to IDL operations, and an IDL <strong>CORBA::MARSHAL</strong> is raised if necessary.<p>
+</a>
+<a name="1002105">
+The holder class for the sequence is also generated. Its name is the sequence&#39;s mapped Java classname with <code><strong>Holder</strong></code> appended to it as follows:<p>
+</a>
+<a name="1002106">
+<code><strong><pre>final public class <em><strong>&lt;sequence_class&gt;</strong></em>Holder {
+</pre>
+</strong></code></a>
+<a name="1002107">
+<code><strong><pre>	public <em><strong>&lt;sequence_element_type&gt;</strong></em><code><strong>[]</strong></code> value;
+</pre>
+</strong></code></a>
+<a name="1002108">
+<code><strong><pre>	public <em><strong>&lt;sequence_class&gt;</strong></em>Holder() {};
+</pre>
+</strong></code></a>
+<a name="1002109">
+<code><strong><pre>	public <em><strong>&lt;sequence_class&gt;</strong></em>Holder(
+</pre>
+</strong></code></a>
+<a name="1002158">
+<code><strong><pre><em><strong>			&lt;sequence_element_type&gt;</strong></em><code><strong>[]</strong></code> initial) {...};
+</pre>
+</strong></code></a>
+<a name="1004179">
+<code><strong><pre>	public void _read(org.omg.CORBA.portable.InputStream i)
+</pre>
+</strong></code></a>
+<a name="1004180">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004181">
+<code><strong><pre>	public void _write(org.omg.CORBA.portable.OutputStream o)
+</pre>
+</strong></code></a>
+<a name="1004182">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004183">
+<code><strong><pre>	public org.omg.CORBA.TypeCode _type() {...}
+</pre>
+</strong></code></a>
+<a name="1004177">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1000100">
+<h3><font size=5> 	5.10.1	Example
+</font></h3>
+</a>
+<a name="1000112">
+<strong><pre>// IDL
+</pre>
+</strong></a>
+<a name="1000152">
+<strong><pre>typedef sequence&lt; long &gt; UnboundedData;
+</pre>
+</strong></a>
+<a name="1000116">
+<strong><pre>typedef sequence&lt; long, 42 &gt; BoundedData;
+</pre>
+</strong></a>
+<a name="1000130">
+<code><strong><pre>// generated Java
+</pre>
+</strong></code></a>
+<a name="1002131">
+<code><strong><pre>final public class UnboundedDataHolder
+</pre>
+</strong></code></a>
+<a name="1005039">
+<code><strong><pre>			implements org.omg.CORBA.portable.Streamable {
+</pre>
+</strong></code></a>
+<a name="1002132">
+<code><strong><pre>	public int<code><strong>[]</strong></code> value;
+</pre>
+</strong></code></a>
+<a name="1002133">
+<code><strong><pre>	public UnboundedDataHolder() {};
+</pre>
+</strong></code></a>
+<a name="1002134">
+<code><strong><pre>	public UnboundedDataHolder(int<code><strong>[]</strong></code> initial) {...};
+</pre>
+</strong></code></a>
+<a name="1004190">
+<code><strong><pre>	public void _read(org.omg.CORBA.portable.InputStream i)
+</pre>
+</strong></code></a>
+<a name="1004191">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004192">
+<code><strong><pre>	public void _write(org.omg.CORBA.portable.OutputStream o)
+</pre>
+</strong></code></a>
+<a name="1004193">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004194">
+<code><strong><pre>	public org.omg.CORBA.TypeCode _type() {...}
+</pre>
+</strong></code></a>
+<a name="1004188">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1002166">
+<code><strong><pre>final public class BoundedDataHolder
+</pre>
+</strong></code></a>
+<a name="1005041">
+<code><strong><pre>			implements org.omg.CORBA.portable.Streamable {
+</pre>
+</strong></code></a>
+<a name="1002167">
+<code><strong><pre>	public int<code><strong>[]</strong></code> value;
+</pre>
+</strong></code></a>
+<a name="1002168">
+<code><strong><pre>	public BoundedDataHolder() {};
+</pre>
+</strong></code></a>
+<a name="1002169">
+<code><strong><pre>	public BoundedDataHolder(int<code><strong>[]</strong></code> initial) {...};
+</pre>
+</strong></code></a>
+<a name="1004203">
+<code><strong><pre>	public void _read(org.omg.CORBA.portable.InputStream i)
+</pre>
+</strong></code></a>
+<a name="1004204">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004205">
+<code><strong><pre>	public void _write(org.omg.CORBA.portable.OutputStream o)
+</pre>
+</strong></code></a>
+<a name="1004206">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004207">
+<code><strong><pre>	public org.omg.CORBA.TypeCode _type() {...}
+</pre>
+</strong></code></a>
+<a name="1004201">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1000125">
+<p>
+<h2><font size=6>	5.11	 Mapping for Array
+</font></h2>
+</a>
+<a name="1000179">
+An IDL array is mapped the same way as an IDL bounded sequence. In the mapping, everywhere the array type is needed, an array of the mapped type of the array element is used. In Java, the natural Java subscripting operator is applied to the mapped array. The bounds for the array are checked when the array is marshaled as an argument to an IDL operation and a <strong>CORBA::MARSHAL</strong> exception is raised if an bounds violation occurs. The length of the array can be made available in Java, by bounding the array with an IDL constant, which will be mapped as per the rules for constants.<p>
+</a>
+<a name="1002196">
+The holder class for the array is also generated. Its name is the array&#39;s mapped Java classname with <code><strong>Holder</strong></code> appended to it as follows:<p>
+</a>
+<a name="1002197">
+<code><strong><pre>final public class <em><strong>&lt;array_class&gt;</strong></em>Holder
+</pre>
+</strong></code></a>
+<a name="1005043">
+<code><strong><pre>		implements org.omg.CORBA.portable.Streamable {
+</pre>
+</strong></code></a>
+<a name="1002198">
+<code><strong><pre>	public <em><strong>&lt;array_element_type&gt;</strong></em><code><strong>[]</strong></code> value;
+</pre>
+</strong></code></a>
+<a name="1002178">
+<code><strong><pre>	public <em><strong>&lt;array_class&gt;</strong></em>Holder() {}
+</pre>
+</strong></code></a>
+<a name="1002179">
+<code><strong><pre>	public <em><strong>&lt;array_class&gt;</strong></em>Holder(
+</pre>
+</strong></code></a>
+<a name="1002180">
+<code><strong><pre><em><strong>				&lt;array_element_type&gt;</strong></em><code><strong>[]</strong></code> initial) {...}
+</pre>
+</strong></code></a>
+<a name="1004214">
+<code><strong><pre>	public void _read(org.omg.CORBA.portable.InputStream i)
+</pre>
+</strong></code></a>
+<a name="1004215">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004216">
+<code><strong><pre>	public void _write(org.omg.CORBA.portable.OutputStream o)
+</pre>
+</strong></code></a>
+<a name="1004217">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004218">
+<code><strong><pre>	public org.omg.CORBA.TypeCode _type() {...}
+</pre>
+</strong></code></a>
+<a name="1004212">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1000201">
+<h3><font size=5> 	5.11.1	Example
+</font></h3>
+</a>
+<a name="1000193">
+<strong><pre>// IDL
+</pre>
+</strong></a>
+<a name="1000194">
+<strong><pre>const long ArrayBound = 42;
+</pre>
+</strong></a>
+<a name="1000195">
+<strong><pre>typedef long larray[ArrayBound];
+</pre>
+</strong></a>
+<a name="1000196">
+<code><strong><pre>// generated Java
+</pre>
+</strong></code></a>
+<a name="1002208">
+<code><strong><pre>final public class larrayHolder
+</pre>
+</strong></code></a>
+<a name="1005045">
+<code><strong><pre>		implements org.omg.CORBA.portable.Streamable {
+</pre>
+</strong></code></a>
+<a name="1002209">
+<code><strong><pre>	public int<code><strong>[]</strong></code> value;
+</pre>
+</strong></code></a>
+<a name="1002210">
+<code><strong><pre>	public larrayHolder() {}
+</pre>
+</strong></code></a>
+<a name="1002211">
+<code><strong><pre>	public larrayHolder(int<code><strong>[]</strong></code> initial) {...}
+</pre>
+</strong></code></a>
+<a name="1004227">
+<code><strong><pre>	public void _read(org.omg.CORBA.portable.InputStream i)
+</pre>
+</strong></code></a>
+<a name="1004228">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004229">
+<code><strong><pre>	public void _write(org.omg.CORBA.portable.OutputStream o)
+</pre>
+</strong></code></a>
+<a name="1004230">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004231">
+<code><strong><pre>	public org.omg.CORBA.TypeCode _type() {...}
+</pre>
+</strong></code></a>
+<a name="1004225">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1000753">
+<p>
+<h2><font size=6>	5.12	 Mapping for Interface
+</font></h2>
+</a>
+<a name="1000754">
+<h3><font size=5> 	5.12.1	Basics
+</font></h3>
+</a>
+<a name="1000373">
+An IDL <strong>interface</strong> is mapped to a public Java interface with the same name, and an additional &#34;helper&#34; Java class with the suffix <code><strong>Helper</strong></code> appended to the interface name. The Java interface extends the (mapped) base <code><strong>org.omg.CORBA.Object</strong></code> interface.<p>
+</a>
+<a name="1000327">
+The Java interface contains the mapped operation signatures. Methods can be invoked on an object reference to this interface.<p>
+</a>
+<a name="1000326">
+The helper class holds a static narrow method that allows a <code><strong>org.omg.CORBA.Object</strong></code> to be narrowed to the object reference of a more specific type. The IDL exception <strong>CORBA::BAD_PARAM</strong> is thrown if the narrow fails.<p>
+</a>
+<a name="1000330">
+There are no special &#34;nil&#34; object references. Java <code><strong>null</strong></code> can be passed freely wherever an object reference is expected.<p>
+</a>
+<a name="1000546">
+Attributes are mapped to a pair of Java accessor and modifier methods. These methods have the same name as the IDL attribute and are overloaded. There is no modifier method for IDL <strong>readonly</strong> attributes.<p>
+</a>
+<a name="1002234">
+The holder class for the interface is also generated. Its name is the interface&#39;s mapped Java classname with <code><strong>Holder</strong></code> appended to it as follows:<p>
+</a>
+<a name="1002240">
+<code><strong><pre>final public class <em><strong>&lt;interface_class&gt;</strong></em>Holder
+</pre>
+</strong></code></a>
+<a name="1005047">
+<code><strong><pre>		implements org.omg.CORBA.portable.Streamable {
+</pre>
+</strong></code></a>
+<a name="1002241">
+<code><strong><pre>	public <em><strong>&lt;interface_class&gt;</strong></em> value;
+</pre>
+</strong></code></a>
+<a name="1002242">
+<code><strong><pre>	public <em><strong>&lt;interface_class&gt;</strong></em>Holder() {}
+</pre>
+</strong></code></a>
+<a name="1002243">
+<code><strong><pre>	public <em><strong>&lt;interface_class&gt;</strong></em>Holder(
+</pre>
+</strong></code></a>
+<a name="1002244">
+<code><strong><pre><em><strong>				&lt;interface_class&gt;</strong></em> initial) {
+</pre>
+</strong></code></a>
+<a name="1002245">
+<code><strong><pre>		value = initial;
+</pre>
+</strong></code></a>
+<a name="1004694">
+<code><strong><pre>	public void _read(org.omg.CORBA.portable.InputStream i)
+</pre>
+</strong></code></a>
+<a name="1004695">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004696">
+<code><strong><pre>	public void _write(org.omg.CORBA.portable.OutputStream o)
+</pre>
+</strong></code></a>
+<a name="1004697">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004698">
+<code><strong><pre>	public org.omg.CORBA.TypeCode _type() {...}
+</pre>
+</strong></code></a>
+<a name="1002246">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1000366">
+Interface inheritance expressed in IDL is reflected directly in the Java interface hierarchy.<p>
+</a>
+<a name="1000331">
+<h4><font size=4> 	5.12.1.1	 Example
+</font></h4>
+</a>
+<a name="1000332">
+<strong><pre>// IDL
+</pre>
+</strong></a>
+<a name="1002888">
+<strong><pre>module Example {
+</pre>
+</strong></a>
+<a name="1002889">
+<strong><pre>	interface Face {
+</pre>
+</strong></a>
+<a name="1002890">
+<strong><pre>		long method (in long arg) raises (e);
+</pre>
+</strong></a>
+<a name="1000547">
+<strong><pre>		attribute long assignable;
+</pre>
+</strong></a>
+<a name="1000548">
+<strong><pre>		readonly attribute long nonassignable;
+</pre>
+</strong></a>
+<a name="1000340">
+<strong><pre>	}
+</pre>
+</strong></a>
+<a name="1000341">
+<strong><pre>}
+</pre>
+</strong></a>
+<a name="1000336">
+<code><strong><pre>// generated Java
+</pre>
+</strong></code></a>
+<a name="1000356">
+<code><strong><pre>package Example;
+</pre>
+</strong></code></a>
+<a name="1002228">
+<code><strong><pre>public interface Face extends org.omg.CORBA.Object {
+</pre>
+</strong></code></a>
+<a name="1000338">
+<code><strong><pre>	int method(int arg)
+</pre>
+</strong></code></a>
+<a name="1000348">
+<code><strong><pre>		throws Example.e;
+</pre>
+</strong></code></a>
+<a name="1000549">
+<code><strong><pre>	int assignable();
+</pre>
+</strong></code></a>
+<a name="1000550">
+<code><strong><pre>	void assignable(int i);
+</pre>
+</strong></code></a>
+<a name="1000551">
+<code><strong><pre>	int nonassignable();
+</pre>
+</strong></code></a>
+<a name="1000363">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1000349">
+<code><strong><pre>public class FaceHelper {
+</pre>
+</strong></code></a>
+<a name="1004453">
+<code><strong><pre>
+</pre>
+</strong></code></a>
+<a name="1000350">
+<code><strong><pre>	// ... other standard helper methods
+</pre>
+</strong></code></a>
+<a name="1004452">
+<code><strong><pre>
+</pre>
+</strong></code></a>
+<a name="1004451">
+<code><strong><pre>	public static Face narrow(org.omg.CORBA.Object obj)
+</pre>
+</strong></code></a>
+<a name="1000352">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1000355">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1002258">
+<code><strong><pre>final public class FaceHolder 
+</pre>
+</strong></code></a>
+<a name="1004247">
+<code><strong><pre>		implements org.omg.CORBA.portable.Streamable {
+</pre>
+</strong></code></a>
+<a name="1002259">
+<code><strong><pre>	public Face value;
+</pre>
+</strong></code></a>
+<a name="1002260">
+<code><strong><pre>	public FaceHolder() {}
+</pre>
+</strong></code></a>
+<a name="1002261">
+<code><strong><pre>	public FaceHolder(Face initial) {...}
+</pre>
+</strong></code></a>
+<a name="1004242">
+<code><strong><pre>	public void _read(org.omg.CORBA.portable.InputStream i)
+</pre>
+</strong></code></a>
+<a name="1004243">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004244">
+<code><strong><pre>	public void _write(org.omg.CORBA.portable.OutputStream o)
+</pre>
+</strong></code></a>
+<a name="1004245">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004246">
+<code><strong><pre>	public org.omg.CORBA.TypeCode _type() {...}
+</pre>
+</strong></code></a>
+<a name="1004240">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1000374">
+<h3><font size=5> 	5.12.2	Parameter Passing Modes
+</font></h3>
+</a>
+<a name="1000375">
+IDL <strong>in</strong> parameters which implement call-by-value semantics, are mapped to normal Java actual parameters. The results of IDL operations are returned as the result of the corresponding Java method.<p>
+</a>
+<a name="1000380">
+IDL <strong>out</strong> and <strong>inout</strong> parameters, which implement call-by-result and call-by-value/result semantics, cannot be mapped directly into the Java parameter passing mechanism. This mapping defines additional holder classes for all the IDL basic and user-defined types which are used to implement these parameter modes in Java. The client supplies an instance of the appropriate holder Java class that is passed (by value) for each IDL out or inout parameter. The contents of the holder instance (but not the instance itself) are modified by the invocation, and the client uses the (possibly) changed contents after the invocation returns.<p>
+</a>
+<a name="1000406">
+<h4><font size=4> 	5.12.2.1	 Example
+</font></h4>
+</a>
+<a name="1000409">
+<strong><pre>// IDL
+</pre>
+</strong></a>
+<a name="1000468">
+<strong><pre>module Example {
+</pre>
+</strong></a>
+<a name="1000417">
+<strong><pre>	interface Modes {
+</pre>
+</strong></a>
+<a name="1000424">
+<strong><pre>		long operation(	in long inArg,
+</pre>
+</strong></a>
+<a name="1000429">
+<strong><pre>		    		out long outArg,
+</pre>
+</strong></a>
+<a name="1000430">
+<strong><pre>		    		inout long inoutArg);
+</pre>
+</strong></a>
+<a name="1000435">
+<strong><pre>	};
+</pre>
+</strong></a>
+<a name="1000436">
+<strong><pre>	};
+</pre>
+</strong></a>
+<a name="1000410">
+<code><strong><pre>// Generated Java
+</pre>
+</strong></code></a>
+<a name="1000443">
+<code><strong><pre>package Example;
+</pre>
+</strong></code></a>
+<a name="1000446">
+<code><strong><pre>public interface Modes {
+</pre>
+</strong></code></a>
+<a name="1000456">
+<code><strong><pre>	int operation(	int inArg,
+</pre>
+</strong></code></a>
+<a name="1000451">
+<code><strong><pre>			IntHolder outArg,
+</pre>
+</strong></code></a>
+<a name="1000462">
+<code><strong><pre>			IntHolder inoutArg);
+</pre>
+</strong></code></a>
+<a name="1000463">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1000407">
+In the above, the result comes back as an ordinary result and the actual in parameters only an ordinary value. But for the out and inout parameters, an appropriate holder must be constructed. A typical use case might look as follows:<p>
+</a>
+<a name="1000475">
+<code><strong><pre>// user Java code
+</pre>
+</strong></code></a>
+<a name="1000478">
+<code><strong><pre>// select a target object
+</pre>
+</strong></code></a>
+<a name="1000507">
+<code><strong><pre>Example.Modes target = ...;
+</pre>
+</strong></code></a>
+<a name="1000515">
+<code><strong><pre>// get the in actual value
+</pre>
+</strong></code></a>
+<a name="1000512">
+<code><strong><pre>int inArg = 57; 
+</pre>
+</strong></code></a>
+<a name="1000479">
+<code><strong><pre>// prepare to receive out
+</pre>
+</strong></code></a>
+<a name="1000519">
+<code><strong><pre>IntHolder outHolder = new IntHolder();
+</pre>
+</strong></code></a>
+<a name="1000516">
+<code><strong><pre>// set up the in side of the inout   
+</pre>
+</strong></code></a>
+<a name="1000481">
+<code><strong><pre>IntHolder inoutHolder = new IntHolder(131);
+</pre>
+</strong></code></a>
+<a name="1004699">
+<code><strong><pre>// make the invocation
+</pre>
+</strong></code></a>
+<a name="1004700">
+<code><strong><pre>int result =target.operation(inArg, outHolder, inoutHolder);
+</pre>
+</strong></code></a>
+<a name="1004701">
+<code><strong><pre>// use the value of the outHolder
+</pre>
+</strong></code></a>
+<a name="1000484">
+<code><strong><pre>... outHolder.value ...								
+</pre>
+</strong></code></a>
+<a name="1000532">
+<code><strong><pre>// use the value of the inoutHolder              
+</pre>
+</strong></code></a>
+<a name="1000498">
+<code><strong><pre>... inoutHolder.value ...								
+</pre>
+</strong></code></a>
+<a name="1000545">
+Before the invocation, the input value of the inout parameter must be set in the holder instance that will be the actual parameter. The inout holder can be filled in either by constructing a new holder from a value, or by assigning to the value of an existing holder of the appropriate type. After the invocation, the client uses the outHolder.value to access the value of the out parameter, and the inoutHolder.value to access the output value of the inout parameter. The return result of the IDL operation is available as the result of the invocation.<p>
+</a>
+<a name="1000476">
+<code><strong><pre>
+</pre>
+</strong></code></a>
+<a name="998476">
+<p>
+<h2><font size=6>	5.13	 Mapping for Exception
+</font></h2>
+</a>
+<a name="1001181">
+IDL exceptions are mapped very similarly to structs. They are mapped to a Java class that provides instance variables for the fields of the exception and constructors.<p>
+</a>
+<a name="1001230">
+CORBA system exceptions are unchecked exceptions. They inherit (indirectly) from <code><strong>java.lang.RuntimeException</strong></code>. <p>
+</a>
+<a name="1001231">
+User defined exceptions are checked exceptions. They inherit (indirectly) from <code><strong>java.lang.Exception </strong></code><p>
+</a>
+<a name="1001267">
+<p><center><h5>Figure &#160;5-1	 Inheritance of Java Exception Classes<p><img src="idl.fm.anc.gif">
+</h5></center>
+</a><a name="1005588">
+<h3><font size=5> 	5.13.1	User Defined Exceptions
+</font></h3>
+</a>
+<a name="1005589">
+User defined exceptions are mapped to final Java classes that extend <code><strong>org.omg.CORBA.UserException</strong></code> and are otherwise mapped just like the IDL <strong>struct</strong> type, including the generation of Helper and Holder classes.<p>
+</a>
+<a name="1004705">
+If the exception is defined within a nested IDL scope (essentially within an interface) then its Java class name is defined within a special scope. See <a href="idl.fm.html#1001198">Section&#160;5.15, &#34;Mapping for Certain Nested Types</a> for more details. Otherwise its Java class name is defined within the scope of the Java package that corresponds to the exception&#39;s enclosing IDL module.<p>
+</a>
+<a name="1004709">
+<h4><font size=4> 	5.13.1.1	 Example
+</font></h4>
+</a>
+<a name="1001834">
+<strong><pre>// IDL
+</pre>
+</strong></a>
+<a name="1001835">
+<strong><pre>module Example {
+</pre>
+</strong></a>
+<a name="1001836">
+<strong><pre>	exception ex1 { string reason; };
+</pre>
+</strong></a>
+<a name="1001837">
+<strong><pre>};
+</pre>
+</strong></a>
+<a name="1001838">
+<code><strong><pre>// Generated Java
+</pre>
+</strong></code></a>
+<a name="1001839">
+<code><strong><pre>package Example;
+</pre>
+</strong></code></a>
+<a name="1001840">
+<code><strong><pre>final public class ex1 extends org.omg.CORBA.UserException {
+</pre>
+</strong></code></a>
+<a name="1001841">
+<code><strong><pre>	public String reason;		// instance
+</pre>
+</strong></code></a>
+<a name="1001842">
+<code><strong><pre>	public ex1() {...}		// default constructor
+</pre>
+</strong></code></a>
+<a name="1001845">
+<code><strong><pre>	public ex1(String r) {...}		// constructor
+</pre>
+</strong></code></a>
+<a name="1004464">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1004712">
+<code><strong><pre>final public class ex1Holder
+</pre>
+</strong></code></a>
+<a name="1005049">
+<code><strong><pre>		implements org.omg.CORBA.portable.Streamable {
+</pre>
+</strong></code></a>
+<a name="1004713">
+<code><strong><pre>	public ex1 value;
+</pre>
+</strong></code></a>
+<a name="1004714">
+<code><strong><pre>	public ex1Holder() {}
+</pre>
+</strong></code></a>
+<a name="1004715">
+<code><strong><pre>	public ex1Holder(ex1 initial) {...}
+</pre>
+</strong></code></a>
+<a name="1004716">
+<code><strong><pre>	public void _read(org.omg.CORBA.portable.InputStream i)
+</pre>
+</strong></code></a>
+<a name="1004717">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004718">
+<code><strong><pre>	public void _write(org.omg.CORBA.portable.OutputStream o)
+</pre>
+</strong></code></a>
+<a name="1004719">
+<code><strong><pre>		{...}
+</pre>
+</strong></code></a>
+<a name="1004720">
+<code><strong><pre>	public org.omg.CORBA.TypeCode _type() {...}
+</pre>
+</strong></code></a>
+<a name="1004721">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1004710">
+<code><strong><pre>
+</pre>
+</strong></code></a>
+<a name="1001822">
+<h3><font size=5> 	5.13.2	System Exceptions
+</font></h3>
+</a>
+<a name="1001301">
+The standard IDL system exceptions are mapped to final Java classes that extend <code><strong>org.omg.CORBA.SystemException</strong></code> and provide access to the IDL major and minor exception code, as well as a string describing the reason for the exception.Note there are no public constructors for <code><strong>org.omg.CORBA.SystemException</strong></code>; only classes that extend it can be instantiated.<p>
+</a>
+<a name="1001310">
+The Java class name for each standard IDL exception is the same as its IDL name and is declared to be in the <code><strong>org.omg.CORBA</strong></code> package. The default constructor supplies 0 for the minor code, COMPLETED_NO for the completion code, and &#34;&#34; for the reason string. There is also a constructor which takes the reason and uses defaults for the other fields, as well as one which requires all three parameters to be specified. The mapping from IDL name to Java class name is listed in the table below:<p>
+</a>
+<a name="1001319">
+<P><Table Border="1" Cellpadding="5">
+<caption><B>Table &#160;5-1	 
+</B></caption>
+
+<tr align="left" valign="baseline"><td><a name="1003739">
+<p>IDL Exception
+</a>
+<td><a name="1003741">
+<p>Java Class Name
+</a>
+
+<tr valign="baseline"><td><a name="1003743">
+<p><strong>CORBA::UNKNOWN</strong>
+</a>
+<td><a name="1003745">
+<p><code><strong>org.omg.CORBA.UNKNOWN</strong></code>
+</a>
+
+<tr valign="baseline"><td><a name="1003747">
+<p><strong>CORBA::BAD_PARAM</strong>
+</a>
+<td><a name="1003749">
+<p><code><strong>org.omg.CORBA.BAD_PARAM</strong></code>
+</a>
+
+<tr valign="baseline"><td><a name="1003751">
+<p><strong>CORBA::NO_MEMORY</strong>
+</a>
+<td><a name="1003753">
+<p><code><strong>org.omg.CORBA.NO_MEMORY</strong></code>
+</a>
+
+<tr valign="baseline"><td><a name="1003755">
+<p><strong>CORBA::IMP_LIMIT</strong>
+</a>
+<td><a name="1003757">
+<p><code><strong>org.omg.CORBA.IMP_LIMIT</strong></code>
+</a>
+
+<tr valign="baseline"><td><a name="1003759">
+<p><strong>CORBA::COMM_FAILURE</strong>
+</a>
+<td><a name="1003761">
+<p><code><strong>org.omg.CORBA.COMM_FAILURE</strong></code>
+</a>
+
+<tr valign="baseline"><td><a name="1003763">
+<p><strong>CORBA::INV_OBJREF</strong>
+</a>
+<td><a name="1003765">
+<p><code><strong>org.omg.CORBA.INV_OBJREF</strong></code>
+</a>
+
+<tr valign="baseline"><td><a name="1003767">
+<p><strong>CORBA::NO_PERMISSION</strong>
+</a>
+<td><a name="1003769">
+<p><code><strong>org.omg.CORBA.NO_PERMISSION</strong></code>
+</a>
+
+<tr valign="baseline"><td><a name="1003771">
+<p><strong>CORBA::INTERNAL</strong>
+</a>
+<td><a name="1003773">
+<p><code><strong>org.omg.CORBA.INTERNAL</strong></code>
+</a>
+
+<tr valign="baseline"><td><a name="1003775">
+<p><strong>CORBA::</strong>MARSHAL
+</a>
+<td><a name="1003777">
+<p>org.omg.CORBA.MARSHAL
+</a>
+
+<tr valign="baseline"><td><a name="1003779">
+<p><strong>CORBA::</strong>INITIALIZE
+</a>
+<td><a name="1003781">
+<p>org.omg.CORBA.INITIALIZE
+</a>
+
+<tr valign="baseline"><td><a name="1003783">
+<p><strong>CORBA::</strong>NO_IMPLEMENT
+</a>
+<td><a name="1003785">
+<p>org.omg.CORBA.NO_IMPLEMENT
+</a>
+
+<tr valign="baseline"><td><a name="1003787">
+<p><strong>CORBA::</strong>BAD_TYPECODE
+</a>
+<td><a name="1003789">
+<p>org.omg.CORBA.BAD_TYPECODE
+</a>
+
+<tr valign="baseline"><td><a name="1003791">
+<p><strong>CORBA::</strong>BAD_OPERATION
+</a>
+<td><a name="1003793">
+<p>org.omg.CORBA.BAD_OPERATION
+</a>
+
+<tr valign="baseline"><td><a name="1003795">
+<p><strong>CORBA::</strong>NO_RESOURCES
+</a>
+<td><a name="1003797">
+<p>org.omg.CORBA.NO_RESOURCES
+</a>
+
+<tr valign="baseline"><td><a name="1003799">
+<p><strong>CORBA::</strong>NO_RESPONSE
+</a>
+<td><a name="1003801">
+<p>org.omg.CORBA.NO_RESPONSE
+</a>
+
+<tr valign="baseline"><td><a name="1003803">
+<p><strong>CORBA::</strong>PERSIST_STORE
+</a>
+<td><a name="1003805">
+<p>org.omg.CORBA.PERSIST_STORE
+</a>
+
+<tr valign="baseline"><td><a name="1003807">
+<p><strong>CORBA::</strong>BAD_INV_ORDER
+</a>
+<td><a name="1003809">
+<p>org.omg.CORBA.BAD_INV_ORDER
+</a>
+
+<tr valign="baseline"><td><a name="1003811">
+<p><strong>CORBA::</strong>TRANSIENT
+</a>
+<td><a name="1003813">
+<p>org.omg.CORBA.TRANSIENT
+</a>
+
+<tr valign="baseline"><td><a name="1003815">
+<p><strong>CORBA::</strong>FREE_MEM
+</a>
+<td><a name="1003817">
+<p>org.omg.CORBA.FREE_MEM
+</a>
+
+<tr valign="baseline"><td><a name="1003819">
+<p><strong>CORBA::</strong>INV_IDENT
+</a>
+<td><a name="1003821">
+<p>org.omg.CORBA.INV_IDENT
+</a>
+
+<tr valign="baseline"><td><a name="1003823">
+<p><strong>CORBA::</strong>INV_FLAG
+</a>
+<td><a name="1003825">
+<p>org.omg.CORBA.INV_FLAG
+</a>
+
+<tr valign="baseline"><td><a name="1003827">
+<p><strong>CORBA::</strong>INTF_REPOS
+</a>
+<td><a name="1003829">
+<p>org.omg.CORBA.INTF_REPOS
+</a>
+
+<tr valign="baseline"><td><a name="1003831">
+<p><strong>CORBA::</strong>BAD_CONTEXT
+</a>
+<td><a name="1003833">
+<p>org.omg.CORBA.BAD_CONTEXT
+</a>
+
+<tr valign="baseline"><td><a name="1003835">
+<p><strong>CORBA::OBJ_ADAPTER</strong>
+</a>
+<td><a name="1003837">
+<p><code><strong>org.omg.CORBA.OBJ_ADAPTER</strong></code>
+</a>
+
+<tr valign="baseline"><td><a name="1003839">
+<p><strong>CORBA::DATA_CONVERSION</strong>
+</a>
+<td><a name="1003841">
+<p><code><strong>org.omg.CORBA.DATA_CONVERSION</strong></code>
+</a>
+
+<tr valign="baseline"><td><a name="1003855">
+<p>CORBA::OBJECT_NOT_EXIST
+</a>
+<td><a name="1003857">
+<p>org.omg.CORBA.OBJECT_NOT_EXIST
+</a>
+
+<tr valign="baseline"><td><a name="1003843">
+<p><strong>CORBA::TRANSACTIONREQUIRED</strong>
+</a>
+<td><a name="1003845">
+<p><code><strong>org.omg.CORBA.TRANSACTIONREQUIRED</strong></code>
+</a>
+
+<tr valign="baseline"><td><a name="1003847">
+<p><strong>CORBA::</strong>TRANSACTIONROLLEDBACK
+</a>
+<td><a name="1003849">
+<p>org.omg.CORBA.TRANSACTIONROLLEDBACK
+</a>
+
+<tr valign="baseline"><td><a name="1003851">
+<p><strong>CORBA::</strong>INVALIDTRANSACTION
+</a>
+<td><a name="1003853">
+<p>org.omg.CORBA.INVALIDTRANSACTION
+</a>
+</Table>
+
+
+<p>
+<a name="1001804">
+The definitions of the relevant classes are specified below. <p>
+</a>
+<a name="1001272">
+<code><strong><pre>// from org.omg.CORBA package
+</pre>
+</strong></code></a>
+<a name="1001274">
+<code><strong><pre>package org.omg.CORBA;
+</pre>
+</strong></code></a>
+<a name="1003711">
+<code><strong><pre>public final class CompletionStatus {
+</pre>
+</strong></code></a>
+<a name="1001276">
+<code><strong><pre>	// Completion Status constants
+</pre>
+</strong></code></a>
+<a name="1001277">
+<code><strong><pre>	public static final int 	_COMPLETED_YES = 0,
+</pre>
+</strong></code></a>
+<a name="1001278">
+<code><strong><pre>					_COMPLETED_NO = 1,
+</pre>
+</strong></code></a>
+<a name="1001279">
+<code><strong><pre>					_COMPLETED_MAYBE = 2;
+</pre>
+</strong></code></a>
+<a name="1004248">
+<code><strong><pre>	public static final CompletionStatus COMPLETED_YES =
+</pre>
+</strong></code></a>
+<a name="1004249">
+<code><strong><pre>		new CompletionStatus(_COMPLETED_YES);
+</pre>
+</strong></code></a>
+<a name="1004255">
+<code><strong><pre>	public static final CompletionStatus COMPLETED_NO =
+</pre>
+</strong></code></a>
+<a name="1004256">
+<code><strong><pre>		new CompletionStatus(_COMPLETED_NO);
+</pre>
+</strong></code></a>
+<a name="1005763">
+<code><strong><pre>	public static final CompletionStatus COMPLETED_MAYBE =
+</pre>
+</strong></code></a>
+<a name="1005764">
+<code><strong><pre>		new CompletionStatus(_COMPLETED_MAYBE);
+</pre>
+</strong></code></a>
+<a name="1005765">
+<code><strong><pre>	public int value() {...}
+</pre>
+</strong></code></a>
+<a name="1005766">
+<code><strong><pre>	public static final CompletionStatus from_int(int) {...}
+</pre>
+</strong></code></a>
+<a name="1005742">
+<code><strong><pre>	private CompletionStatus(int) {...}
+</pre>
+</strong></code></a>
+<a name="1001281">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1001282">
+<code><strong><pre>abstract public class 
+</pre>
+</strong></code></a>
+<a name="1002547">
+<code><strong><pre>	SystemException extends java.lang.RuntimeException {
+</pre>
+</strong></code></a>
+<a name="1001284">
+<code><strong><pre>		public int minor;
+</pre>
+</strong></code></a>
+<a name="1001285">
+<code><strong><pre>		public CompletionStatus completed;
+</pre>
+</strong></code></a>
+<a name="1005729">
+<code><strong><pre>		// constructor
+</pre>
+</strong></code></a>
+<a name="1005730">
+<code><strong><pre>		protected SystemException(String reason,
+</pre>
+</strong></code></a>
+<a name="1005731">
+<code><strong><pre>					  int minor,
+</pre>
+</strong></code></a>
+<a name="1005732">
+<code><strong><pre>					  CompletionStatus status) {
+</pre>
+</strong></code></a>
+<a name="1005733">
+<code><strong><pre>					  super(reason);
+</pre>
+</strong></code></a>
+<a name="1005734">
+<code><strong><pre>					  this.minor = minor;
+</pre>
+</strong></code></a>
+<a name="1005735">
+<code><strong><pre>					  this.status = status;
+</pre>
+</strong></code></a>
+<a name="1005736">
+<code><strong><pre>		}
+</pre>
+</strong></code></a>
+<a name="1001286">
+<code><strong><pre>	}
+</pre>
+</strong></code></a>
+<a name="1001809">
+<code><strong><pre>final public class 
+</pre>
+</strong></code></a>
+<a name="1005590">
+<code><strong><pre>	UNKNOWN extends org.omg.CORBA.SystemException {
+</pre>
+</strong></code></a>
+<a name="1001810">
+<code><strong><pre>	public UNKNOWN() ...
+</pre>
+</strong></code></a>
+<a name="1001811">
+<code><strong><pre>	public UNKNOWN(int minor, CompletionStatus completed) ...
+</pre>
+</strong></code></a>
+<a name="1001812">
+<code><strong><pre>	public UNKNOWN(String reason) ...
+</pre>
+</strong></code></a>
+<a name="1001813">
+<code><strong><pre>	public UNKNOWN(String reason, int minor, 
+</pre>
+</strong></code></a>
+<a name="1004475">
+<code><strong><pre>		       CompletionStatus completed)	...
+</pre>
+</strong></code></a>
+<a name="1001815">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1001819">
+<code><strong><pre>...
+</pre>
+</strong></code></a>
+<a name="1001817">
+<code><strong><pre>// there is a similar definition for each of the standard
+</pre>
+</strong></code></a>
+<a name="1001818">
+<code><strong><pre>// IDL system exceptions listed in the table above
+</pre>
+</strong></code></a>
+<a name="998493">
+<p>
+<h2><font size=6>	5.14	 Mapping for the Any Type
+</font></h2>
+</a>
+<a name="998497">
+The IDL type <strong>Any</strong> maps to the Java class <code><strong>org.omg.CORBA.Any</strong></code>. This class has all the necessary methods to insert and extract instances of predefined types. If the extraction operations have a mismatched type, the <strong>CORBA::BAD_OPERATION</strong> exception is raised.<p>
+</a>
+<a name="1005104">
+In addition, insert and extract methods which take a holder class are defined in order to provide a high speed interface for use by portable stubs and skeletons. There is an insert and extract method defined for each primitive IDL type as well as a pair for a generic streamable to handle the case of non-prmitive IDL types. Note that to preserve unsigned type information unsigned methods (which use the normal holder class) are defined where appropriate.<p>
+</a>
+<a name="999091">
+The insert operations set the specified value and reset the any&#39;s type if necessary.<p>
+</a>
+<a name="1003881">
+Setting the typecode via the <code><strong>type()</strong></code> accessor wipes out the value. An attempt to extract before the value is set will result in a <strong>CORBA::BAD_OPERATION</strong> exception being raised. This operation is provided primarily so that the type may be set properly for IDL <strong>out</strong> parameters.<p>
+</a>
+<a name="1003882">
+<code><strong><pre>package org.omg.CORBA;
+</pre>
+</strong></code></a>
+<a name="1003883">
+<code><strong><pre>abstract public class Any {
+</pre>
+</strong></code></a>
+<a name="998525">
+<code><strong><pre>abstract public boolean equal(org.omg.CORBA.Any a);
+</pre>
+</strong></code></a>
+<a name="1005622">
+<code><strong><pre>// type code accessors
+</pre>
+</strong></code></a>
+<a name="998526">
+<code><strong><pre>abstract public org.omg.CORBA.TypeCode type();
+</pre>
+</strong></code></a>
+<a name="998527">
+<code><strong><pre>abstract public void type(org.omg.CORBA.TypeCode t);
+</pre>
+</strong></code></a>
+<a name="998531">
+<code><strong><pre>// read and write values to/from streams
+</pre>
+</strong></code></a>
+<a name="1004942">
+<code><strong><pre>// throw excep when typecode inconsistent with value
+</pre>
+</strong></code></a>
+<a name="998532">
+<code><strong><pre>abstract public void read_value(
+</pre>
+</strong></code></a>
+<a name="1004956">
+<code><strong><pre>	org.omg.CORBA.portable.InputStream is,
+</pre>
+</strong></code></a>
+<a name="1003888">
+<code><strong><pre>	org.omg.CORBA.TypeCode t) throws org.omg.CORBA.MARSHAL;
+</pre>
+</strong></code></a>
+<a name="998533">
+<code><strong><pre>abstract public void 
+</pre>
+</strong></code></a>
+<a name="1004766">
+<code><strong><pre>	write_value(org.omg.CORBA.portable.OutputStream os);
+</pre>
+</strong></code></a>
+<a name="1004768">
+<code><strong><pre>abstract public org.omg.CORBA.portable.OutputStream
+</pre>
+</strong></code></a>
+<a name="1004765">
+<code><strong><pre>			create_output_stream();
+</pre>
+</strong></code></a>
+<a name="1004763">
+<code><strong><pre>abstract public org.omg.CORBA.portable.InputStream
+</pre>
+</strong></code></a>
+<a name="1004764">
+<code><strong><pre>			create_input_stream();
+</pre>
+</strong></code></a>
+<a name="1004761">
+<code><strong><pre>// insert and extract each primitive type
+</pre>
+</strong></code></a>
+<a name="998538">
+<code><strong><pre>abstract public short extract_short()
+</pre>
+</strong></code></a>
+<a name="998962">
+<code><strong><pre>	throws org.omg.CORBA.BAD_OPERATION;
+</pre>
+</strong></code></a>
+<a name="998956">
+<code><strong><pre>abstract public void insert_short(short s);
+</pre>
+</strong></code></a>
+<a name="998957">
+<code><strong><pre>abstract public int extract_long()
+</pre>
+</strong></code></a>
+<a name="998963">
+<code><strong><pre>	throws org.omg.CORBA.BAD_OPERATION;
+</pre>
+</strong></code></a>
+<a name="998958">
+<code><strong><pre>abstract public void insert_long(int i);
+</pre>
+</strong></code></a>
+<a name="998547">
+<code><strong><pre>abstract public long extract_longlong()
+</pre>
+</strong></code></a>
+<a name="998964">
+<code><strong><pre>	 throws org.omg.CORBA.BAD_OPERATION;
+</pre>
+</strong></code></a>
+<a name="998548">
+<code><strong><pre>abstract public void insert_longlong(long l);
+</pre>
+</strong></code></a>
+<a name="998591">
+<code><strong><pre>abstract public short extract_ushort() 
+</pre>
+</strong></code></a>
+<a name="998998">
+<code><strong><pre>	throws org.omg.CORBA.BAD_OPERATION;
+</pre>
+</strong></code></a>
+<a name="998592">
+<code><strong><pre>abstract public void insert_ushort(short s);
+</pre>
+</strong></code></a>
+<a name="998594">
+<code><strong><pre>abstract public int extract_ulong() 
+</pre>
+</strong></code></a>
+<a name="998999">
+<code><strong><pre>	throws org.omg.CORBA.BAD_OPERATION;
+</pre>
+</strong></code></a>
+<a name="998595">
+<code><strong><pre>abstract public void insert_ulong(int i);
+</pre>
+</strong></code></a>
+<a name="998597">
+<code><strong><pre>abstract public long extract_ulonglong() 
+</pre>
+</strong></code></a>
+<a name="999000">
+<code><strong><pre>	throws org.omg.CORBA.BAD_OPERATION;
+</pre>
+</strong></code></a>
+<a name="998598">
+<code><strong><pre>abstract public void insert_ulonglong(long l);
+</pre>
+</strong></code></a>
+<a name="998550">
+<code><strong><pre>abstract public float extract_float() 
+</pre>
+</strong></code></a>
+<a name="999001">
+<code><strong><pre>	throws org.omg.CORBA.BAD_OPERATION;
+</pre>
+</strong></code></a>
+<a name="998551">
+<code><strong><pre>abstract public void insert_float(float f);
+</pre>
+</strong></code></a>
+<a name="998552">
+<code><strong><pre>abstract public double extract_double() 
+</pre>
+</strong></code></a>
+<a name="999002">
+<code><strong><pre>	throws org.omg.CORBA.BAD_OPERATION;
+</pre>
+</strong></code></a>
+<a name="998553">
+<code><strong><pre>abstract public void insert_double(double d);
+</pre>
+</strong></code></a>
+<a name="998658">
+<code><strong><pre>abstract public boolean extract_boolean() 
+</pre>
+</strong></code></a>
+<a name="999004">
+<code><strong><pre>	throws org.omg.CORBA.BAD_OPERATION;
+</pre>
+</strong></code></a>
+<a name="998659">
+<code><strong><pre>abstract public void insert_boolean(boolean b);
+</pre>
+</strong></code></a>
+<a name="998661">
+<code><strong><pre>abstract public char extract_char() 
+</pre>
+</strong></code></a>
+<a name="999005">
+<code><strong><pre>	throws org.omg.CORBA.BAD_OPERATION;
+</pre>
+</strong></code></a>
+<a name="998662">
+<code><strong><pre>abstract public void insert_char(char c)
+</pre>
+</strong></code></a>
+<a name="1005839">
+<code><strong><pre>	throws org.omg.CORBA.DATA_CONVERSION;
+</pre>
+</strong></code></a>
+<a name="998664">
+<code><strong><pre>abstract public char extract_wchar() 
+</pre>
+</strong></code></a>
+<a name="999006">
+<code><strong><pre>	throws org.omg.CORBA.BAD_OPERATION;
+</pre>
+</strong></code></a>
+<a name="998665">
+<code><strong><pre>abstract public void insert_wchar(char c);
+</pre>
+</strong></code></a>
+<a name="998667">
+<code><strong><pre>abstract public byte extract_octet() 
+</pre>
+</strong></code></a>
+<a name="999007">
+<code><strong><pre>	throws org.omg.CORBA.BAD_OPERATION;
+</pre>
+</strong></code></a>
+<a name="998703">
+<code><strong><pre>abstract public void insert_octet(byte b);
+</pre>
+</strong></code></a>
+<a name="998557">
+<code><strong><pre>abstract public org.omg.CORBA.Any extract_any() 
+</pre>
+</strong></code></a>
+<a name="999009">
+<code><strong><pre>	throws org.omg.CORBA.BAD_OPERATION;
+</pre>
+</strong></code></a>
+<a name="998558">
+<code><strong><pre>abstract public void insert_any(org.omg.CORBA.Any a);
+</pre>
+</strong></code></a>
+<a name="998561">
+<code><strong><pre>abstract public org.omg.CORBA.Object extract_Object() 
+</pre>
+</strong></code></a>
+<a name="999011">
+<code><strong><pre>	throws org.omg.CORBA.BAD_OPERATION;
+</pre>
+</strong></code></a>
+<a name="998743">
+<code><strong><pre>abstract public void insert_Object(
+</pre>
+</strong></code></a>
+<a name="1005812">
+<code><strong><pre>			org.omg.CORBA.Object o);
+</pre>
+</strong></code></a>
+<a name="1004944">
+<code><strong><pre>// throw excep when typecode inconsistent with value
+</pre>
+</strong></code></a>
+<a name="998747">
+<code><strong><pre>abstract public void insert_Object(
+</pre>
+</strong></code></a>
+<a name="1005813">
+<code><strong><pre>			org.omg.CORBA.Object o,
+</pre>
+</strong></code></a>
+<a name="999089">
+<code><strong><pre>			org.omg.CORBA.TypeCode t)
+</pre>
+</strong></code></a>
+<a name="1005824">
+<code><strong><pre>			throws org.omg.CORBA.MARSHAL;
+</pre>
+</strong></code></a>
+<a name="998744">
+<code><strong><pre>abstract public String extract_string() 
+</pre>
+</strong></code></a>
+<a name="999015">
+<code><strong><pre>	throws org.omg.CORBA.BAD_OPERATION;
+</pre>
+</strong></code></a>
+<a name="998745">
+<code><strong><pre>abstract public void insert_string(String s)
+</pre>
+</strong></code></a>
+<a name="1005829">
+<code><strong><pre>	throws org.omg.CORBA.DATA_CONVERSION, org.omg.CORBA.MARSHAL;
+</pre>
+</strong></code></a>
+<a name="998566">
+<code><strong><pre>abstract public String extract_wstring() 
+</pre>
+</strong></code></a>
+<a name="999016">
+<code><strong><pre>	throws org.omg.CORBA.BAD_OPERATION;
+</pre>
+</strong></code></a>
+<a name="998567">
+<code><strong><pre>abstract public void insert_wstring(String s)
+</pre>
+</strong></code></a>
+<a name="1005835">
+<code><strong><pre>	throws org.omg.CORBA.MARSHAL;
+</pre>
+</strong></code></a>
+<a name="1003900">
+<code><strong><pre>// insert and extract typecode
+</pre>
+</strong></code></a>
+<a name="1003907">
+<code><strong><pre>abstract public org.omg.CORBA.TypeCode extract_TypeCode() 
+</pre>
+</strong></code></a>
+<a name="1003908">
+<code><strong><pre>	throws org.omg.CORBA.BAD_OPERATION;
+</pre>
+</strong></code></a>
+<a name="1005616">
+<code><strong><pre>abstract public void insert_TypeCode(
+</pre>
+</strong></code></a>
+<a name="1005825">
+<code><strong><pre>			org.omg.CORBA.TypeCode t);
+</pre>
+</strong></code></a>
+<a name="1005618">
+<code><strong><pre>// insert and extract Principal
+</pre>
+</strong></code></a>
+<a name="1005619">
+<code><strong><pre>abstract public org.omg.CORBA.Principal extract_Principal() 
+</pre>
+</strong></code></a>
+<a name="1005236">
+<code><strong><pre>	throws org.omg.CORBA.BAD_OPERATION;
+</pre>
+</strong></code></a>
+<a name="1005237">
+<code><strong><pre>abstract public void insert_Principal(
+</pre>
+</strong></code></a>
+<a name="1005301">
+<code><strong><pre>			org.omg.CORBA.Principal p);
+</pre>
+</strong></code></a>
+<a name="1005303">
+<code><strong><pre>// insert non-primitive IDL types
+</pre>
+</strong></code></a>
+<a name="1005307">
+<code><strong><pre>abstract public void insert_Streamable(
+</pre>
+</strong></code></a>
+<a name="1005333">
+<code><strong><pre>			org.omg.CORBA.portable.Streamable s);
+</pre>
+</strong></code></a>
+<a name="1005105">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1001198">
+<p>
+<h2><font size=6>	5.15	 Mapping for Certain Nested Types
+</font></h2>
+</a>
+<a name="1004964">
+IDL allows type declarations nested within interfaces. Java does not allow classes  to be nested within interfaces. Hence those IDL types that map to Java classes and that are declared within the scope of an interface must appear in a special &#34;scope&#34; package when mapped to Java.<p>
+</a>
+<a name="1004966">
+IDL interfaces that contain these type declarations will generate a scope package to contain the mapped Java class declarations. The scope package name is constructed by  appending <code><strong>Package</strong></code> to the IDL type name.<p>
+</a>
+<a name="1001202">
+<h3><font size=5> 	5.15.1	Example
+</font></h3>
+</a>
+<a name="1001203">
+<strong><pre>// IDL
+</pre>
+</strong></a>
+<a name="1001204">
+<strong><pre>module Example {
+</pre>
+</strong></a>
+<a name="1001205">
+<strong><pre>	interface Foo {
+</pre>
+</strong></a>
+<a name="1001206">
+<strong><pre>		exception e1 {};
+</pre>
+</strong></a>
+<a name="1001207">
+<strong><pre>	};
+</pre>
+</strong></a>
+<a name="1001208">
+<strong><pre>};
+</pre>
+</strong></a>
+<a name="1001209">
+<code><strong><pre>// generated Java
+</pre>
+</strong></code></a>
+<a name="1001210">
+<code><strong><pre>package Example.FooPackage;
+</pre>
+</strong></code></a>
+<a name="1001211">
+<code><strong><pre>final public class e1 extends org.omg.CORBA.UserException
+</pre>
+</strong></code></a>
+<a name="1005739">
+<code><strong><pre>	 {...}						
+</pre>
+</strong></code></a>
+<a name="998479">
+<p>
+<h2><font size=6>	5.16	 Mapping for Typedef
+</font></h2>
+</a>
+<a name="1003014">
+Java does not have a typedef construct.<p>
+</a>
+<a name="1003015">
+<h3><font size=5> 	5.16.1	Simple IDL types
+</font></h3>
+</a>
+<a name="1003020">
+IDL types that are mapped to simple Java types may not be subclassed in Java. Hence any typedefs that are type declarations for simple types are mapped to the original (mapped type) everywhere the typedef type appears.<p>
+</a>
+<a name="1003021">
+The IDL types covered by this rule are described in <a href="idl.fm.html#1000232">Section&#160;5.4, &#34;Mapping for Basic Types</a>.<p>
+</a>
+<a name="1004744">
+Helper classes are generated for all typedefs.<p>
+</a>
+<a name="1003029">
+<h3><font size=5> 	5.16.2	Complex IDL types
+</font></h3>
+</a>
+<a name="1004043">
+Typedefs for non arrays and sequences are &#34;unwound&#34; to their original type until a simple IDL type or user-defined IDL type (of the non typedef variety) is encountered. <p>
+</a>
+<a name="1004044">
+Holder classes are generated for sequence and array typedefs only.<p>
+</a>
+<a name="1003503">
+<h4><font size=4> 	5.16.2.1	 Example
+</font></h4>
+</a>
+<a name="1003504">
+<strong><pre>// IDL
+</pre>
+</strong></a>
+<a name="1003505">
+<strong><pre>struct EmpName {
+</pre>
+</strong></a>
+<a name="1003506">
+<strong><pre>	string firstName;
+</pre>
+</strong></a>
+<a name="1003507">
+<strong><pre>	string lastName;
+</pre>
+</strong></a>
+<a name="1003508">
+<strong><pre>};
+</pre>
+</strong></a>
+<a name="1003509">
+<strong><pre>typedef EmpName EmpRec;
+</pre>
+</strong></a>
+<a name="1004484">
+<code><strong><pre>// generated Java
+</pre>
+</strong></code></a>
+<a name="1004843">
+<code><strong><pre>// regular struct mapping for EmpName
+</pre>
+</strong></code></a>
+<a name="1004844">
+<code><strong><pre>// regular helper class mapping for EmpRec
+</pre>
+</strong></code></a>
+<a name="1004485">
+<code><strong><pre>
+</pre>
+</strong></code></a>
+<a name="1004486">
+<code><strong><pre>final public class EmpName {
+</pre>
+</strong></code></a>
+<a name="1004487">
+<code><strong><pre>	...
+</pre>
+</strong></code></a>
+<a name="1004748">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1004745">
+<code><strong><pre>public class EmpRecHelper {
+</pre>
+</strong></code></a>
+<a name="1004746">
+<code><strong><pre>	...
+</pre>
+</strong></code></a>
+<a name="1004747">
+<code><strong><pre>}
+</pre>
+</strong></code></a>
+<a name="1002364">
+<code><strong><pre>
+</pre>
+</strong></code></a>
+
+</BODY>
+</HTML>

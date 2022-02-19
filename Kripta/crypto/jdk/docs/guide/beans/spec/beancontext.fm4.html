@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Extensible Runtime Containment and Services Protocol for JavaBeans:  - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="beancontextTOC.fm.html">CONTENTS</a> | <a href="beancontext.fm3.html">PREV</a>
+ | <a href="beancontext.fm5.html">NEXT</a> 
+<!-- /font --></td><td align=right><i>Extensible Runtime Containment and Services Protocol for JavaBeans</i></td>
+</tr></table>
+<br>
+ 
+
+<br>
+<h3>
+<a name="916435"><!-- --></a>
+<i>2.2  </i> interface java.beans.beancontext.BeanContextChild<a href="#foot1"><sup>1</sup></a>
+</h3>
+
+<blockquote>
+<a name="916525"><!-- --></a>
+Simple JavaBeans that do not require any support or knowledge of their environment shall continue to function as they do today. However both JavaBeans that wish to utilize their containing <em>BeanContext</em>, and <em>BeanContext</em>s that may be nested, require to implement a mechanism that enables the propagation of the reference to the enclosing <em>BeanContext</em> through to cognizant JavaBeans and nested <em>BeanContext</em>s, the interface proposed is:<p>
+</blockquote>
+<blockquote><pre>
+public interface java.beans.beancontext.BeanContextChild {
+	void        setBeanContext(BeanContext bc)
+				throws PropertyVetoException;
+
+	BeanContext getBeanContext();
+
+	void addPropertyChangeListener
+		(String name, PropertyChangeListener pcl);
+
+     void removePropertyChangeListener
+		(String name, PropertyChangeListener pcl);
+
+	void addVetoableChangeListener
+		(String name, VetoableChangeListener pcl);
+
+     void removeVetoableChangeListener
+		(String name, VetoableChangeListener pcl);
+
+}
+</pre></blockquote><blockquote>
+The expected usage is that some 3rd party shall invoke one of the appropriate methods defined on <em>BeanContext</em> (by virtue of its inheritance from <em>Collection</em>) in order to add a <em>BeanContextChild</em> to the membership of the target <em>BeanContext</em>. As a consequence the <em>BeanContext</em> shall attempt to set the <em>BeanContextChild</em>&#39;s &#34;beanContext&#34; property by invoking its setter method, <em>setBeanContext</em>(). Only a <em>BeanContext</em> may call a <em>BeanContextChild</em>&#39;s <em>setBeanContext</em>() method, since this is the mechanism that a <em>BeanContext</em> uses to notify a child that it is now has a new <em>BeanContext</em> value. Since this property is not directly settable or customizable by a user in the context of an application construction tool the <em>BeanInfo</em> for a <em>BeanContextChild</em> should set the hidden state for this property in order for builder tools to avoid presenting the property to the user for customization.<p>
+<a name="919993"><!-- --></a>
+A <em>BeanContextChild</em> object may throw a <em>PropertyVetoException</em>, to notify the nesting <em>BeanContext</em> that it is unable to function/be nested within that particular <em>BeanContext</em>. Such a veto shall be interpreted by a <em>BeanContext</em> as an indication that the <em>BeanContextChild</em> has determined that it is unable to function in that particular <em>BeanContext</em> and is final.<p>
+<a name="918487"><!-- --></a>
+During the un-nesting of a <em>BeanContextChild</em> from its <em>BeanContext</em>, it is possible for the child, or a 3rd party listening to the child&#39;s &#34;beanContext&#34; property for <em>PropertyVetoEvents</em>, to throw a <em>PropertyVetoException</em> to notify the caller that it is not in a state to be un-nested. In order to bound this interaction a <em>BeanContextChild</em>, or 3rd party, may veto the initial un-nesting notification, but may not veto any subsequent notifications, and must, upon receipt of such notifications, amend its state accordingly to prepare itself to be subsequently un-nested.<p>
+<a name="918776"><!-- --></a>
+ Note that classes that implement this interface, also act as an Event Source for (sub)interface(s) of <em>java.beans.PropertyChangeListener</em>, and are required to update their state accordingly and subsequently fire the appropriate <em>java.beans.PropertyChangeEvent</em> with <em>propertyName</em> = &#34;beanContext&#34;, <em>oldValue</em> = the reference to the previous nesting <em>BeanContext</em>, and <em>newValue</em> = the reference to the new nesting <em>BeanContext,</em> to notify any Listeners that its nesting <em>BeanContext</em> has changed value.<p>
+<a name="917013"><!-- --></a>
+<em>BeanContextChild</em> instances, or nested <em>BeanContext</em>s in the process of terminating themselves, shall invoke the <em>remove() </em>method on their nesting <em>BeanContext</em> in order to withdraw themselves from the hierarchy prior to termination.<p>
+</blockquote>
+<br>
+<a name="917712"><!-- --></a>
+<h4><i>2.2.1   Important Persistence considerations
+</i></h4>
+
+<blockquote>
+<a name="917711"><!-- --></a>
+Instances of <em>BeanContextChild</em> nested within an <em>BeanContext,</em> will typically define fields or instance variables that will contain references to their nesting <em>BeanContext</em> instance, and possibly services obtained from that <em>BeanContextServices</em> instance via its <em>getService()</em> method. <p>
+<a name="917761"><!-- --></a>
+In order to ensure that the act of making such an instance persistent does not erroneously persist objects from the instances nesting environment, such instances shall be required to define such fields, or instance variables as either transient, or to implement custom persistence methods that avoid persisting such state.<p>
+<a name="917762"><!-- --></a>
+This requirement is crucial since operations such as cutting and pasting object instances through a clipboard via object serialization will not function correctly if the act of serializing the target object also serializes much of the entire source environment it is nested within.<p>
+</blockquote>
+<hr>
+<font size="-1">
+<ol>
+<a name="foot1"></a>
+<li>I don't like this name much but I am struggling for a better alternative!
+(we are stuck with it)
+</ol>
+</font>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="beancontextTOC.fm.html">CONTENTS</a> | <a href="beancontext.fm3.html">PREV</a>
+ | <a href="beancontext.fm5.html">NEXT</a> 
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1998-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Thu Dec 03 12:39:43 1998-1999 -->
+ 
+
+
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Object Serialization Specification:  - Security in Object Serialization
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="security.doc6.html">PREV</a>
+ | <a href="security.doc8.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java Object Serialization Specification</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="4324"><i>	A.7	</i> Preventing Overwriting of Externalizable Objects
+</a></h2>
+
+<blockquote>
+<a name="4326"><!-- --></a>
+Objects which implement the <code>Externalizable</code> interface must provide a public <code>readExternal</code> method.  Since this method is public, it can be called at arbitrary times by anyone with access to the object.  To prevent overwriting of the object&#39;s internal state by multiple (illegal) calls to <code>readExternal</code>, implementors may choose to add checks to insure that internal values are only set when appropriate:<p>
+<a name="4333"><!-- --></a>
+<pre>    public synchronized void readExternal(ObjectInput in)
+        throws IOException, ClassNotFoundException
+    {
+        if (! initialized) {
+            initialized = true;
+
+            // read in and set field values ...
+        } else {
+            throw new IllegalStateException();
+        }
+    }
+
+</pre>
+
+
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="serialTOC.doc.html">CONTENTS</a> | <a href="security.doc6.html">PREV</a>
+ | <a href="security.doc8.html">NEXT</a> <!-- | <a href="examples.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Fri Dec 10 11:48:17 1999 -->
+ 
+
+
+</body>
+</html>

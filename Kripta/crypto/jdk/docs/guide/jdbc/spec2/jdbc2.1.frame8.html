@@ -1,0 +1,500 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title></title>
+</head>
+<body bgcolor=#ffffff>
+
+<table width=100%><tr>
+<td><font size=-1>
+<a href="jdbc2.1.frame.html">Contents</a>  | <a href="jdbc2.1.frame7.html">Prev</a>  | <a href="jdbc2.1.frame9.html">Next</a>
+</font></td><td align=right><i>JDBC<sup><font size=-2>TM</font></sup> Guide: Getting Started</i></td>
+</tr></table>
+<hr>
+<br>
+ 
+
+<a name="297135"></a>
+<h2>	8	 New SQL Types</h2>
+
+<a name="297815"></a>
+The next two chapters discuss additions to the JDBC API that allow a Java application 
+to access new SQL data types, such as binary large objects and structured types. JDBC 
+drivers that do not support the new SQL types need not implement the methods and interfaces
+described in these chapters.
+<p>
+
+<a name="293160"></a>
+<h3>8.1 	  &nbsp; &nbsp; Taxonomy of SQL Types</h3>
+<a name="294790"></a>
+The latest version of the ANSI/ISO SQL standard is commonly referred to as <em>SQL99</em>. 
+The JDBC API incorporates a model of the new SQL99 types that includes only those 
+properties that are essential to exchanging data between Java applications and databases.
+The JDBC API should not be affected if some details of the syntax and server-side 
+semantics of the new SQL99 types are altered before the draft becomes an official standard.
+
+<p>
+<a name="294818"></a>
+The SQL99 draft specifies these data types:
+<p>
+
+<ul><a name="288854"></a>
+<li>SQL2 built-in types-the familiar SQL `column types'
+<br><br>
+
+
+<ul>
+<a name="288856"></a>
+<li>CHAR
+<br><br>
+<a name="297071"></a>
+<li>FLOAT
+<br><br>
+<a name="288858"></a>
+<li>DATE
+<br><br>
+<a name="288859"></a>
+<li>etc.
+<br><br>
+</ul>
+<a name="300249"></a>
+<li>New built-in types-new types added by SQL99
+<br><br>
+
+
+<ul>
+<a name="300250"></a>
+<li>BLOB-a Binary Large OBject
+<br><br>
+<a name="300251"></a>
+<li>CLOB-a Character Large OBject
+<br><br>
+</ul>
+<a name="297069"></a>
+<li>Structured types, for example:
+<br><br>
+
+
+<ul>
+<a name="297070"></a>
+<li>CREATE TYPE PLANE_POINT (X FLOAT, Y FLOAT)
+<br><br>
+</ul>
+<a name="288860"></a>
+<li>Distinct types-based on the representation of a built-in type, for example:
+<br><br>
+
+
+<ul>
+<a name="297022"></a>
+<li>CREATE TYPE MONEY AS NUMERIC(10,2)
+<br><br>
+</ul>
+<a name="288869"></a>
+<li>Constructed types-based on a given base type:
+<br><br>
+
+
+<ul>
+<a name="288871"></a>
+<li>REF(structured-type)-designates row containing a structured type instance
+<br><br>
+<a name="300162"></a>
+<li>base-type ARRAY[n]-an array of n base-type elements
+<br><br>
+</ul>
+<a name="300161"></a>
+<li>Locator types-designate a datum that resides on the server
+<br><br>
+
+
+<ul>
+<a name="288881"></a>
+<li>LOCATOR(structured-type)-locator to structured instance in server
+<br><br>
+<a name="288883"></a>
+<li>LOCATOR(array)-locator to array in server
+<br><br>
+<a name="297826"></a>
+<li>LOCATOR(blob)-locator to Binary Large Object in server
+<br><br>
+<a name="297827"></a>
+<li>LOCATOR(clob)-locator to Character Large Object in server
+<br><br>
+</ul>
+</ul><a name="297058"></a>
+
+<p>
+<a name="297830"></a>
+A <code>REF</code> value persistently denotes an instance of a structured type that resides in the database.
+A <code>LOCATOR</code> exists only in the client environment and is a transient, logical pointer
+to data that resides on the database server. A locator typically refers to data that is 
+too large to materialize on the client, for example, images or audio. There are operators 
+defined at the SQL level to retrieve random-access pieces of the data denoted by the 
+locator.
+<p>
+<a name="297868"></a>
+The remainder of this chapter discusses the default mechanism provided by the JDBC 
+API for accessing each of the new SQL types mentioned above. The JDBC API also 
+provides a means for customizing the mapping of SQL distinct and structured types into 
+Java classes. This mechanism is discussed in the Chapter <a href="jdbc2.1.frame9.html#298134">9</a>.
+<p>
+
+<a name="297904"></a>
+<h3>8.2 	  &nbsp; &nbsp; Blobs and clobs</h3>
+
+<a name="297869"></a>
+<h4>	8.2.1	 Retrieving blobs and clobs</h4>
+<a name="297881"></a>
+The binary large object (blob) and character large object (clob) data types are treated 
+similarly to the existing, built-in types defined in the JDBC API. Values of these types 
+can be retrieved by calling the <code>getBlob(</code>) and <code>getClob(</code>) methods that appear on the 
+<code>ResultSet</code> and <code>CallableStatement</code> interfaces. For example,
+<p>
+<a name="297894"></a>
+
+<p>
+<blockquote><pre>Blob blob = rs.getBlob(1);
+Clob clob = rs.getClob(2);
+
+
+</pre></blockquote><a name="297897"></a>
+retrieves a blob value from the first column of the result set and a clob value from the 
+second column. The <code>Blob</code> interface contains operations for returning the length of the 
+blob, a specific range of bytes contained in the blob, etc. The <code>Clob</code> interface contains 
+corresponding operations that are character based. See the accompanying API documentation
+for more details.
+<p>
+<a name="298078"></a>
+An application does not deal directly with the LOCATOR(blob) and LOCATOR(clob) 
+types that are defined in SQL. By default, a JDBC driver should implement the <code>Blob</code> 
+and <code>Clob</code> interfaces using the appropriate locator type. Also, by default <code>Blob</code> and <code>Clob</code> 
+objects only remain valid during the <strong>transaction</strong> in which they are created. A JDBC 
+driver may allow these defaults to be changed. For example, the lifetime of <code>Blob</code> and 
+<code>Clob</code> objects could be changed to session-scoped. However, the JDBC API does not 
+specify how this is done.
+<p>
+
+<a name="297911"></a>
+<h4>	8.2.2	 Storing blobs and clobs</h4>
+<a name="297912"></a>
+A <code>Blob</code> or <code>Clob</code> value can be passed as an input parameter to a <code>PreparedStatement</code> 
+object just like other data types by calling the <code>setBlob()</code> and <code>setClob()</code> methods respectively.
+ The <code>setBinaryStream()</code>, and <code>setObject()</code> methods may be used to input 
+a stream value as a blob. The <code>setAsciiStream()</code>, <code>setUnicodeStream()</code>, and <code>setObject()
+</code> methods may be used to input a stream as a clob value.
+<p>
+
+<a name="297913"></a>
+<h4>	8.2.3	 Metadata additions</h4>
+<a name="297914"></a>
+Two new type codes, <code>BLOB</code> and <code>CLOB, </code>have been added to<code> java.sql.Types. </code>These 
+values are returned by methods such as <code>DatabaseMetaData.getTypeInfo()</code> and <code>DatabaseMetaData.getColumns()
+</code> when a JDBC driver supports these data types.
+<p>
+
+<a name="297937"></a>
+<h3>8.3 	  &nbsp; &nbsp; Arrays</h3>
+
+<a name="297940"></a>
+<h4>	8.3.1	 Retrieving arrays</h4>
+<a name="297941"></a>
+Data of type SQL array can be retrieved by calling the <code>getArray()</code> method of the <code>ResultSet
+</code> and <code>CallableStatement</code> interfaces. For example,
+<p>
+<a name="297945"></a>
+
+<p>
+<blockquote><pre>Array a = rs.getArray(1);
+
+
+</pre></blockquote><a name="298046"></a>
+retrieves an <code>Array</code> value from the first column of the result set. By default, a JDBC driver
+should implement the <code>Array</code> interface using an SQL LOCATOR(array) internally. 
+Also, by default <code>Array </code>objects only remain valid during the <strong>transaction</strong> in which they 
+are created. These defaults may be changed as for the <code>Blob</code> and <code>Clob</code> types, but the 
+JDBC API does not specify how this is done.
+<p>
+<a name="297952"></a>
+The <code>Array</code> interface provides several methods which return the contents of the array to 
+the client as a materialized Java programming language array (Java array) or <code>ResultSet
+</code>object. These methods are <code>getArray()</code>and <code>getResultSet()</code>, respectively. See 
+the separate API documentation for details.
+<p>
+
+<a name="297960"></a>
+<h4>	8.3.2	 Storing arrays</h4>
+<a name="297961"></a>
+The <code>PreparedStatement.setArray()</code> method may be called to pass an <code>Array</code> value 
+as an input parameter to a prepared statement. A Java array may be passed as an input 
+parameter by calling <code>PreparedSatement.setObject()</code>.
+<p>
+
+<a name="297950"></a>
+<h4>	8.3.3	 Metadata additions</h4>
+<a name="297965"></a>
+A new type code, <code>ARRAY, </code>has been added to<code> java.sql.Types. </code>This value is returned 
+by methods such as <code>DatabaseMetaData.getTypeInfo()</code> and <code>DatabaseMetaData.getColumns()
+</code> when a JDBC driver supports the <code>Array</code> data type.
+<p>
+
+<a name="297962"></a>
+<h3>8.4 	  &nbsp; &nbsp; Refs</h3>
+
+<a name="297983"></a>
+<h4>	8.4.1	 Retrieving refs</h4>
+<a name="297972"></a>
+An SQL reference can be retrieved by calling the <code>getRef()</code> method of the <code>ResultSet</code> 
+and <code>CallableStatement</code> interfaces. For example,
+<p>
+<a name="297973"></a>
+
+<p>
+<blockquote><pre>Ref ref = rs.getRef(1);
+
+
+</pre></blockquote><a name="297977"></a>
+retrieves a <code>Ref</code> value from the first column of the result set. By default, retrieving a <code>Ref</code> 
+value does not materialize the data to which the <code>Ref</code> refers. Also, by default a Ref value 
+remains valid while the <strong>session </strong>or connection on which it is created is open. These defaults
+may be overridden, but again the JDBC API does not specify how this is done. 
+<p>
+<a name="298124"></a>
+The <code>Ref </code>interface does <strong>not</strong> provide methods for dereferencing. Instead, a <code>Ref</code> can be 
+passed as an input parameter to an appropriate SQL statement that fetches the object 
+that it references. See the separate JDBC API documentation for details.
+<p>
+
+<a name="298008"></a>
+<h4>	8.4.2	 Storing refs</h4>
+<a name="298009"></a>
+The <code>PreparedStatement.setRef()</code> method may be called to pass a <code>Ref</code> as an input 
+parameter to a prepared statement.
+<p>
+
+<a name="298010"></a>
+<h4>	8.4.3	 Metadata additions</h4>
+<a name="298011"></a>
+A new type code, <code>REF</code>, has been added to<code> java.sql.Types. </code>This value is returned by 
+methods such as <code>DatabaseMetaData.getTypeInfo()</code> and <code>DatabaseMetaData.getColumns()
+</code> when a JDBC driver supports the <code>Ref</code> data type.
+<p>
+
+<a name="297939"></a>
+<h3>8.5 	  &nbsp; &nbsp; Distinct types</h3>
+
+<a name="298154"></a>
+<h4>	8.5.1	 Retrieving distinct types</h4>
+<a name="297935"></a>
+By default, a datum of SQL type DISTINCT is retrieved by calling any <code>getXXX()</code> method
+that is appropriate to the underlying type that the distinct type is based on. For example,
+given the following type declaration:
+<p>
+<a name="298138"></a>
+
+<p>
+<a name="298143"></a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CREATE TYPE MONEY AS NUMERIC(10,2)
+<p>
+<a name="298144"></a>
+
+<p>
+<a name="298145"></a>
+a value of type MONEY could be retrieved as follows:
+<p>
+<a name="298148"></a>
+
+<p>
+<blockquote><pre>java.math.BigDecimal bd = rs.getBigDecimal(1);
+
+
+</pre></blockquote><a name="298389"></a>
+since the underlying SQL NUMERIC type is mapped to the <code>java.math.BigDecimal</code> 
+type.
+<p>
+
+<a name="298152"></a>
+<h4>	8.5.2	 Storing distinct types</h4>
+<a name="298155"></a>
+Any <code>PreparedStatement.setXXX()</code> method that is appropriate to the underlying type 
+of an SQL DISTINCT type may be used to pass an input parameter of that distinct type 
+to a prepared statement. For example, given the definition of type MONEY above <code>PreparedStatement.setBigDecimal()
+</code> would be used.
+<p>
+
+<a name="298161"></a>
+<h4>	8.5.3	 Metadata additions</h4>
+<a name="298164"></a>
+A new type code, <code>DISTINCT</code>, has been added to<code> java.sql.Types. </code>This value is returned
+by methods such as <code>DatabaseMetaData.getTypeInfo()</code> and <code>DatabaseMetaData.getColumns()
+</code> when a JDBC driver supports this data type.
+<p>
+<a name="298169"></a>
+An SQL DISTINCT type must be defined as part of a particular database schema before 
+it is used in a schema table definition. Information on schema-specific user-defined 
+types-of which <code>DISTINCT </code>types are one particular kind-can be retrieved by calling 
+the <code>DatabaseMetaData.getUDTs()</code> method. For example,
+<p>
+<a name="298170"></a>
+
+<p>
+<blockquote><pre><code>int[] types = {Types.DISTINCT};
+</code><code>ResultSet rs = dmd.getUDTs("catalog-name", "schema-name", 
+</code><code>	"%", types);
+</code></pre></blockquote><a name="298174"></a>
+
+<p>
+<a name="298175"></a>
+returns descriptions of all the SQL DISTINCT types <strong>defined</strong> in the <code>catalog-
+name.schema-name </code>schema<code>. </code>If the driver does not support UDTs or no matching 
+UDTs are found then an empty result set is returned.
+<p>
+<a name="298176"></a>
+Each type description has the following columns:
+<p>
+<a name="298202"></a>
+ 
+<Table Border="0">
+<caption></caption>
+<tr><td><strong>TYPE_CAT
+</strong><td>String =&gt; the type's catalog (may be null)
+
+<tr><td><strong>TYPE_SCHEM
+</strong><td>String =&gt; the type's schema (may be null)
+
+<tr><td><strong>TYPE_NAME
+</strong><td>String =&gt; the database type name
+
+<tr><td>JAVA_CLASS
+<td>String =&gt; a Java class or interface name 
+
+<tr><td><strong>DATA_TYPE
+</strong><td>short =&gt; value defined in <code>java.sql.Types</code>, e.g. DISTINCT
+
+
+<tr><td><strong>REMARKS
+</strong><td>String =&gt; explanatory comment on the type
+
+
+</Table>
+
+<Table>
+<tr><td>
+</Table>
+
+<p>
+<a name="298204"></a>
+
+<p>
+<a name="298234"></a>
+Most of the columns above should be self-explanatory. The <strong>TYPE_NAME</strong> is the SQL 
+type name given to the DISTINCT type-MONEY in the example above. This is the 
+name used in a CREATE TABLE statement to specify a column of this type. 
+<p>
+<a name="298248"></a>
+When <strong>DATA_TYPE</strong> is <code>Types.DISTINCT</code>, the <strong>JAVA_CLASS </strong>column contains a fully 
+qualified Java class name. Instances of this class will be created if <code>getObject()</code> is 
+called on a column of this DISTINCT type. For example, JAVA_CLASS would default 
+to <code>java.math.BigDecimal</code> in the case of MONEY above. The JDBC API does not prohibit
+a driver from returning a subtype of the class named by JAVA_CLASS. The 
+JAVA_CLASS value reflects a custom type mapping when one is used. See Chapter <a href="jdbc2.1.frame9.html#298134">9</a> 
+for details.
+<p>
+
+<a name="298166"></a>
+<h3>8.6 	  &nbsp; &nbsp; Structured types</h3>
+
+<a name="298281"></a>
+<h4>	8.6.1	 Retrieving structured types</h4>
+<a name="298272"></a>
+A value of an SQL structured type is always retrieved by calling method <code>getObject()</code>. 
+By default, <code>getObject()</code> returns a value of type <code>Struct</code> for a structured type. For example,
+
+<p>
+<a name="298282"></a>
+
+<p>
+<blockquote><pre>Struct struct = (Struct)rs.getObject(1);
+</pre></blockquote><a name="298284"></a>
+
+<p>
+<a name="298285"></a>
+retrieves a <code>Struct</code> value from the first column of the current row of result set <code>rs</code>. The 
+<code>Struct</code> interface contains methods for retrieving the attributes of a structured type as 
+an array of<code> java.lang.Object </code>values. By default, a JDBC driver should materialize 
+the contents of a <code>Struct</code> prior to returning a reference to it to the application. Also, by 
+default a <code>Struct</code> object is considered valid as long as the Java application maintains a 
+reference to it. A JDBC driver may allow these defaults to be changed-to allow an 
+SQL LOCATOR to be used, for example-but the JDBC API does not specify how this 
+is done. 
+<p>
+
+<a name="298302"></a>
+<h4>	8.6.2	 Storing structured types</h4>
+<a name="298304"></a>
+The <code>PreparedStatement.setObject()</code> method may be called to pass a <code>Struct</code> as an 
+input parameter to a prepared statement.
+<p>
+
+<a name="298162"></a>
+<h4>	8.6.3	 Metadata additions</h4>
+<a name="298307"></a>
+A new type code, <code>STRUCT</code>, has been added to<code> java.sql.Types. </code>This value is returned 
+by methods such as <code>DatabaseMetaData.getTypeInfo()</code> and <code>DatabaseMetaData.getColumns()
+</code> when a JDBC driver supports structured data types.
+<p>
+<a name="298308"></a>
+A structured SQL type must be defined as part of a particular database schema before 
+it can be used in a schema table definition. Information on schema-specific user-defined 
+types-of which <code>STRUCT </code>types are one particular kind-can be retrieved by calling the 
+<code>DatabaseMetaData.getUDTs()</code> method. For example,
+<p>
+<a name="298309"></a>
+
+<p>
+<blockquote><pre><code>int[] types = {Types.STRUCT};
+</code><code>ResultSet rs = dmd.getUDTs("catalog-name", "schema-name", 
+</code><code>	"%", types);
+</code></pre></blockquote><a name="298313"></a>
+
+<p>
+<a name="298314"></a>
+returns descriptions of all the structured SQL types <strong>defined</strong> in the <code>catalog-
+name.schema-name </code>schema<code>. </code>If the driver does not support UDTs or no matching 
+UDTs are found then an empty result set is returned. See section <a href="jdbc2.1.frame8.html#298161">8.5.3</a> for a description 
+of the result set returned by <code>getUDTs()</code>.
+<p>
+<a name="298344"></a>
+When the <strong>DATA_TYPE</strong> returned by <code>getUDTs()</code> is <code>Types.STRUCT</code>, the 
+<strong>JAVA_CLASS </strong>column contains the fully qualified Java class name of a Java class. Instances
+of this class are manufactured by the JDBC driver when <code>getObject()</code> is called 
+on a column of this STRUCT type. Thus, <strong>JAVA_CLASS</strong> defaults to <code>java.sql.Struct
+</code> for structured types. Chapter <a href="jdbc2.1.frame9.html#298134">9</a> discusses how this default can be modified
+by a Java application. We note here only that the JDBC API does not prohibit a 
+driver from returning a subtype of the class named by JAVA_CLASS. 
+<p>
+
+
+<br>
+<hr> 
+<font size=-1>
+<a href="jdbc2.1.frame.html">Contents</a>  | <a href="jdbc2.1.frame7.html">Prev</a>  | <a href="jdbc2.1.frame9.html">Next</a>
+</font>
+<hr>
+
+
+
+<address>
+<a href="mailto:jdbc@eng.sun.com">jdbc@eng.sun.com</a>
+or
+<a href="mailto:jdbc-business@eng.sun.com">jdbc-business@eng.sun.com</a>
+</address>
+
+<i><a href="../../../relnotes/SMICopyright.html">
+Copyright</a> &#169; 1996-1999 Sun Microsystems, Inc.   All rights reserved.</i>
+
+
+<!-- HTML generated by Suzette Pelouch on December 01, 1999 -->
+
+</body>
+</html>

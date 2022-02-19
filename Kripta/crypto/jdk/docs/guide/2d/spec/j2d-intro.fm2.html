@@ -1,0 +1,324 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API: 1 - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-intro.fm1.html">PREV</a>
+ | <a href="j2d-intro.fm3.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="61830"><i>1.2	</i> Rendering Model
+</a></h2>
+
+<blockquote>
+<a name="65374"><!-- --></a>
+The basic graphics rendering model has not changed with the addition of the Java 2D<sup>TM</sup> APIs. To render a graphic, you set up the graphics context and invoke a rendering method on the <kbd>Graphics </kbd>object. <p>
+<a name="65379"><!-- --></a>
+The Java 2D API class <kbd>Graphics2D</kbd> extends <kbd>Graphics</kbd> to support more graphics attributes and provide new rendering methods. Setting up a <kbd>Graphics2D</kbd> context is described in 
+<a href="j2d-awt.fm.html#70028">&#34;Rendering with Graphics2D&#34;</a>.<p>
+<a name="61854"><!-- --></a>
+The Java 2D API automatically compensates for differences in rendering devices and provides a uniform rendering model across different types of devices. At the application level, the rendering process is the same whether the target rendering device is a d
+
+isplay or a printer.<p>
+<a name="67727"><!-- --></a>
+With the Java<sup>TM</sup> 2 SDK, version 1.3 relsease, the Java 2D API provides support for multi-screen environments.  See <a href="j2d-intro.fm2.html#61857">Section&#160;1.2.1, &#34;Coordinate Systems</a>&#34; and 
+<a href="j2d-awt.fm6.html#70485">&#34;Rendering in a Multi-Screen Environment&#34;</a> for more information.<p>
+</blockquote>
+<br>
+<h3>
+<a name="61857"><!-- --></a>
+<i>1.2.1	</i> Coordinate Systems
+</h3>
+
+<blockquote>
+<a name="61859"><!-- --></a>
+The Java 2D API maintains two coordinate systems: <p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="65480"><!-- --></a>
+ <em>User space</em> is a device-independent, logical coordinate system. Applications use this coordinate system exclusively; all geometries passed into Java 2D rendering routines are specified in user space. 
+</li>
+<li>
+<a name="67706"><!-- --></a>
+<em>Device spac</em>e is a device-dependent coordinate system that varies according to the target rendering device. In a multi-screen environment with a virtual desktop where a window can span more than one physical screen device, the device coordinate sy
+
+stem that&#39;s used is the coordinate system of the virtual desktop that encompasses all of the screens.  For more information on how the Java 2D<sup>TM</sup> API supports multi-screen environments, see 
+<a href="j2d-awt.fm6.html#70485">&#34;Rendering in a Multi-Screen Environment&#34;</a>.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="67707"><!-- --></a>
+The Java 2D system automatically performs the necessary conversions between user space and the device space of the target rendering device. Although the coordinate system for a monitor is very different from the coordinate system for a printer, these diff
+
+erences are invisible to applications.<p>
+</blockquote>
+<br>
+<a name="65471"><!-- --></a>
+<h4><i>1.2.1.1	 User Space 
+</i></h4>
+
+<blockquote>
+<a name="63158"><!-- --></a>
+As shown in <a href="j2d-intro.fm2.html#61866">Figure&#160;1-1</a>, the user space origin is located in the upper-left corner of the space, with <em>x</em> values increasing to the right and <em>y</em> values increasing downward.<p><center><img src="j2d-intro.fm.anc.gif"></center><p>
+</blockquote>
+<blockquote><p>
+<a name="61866"><!-- --></a>
+<b>Figure 1-1	</b> User Space Coordinate System
+
+</p>
+</blockquote><blockquote>
+<a name="63182"><!-- --></a>
+User space represents a uniform abstraction of all possible device coordinate systems. The device space for a particular device might have the same origin and direction as user space, or it might be different. Regardless, user space coordinates are automa
+
+tically transformed into the appropriate device space when a graphic object is rendered. Often, the underlying platform device drivers are used to perform this conversion. <p>
+</blockquote>
+<br>
+<a name="63193"><!-- --></a>
+<h4><i>1.2.1.2	 Device Space
+</i></h4>
+
+<blockquote>
+<a name="61870"><!-- --></a>
+The Java 2D API defines three levels of configuration information that are maintained to support the conversion from user space to device space. This information is encapsulated by three classes:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="61872"><!-- --></a>
+<kbd>GraphicsEnviron</kbd>ment
+</li>
+<li>
+<a name="61873"><!-- --></a>
+<kbd>GraphicsDevice</kbd>
+</li>
+<li>
+<a name="61874"><!-- --></a>
+<kbd>GraphicsConfiguration</kbd>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="61876"><!-- --></a>
+Between them, the <kbd>GraphicsEnvironment</kbd>, <kbd>GraphicsDevice</kbd>, and <kbd>GraphicsConfiguration</kbd> represent all of the information necessary for locating a rendering device or font on the Java platform and for converting coordinates from u
+
+ser space to device space. An application can access this information, but does not need to perform any transformations between user space and device space.<p>
+<a name="67743"><!-- --></a>
+The <kbd>GraphicsEnvironment</kbd> describes the collection of rendering devices visible to a Java application on a particular platform. Rendering devices include screens, printers, and image buffers. The <kbd>GraphicsEnvironment</kbd> also includes a lis
+
+t of all of the available fonts on the platform. <p>
+<a name="63198"><!-- --></a>
+A <kbd>GraphicsDevice</kbd> describes an application-visible rendering device, such as a screen or printer. Each possible configuration of the device is represented by a <kbd>GraphicsConfiguration</kbd>. For example, an SVGA display device can operate in 
+
+several modes: 640x480x16 colors, 640x480x256 colors, and 800x600x256 colors. The SVGA screen is represented by a <kbd>GraphicsDevice </kbd>object and each of the modes is represented by a <kbd>GraphicsConfiguration</kbd> object.<p>
+<a name="63248"><!-- --></a>
+A <kbd>GraphicsEnvironment</kbd> can contain one or more <kbd>GraphicsDevices</kbd>; in turn, each <kbd>GraphicsDevice</kbd> can have one or more <kbd>GraphicsConfigurations</kbd>.<p>
+</blockquote>
+<br>
+<h3>
+<a name="61888"><!-- --></a>
+<i>1.2.2	</i> Transforms
+</h3>
+
+<blockquote>
+<a name="63314"><!-- --></a>
+The Java 2D API has a unified coordinate transformation model. All coordinate transformations, including transformations from user to device space, are represented by <kbd>AffineTransform</kbd> objects. <kbd>AffineTransform</kbd> defines the rules for man
+
+ipulating coordinates using matrices. <p>
+<a name="63322"><!-- --></a>
+You can add an <kbd>AffineTransform</kbd> to the graphics context to rotate, scale, translate, or shear a geometric shape, text, or image when it is rendered. The added transform is applied to any graphic object rendered in that context. The transform is 
+
+performed when user space coordinates are converted to device space coordinates.<p>
+</blockquote>
+<br>
+<h3>
+<a name="61894"><!-- --></a>
+<i>1.2.3	</i> Fonts
+</h3>
+
+<blockquote>
+<a name="65521"><!-- --></a>
+A string is commonly thought of in terms of the characters that comprise the string. When a string is drawn, its appearance is determined by the font that is selected. However, the shapes that the font uses to display the string don&#39;t always correspon
+
+d to individual characters. For example, in professional publishing, certain combinations of two or more characters are often replaced by a single shape called a <em>ligature</em>.<p>
+<a name="65522"><!-- --></a>
+The shapes that a font uses to represent the characters in the string are called <em>glyphs</em>. A font might represent a character such as a lowercase <em>a</em> acute using multiple glyphs, or represent certain character combinations such as the <em>fi
+
+</em> in final with a single glyph. In the Java 2D API, a glyph is simply a <kbd>Shape</kbd> that can be manipulated and rendered in the same way as any other <kbd>Shape</kbd>. <p>
+<a name="65523"><!-- --></a>
+A <em>font</em> can be thought of as a collection of glyphs. A single font might have many versions, such as heavy, medium, oblique, gothic, and regular. These different versions are called <em>faces</em>. All of the faces in a font have a similar typogra
+
+phic design and can be recognized as members of the same <em>family</em>. In other words, a collection of glyphs with a particular style forms a font face, a collection of font faces forms a font family, and a collection of font families forms the set of 
+
+fonts available within a particular <kbd>GraphicsEnvironment</kbd>. <p>
+<a name="61900"><!-- --></a>
+In the Java 2D API, fonts are specified by a name that describes a particular font face&#45;&#45;for example, Helvetica Bold. This is different from the JDK 1.1 software, in which fonts are described by logical names that map onto different font faces dep
+
+ending on which font faces are available on a particular platform. For backward compatibility, the Java 2D API supports the specification of fonts by logical name as well as by font face name. <p>
+<a name="61904"><!-- --></a>
+Using the Java 2D API, you can compose and render strings that contain multiple fonts of different families, faces, sizes, and even languages. The appearance of the text is kept logically separate from the layout of the text. <kbd>Font</kbd> objects are u
+
+sed to describe the appearance, and the layout information is stored in <kbd>TextLayout</kbd> and <kbd>TextAttributeSet</kbd> objects. Keeping the font and layout information separate makes it easier to use the same fonts in different layout configuration
+
+s.<p>
+</blockquote>
+<br>
+<h3>
+<a name="61906"><!-- --></a>
+<i>1.2.4	</i> Images
+</h3>
+
+<blockquote>
+<a name="61908"><!-- --></a>
+Images are collections of pixels organized spatially. A <em>pixel</em> defines the appearance of an image at a single display location. A two-dimensional array of pixels is called a <em>raster</em>. <p>
+<a name="65775"><!-- --></a>
+The pixel&#39;s appearance can be defined directly or as an index into a color table for the image. <p>
+<a name="65776"><!-- --></a>
+In images that contain many colors (more than 256), the pixels usually directly represent the color, alpha, and other display characteristics for each screen location. Such images tend to be much larger than indexed-color images, but they look more realis
+
+tic. <p>
+<a name="61918"><!-- --></a>
+In an indexed-color image, the colors in the image are limited to the colors specified in the color table, often resulting in fewer colors that can be used in the image. However, an index typically requires less storage space than a color value, so images
+
+ stored as a set of indexed colors are usually smaller. This pixel format is popular for images that contain only 16 or 256 colors.<p>
+<a name="61929"><!-- --></a>
+Images in the Java 2D API have two primary components: <p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="63396"><!-- --></a>
+The raw image data (the pixels)
+</li>
+<li>
+<a name="65780"><!-- --></a>
+The information necessary for interpreting the pixels
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="65789"><!-- --></a>
+The rules for interpreting the pixel are encapsulated by a <kbd>ColorModel</kbd> object&#45;&#45;for example, whether the values should be interpreted as direct or indexed colors. For a pixel to be displayed, it must be paired with a color model. <p>
+<a name="65813"><!-- --></a>
+A band is one component of the color space for an image. For example, the Red, Green, and Blue components are the bands in an RGB image. A pixel in a direct color model image can be thought of as a collection of band values for a single screen location. <
+
+p>
+<a name="65816"><!-- --></a>
+The <kbd>java.awt.image</kbd> package contains several <kbd>ColorModel</kbd> implementations, including those for packed and component pixel representations. <p>
+<a name="65790"><!-- --></a>
+A <kbd>ColorSpace</kbd> object encapsulates the rules that govern how a set of numeric measurements corresponds to a particular color. The <kbd>ColorSpace</kbd> implementations in the <kbd>java.awt.color</kbd> represent the most popular color spaces, incl
+
+uding RGB and gray scale. Note that a color space is not a collection of colors&#45;&#45;it defines the rules for how to interpret individual color values.<p>
+<a name="61933"><!-- --></a>
+Separating the color space from the color model provides greater flexibility in how colors are represented and converted from one color representation to another.<p>
+</blockquote>
+<br>
+<h3>
+<a name="61939"><!-- --></a>
+<i>1.2.5	</i> Fills and Strokes
+</h3>
+
+<blockquote>
+<a name="65822"><!-- --></a>
+With the Java 2D API, you can render <kbd>Shapes</kbd> using different pen styles and fill patterns. Because text is ultimately represented by a set of glyphs, text strings can also be stroked and filled. <p>
+<a name="65866"><!-- --></a>
+Pen styles are defined by objects that implement the <kbd>Stroke</kbd> interface. Strokes enable you to specify different widths and dashing patterns for lines and curves.<p>
+<a name="61943"><!-- --></a>
+Fill patterns are defined by objects that implement the <kbd>Paint</kbd> interface. The <kbd>Color</kbd> class, which was available in earlier versions of the AWT, is a simple type of <kbd>Paint</kbd> object used to define solid-color fills. The Java 2D A
+
+PI provides two additional <kbd>Paint</kbd> implementations, <kbd>TexturePaint</kbd> and <kbd>GradientPaint</kbd>. <kbd>TexturePaint</kbd> defines a fill pattern using a simple image fragment that is repeated uniformly. <kbd>GradientPaint</kbd> defines a 
+
+fill pattern as a gradient between two colors.<p>
+<a name="65867"><!-- --></a>
+In Java 2D, rendering a shape&#39;s outline and filling the shape with a pattern are two separate operations:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="65874"><!-- --></a>
+Using one of the <kbd>draw</kbd> methods renders the shape&#39;s contour or outline using the pen style specified by the <kbd>Stroke</kbd> attribute and the fill pattern specified by the <kbd>Paint</kbd> attribute.
+</li>
+<li>
+<a name="65871"><!-- --></a>
+Using the <kbd>fill</kbd> method fills the interior of the shape with the pattern specified by the <kbd>Paint</kbd> attribute.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="61947"><!-- --></a>
+When a text string is rendered, the current <kbd>Paint</kbd> attribute is applied to the glyphs that form the string. Note, however, that <kbd>drawString</kbd> actually fills the glyphs that are rendered. To stroke the outlines of the glyphs in a text str
+
+ing, you need to get the outlines and render them as shapes using the <kbd>draw</kbd> method.<p>
+</blockquote>
+<br>
+<h3>
+<a name="63573"><!-- --></a>
+<i>1.2.6	</i> Composites
+</h3>
+
+<blockquote>
+<a name="61958"><!-- --></a>
+When you render an object that overlaps an existing object, you need to determine how to combine the colors of the new object with the colors that already occupy the area where you are going to draw. The Java 2D API encapsulates rules for how to combine c
+
+olors in a <kbd>Composite</kbd> object. <p>
+<a name="63588"><!-- --></a>
+Primitive rendering systems provide only basic Boolean operators for combining colors. For example, a Boolean compositing rule might allow the source and destination color values to be ANDed, ORed, or XORed. There are several problems with this approach<p
+
+>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="63619"><!-- --></a>
+It&#39;s not &#34;human friendly&#34;&#45;&#45;it&#39;s difficult to think in terms of what the resulting color will be if red and blue are ANDed, not added. 
+</li>
+<li>
+<a name="63622"><!-- --></a>
+Boolean composition does not support the accurate composition of colors in different color spaces. 
+</li>
+<li>
+<a name="63628"><!-- --></a>
+Straight Boolean composition doesn&#39;t take into account the color models of the colors. For example, in an indexed color model, the result of a Boolean operation on two pixel values in an image is the composite of two indices, not two colors.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="61960"><!-- --></a>
+The Java 2D API avoids these pitfalls by implementing alpha-blending<a href="#66182"><sup>1</sup></a> rules that take color model information into account when compositing colors.   An <kbd>AlphaComposite</kbd> object includes the color model of both the 
+
+source and destination colors.<p>
+</blockquote>
+<p>
+<font size="-1">
+<a name="66182">
+1. For detailed information about alpha blending, see Section 17.6
+of Computer Graphics: Principles and Practice. 2nd ed. J.D. Foley,
+A. van Dam, S.K. Feiner, J.F. Hughes. Addison-Wesley, 1990.
+</font> <br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-intro.fm1.html">PREV</a>
+ | <a href="j2d-intro.fm3.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Mon Nov 22 09:36:53 1999 -->
+ 
+
+
+</body>
+</html>

@@ -1,0 +1,347 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API: 7 - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-print.fm1.html">PREV</a>
+ | <a href="j2d-print.fm3.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="417953"><i>7.2	</i> Printing Concepts
+</a></h2>
+
+<blockquote>
+<a name="420599"><!-- --></a>
+The Java Printing API is based on a <em>callback</em> printing model in which the printing system, not the application, controls when pages are printed. The application provides information about the document to be printed and the printing system asks the
+
+ application to render each page as it needs them. <p>
+<a name="420653"><!-- --></a>
+The printing system might request that a particular page be rendered more than once or request that pages be rendered out of order. The application must be able to generate the proper page image, no matter which page the printing system requests. In this 
+
+respect, the printing system is similar to the window toolkit, which can request components to repaint at any time, in any order.<p>
+<a name="420654"><!-- --></a>
+The callback printing model is more flexible than traditional application-driven printing models and supports printing on a wider range of systems and printers. For example, if a printer stacks output pages in reverse order, the printing system can ask th
+
+e application to generate pages in reverse order so that the final stack is in proper reading order. <p>
+<a name="420602"><!-- --></a>
+This model also enables applications to print to a bitmap printer from computers that don&#39;t have enough memory or disk space to buffer a full-page bitmap. In this situation, a page is printed as a series of small bitmaps or <em>bands</em>. For example
+
+, if only enough memory to buffer one tenth of a page is available, the page is divided into ten bands. The printing system asks the application to render each page ten times, once to fill each band. The application does not need to be aware of the number
+
+ or size of the bands; it simply must be able to render each page when requested.<p>
+</blockquote>
+<br>
+<h3>
+<a name="420680"><!-- --></a>
+<i>7.2.1	</i> Supporting Printing
+</h3>
+
+<blockquote>
+<a name="420710"><!-- --></a>
+An application has to perform two tasks to support printing:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="420725"><!-- --></a>
+Job control&#45;&#45;initiating and managing the print job.
+</li>
+<li>
+<a name="420734"><!-- --></a>
+Imaging&#45;&#45;rendering each page when the printing system requests it.
+</li>
+</ul>
+</blockquote>
+
+<br>
+<a name="420756"><!-- --></a>
+<h4><i>7.2.1.1	 Job Control
+</i></h4>
+
+<blockquote>
+<a name="420777"><!-- --></a>
+The user often initiates printing by clicking a button or selecting a menu item in an application. When a print operation is triggered by the user, the application creates a <kbd>PrinterJob</kbd> object and uses it to manage the printing process. <p>
+<a name="420807"><!-- --></a>
+The application is responsible for setting up the print job, displaying print dialogs to the user, and starting the printing process.<p>
+</blockquote>
+<br>
+<a name="420758"><!-- --></a>
+<h4><i>7.2.1.2	 Imaging 
+</i></h4>
+
+<blockquote>
+<a name="420736"><!-- --></a>
+When a document is printed, the application has to render each page when the printing system requests it. To support this mechanism, the application provides a <em>page painter</em> that implements the <kbd>Printable</kbd> interface. When the printing sys
+
+tem needs a page rendered, it calls the page painter&#39;s <kbd>print</kbd> method.<p>
+<a name="420899"><!-- --></a>
+When a page painter&#39;s <kbd>print</kbd> method is called, it is passed a <kbd>Graphics</kbd> context to use to render the page image. It is also passed a <kbd>PageFormat</kbd> object that specifies the geometric layout of the page, and an integer <em>p
+
+age index</em> that identifies the ordinal position of the page in the print job.<p>
+<a name="420607"><!-- --></a>
+The printing system supports both <kbd>Graphics</kbd> and
+<kbd>Graphics2D</kbd> rendering.  To print Java 2D<sup>TM</sup>
+<kbd>Shapes</kbd>, <kbd>Text</kbd>, and <kbd>Images</kbd>, you cast the <kbd>Graphics</kbd> object passed into the <kbd>print</kbd> me
+
+thod to a <kbd>Graphics2D</kbd>.<p>
+<a name="420859"><!-- --></a>
+To print documents in which the pages use different page painters and have different formats, you use a <em>pageable job</em>. To create a pageable job, you can use the <kbd>Book</kbd> class or your own implementation of the <kbd>Pageable</kbd> interface.
+
+ To implement simple printing operations, you do not need to use a pageable print job; <kbd>Printable</kbd> can be used as long as all of the pages share the same page format and painter.<p>
+</blockquote>
+<br>
+<h3>
+<a name="420933"><!-- --></a>
+<i>7.2.2	</i> Page Painters
+</h3>
+
+<blockquote>
+<a name="420934"><!-- --></a>
+The principal job of a page painter is to render a page using the graphics context that is provided by the printing system. A page painter implements the <kbd>Printable</kbd>.<kbd>print</kbd> method:<p>
+<a name="420935"></a>
+<kbd>public int print(Graphics g, PageFormat pf, int pageIndex) </kbd><p><a name="420936"><!-- --></a>
+The graphics context passed to the <kbd>print</kbd> method is either an instance of <kbd>Graphics</kbd> or <kbd>Graphics2D</kbd>, depending on the packages loaded in your Java Virtual Machine. To use <kbd>Graphics2D</kbd> features, you can cast the <kbd>G
+
+raphics</kbd> object to a <kbd>Graphics2D</kbd>. The <kbd>Graphics</kbd> instance passed to <kbd>print</kbd> also implements the <kbd>PrinterGraphics</kbd> interface.<p>
+<a name="420937"><!-- --></a>
+The <kbd>PageFormat</kbd> passed to a <kbd>Printable</kbd> describes the geometry of the page being printed. The coordinate system of the graphics context passed to <kbd>print</kbd> is fixed to the page: the origin of the coordinate system is at the upper
+
+ left corner of the paper, <em>X</em> increases to the right, <em>Y</em> increases downward, and the units are 1/72 inch. If the page is in portrait orientation, the x-axis aligns with the paper&#39;s &#34;width,&#34; while the y-axis aligns with the pape
+
+r&#39;s &#34;height.&#34; (Normally, but not always, a paper&#39;s height exceeds its width.) If the page is in landscape orientation, the roles are reversed: the x-axis aligns with the paper&#39;s &#34;height&#34; and the y-axis with its &#34;width.&#34;
+
+ <p>
+<a name="420938"><!-- --></a>
+Because many printers cannot print on the entire paper surface, the <kbd>PageFormat</kbd> specifies the <em>imageable area</em> of the page: this is the portion of the page in which it&#39;s safe to render. The specification of the imageable area does not
+
+ alter the coordinate system; it is provided so that the contents of the page can be rendered so that they don&#39;t extend into the area where the printer can&#39;t print.<p>
+<a name="420939"><!-- --></a>
+The graphics context passed to <kbd>print</kbd> has a clip region that describes the portion of the imageable area that should be drawn. It is always safe to draw the entire page into the context; the printing system will handle the necessary clipping. Ho
+
+wever, to eliminate the overhead of drawing portions of the page that won&#39;t be printed, you can use the clipping region to limit the areas that you render. To get the clipping region from the graphics context, call <kbd>Graphics.getClip</kbd>. You are
+
+ strongly encouraged to use the clip region to reduce the rendering overhead.<p>
+<a name="420940"><!-- --></a>
+It is sometimes desirable to launch the entire printing operation &#34;in the background&#34; so that a user can continue to interact with the application while pages are being rendered. To do this, call <kbd>PrinterJob.print</kbd> in a separate thread.<p
+
+>
+<a name="420941"><!-- --></a>
+If possible, you should avoid graphics operations that require knowledge of the previous image contents, such as <kbd>copyArea</kbd>, <kbd>setXOR</kbd>, and compositing. These operations can slow rendering and the results might be inconsistent.<p>
+</blockquote>
+<br>
+<h3>
+<a name="417961"><!-- --></a>
+<i>7.2.3	</i> Printable Jobs and Pageable Jobs
+</h3>
+
+<blockquote>
+<a name="417963"><!-- --></a>
+A <kbd>Printable</kbd> job provides the simplest way to print. Only one page painter is used; the application provides a single class that implements the <kbd>Printable</kbd> interface. When it&#39;s time to print, the printing system calls the page paint
+
+er&#39;s <kbd>print</kbd> method to render each page. The pages are requested in order, starting with page index 0. However, the page painter might be asked to render each page several times before it advances to the next page. When the last page has been
+
+ printed, the page painter&#39;s print method returns NO_SUCH_PAGE. <p>
+<a name="419828"><!-- --></a>
+In a <kbd>Printable</kbd> job:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="418567"><!-- --></a>
+All pages use the same page painter and <kbd>PageFormat</kbd>.   If a print dialog is presented, it will not display the number of pages in the document because that information is not available to the printing system.
+</li>
+<li>
+<a name="418568"><!-- --></a>
+The printing system always asks the page painter to print each page in indexed order, starting with the page at index 0. No pages are skipped. For example, if a user asks to print pages 2 and 3 of a document, the page painter will be called with indices 0
+
+, 1, and 2. The printing system might request that a page be rendered multiple times before moving to the next page.
+</li>
+<li>
+<a name="417966"><!-- --></a>
+The page painter informs the printing system when the end of the document has been reached.
+</li>
+<li>
+<a name="417967"><!-- --></a>
+All page painters are called in the same thread.
+</li>
+<li>
+<a name="417968"><!-- --></a>
+Some printing systems might not be able to achieve the ideal output. For example, the stack of pages emerging from the printer might be in the wrong order, or the pages might not be collated if multiple copies are requested.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="417969"><!-- --></a>
+A <kbd>Pageable</kbd> job is more flexible than a <kbd>Printable</kbd> job. Unlike the pages in a <kbd>Printable</kbd> job, pages in a <kbd>Pageable</kbd> job can differ in layout and implementation. To manage a <kbd>Pageable</kbd> job, you can use the <k
+
+bd>Book</kbd> class or implement your own <kbd>Pageable</kbd> class. Through the <kbd>Pageable</kbd>, the printing system can determine the number of pages to print, the page painter to use for each page, and the <kbd>PageFormat</kbd> to use for each page
+
+. Applications that need to print documents that have a planned structure and format should use <kbd>Pageable</kbd> jobs. <p>
+<a name="419829"><!-- --></a>
+In a <kbd>Pageable</kbd> job:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="417970"><!-- --></a>
+Different pages can use different page painters and <kbd>PageFormats</kbd>. 
+</li>
+<li>
+<a name="417971"><!-- --></a>
+The printing system can ask page painters to print pages in an arbitrary order and some pages might be skipped. For example, if a user asks to print pages 2 and 3 of a document, the page painter will be called with indices 1 and 2 and page index 0 will be
+
+ skipped.
+</li>
+<li>
+<a name="420244"><!-- --></a>
+<kbd>Pageable</kbd> jobs do not need to know in advance how many pages are in the document. However, unlike <kbd>Printable</kbd> jobs, they must be able to render pages in any order. There might be gaps in the sequencing and the printing system might requ
+
+est that a page be rendered multiple times before moving to the next page. For example, a request to print pages 2 and 3 of a document might result in a sequence of calls that request pages with indices 2,2,1,1, and 1.
+</li>
+</ul>
+</blockquote>
+
+<br>
+<h3>
+<a name="420247"><!-- --></a>
+<i>7.2.4	</i> Typical Life-Cycle of a PrinterJob
+</h3>
+
+<blockquote>
+<a name="420223"><!-- --></a>
+An application steers the <kbd>PrinterJob</kbd> object through a sequence of steps to complete a printing job. The simplest sequence used by an application is:<p>
+<ol>
+<li>
+<a name="417976"><!-- --></a>
+Get a new <kbd>PrinterJob</kbd> object by calling <kbd>PrinterJob.getPrinterJob</kbd>.
+</li>
+
+</ol>
+</blockquote><blockquote><ol>
+<li>
+<a name="417977"><!-- --></a>
+Determine what <kbd>PageFormat</kbd> to use for printing. A default <kbd>PageFormat</kbd> can be obtained by calling <kbd>defaultPage</kbd> or you can invoke <kbd>pageDialog</kbd> to present a dialog box that allows the user to specify a format.
+</li>
+
+<li>
+<a name="417978"><!-- --></a>
+Specify the characteristics of the job to be printed to the <kbd>PrinterJob</kbd>. For a <kbd>Printable</kbd> job, call <kbd>setPrintable</kbd>; for a <kbd>Pageable</kbd> job, call <kbd>setPageable</kbd>. Note that a <kbd>Book</kbd> object is ideal for pa
+
+ssing to <kbd>setPageable</kbd>.
+</li>
+
+<li>
+<a name="417979"><!-- --></a>
+Specify additional print job properties, such as the number of copies to print or the name of the job to print on the banner page.
+</li>
+
+<li>
+<a name="417980"><!-- --></a>
+Call <kbd>printDialog</kbd> to present a dialog box to the user. This is optional. The contents and appearance of this dialog can vary across different platforms and printers. On most platforms, the user can use this dialog to change the printer selection
+
+. If the user cancels the print job, the <kbd>printDialog</kbd> method returns <kbd>FALSE</kbd>.
+</li>
+<li>
+Call <kbd>Printerjob.print</kbd> to print the job. This method in turn calls <kbd>print</kbd> on the appropriate page painters.
+</li>
+</ol></blockquote>
+<a name="420961"><!-- --></a>
+
+<blockquote>
+<a name="420962"><!-- --></a>
+A job can be interrupted during printing if:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="420963"><!-- --></a>
+A <kbd>PrinterException</kbd> is thrown&#45;&#45;the exception is caught by the <kbd>print</kbd> method and the job is halted. A page painter throws a <kbd>PrinterException</kbd> if it detects a fatal error. 
+</li>
+<li>
+<a name="417984"><!-- --></a>
+ <kbd>PrinterJob.cancel</kbd> is called&#45;&#45;the printing loop is terminated and the job is canceled. The <kbd>cancel</kbd> method can be called from a separate thread that displays a dialog box and allows the user to cancel printing by clicking a but
+
+ton in the box.
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="417985"><!-- --></a>
+Pages generated before a print job is stopped might or might not be printed.<p>
+<a name="417986"><!-- --></a>
+The print job is usually not finished when the <kbd>print</kbd> method returns. Work is typically still being done by a printer driver, print server, or the printer itself. The state of the <kbd>PrinterJob</kbd> object might not reflect the state of the a
+
+ctual job being printed.<p>
+<a name="420329"><!-- --></a>
+Because the state of a <kbd>PrinterJob</kbd> changes during its life cycle, it is illegal to invoke certain methods at certain times. For example, calling <kbd>setPageable</kbd> after you&#39;ve called <kbd>print</kbd> makes no sense. When illegal calls a
+
+re detected, the <kbd>PrinterJob</kbd> throws a <kbd>java.lang.IllegalStateException</kbd>.<p>
+</blockquote>
+<br>
+<h3>
+<a name="417988"><!-- --></a>
+<i>7.2.5	</i> Dialogs
+</h3>
+
+<blockquote>
+<a name="417989"><!-- --></a>
+The Java Printing API requires that applications invoke user-interface dialogs explicitly. These dialogs might be provided by the platform software (such as Windows) or by a Java<sup>TM</sup> 2 SDK software implementation. For interactive applications, it
+
+ is customary to use such dialogs. For production printing applications, however, dialogs are not necessary. For example, you wouldn&#39;t want to display a dialog when automatically generating and printing a nightly database report. A print job that requ
+
+ires no user interaction is sometimes called a <em>silent</em> print job.<p>
+</blockquote>
+<br>
+<a name="417990"><!-- --></a>
+<h4><i>7.2.5.1	 Page setup dialog
+</i></h4>
+
+<blockquote>
+<a name="417991"><!-- --></a>
+You can allow the user to alter the page setup information contained in a <kbd>PageFormat</kbd> by displaying a page setup dialog. To display the page setup dialog, you call <kbd>PrinterJob.pageDialog</kbd>. The page setup dialog is initialized using the 
+
+parameter passed to <kbd>pageDialog</kbd>. If the user clicks the OK button in the dialog, the <kbd>PageFormat</kbd> instance is cloned, altered to reflect the user&#39;s selections, and then returned. If the user cancels the dialog, <kbd>pageDialog</kbd>
+
+ returns the original unaltered <kbd>PageFormat</kbd>.<p>
+</blockquote>
+<br>
+<a name="417993"><!-- --></a>
+<h4><i>7.2.5.2	 Print dialog
+</i></h4>
+
+<blockquote>
+<a name="417994"><!-- --></a>
+Typically, an application presents a print dialog to the user when a print menu item or button is activated. To display this print dialog, you call the <kbd>PrinterJob&#39;s printDialog</kbd> method. The user&#39;s choices in the dialog are constrained ba
+
+sed on the number and format of the pages in the <kbd>Printable</kbd> or <kbd>Pageable</kbd> that have been furnished to the <kbd>PrinterJob</kbd>. If the user clicks OK in the print dialog, <kbd>printDialog</kbd> returns <kbd>TRUE</kbd>. If the user canc
+
+els the print dialog, <kbd>FALSE</kbd> is returned and the print job should be considered abandoned.<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-print.fm1.html">PREV</a>
+ | <a href="j2d-print.fm3.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Mon Nov 22 09:37:25 1999 -->
+ 
+
+
+</body>
+</html>

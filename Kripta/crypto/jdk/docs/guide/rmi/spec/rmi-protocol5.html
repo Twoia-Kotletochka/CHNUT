@@ -1,0 +1,106 @@
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java Remote Method Invocation: 10 - RMI Wire Protocol
+
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="rmiTOC.html">CONTENTS</a> | <a href="rmi-protocol4.html">PREV</a>
+ | <a href="rmi-protocol6.html">NEXT</a> 
+<!-- /font --></td><td align=right><i>Java Remote Method Invocation</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="5112"><i>	10.4	</i> RMI&#39;s Use of HTTP POST Protocol
+</a></h2>
+
+<blockquote>
+<a name="3279"><!-- --></a>
+In order to invoke remote methods through a firewall, some RMI calls make use of the HTTP protocol, more specifically HTTP POST. The URL specified in the post header can be one of the following:<p>
+<a name="3280"><!-- --></a>
+	<em>http://</em><em>&lt;host&gt;</em><em>:</em><em>&lt;port&gt;</em><em>/ </em><br>
+	<em>http://</em><em>&lt;host&gt;</em><em>:80/cgi-bin/java-rmi?forward=</em><em>&lt;port&gt;</em><p>
+<a name="3281"><!-- --></a>
+The first URL is used for direct communication with an RMI server on the specific <em>host</em> and <em>port</em>. The second URL form is used to invoke a &#34;cgi&#34; script on the server which forwards the invocation to the server on the specified <em>port</em>.<p>
+<a name="3282"><!-- --></a>
+An <em>HttpPostHeader</em> is a standard HTTP header for a POST request. An <em>HttpResponseHeader</em> is a standard HTTP response to a post. If the response status code is not 200, then it is assumed that there is no <em>Return</em>. Note that only a single RMI call is embedded in an HTTP POST request.
+
+<br><br>
+<Table Border="0" Cellpadding="5">
+<caption></caption>
+
+<tr valign="top"><td colspan=2 rowspan=1><a name="5724"><!-- --></a>
+<p><em>HttpMessage</em><em>:</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="5728"><!-- --></a>
+<p>
+
+</td>
+<td><a name="5730"><!-- --></a>
+<p><em>HttpPostHeader Header Message</em>
+
+</td>
+</tr>
+<tr valign="top"><td colspan=2 rowspan=1><a name="5732"><!-- --></a>
+<p><em>HttpReturn:</em>
+
+</td>
+</tr>
+<tr valign="top"><td><a name="5736"><!-- --></a>
+<p>
+
+</td>
+<td><a name="5738"><!-- --></a>
+<p><em>HttpResponseHeader Return</em>
+
+</td>
+</tr>
+
+</Table>
+ 
+<Table>
+<tr><td></td>
+</tr>
+</Table><p>
+<p>
+</blockquote>
+<blockquote>
+<blockquote><hr noshade size="1">
+<b><a name="3472">Note - </a></b>Only the <em>SingleOpProtocol</em> appears in the <em>Header</em> of an <em>HttpMessage</em>. An <em>HttpReturn</em> does not contain a protocol acknowledgment byte. 
+<hr noshade size="1">
+</blockquote>
+</blockquote>
+
+</ul>
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="rmiTOC.html">CONTENTS</a> | <a href="rmi-protocol4.html">PREV</a>
+ | <a href="rmi-protocol6.html">NEXT</a> 
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF=http://java.sun.com/products/jdk/1.3/docs/relnotes/SMICopyright.html>Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Susan Snyder -->
+<!-- Last updated: Monday November 15 11:11:27 1999 -->
+ 
+
+
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API: 3 - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-geom.fm2.html">PREV</a>
+ | <a href="j2d-geom.fm4.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="64138"><i>3.3	</i> Combining Areas to Create New Shapes
+</a></h2>
+
+<blockquote>
+<a name="64222"><!-- --></a>
+<kbd>Areas</kbd> can be used to quickly construct complex <kbd>Shapes</kbd> from simple shapes such as circles and squares. To create a new complex <kbd>Shape</kbd> by combining <kbd>Areas</kbd>:<p>
+</blockquote><blockquote><ol>
+<li>
+<a name="64139"><!-- --></a>
+Using <kbd>Shapes</kbd>, construct the <kbd>Areas</kbd> to be combined.
+</li>
+<li>
+<a name="64136"></a>
+Call the appropriate Boolean operators: <kbd>add</kbd>, <kbd>subtract</kbd>, <kbd>intersect</kbd>, <kbd>exclusiveOr</kbd>.<p></ol></blockquote>
+</li>
+<blockquote>
+<a name="64223"><!-- --></a>
+For example, CAG could be used to create a pear like that shown in <kbd><a href="j2d-geom.fm3.html#64235">Figure&#160;3-2</a>.</kbd><p>
+<a name="64226"><!-- --></a>
+<p><center><img src="j2d-geom.fm.anc1.gif"></center> <p>
+</blockquote>
+<blockquote><p>
+<a name="64235"><!-- --></a>
+<b>Figure 3-2	</b> Pear constructed from circles
+
+</p>
+</blockquote><blockquote>
+<a name="61777"><!-- --></a>
+The body of the pear is constructed by performing a union operation on two overlapping <kbd>Areas</kbd>: a circle and an oval. The leaves are each created by performing an intersection on two overlapping circles and then joined into a single 
+<kbd>Shape</kbd> through a union operation. Overlapping circles are 
+also used to construct the stem through two subtraction operations. <p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-geom.fm2.html">PREV</a>
+ | <a href="j2d-geom.fm4.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Mon Nov 22 09:37:04 1999 -->
+ 
+
+
+</body>
+</html>

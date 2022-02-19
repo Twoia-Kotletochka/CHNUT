@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API: 5 - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-image.fm5.html">PREV</a>
+ | <a href="j2d-image.fm7.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="66873"><i>5.6	</i> Extracting Pixel Data from a SampleModel
+</a></h2>
+
+<blockquote>
+<a name="66874"><!-- --></a>
+The abstract <kbd>SampleModel</kbd> class defines methods for extracting samples of an image without knowing how the underlying data is stored. The class provides fields for tracking the height and width of the image data in the associated <kbd>DataBuffer</kbd>, and for describing the number of bands and the data type of that buffer.   <kbd>SampleModel</kbd> methods provide image data as a collection of pixels, with each pixel consisting of a number of samples or components. <p>
+<a name="66875"><!-- --></a>
+The <kbd>java.awt.image</kbd> package provides five types of sample models:<p>
+</blockquote>
+<blockquote>
+<ul><li>
+<a name="69534"><!-- --></a>
+<kbd>ComponentSampleModel</kbd>&#45;&#45;used to extract pixels from images that store sample data in separate data array elements in one bank of a <kbd>DataBuffer</kbd>.
+</li>
+<li>
+<a name="66876"><!-- --></a>
+<kbd>BandedSampleModel</kbd>&#45;&#45;used to extract pixels from images that store each sample in a separate data element with bands stored in a sequence of data elements
+</li>
+<li>
+<a name="69565"><!-- --></a>
+<kbd>PixelInterleavedSampleModel</kbd>&#45;&#45;used to extract pixels from images that store each sample in a separate data element with pixels stored in a sequence of data elements.
+</li>
+<li>
+<a name="66878"><!-- --></a>
+<kbd>MultiPixelPackedSampleModel</kbd>&#45;&#45;used to extract pixels from single banded images that store multiple one-sample pixels in one data element.
+</li>
+<li>
+<a name="66879"><!-- --></a>
+<kbd>SinglePixelPackedSampleModel</kbd>&#45;&#45;used to extract samples from images that store sample data for a single pixel in one data array element in the first bank of a <kbd>DataBuffer</kbd>. 
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<a name="67744"><!-- --></a>
+Pixel data presented by the <kbd>SampleModel</kbd> may or may not correlate directly to a color data representation of a particular color model, depending on the data source. For example, in photographic image data, the samples may represent RGB data. In image data from a medical imaging device, samples can represent different types of data such as temperature or bone density. <p>
+<a name="66957"><!-- --></a>
+There are three categories of methods for accessing image data. The <kbd>getPixel</kbd> methods return a whole pixel as an array, with one entry for each sample. The <kbd>getDataElement</kbd> methods provide access to the raw, uninterpreted data stored in the <kbd>DataBuffer</kbd>. The <kbd>getSample</kbd> methods provide access to pixel components for a specific band. <p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-image.fm5.html">PREV</a>
+ | <a href="j2d-image.fm7.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Mon Nov 22 09:37:15 1999 -->
+ 
+
+
+</body>
+</html>

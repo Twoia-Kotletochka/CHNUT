@@ -1,0 +1,310 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title></title>
+</head>
+<body bgcolor=#ffffff>
+
+<table width=600><tr>
+<td><font size=-1>
+<a href="jdbc-spec.frame.html">Contents</a>  | <a href="jdbc-spec.frame13.html">Prev</a>  | <a href="jdbc-spec.frame15.html">Next</a>
+</font></td><td align=right><i>JDBC<sup><font size=-2>TM</font></sup> Guide: Getting Started</i></td>
+</tr></table>
+<hr>
+<br>
+ 
+
+<a name="50686"></a>
+<h2>	14	 Dynamic Database Access</h2>
+
+<a name="2561"></a>
+We expect most JDBC programmers will be programming with knowledge of their target database's
+schema. They can therefore use the strongly typed JDBC interfaces described in Section
+<a href="jdbc-spec.frame7.html#20376">7</a> for data access. However there is also another extremely important class of database 
+access where an application (or an application builder) dynamically discovers the database 
+schema information and uses that information to perform appropriate dynamic data access. 
+This section describes the JDBC support for dynamic access.
+<p>
+
+<a name="6540"></a>
+<h3>14.1 	  &nbsp; &nbsp; Metadata information</h3>
+<a name="6530"></a>
+JDBC provides access to a number of different kinds of metadata, describing row results, statement
+parameters, database properties, etc., etc. We originally attempted to provide this information
+via extra methods on the core JDBC classes such as java.sql.Connection and 
+java.sql.ResultSet. However, because of the complexity of the metadata methods and because 
+they are likely to be used by only a small subset of JDBC programmers, we decided to split the 
+metadata methods off into two separate Java interfaces.
+<p>
+<a name="2565"></a>
+In general, for each piece of metadata information we have attempted to provide a separate 
+JDBC method that takes appropriate arguments and provides an appropriate Java result type. 
+However, when a method such as Connection.getProcedures() returns a collection of values, 
+we have chosen to use a java.sql.ResultSet to contain the results. The application programmer 
+can then use normal ResultSet methods to iterate over the results.
+<p>
+<a name="2566"></a>
+<strong>We considered defining a set of enumeration types for retrieving collections of metadata results, 
+but this seemed to add additional weight to the interface with little real value. JDBC programmers
+will already be familiar with using ResultSets, so using them for metadata results should 
+not be too onerous.
+</strong><p>
+<a name="51172"></a>
+A number of metadata methods take String search patterns as arguments. These search patterns 
+are the same as for ODBC, where a `_' iimplies a match of any single character and a `%' implies
+a match of zero or more characters.  For catalog and schema values, a Java empty string 
+matches an `unnamed' value; and a Java null String causes that search criteria to be ignored.
+<p>
+<a name="51173"></a>
+The java.sql.ResultSetMetaData type provides a number of methods for discovering the types 
+and properties of the columns of a particular java.sql.ResultSet object.
+<p>
+<a name="2573"></a>
+The java.sql.DatabaseMetaData interface provides methods for retrieving various metadata associated
+with a database. This includes enumerating the stored procedures in the database, the 
+tables in the database, the schemas in the database, the valid table types, the valid catalogs, 
+finding information on the columns in tables, access rights on columns, access rights on tables, 
+minimal row identification, and so on.
+<p>
+
+<a name="6552"></a>
+<h3>14.2 	  &nbsp; &nbsp; Dynamically typed data access</h3>
+<a name="6857"></a>
+In Section <a href="jdbc-spec.frame8.html#20986">8</a> we described the normal mapping between SQL types and Java types. For example,
+a SQL INTEGER is normally mapped to a Java int. This supports a simple interface for 
+reading and writing SQL values as simple Java types.
+<p>
+<a name="6950"></a>
+However, in order to support generic data access, we also provide methods that allow data to 
+be retrieved as generic Java objects. Thus there is a ResultSet.getObject method, a PreparedStatement.setObject
+method, and a CallableStatement.getObject method. Note that for each of 
+the two getObject methods you will need to narrow the resulting java.lang.Object object to a 
+specific data type before you can retrieve a value.
+<p>
+<a name="29199"></a>
+Since the Java built-in types such as boolean and int are not subtypes of Object, we need to use 
+a slightly different mapping from SQL types to Java object types for the getObject/setObject 
+methods. This mapping is shown in Table <a href="jdbc-spec.frame14.html#6941">4</a>.
+<p>
+<a name="6970"></a>
+ 
+<Table Border="3">
+<caption><a name="6941"></a>
+Table 4:  Mapping from SQL types to Java Object types.
+<p>
+</caption>
+<tr><th>SQL type
+<th>Java Object Type
+
+<tr><td>CHAR
+<td>String
+
+<tr><td>VARCHAR
+<td>String 
+
+<tr><td>LONGVARCHAR
+<td>String
+
+<tr><td>NUMERIC
+<td>java.math.BigDecimal
+
+<tr><td>DECIMAL
+<td>java.math.BigDecimal
+
+<tr><td>BIT
+<td>Boolean
+
+<tr><td>TINYINT
+<td>Integer
+
+<tr><td>SMALLINT
+<td>Integer
+
+<tr><td>INTEGER
+<td>Integer
+
+<tr><td>BIGINT
+<td>Long
+
+<tr><td>REAL
+<td>Float
+
+<tr><td>FLOAT
+<td>Double
+
+<tr><td>DOUBLE
+<td>Double
+
+<tr><td>BINARY
+<td>byte[]
+
+<tr><td>VARBINARY
+<td>byte[]
+
+<tr><td>LONGVARBINARY
+<td>byte[]
+
+<tr><td>DATE
+<td>java.sql.Date
+
+<tr><td>TIME
+<td>java.sql.Time
+
+<tr><td>TIMESTAMP
+<td>java.sql.Timestamp
+
+
+</Table>
+
+<Table>
+<tr><td>
+</Table>
+
+<p>
+<a name="28809"></a>
+
+<p>
+<a name="30822"></a>
+
+<p>
+<a name="30881"></a>
+The corresponding default mapping from Java Object types to SQL types is show in Table <a href="jdbc-spec.frame14.html#30877">5</a>. 
+<Table Border="3">
+<caption><a name="30877"></a>
+Table 5:  Mapping from Java Object types to SQL types.
+<p>
+<a name="30878"></a>
+ Note that the mapping for String will normally be VARCHAR but will turn into 
+LONGVARCHAR if the given value exceeds the drivers limit on VARCHAR 
+values. The situation is similar  for byte[] and VARBINARY and LONGVARBINARY.
+
+<p>
+</caption>
+<tr><th>Java Object Type
+<th>SQL type
+
+<tr><td>String 
+<td>VARCHAR or LONGVARCHAR
+
+<tr><td>java.math.BigDecimal
+<td>NUMERIC
+
+<tr><td>Boolean
+<td>BIT
+
+<tr><td>Integer
+<td>INTEGER
+
+<tr><td>Long
+<td>BIGINT
+
+<tr><td>Float
+<td>REAL
+
+<tr><td>Double
+<td>DOUBLE
+
+<tr><td>byte[]
+<td>VARBINARY or LONGVARBINARY
+
+<tr><td>java.sql.Date
+<td>DATE
+
+<tr><td>java.sql.Time
+<td>TIME
+
+<tr><td>java.sql.Timestamp
+<td>TIMESTAMP
+
+
+</Table>
+
+<Table>
+<tr><td>
+</Table>
+
+<p>
+<a name="30882"></a>
+
+<p>
+<a name="30803"></a>
+Note that it is not possible to send or receive Java input streams using the getObject or setObject
+methods. You must explicitly use PreparedStatement.setXXXStream or ResultSet.getXXX
+Stream to transfer a value as a stream.
+<p>
+<a name="30802"></a>
+
+<p>
+
+<a name="29165"></a>
+<h4>	14.2.1	 ResultSet.getObject</h4>
+<a name="29208"></a>
+ResultSet.getObject returns a Java object whose type correspond to the SQL type of the ResultSet
+column, using the mapping specified in Table <a href="jdbc-spec.frame14.html#6941">4</a>.
+<p>
+<a name="29170"></a>
+So for example, if you have a ResultSet where the "a" column has SQL type CHAR, and the 
+"b" column has SQL type SMALLINT, here are the types returned by some getObject calls:
+<p>
+<pre><code>ResultSet rs = stmt.executeQuery("SELECT a, b FROM foo");
+</code></pre>
+<pre><code>while (rs.next()) {
+</code></pre>
+<pre><code>	Object x = rs.getObject("a");							 // gets a String
+</code></pre>
+<pre><code>	Object y = rs.getObject("b");							 // gets an Integer
+</code></pre>
+<pre><code>}
+</code></pre>
+
+<a name="29177"></a>
+<h4>	14.2.2	 PreparedStatement.setObject</h4>
+<a name="29178"></a>
+For PreparedStatement.setObject you can optionally specify a target SQL type. In this case the 
+argument Java Object will first be mapped to its default SQL type (as specified in Table <a href="jdbc-spec.frame14.html#30877">5</a>), 
+then converted to the specified SQL type (see Table <a href="jdbc-spec.frame14.html#37019">6</a>), and then sent to the database.
+<p>
+<a name="29182"></a>
+Alternatively you can omit the target SQL type, in which case the given Java Object will simply 
+get mapped to its default SQL type (using Table <a href="jdbc-spec.frame14.html#30877">5</a>) and then be sent to the database .
+<p>
+
+<a name="29186"></a>
+<h4>	14.2.3	 CallableStatement.getObject</h4>
+<a name="29187"></a>
+Before calling CallableStatement.getObject you must first have specified the parameter's SQL 
+type using CallableStatement.registerOutParameter. When you call CallableStatement.getObject
+the Driver will return a Java Object type corresponding to that SQL type, using the mapping
+specified Table 4. 
+<p>
+<center><img src="table2.gif"></center>
+
+<p>
+<a name="37449"></a>
+
+<p>
+
+
+<br>
+<hr> 
+<font size=-1>
+<a href="jdbc-spec.frame.html">Contents</a>  | <a href="jdbc-spec.frame13.html">Prev</a>  | <a href="jdbc-spec.frame15.html">Next</a>
+</font>
+<hr>
+
+
+
+<address>
+<a href="mailto:jdbc@wombat.eng.sun.com">jdbc@wombat.eng.sun.com</a>
+or
+<a href="mailto:jdbc-odbc@wombat.eng.sun.com">jdbc-odbc@wombat.eng.sun.com</a>
+</address>
+
+<a href="../../../relnotes/SMICopyright.html">
+<font size=-1><i>Copyright &#169; 1996, 1997 Sun Microsystems, Inc.   All rights reserved.</i></font>
+</a>
+
+<!-- HTML generated by Suzette Pelouch on April 10, 1998 -->
+
+</body>
+</html>

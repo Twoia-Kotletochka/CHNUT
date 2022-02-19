@@ -1,0 +1,209 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+<head>
+<title>Java 2D API: 4 - 
+</title>
+</head>
+<body bgcolor="#ffffff">
+ 
+<table width="100%"><tr>
+<td><!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-fonts.fm.html">PREV</a>
+ | <a href="j2d-fonts.fm2.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font --></td><td align=right><i>Java 2D API</i></td>
+</tr></table>
+<br>
+ 
+
+<p>
+<hr size="8" width="35%" align="left" noshade>
+
+<h2><a name="62190"><i>4.1	</i> Interfaces and Classes
+</a></h2>
+
+<blockquote>
+<a name="68561"><!-- --></a>
+The following tables list the key font and text layout interfaces and classes. Most of these interfaces and classes are part of the <kbd>java.awt.font</kbd> package. Some, like <kbd>Font</kbd>, are part of the <kbd>java.awt</kbd> package to maintain backward compatibility with earlier versions of the JDK.<p>
+<a name="66739"><!-- --></a>
+
+
+<br><br>
+<Table Border="1" Cellpadding="5">
+<caption></caption>
+
+<tr><th><a name="62425"><!-- --></a>
+<blockquote><hr noshade size="1"><b>Interface</b> 
+<hr noshade size="1"></blockquote>
+</th><th><a name="62427"><!-- --></a>
+<blockquote><hr noshade size="1"><b>Description</b> 
+<hr noshade size="1"></blockquote>
+</th></tr>
+<tr><td><a name="62429"><!-- --></a>
+<p><code>MultipleMaster</code>
+
+</td><td><a name="62542"><!-- --></a>
+<p>Represents Type 1 Multiple Master fonts. Implemented by <code>Font</code> objects that are multiple master fonts to enable access to multiple master design controls.
+
+</td></tr>
+<tr><td><a name="62433"><!-- --></a>
+<p><code>OpenType</code>
+
+</td><td><a name="62546"><!-- --></a>
+<p>Represents Open Type and True Type fonts. Implemented by <code>Font</code> objects that are Open Type or True Type fonts to enable access to the font&#39;s <code>sfnt</code> tables.
+
+</td></tr>
+
+</Table>
+ 
+<Table>
+<tr><td></td>
+</tr>
+</Table><p>
+<p>
+<a name="66742"><!-- --></a>
+
+
+<br><br>
+<Table Border="1" Cellpadding="5">
+<caption></caption>
+
+<tr><th><a name="62935"><!-- --></a>
+<blockquote><hr noshade size="1"><b>Class</b> 
+<hr noshade size="1"></blockquote>
+</th><th><a name="62937"><!-- --></a>
+<blockquote><hr noshade size="1"><b>Description</b> 
+<hr noshade size="1"></blockquote>
+</th></tr>
+<tr><td><a name="63043"><!-- --></a>
+<p><code>Font</code>
+
+<a name="74785"><!-- --></a>
+<p>(<code>java.awt)</code>
+
+</td><td><a name="63045"><!-- --></a>
+<p>Represents an instance of a font face from the collection of font faces available on the host system. Supports the specification of detailed font information and provides access to information about the font and its glyphs. 
+
+</td></tr>
+<tr><td><a name="73090"><!-- --></a>
+<p>FontRenderContext
+
+</td><td><a name="73092"><!-- --></a>
+<p>Encapsulates the information necessary to correctly measure text.
+
+</td></tr>
+<tr><td><a name="63078"><!-- --></a>
+<p><code>GlyphJustificationInfo</code>
+
+</td><td><a name="63080"><!-- --></a>
+<p>Represents information about the justification properties of a glyph, such as weight, priority, absorb, and limit.
+
+</td></tr>
+<tr><td><a name="63430"><!-- --></a>
+<p><code>GlyphMetrics</code>
+
+</td><td><a name="63432"><!-- --></a>
+<p>Provides metrics for a single glyph.
+
+</td></tr>
+<tr><td><a name="62968"><!-- --></a>
+<p><code>GlyphVector</code>
+
+</td><td><a name="62970"><!-- --></a>
+<p>A collection of glyphs and their positions. 
+
+</td></tr>
+<tr><td><a name="63442"><!-- --></a>
+<p><code>GraphicAttribute</code>
+
+</td><td><a name="63444"><!-- --></a>
+<p>Base class for a <code>TextLayout</code> attribute that specifies a graphic to be embedded within text. Implemented by <code>ShapeGraphicAttribute</code> and <code>ImageGraphicAttribute</code>, which enable <code>Shapes</code> and <code>Images</code> to be embedded in a <code>TextLayout</code>. Can be subclassed to implement custom character replacement graphics.
+
+</td></tr>
+<tr><td><a name="63452"><!-- --></a>
+<p><code>ImageGraphicAttribute</code>
+
+</td><td><a name="63454"><!-- --></a>
+<p>Extends: <code>GraphicAttribute</code>
+
+<a name="66689"><!-- --></a>
+<p>A <code>GraphicsAttribute</code> used to draw <code>Images</code> within a <code>TextLayout</code>.
+
+</td></tr>
+<tr><td><a name="63456"><!-- --></a>
+<p><code>LineBreakMeasurer</code>
+
+</td><td><a name="63458"><!-- --></a>
+<p>Breaks a block of text that spans multiple lines into <code>TextLayout</code> objects that fit within a specified line length.
+
+</td></tr>
+<tr><td><a name="73120"><!-- --></a>
+<p>LineMetrics
+
+</td><td><a name="73122"><!-- --></a>
+<p>Provides access to the font metrics needed to lay out characters along a line and to lay out a set of lines. These metrics include ascent, descent, leading, height, and baseline information.
+
+</td></tr>
+<tr><td><a name="63460"><!-- --></a>
+<p><code>ShapeGraphicAttribute</code>
+
+</td><td><a name="66688"><!-- --></a>
+<p>Extends: <code>GraphicAttribute</code>
+
+<a name="63462"><!-- --></a>
+<p>A <code>GraphicsAttribute</code> used to draw <code>Shapes</code> within a <code>TextLayout</code>.
+
+</td></tr>
+<tr><td><a name="73072"><!-- --></a>
+<p><code>TextAttribute</code>
+
+</td><td><a name="73074"><!-- --></a>
+<p>Defines attribute keys and values used for text rendering. 
+
+</td></tr>
+<tr><td><a name="62988"><!-- --></a>
+<p><code>TextHitInfo</code>
+
+</td><td><a name="62990"><!-- --></a>
+<p>Represents hit test information for characters in a <code>TextLayout</code>.
+
+</td></tr>
+<tr><td><a name="63000"><!-- --></a>
+<p><code>TextLayout</code>
+
+</td><td><a name="63002"><!-- --></a>
+<p>Implements: <code>Cloneable</code>
+
+<a name="63003"><!-- --></a>
+<p>Provides an immutable graphical representation of styled character data, including bidirectional text.
+
+</td></tr>
+
+</Table>
+ 
+<Table>
+<tr><td></td>
+</tr>
+</Table><p>
+<p>
+</blockquote>
+
+<br>
+<hr>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --> <a href="j2d-bookTOC.doc.html">CONTENTS</a> | <a href="j2d-fonts.fm.html">PREV</a>
+ | <a href="j2d-fonts.fm2.html">NEXT</a> <!-- | <a href="j2d-print.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<hr>
+<font size="-1"><i><A HREF="../../../relnotes/SMICopyright.html">Copyright</a> &#169 1997-1999 Sun Microsystems, Inc. All Rights Reserved.</i></font>
+
+
+<!-- This HTML file was created with Quadralay WebWorks Publisher 3.5.0 -->
+<!-- by Suzette Pelouch -->
+<!-- Last updated: Mon Nov 22 09:37:08 1999 -->
+ 
+
+
+</body>
+</html>

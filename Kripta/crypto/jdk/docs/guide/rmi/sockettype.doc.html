@@ -1,0 +1,630 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+  <head>
+    <title>
+        Creating a Custom Socket Type
+    </title>
+  </head>
+  
+  <body BGCOLOR=#ffffff>
+      <h1><font SIZE= +3> <center>
+      Creating a Custom Socket Type
+      </center></font></h1>
+<hr>
+
+<p>Often it is necessary to process data either before it is sent to, 
+or after it has been received from, a socket.  Instead of using 
+<code>java.net.Socket</code> sockets with pre- and post-processing, 
+another type of socket can be used. 
+
+<p> This page shows you the steps to follow to create a custom socket 
+type. It also contains an example implementation of a custom socket 
+named <code>CompressionSocket</code>, which compresses data sent 
+over the connection it uses. 
+
+<p>The <code>CompressionSocket</code> and its supporting classes are
+also used in our tutorial on <a href="rmisocketfactory.doc.html"><i>how
+to create a custom RMI socket factory</i></a>.  As a result, the source
+files for this example are all in the <code>examples.rmisocfac</code>
+package.
+
+<a NAME="1">
+<p>In this tutorial, creating the <code>CompressionSocket</code> class 
+and related classes is broken down into the following four steps, which
+can be adapted to create other custom socket type:
+</a>   
+      <ol>
+	<li><a href="#2">Extend <code>java.io.FilterOutputStream</code> to
+          create an output stream for the socket.  Override
+	  <code>FilterOutputStream</code> methods as necessary.</a> 
+        <li> <a href="#3">Extend <code>java.io.FilterInputStream</code> to 
+	  create an input stream for the socket.  Override 
+	  <code>FilterInputStream</code> methods as necessary.</a>  
+	<li><a href="#4">Create a <code>java.net.Socket</code> subclass.  
+	  Implement the appropriate constructors and override the
+	  <code>getInputStream</code>, <code>getOutputStream</code>
+	  and <code>close</code> methods.</a>
+	<li> <a href="#5">Create a <code>java.net.ServerSocket</code> subclass.
+	  Implement the constructor, and overload the <code>accept</code> method
+	  to create a socket of the desired type.</a>
+      </ol>
+<hr>
+
+<a NAME="2">
+      <h2>Step 1: <br> Extend <code>FilterOutputStream</code> to Create an 
+	Output Stream for the Socket.</h2>
+</a>
+<blockquote>
+      <p> Because we are writing a socket that does data compression, we
+	will write a class named <code>CompressionOutputStream</code> that
+	extends <code>FilterOutputStream</code>.  However, extending 
+	<code>FilterOutputStream</code> will not be appropriate in every case.
+	In general, you should extend the type of output stream best-suited
+	for the type of socket you are implementing.  In this example,
+	<code>FilterOutputStream</code> is most appropriate.
+
+
+      <p> For our example, we will use a <em>very simple</em> algorithm
+	that provides 6-bit character encoding for up to 62 common
+	characters and 18-bit encoding for the other characters
+	(remember that in the Java<sup><font size=-2>TM</font></sup>
+	programming language characters are usually 16 bits).  There is
+	a lookup table to map the 62 common characters to 6-bit numbers
+	in the range 0 to 61. Depending on the result of the lookup,
+	each encoded character is marked with a constant to indicate
+	whether it has 6-bit or 18-bit encoding.  Finally, the encoded
+	characters are written to the stream.  This algorithm assumes
+	that all characters encountered are ASCII, and that the
+	high-order byte of each character is unused.
+
+
+      <p><b>Please note:</b> <i>This algorithm is <b>not</b> recommended
+	for use in any application requiring data compression.  It is
+	included only for this example and <b>is not intended for
+	practical use</b>.</i>
+	
+	<p> Before writing any sample code that demonstrates how to
+	create custom sockets, it is necessary to write an interface
+	containing the information to be shared between the input and
+	output stream classes so the common character lookup table,
+	<code>codeTable</code> and 3 constants are included as
+	members.  It is useful to note that while an interface is
+	included in this example, an interface is not always required.
+
+        <p><dl><pre>
+interface CompressionConstants {
+ 
+    /** Constants for 6-bit code values. */
+
+    /** No operation: used to pad words on flush. */
+    static final int NOP     = 0;  
+
+    /** Introduces raw byte format. */
+    static final int RAW     = 1;  
+
+    /** Format indicator for characters found in lookup table. */
+    static final int BASE    = 2;  
+
+    /** A character's code is it's index in the lookup table. */
+    static final String codeTable =
+        "abcdefghijklmnopqrstuvwxyz" +
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ ,.!?\"'()";
+}
+	</pre></dl>
+      
+	<p> The source code for the <code>CompressionConstants</code>
+        interface can be found <a
+        href="code/CompressionConstants.java"><i>here</i></a>.
+	
+	<p>Now that the interface for sharing information between the
+	input and output streams has been defined, we will complete
+	Step 1, which was to write a class that extends
+	<code>java.io.FilterOutputStream</code> in order to create an
+	output stream for the socket, overriding
+	<code>FilterOutputStream</code> methods as necessary.
+
+      <p>Below is the source code for the class 
+	<code>CompressionOutputStream.java</code>.  An explanation of the
+	  compression algorithm can be found in the comments of the
+	  source code.  An explanation of the implementation follows the
+	  code.   
+	  
+      <p><dl><pre>
+import java.io.*;
+ 
+class CompressionOutputStream extends FilterOutputStream
+    implements CompressionConstants
+{
+
+    /*
+     * Constructor calls constructor of superclass.
+     */
+    public CompressionOutputStream(OutputStream out) {
+        super(out);
+    }
+ 
+    /* 
+     * Buffer of 6-bit codes to pack into next 32-bit
+     * word.  Five 6-bit codes fit into 4 words. 
+     */
+    int buf[] = new int[5];
+ 
+    /*
+     * Index of valid codes waiting in buf. 
+     */
+    int bufPos = 0;
+ 
+
+    /*  
+     * This method writes one byte to the socket stream. 
+     */ 
+    public void write(int b) throws IOException {
+        // force argument to one byte
+        b &= 0xFF;                      
+ 
+        // Look up pos in codeTable to get its encoding. 
+        int pos = codeTable.indexOf((char)b);
+
+        if (pos != -1)
+            // If pos is in the codeTable, write 
+            // BASE + pos into buf. By adding BASE 
+            // to pos, we know that the characters in
+            // the codeTable will always have a code 
+            // between 2 and 63 inclusive. This allows 
+            // us to use RAW (RAW is equal to 1) to signify 
+            // that the next two groups of 6-bits are necessary
+            // for decompression of the next character. 
+
+            writeCode(BASE + pos);
+
+        else {
+            // Otherwise, write RAW into buf to signify that
+            // the Character is being sent in 12 bits.
+            writeCode(RAW);
+
+            // Write the last 4 bits of b into the buf.
+            writeCode(b >> 4);
+
+            // Truncate b to contain data in only the first 4
+            // bits and write the first 4 bits of b into buf.
+            writeCode(b & 0xF);
+        }
+    }
+ 
+    /* 
+     * This method writes up to len bytes to the socket stream. 
+     */
+    public void write(byte b[], int off, int len) 
+        throws IOException 
+    {
+        // This implementation is quite inefficient because 
+        // it has to call the other write method for every 
+        // byte in the array.  It could be optimized for 
+        // performance by doing all the processing in this 
+        // method.
+
+        for (int i = 0; i < len; i++)
+            write(b[off + i]);
+    }
+ 
+   /* 
+    * Clears buffer of all data (zeroes it out). 
+    */ 
+   public void flush() throws IOException {
+        while (bufPos > 0)
+            writeCode(NOP);
+    }
+ 
+    /* 
+     * This method actually puts the data into the output stream
+     * after packing the data from all 5 bytes in buf into one
+     * word. Remember, each byte has, at most, 6 significant bits.
+     */
+    private void writeCode(int c) throws IOException {
+        buf[bufPos++] = c;
+
+        // write next word when we have 5 codes
+        if (bufPos == 5) {      
+            int pack = (buf[0] << 24) | (buf[1] << 18) | 
+                       (buf[2] << 12) | (buf[3] << 6) | buf[4];
+            out.write((pack >>> 24) & 0xFF);
+            out.write((pack >>> 16) & 0xFF);
+            out.write((pack >>> 8)  & 0xFF);
+            out.write((pack >>> 0)  & 0xFF);
+            bufPos = 0;
+        }
+    }
+}
+	</pre></dl>
+      
+      <p>  First, <code>CompressionOutputStream</code> subclasses
+	<code>FilterOutputStream</code>. Then it implements the interface
+	<code>CompressionConstants</code> so that it can have access 
+	to the lookup table and constants.  
+
+	<p> In order to compress the data, the <code>FilterOutputStream
+	  write</code> methods are overridden by
+	<code>CompressionOutputStream</code>.  The method 
+ <p><code>public void write(int b)</code>
+	<p>writes one character per invocation, and is
+responsible for marking each character with its encoding format using
+a compression constant (either <code>RAW</code> or <code>BASE</code>)
+and dividing the character into two 4-bit parts when necessary.  
+
+<p>The method
+<p> <code>public void write(byte b[], int off, int len)</code>
+
+  <p> allows one to write <code>len</code> characters.  It calls the
+<code>write</code> method that writes one character per invocation
+<code>len</code> times.  
+
+<p>The method <code>writeCode</code> is responsible for packing five
+6-bit codes into one word (which could encode up to five characters) 
+and writing that word to the output stream. 
+	
+<p>  The source code for <code>CompressionOutputStream</code> can be
+found <a href="code/CompressionOutputStream.java"><i>here</i></a>.
+</blockquote>
+<hr>
+<a NAME="3">
+	<h2>Step 2:<br>Extend <code>FilterInputStream</code> to Create
+an Input Stream for the Socket.</h2>
+</a>
+<blockquote>
+
+      <p> Now that we have an output stream that compresses the data, we
+	need to implement an input stream that decompresses it. Creating
+      the <code>CompressionInputStream</code> is very similar to
+      creating the <code>CompressionOutputStream</code> as you will
+      notice from the source code and the following discussion. 
+
+      <p> As you might expect, algorithmically, the decoding process is the
+	just reverse of the encoding process.  
+	
+      <p><dl><pre>
+import java.io.*
+
+class CompressionInputStream extends FilterInputStream
+    implements CompressionConstants
+{
+    /*
+     * Constructor calls constructor of superclass
+     */
+    public CompressionInputStream(InputStream in) {
+        super(in);
+    }
+ 
+    /* 
+     * Buffer of unpacked 6-bit codes 
+     * from last 32 bits read.
+     */
+    int buf[] = new int[5];
+ 
+    /*
+     * Position of next code to read in buffer (5 signifies end). 
+     */ 
+    int bufPos = 5;
+ 
+    /*
+     * Reads in format code and decompresses character
+     * accordingly.  
+     */
+    public int read() throws IOException {
+        try {
+            int code;
+
+            // Read in and ignore empty bytes (NOP's) as 
+            // long as they arrive. 
+            do {
+                code = readCode();
+            } while (code == NOP);      
+ 
+            if (code >= BASE) {
+                // Retrieve index of character in codeTable 
+                // if the code is in the correct range.
+
+                return codeTable.charAt(code - BASE);
+            } else if (code == RAW) {
+                // read in the lower 4 bits and the 
+                // higher 4 bits, and return the 
+                // reconstructed character
+                int high = readCode();
+                int low = readCode();
+                return (high << 4) | low;
+            } else 
+                throw new IOException("unknown compression code: " 
+                                      + code);
+        } catch (EOFException e) {
+            // Return the end of file code
+            return -1;
+        }
+    }
+ 
+    /* 
+     * This method reads up to len bytes from the input stream.
+     * Returns if read blocks before len bytes are read. 
+     */ 
+    public int read(byte b[], int off, int len) 
+        throws IOException 
+    {
+        if (len <= 0) {
+            return 0;
+        }
+ 
+        // Read in a word and return -1 if no more data.
+        int c = read();
+        if (c == -1) {
+            return -1;
+        }
+
+        // Save c in buffer b
+        b[off] = (byte)c;
+ 
+        int i = 1;
+        // Try to read up to len bytes or until no
+        // more bytes can be read without blocking.
+        try {
+            for (; (i < len) && (in.available() > 0); i++) {
+                c = read();
+                if (c == -1) {
+                    break;
+                }
+                if (b != null) {
+                    b[off + i] = (byte)c;
+                }
+            }
+        } catch (IOException ee) {
+        }
+        return i;
+    }
+
+    /*
+     * If there is no more data to decode left
+     * in buf, read the next four bytes from the 
+     * wire. Then store each group of 6 bits in an
+     * element of buf.  Return one element of buf.
+     */
+    private int readCode() throws IOException {
+        // As soon as all the data in buf has been read
+        // (when bufPos == 5) read in another four bytes.
+        if (bufPos == 5) {
+            int b1 = in.read();
+            int b2 = in.read();
+            int b3 = in.read();
+            int b4 = in.read();
+
+            // make sure none of the bytes signify the
+            // end of the data in the stream
+            if ((b1 | b2 | b3 | b4) < 0)
+                throw new EOFException();
+            // Assign each group of 6 bits to an 
+            // element of buf.
+            int pack = (b1 << 24) | (b2 << 16) | 
+                       (b3 << 8) | b4;
+            buf[0] = (pack >>> 24) & 0x3F;
+            buf[1] = (pack >>> 18) & 0x3F;
+            buf[2] = (pack >>> 12) & 0x3F;
+            buf[3] = (pack >>>  6) & 0x3F;
+            buf[4] = (pack >>>  0) & 0x3F;
+            bufPos = 0;
+        }
+        return buf[bufPos++];
+    }
+}
+</pre></dl>
+
+    <p> When writing your own input stream, it is necessary to provide
+	methods for getting data from the stream.  Therefore, in addition to a
+	constructor, two <code>FilterOutputStream read</code> methods were
+	overridden.  The method  
+
+	<p><code>public int read()</code> 
+
+	<p> reads one character per invocation and is responsible for
+	decoding the 6-bit codes unpacked by the method <code>writeCode</code>. 
+
+	<p> The method
+
+	<p><code> public int read(byte b[], int off, int len)</code>
+
+	<p> causes up to <code>len</code> bytes to be read and placed into the
+	array <code>b</code>.  It accomplishes this through up to
+	<code>len</code> calls to the <code>read</code> method that
+	reads one character per invocation.  In addition to returning
+	once <code>len</code> bytes have been read or once the end of
+	the file has been reached, this method also returns as soon as
+	no more bytes can be read without blocking.
+
+	<p>The method <code>readCode</code>, which corresponds to the 
+	<code>writeCode</code> method in <code>CompressionOutputStream</code>, 
+	is responsible for reading data	from the stream and unpacking each 
+	group of four bytes into five 6-bit codes (which are then decoded by 
+	<code>read</code>).
+
+    	<p> The source code for <code>CompressionInputStream.java</code>, can 
+	be found <a href="code/CompressionInputStream.java"><i>here</i></a>. 
+</blockquote>
+<hr>
+<a NAME=4>      
+    <h2> Step 3:<br>Create a <code>Socket</code> subclass.  Implement the
+      appropriate constructors and override the 
+      <code>getInputStream</code>, <code>getOutputStream</code>, and
+	<code>close</code> methods.</h2>
+</a>
+<blockquote>
+
+    	<p> Now that we have implemented the classes 
+	<code>CompressionInputStream</code> and
+	<code>CompressionOutputStream</code>, we can implement the socket 
+	that communicates using these compression streams.  Our subclass 
+	extends class <code>java.net.Socket</code>.
+      
+    	<p> Below is the source code for the class 
+	<code>CompressionSocket</code>.  Following the source is a
+      	discussion of the class.
+      
+    <p><dl><pre>
+import java.io.*;
+import java.net.*;
+ 
+class CompressionSocket extends Socket {
+
+    /* InputStream used by socket */
+    private InputStream in;
+    /* OutputStream used by socket */
+    private OutputStream out;
+
+    /* 
+     * No-arg constructor for class CompressionSocket  
+     */
+    public CompressionSocket() { super(); }
+
+    /* 
+     * Constructor for class CompressionSocket 
+     */
+    public CompressionSocket(String host, int port) 
+        throws IOException 
+    {
+        super(host, port);
+    }
+
+    /* 
+     * Returns a stream of type CompressionInputStream 
+     */
+    public InputStream getInputStream() 
+        throws IOException 
+    {
+        if (in == null) {
+            in = new CompressionInputStream(super.getInputStream());
+        }
+        return in;
+    }
+
+    /* 
+     * Returns a stream of type CompressionOutputStream 
+     */
+    public OutputStream getOutputStream() 
+        throws IOException 
+    {
+        if (out == null) {
+            out = new CompressionOutputStream(super.getOutputStream());
+        }
+        return out;
+    }
+
+    /*
+     * Flush the CompressionOutputStream before 
+     * closing the socket.
+     */
+    public synchronized void close() throws IOException {
+        OutputStream o = getOutputStream();
+        o.flush();
+	super.close();
+    }
+
+}
+      </pre></dl>
+
+	<p>  Because we are extending the <code>Socket</code> class to 
+	provide sockets that communicate using data compression, we need to:
+	<ul><li> 
+	override the class <code>Socket</code> methods that directly 
+	manipulate the input and output streams used by class 
+	<code>Socket</code> and 
+	<li>provide constructors that call the constructor 
+	of the superclass. </ul>
+
+	<p> The <code>CompressionSocket</code> constructors just 
+	call the equivalent constructors in the superclass, 
+	<code>java.net.Socket</code>. 
+
+	<p>  The method <code>getInputStream</code> creates a 
+	<code>CompressionInputStream</code> for the socket if one has not 
+	already been instantiated and returns a reference to that stream.  
+	Likewise, <code>getOutputStream</code> creates a 
+	<code>CompressionOutputStream</code> if necessary, and returns the 
+	one in use by the <code>CompressionSocket</code>.   
+
+	<p> The <code>close</code> method flushes the underlying 
+	<code>CompressionOutputStream</code>, ensuring that all the data is 
+	sent before the socket is closed.
+
+    	<p> The source code for <code>CompressionSocket.java</code>, can be 
+	found <a href="code/CompressionSocket.java"><i>here</i></a>.
+</blockquote>
+<hr>
+<a NAME="5">
+    <h2> Step 4:<br>Create a <code>ServerSocket</code> subclass.  Implement the
+      constructor, and override the <code>accept</code> method to
+      create a socket of the desired type.</h2>
+</a>
+<blockquote>
+
+	<p>  The last step in writing a custom socket is creating a 
+	subclass of <code>ServerSocket</code> that supports your protocol.  In 
+	this case, our subclass will be <code>CompressionServerSocket</code>.
+
+	<p> Below is the source code for the 
+	<code>CompressionServerSocket</code> class, followed by a discussion of 
+	the class. 
+
+<p><dl><pre>
+import java.io.*;
+import java.net.*;
+ 
+class CompressionServerSocket extends ServerSocket {
+
+    public CompressionServerSocket(int port) 
+        throws IOException 
+    {
+        super(port);
+    }
+
+    public Socket accept() throws IOException {
+        Socket s = new CompressionSocket();
+        implAccept(s);
+        return s;
+    }
+}
+</pre></dl>
+
+	<p> As was the case with <code>CompressionSocket</code>, in order to 
+	provide server sockets that communicate using our compression protocol, 
+	we need to implement the constructor, and then make sure that all 
+	methods	that use sockets of type <code>java.net.Socket</code> are 
+	overridden to use sockets of type <code>CompressionSocket</code>.
+
+	<p> Implementing the constructor is as simple as calling the
+	constructor of the super class.
+
+	<p> The only <code>ServerSocket</code> class method that needs to be
+	overridden is the method <code>accept</code>.  It is overridden to
+	instantiate a socket of type <code>CompressionSocket</code> instead of
+	type <code>Socket</code>. 
+
+	<p> The above simplifications are possible because the compression
+	socket type described in this tutorial is a protocol layer on top of
+	TCP, the default protocol used by <code>java.net.Socket</code> and
+	<code>java.net.ServerSocket</code>.  Accordingly, it shares the
+	same meaning for the rest of the methods, as well as a similar
+	connection-establishment interface.
+
+    	<p> The source code for <code> CompressionServerSocket.java</code>, can 
+	be found <a href="code/CompressionServerSocket.java"><i>here</i></a>.
+<p>
+<p>
+</blockquote>
+<!-- Body text ends here --><!-- ============================================================== -->
+<HR SIZE=3 NOSHADE>
+<TABLE BORDER=0 WIDTH="100%" >
+<TR VALIGN=TOP>
+<TD><FONT SIZE=-2><A HREF="../../relnotes/SMICopyright.html">Copyright &copy;</A>
+1999 <A HREF="http://www.sun.com/">Sun Microsystems, Inc.</A> All Rights
+Reserved.</FONT>&nbsp;
+<BR><FONT SIZE=-1>Please send comments to: <A HREF="mailto:rmi-comments@java.sun.com">rmi-comments@java.sun.com</A>&nbsp;</FONT></TD>
+
+<TD ALIGN=RIGHT><IMG SRC="../../images/sunlogo64x30.gif" ALT="Sun" BORDER=0 HEIGHT=30 WIDTH=64>&nbsp;
+</TR>
+</TABLE>
+</BODY>
+</HTML>

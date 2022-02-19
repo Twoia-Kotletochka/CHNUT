@@ -1,0 +1,208 @@
+<html>
+  <head>
+    <title>SDK Tools Changes</title>
+  </head>
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" VLINK="#000077" ALINK="#FF0000">
+
+<TABLE BORDER="0" WIDTH="100%">
+<TR>
+<TD WIDTH="60">
+   <IMG SRC="../images/javalogo52x88.gif" ALT="Java" BORDER=0 WIDTH=52 HEIGHT=88>
+</TD>
+
+<TD>
+<center>
+           <H1>Java<font size="-2"><sup>TM</sup></font> 2 SDK
+<br>Tools Changes</H1>
+</center>
+</TD>
+
+
+<TD ALIGN=RIGHT VALIGN=TOP>
+   <font size="-1"><a href="tools.html">SDK Tools</a></font>
+</TD>
+</TR>
+</TABLE>
+<blockquote>
+This document describes some of the changes made to the tools in version 
+1.3 of the Java 2 SDK, Standard Edition.  
+
+
+<ul>
+<p><li> The <b>javac</b> compiler has been completely re-implemented in 
+version 1.3 of the Java 2 SDK.  The compiler implementation from previous 
+releases of the SDK is still available as <b>oldjavac</b>.   
+The new javac is faster than the old java.  
+<p>
+The nonstandard options, those prefixed with '-X', are no longer
+supported.  In particular, the <tt>-Xdepend</tt> option is no longer available.
+<p>
+When searching the classpath or sourcepath, the new compiler does not follow
+symbolic links.  In version 1.3, it is therefore necessary to avoid the use of
+symbolic links within the directories appearing on the classpath and
+sourcepath, and within their subdirectories.
+<p>
+When the new 1.3 compiler detects an error in a source file during a
+compilation, it continues to parse the remaining source files and attempts
+to identify any further errors that they may contain.  Code generation is
+completely suppressed for the remainder of the compilation, however, and no
+class files will be generated, even for compilation units that contain no
+errors.  The old compiler in 1.2 would generate class files for any
+compilation units that did not contain errors.  This resulted in less
+redundant work during the repeated compilations required to identify and
+correct all errors in a large program containing many files with errors.  We
+hope to improve this behavior in the future.  The new compiler is
+substantially faster overall, however, which should tend to offset this
+somewhat.
+
+<p><li>The reserved stack size for the Java application launcher on 
+Win32 platforms (<b>java.exe</b>) has been decreased from 1 MB to 256 KB. 
+This reduction of reserved stack size enables four times more threads than 
+previously can exist simultaneously during runtime before getting an 
+out-of-memory error.
+
+<p><li>The <b>idltojava</b> compiler has been replaced with the 
+new <a href="../guide/rmi-iiop/toJavaPortableUG.html"><b>idlj</b></a> compiler.
+
+<p><li>The <b>Javadoc</b> tool recognizes the new <tt>@docRoot</tt> tag, and 
+a new doclet for generating output in MIF format is available. 
+Several important Javadoc bugs are also fixed in Javadoc 1.3.  See 
+<a href=javadoc/whatsnew-1.3.html><b>What's New in Javadoc 1.3</b></a> 
+for details.
+
+<p><li>The <b>Jar</b> tool now provides for the 
+<a href="../guide/jar/jar.html#JAR Index">indexing of Jar 
+files</a> so that Jar-file contents can be accessed quickly and 
+easily.  The new functionality is invoked with the Jar tool's 
+new <tt>-i</tt> option. See the Jar tool reference pages for 
+details [ <a href="../tooldocs/win32/jar.html">Win32</a> | <a href=../tooldocs/solaris/jar.html>Solaris</a> ].
+
+<p><li>The <b>jarsigner</b> and <b>keytool</b> utilities have a new 
+<tt>-provider</tt> option that can be used to specify the name of cryptographic 
+service provider's master 
+class file when the service provider is not listed in the security 
+properties file.  See the reference pages for 
+<b>jarsigner</b> [<a href=win32/jarsigner.html>Win32</a> | <a href=solaris/jarsigner.html>Solaris</a>] and <b>keytool</b> 
+[<a href=win32/keytool.html>Win32</a> | <a href=solaris/keytool.html>Solaris</a>].  <b>Jarsigner</b> can now verify Netscape-signed 
+Jar files.
+
+<a name=rmic></a>
+<p><li>The <b>rmic</b> tool (the Java RMI stub compiler) supports several 
+new options:
+<ul>
+<li>The <tt>-bootclasspath</tt> option overrides the location of
+        bootstrap class files.  
+<li>The <tt>-extdirs</tt> option overrides the location of installed 
+        extensions.  
+<li>The <tt>-idl</tt> option creates IDL.  
+<li>The <tt>-iiop</tt> option creates stubs for IIOP.  
+<li>The <tt>-sourcepath</tt> option specifies where to find user source files.
+</ul>
+<code>rmic</code> now assumes the equivalent of '<tt>-d .</tt>' for the 
+destination directory if the <tt>-d</tt> option isn't used.
+See the <code>rmic</code> reference pages for details [ <a href=../tooldocs/win32/rmic.html>Win32</a> | <a href=../tooldocs/solaris/rmic.html>Solaris</a> ].
+
+<a name=rmid></a>
+<p><li>The <b>rmid</b> tool (the Java RMI Activation Daemon) now requires a security policy file, by default. For complete details, please refer to the 
+<code>rmid</code> reference pages [ <a href=../tooldocs/win32/rmid.html>Win32</a> | <a href=../tooldocs/solaris/rmid.html>Solaris</a> ].
+
+<p><li>Version 1.3 of the Java 2 SDK contains the new Java 2 Client Virtual 
+Machine with Java HotSpot<sup><font size=-2>TM</font></sup> technology as the default virtual machine 
+for running applications and applets.  The virtual machine implementation 
+from previous versions of the SDK (the Classic VM) is still 
+included with the Java 2 SDK for Win32 platforms. It is not included 
+with the Java 2 Runtime Environment nor with the Java 2 SDK for the 
+Solaris operating environment.  On the Win32 SDK, the classic VM can be 
+invoked by using the <tt>-classic</tt> 
+option when launching applications and applets, as in these examples:
+<blockquote>
+java -classic MyApp
+appletviewer -classic MyApplet.html
+</blockquote>
+If used, the <tt>-classic</tt> option must be the first option 
+appearing in the command.  The <tt>-classic</tt> option also can be used 
+to invoke the Classic VM when using other SDK tools.
+
+<p><li>The version-related options of the <b>Java</b> application 
+launcher have been modified in this release.  The 
+<tt>-version</tt> option provides output in the following format:
+<blockquote><pre>
+java version "&lt;java.version&gt;"
+&lt;java.runtime.name&gt; (build &lt;java.runtime.version&gt;)
+&lt;java.vm.name&gt; (build &lt;java.vm.version&gt;, &lt;java.vm.info&gt;)
+</pre></blockquote>
+The parts in angular brackets, such as <tt>&lt;java.version&gt;</tt>, are 
+values of the indicated system properties.  New option 
+<tt>-showversion</tt> is similar to <tt>-version</tt>, except that 
+it continues after displaying the version information so that it 
+can be used when launching an application.
+<blockquote><pre>
+java -showversion MyApp
+</pre></blockquote>
+
+<p><li>The <b>javaw</b> application launcher normally launches an 
+application on Win32 platforms without displaying a console window as does the 
+<b>java</b> application launcher. The <b>javaw</b> launcher has been 
+modified so that it will now display a window with error messages 
+in the event that an application fails to launch.  Previously, 
+<b>javaw</b> would not display an error dialog box when an application 
+failed to launch which made it difficult to determine the cause of 
+the problem.
+</ul>
+</blockquote>
+
+<HR SIZE=3 NOSHADE>
+
+<TABLE BORDER="0" WIDTH="100%">
+<TR VALIGN=TOP>
+
+<TD>
+<FONT SIZE="-2">
+   <A HREF="../relnotes/SMICopyright.html">Copyright</A> &#169; 1995-2000
+   <A HREF="http://www.sun.com/">Sun Microsystems, Inc.</A>
+    All Rights Reserved.</FONT>
+   <br>
+   <br>
+
+   <FONT SIZE="-1">
+   <a href="mailto:docs@java.sun.com">Feedback</a> 
+   </FONT>
+</TD>
+
+<TD ALIGN=RIGHT>
+   <IMG SRC="../images/sunlogo64x30.gif" ALT="Sun" BORDER=0 WIDTH=64 HEIGHT=30>
+   <BR>
+   <BR>
+   <FONT SIZE="+1">
+   <i>Java Software</i>
+   </FONT>
+</TD>
+
+</TR>
+</TABLE>
+<pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+  </body>
+</html>
+ 
+
