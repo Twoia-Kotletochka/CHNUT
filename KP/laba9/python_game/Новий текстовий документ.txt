@@ -1,0 +1,148 @@
+import socket
+import threading
+import random
+
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server.bind(("127.0.0.1", 5555))
+server.listen(5)
+
+users = []
+d = {}
+
+p1 = 0
+p2 = 0
+def send_message2(data, user_self):
+    if len(users) == 2:
+        if len(d) == 2:
+            p1 = int(d[users[a]])
+            p2 = int(d[users[b]])
+            game2(p1,p2,users)
+
+def send_message(data, user_self):
+    p1 = 0
+    p2 = 0
+    p3 = 0
+    if len(users) == 3:
+        if len(d) == 3:
+            p1 = int(d[users[0]])
+            p2 = int(d[users[1]])
+            p3 = int(d[users[2]])
+            game(p1,p2,p3,users)
+
+
+def listen_user(user):
+    try:
+        data = user.recv(2048)
+        text = data.decode("utf-8")
+        d[user] = text
+        send_message(data, user)
+
+    except:
+        user.close()
+        for u in users:
+            if u == user:
+                users.remove(u)
+
+
+def start():
+    while True:
+        socket_user, adress_user = server.accept()
+        users.append(socket_user)
+        thread_for_user = threading.Thread(target=listen_user, args= (socket_user,))
+        thread_for_user.start()
+
+
+def game2(p1, p2,users):
+        if p1 == p2:
+            print("Нічия!")
+        elif p1 == 1 and p2 == 2:
+            print("Грвець A переміг!")
+        elif p1 == 1 and p2 == 3:
+            print("Гравець B переміг!")
+        elif p1 == 3 and p2 == 1:
+            print("Гравець A переміг!")
+        elif p1 == 3 and p2 == 2:
+            print("Гравець B переміг!")
+        elif p1 == 2 and p2 == 1:
+            print("Гравець B переміг!")
+        elif p1 == 2 and p2 == 3:
+            print("Гравець B переміг!")
+
+def game(p1, p2, p3, users):
+    a = 0
+    b = 0
+    c = 0
+    if p1 == p2 and p1 == p3 and p2 == p3:
+        users[0].send("НІЧИЯ!".encode("utf-8"))
+        users[1].send("НІЧИЯ!".encode("utf-8"))
+        users[2].send("НІЧИЯ!".encode("utf-8"))
+    if (p1 + p2 + p3) == 6:
+        users[0].send("КАША".encode("utf-8"))
+        users[1].send("КАША".encode("utf-8"))
+        users[2].send("КАША".encode("utf-8"))
+    if p1 == 1 and p2 == 2:
+        a = 1
+    if p1 == 1 and p2 == 3:
+        b = 1
+    if p1 == 3 and p2 == 1:
+        a = 1
+    if p1 == 3 and p2 == 2:
+        b = 1
+    if p1 == 2 and p2 == 1:
+        b = 1
+    if p1 == 2 and p2 == 3:
+        b = 1
+
+    if p1 == 1 and p3 == 2:
+        a = 1
+    if p1 == 1 and p3 == 3:
+        c = 1
+    if p1 == 3 and p3 == 1:
+        a = 1
+    if p1 == 3 and p3 == 2:
+        c = 1
+    if p1 == 2 and p3 == 1:
+        c = 1
+    if p1 == 2 and p3 == 3:
+        a = 1
+
+    if p3 == 1 and p2 == 2:
+        c = 1
+    if p3 == 1 and p2 == 3:
+        b = 1
+    if p3 == 3 and p2 == 1:
+        c = 1
+    if p3 == 3 and p2 == 2:
+        b = 1
+    if p3 == 2 and p2 == 1:
+        b = 1
+    if p3 == 2 and p2 == 3:
+        с = 1
+    if a >= 1:
+        users[0].send("Ви перемогли!".encode("utf-8"))
+        users[1].send("Ви програли ;(".encode("utf-8"))
+        users[2].send("Ви програли ;(".encode("utf-8"))
+    if b >= 1:
+        users[0].send("Ви програли ;(".encode("utf-8"))
+        users[1].send("Ви перемогли!".encode("utf-8"))
+        users[2].send("Ви програли ;(".encode("utf-8"))
+    if c >= 1:
+        users[0].send("Ви програли ;(".encode("utf-8"))
+        users[1].send("Ви програли ;(".encode("utf-8"))
+        users[2].send("Ви перемогли!".encode("utf-8"))
+    if a == 1 and b == 1:
+        a = 1
+        b = 2
+        game2(a, b,users)
+    elif a == 1 and c == 1:
+        a = 1
+        c = 3
+        game2(a, c,users)
+    elif b == 1 and c == 1:
+        b = 2
+        c = 3
+        game2(b, c,users)
+
+
+if __name__ == '__main__':
+    start()

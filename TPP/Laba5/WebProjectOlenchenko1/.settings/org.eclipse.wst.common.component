@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="WebProjectOlenchenko1">
+        <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
+        <dependent-module archiveName="derby.jar" deploy-path="/WEB-INF/lib/" handle="module:/resource/derby/derby">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <property name="context-root" value="WebProjectOlenchenko1"/>
+        <property name="java-output-path" value="/WebProjectOlenchenko1/build/classes"/>
+    </wb-module>
+</project-modules>

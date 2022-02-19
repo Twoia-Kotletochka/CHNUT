@@ -1,0 +1,19 @@
+d: 
+cd D:\CHNTU\mereshi\laba9\python_game
+
+
+python client.py
+
+
+    if a == 1 and b == 1:
+        users[0].send("Ви перемогли!".encode("utf-8"))
+        users[1].send("Ви перемогли!".encode("utf-8"))
+        users[2].send("Ви програли ;(".encode("utf-8"))
+    elif a == 1 and c == 1:
+        users[0].send("Ви перемогли!".encode("utf-8"))
+        users[1].send("Ви програли ;(".encode("utf-8"))
+        users[2].send("Ви перемогли!".encode("utf-8"))
+    elif b == 1 and c == 1:
+        users[0].send("Ви програли ;(".encode("utf-8"))
+        users[1].send("Ви перемогли!".encode("utf-8"))
+        users[2].send("Ви перемогли!".encode("utf-8"))

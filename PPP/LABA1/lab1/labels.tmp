@@ -1,0 +1,29 @@
+<ASSEMBLER_INFO>
+ <VERSION>2.1.42</VERSION>
+ <DEVICE>ATmega8515</DEVICE>
+ <WORKING_DIR>D:\CHNTU\AVR\AVR_for_IKS\project\lab1</WORKING_DIR>
+ <INCLUDE_PATH>
+  <DIR>C:\Program Files (x86)\Atmel\AVR Tools\AvrAssembler2\Appnotes</DIR>
+ </INCLUDE_PATH>
+ <SOURCE_FILE>D:\CHNTU\AVR\AVR_for_IKS\project\lab1\lab1.asm</SOURCE_FILE>
+ <INCLUDED_FILES>
+  <FILE>C:\Program Files (x86)\Atmel\AVR Tools\AvrAssembler2\Appnotes\m8515def.inc</FILE>
+ </INCLUDED_FILES>
+ <OBJECT_FILES>
+  <FILE>D:\CHNTU\AVR\AVR_for_IKS\project\lab1\lab1.obj</FILE>
+ </OBJECT_FILES>
+ <HEX_FILES>
+  <FILE>D:\CHNTU\AVR\AVR_for_IKS\project\lab1\lab1.hex</FILE>
+ </HEX_FILES>
+ <OUTPUT_FILES>
+  <FILE>D:\CHNTU\AVR\AVR_for_IKS\project\lab1\lab1.map</FILE>
+ </OUTPUT_FILES>
+ <LABELS>
+  <Init><FILE>D:\CHNTU\AVR\AVR_for_IKS\project\lab1\lab1.asm</FILE><LINE>64</LINE></Init>
+  <Infinite_loop><FILE>D:\CHNTU\AVR\AVR_for_IKS\project\lab1\lab1.asm</FILE><LINE>81</LINE></Infinite_loop>
+  <long_delay><FILE>D:\CHNTU\AVR\AVR_for_IKS\project\lab1\lab1.asm</FILE><LINE>159</LINE></long_delay>
+  <long_loop><FILE>D:\CHNTU\AVR\AVR_for_IKS\project\lab1\lab1.asm</FILE><LINE>168</LINE></long_loop>
+  <short_delay><FILE>D:\CHNTU\AVR\AVR_for_IKS\project\lab1\lab1.asm</FILE><LINE>175</LINE></short_delay>
+  <short_loop><FILE>D:\CHNTU\AVR\AVR_for_IKS\project\lab1\lab1.asm</FILE><LINE>179</LINE></short_loop>
+ </LABELS>
+</ASSEMBLER_INFO>

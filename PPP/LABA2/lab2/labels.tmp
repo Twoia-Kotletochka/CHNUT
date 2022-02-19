@@ -1,0 +1,32 @@
+<ASSEMBLER_INFO>
+ <VERSION>2.1.42</VERSION>
+ <DEVICE>ATmega8515</DEVICE>
+ <WORKING_DIR>D:\CHNTU\AVR\LABA2\lab2</WORKING_DIR>
+ <INCLUDE_PATH>
+  <DIR>C:\Program Files (x86)\Atmel\AVR Tools\AvrAssembler2\Appnotes</DIR>
+ </INCLUDE_PATH>
+ <SOURCE_FILE>D:\CHNTU\AVR\LABA2\lab2\Lab2.asm</SOURCE_FILE>
+ <INCLUDED_FILES>
+  <FILE>C:\Program Files (x86)\Atmel\AVR Tools\AvrAssembler2\Appnotes\m8515def.inc</FILE>
+ </INCLUDED_FILES>
+ <OBJECT_FILES>
+  <FILE>D:\CHNTU\AVR\LABA2\lab2\lab2.obj</FILE>
+ </OBJECT_FILES>
+ <HEX_FILES>
+  <FILE>D:\CHNTU\AVR\LABA2\lab2\lab2.hex</FILE>
+ </HEX_FILES>
+ <OUTPUT_FILES>
+  <FILE>D:\CHNTU\AVR\LABA2\lab2\lab2.map</FILE>
+ </OUTPUT_FILES>
+ <LABELS>
+  <Init><FILE>D:\CHNTU\AVR\LABA2\lab2\Lab2.asm</FILE><LINE>59</LINE></Init>
+  <Infinite_loop><FILE>D:\CHNTU\AVR\LABA2\lab2\Lab2.asm</FILE><LINE>87</LINE></Infinite_loop>
+  <Loop1><FILE>D:\CHNTU\AVR\LABA2\lab2\Lab2.asm</FILE><LINE>93</LINE></Loop1>
+  <long_delay><FILE>D:\CHNTU\AVR\LABA2\lab2\Lab2.asm</FILE><LINE>120</LINE></long_delay>
+  <loop><FILE>D:\CHNTU\AVR\LABA2\lab2\Lab2.asm</FILE><LINE>105</LINE></loop>
+  <Loop2><FILE>D:\CHNTU\AVR\LABA2\lab2\Lab2.asm</FILE><LINE>107</LINE></Loop2>
+  <long_loop><FILE>D:\CHNTU\AVR\LABA2\lab2\Lab2.asm</FILE><LINE>129</LINE></long_loop>
+  <short_delay><FILE>D:\CHNTU\AVR\LABA2\lab2\Lab2.asm</FILE><LINE>136</LINE></short_delay>
+  <short_loop><FILE>D:\CHNTU\AVR\LABA2\lab2\Lab2.asm</FILE><LINE>140</LINE></short_loop>
+ </LABELS>
+</ASSEMBLER_INFO>

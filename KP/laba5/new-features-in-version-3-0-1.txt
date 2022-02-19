@@ -1,0 +1,32 @@
+new features of hk-telnet-server in version 3.0.1
+
+1 - download file in telnet environment with ( hkdownload ) command
+
+2 - command line start | stop server
+
+3 - block ip
+
+4 - block all ip and allow one | multi ip
+
+5 - start up telnet server service
+
+----------------------------------------------
+
+for block ip please right click on main form of hk-telnet-server
+
+and 
+
+select ( set blocked ip )
+
+----------------------------------------------
+
+for use hk-telnet-server in command line
+
+please type in command line ( hk-telnet-server.exe help )
+
+for example :
+
+hk-telnet-server.exe help
+
+hk-telnet-server.exe start 6666
+

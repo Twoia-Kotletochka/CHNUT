@@ -1,0 +1,37 @@
+<ASSEMBLER_INFO>
+ <VERSION>2.1.42</VERSION>
+ <DEVICE>ATmega8515</DEVICE>
+ <WORKING_DIR>D:\CHNTU\AVR\RGR\rgr_asm</WORKING_DIR>
+ <INCLUDE_PATH>
+  <DIR>C:\Program Files (x86)\Atmel\AVR Tools\AvrAssembler2\Appnotes</DIR>
+ </INCLUDE_PATH>
+ <SOURCE_FILE>D:\CHNTU\AVR\RGR\rgr_asm\rgr_asm.asm</SOURCE_FILE>
+ <INCLUDED_FILES>
+  <FILE>C:\Program Files (x86)\Atmel\AVR Tools\AvrAssembler2\Appnotes\m8515def.inc</FILE>
+ </INCLUDED_FILES>
+ <OBJECT_FILES>
+  <FILE>D:\CHNTU\AVR\RGR\rgr_asm\rgr_asm.obj</FILE>
+ </OBJECT_FILES>
+ <HEX_FILES>
+  <FILE>D:\CHNTU\AVR\RGR\rgr_asm\rgr_asm.hex</FILE>
+ </HEX_FILES>
+ <OUTPUT_FILES>
+  <FILE>D:\CHNTU\AVR\RGR\rgr_asm\rgr_asm.map</FILE>
+ </OUTPUT_FILES>
+ <LABELS>
+  <Init><FILE>D:\CHNTU\AVR\RGR\rgr_asm\rgr_asm.asm</FILE><LINE>69</LINE></Init>
+  <Infinite_loop><FILE>D:\CHNTU\AVR\RGR\rgr_asm\rgr_asm.asm</FILE><LINE>144</LINE></Infinite_loop>
+  <long_delay><FILE>D:\CHNTU\AVR\RGR\rgr_asm\rgr_asm.asm</FILE><LINE>234</LINE></long_delay>
+  <TIM1_COMPA><FILE>D:\CHNTU\AVR\RGR\rgr_asm\rgr_asm.asm</FILE><LINE>149</LINE></TIM1_COMPA>
+  <Next_iterate><FILE>D:\CHNTU\AVR\RGR\rgr_asm\rgr_asm.asm</FILE><LINE>209</LINE></Next_iterate>
+  <Dec_enc_counter><FILE>D:\CHNTU\AVR\RGR\rgr_asm\rgr_asm.asm</FILE><LINE>185</LINE></Dec_enc_counter>
+  <Incr_enc_counter><FILE>D:\CHNTU\AVR\RGR\rgr_asm\rgr_asm.asm</FILE><LINE>178</LINE></Incr_enc_counter>
+  <Encoder_as_button><FILE>D:\CHNTU\AVR\RGR\rgr_asm\rgr_asm.asm</FILE><LINE>192</LINE></Encoder_as_button>
+  <Incr_state><FILE>D:\CHNTU\AVR\RGR\rgr_asm\rgr_asm.asm</FILE><LINE>199</LINE></Incr_state>
+  <Decr_state><FILE>D:\CHNTU\AVR\RGR\rgr_asm\rgr_asm.asm</FILE><LINE>205</LINE></Decr_state>
+  <Led_action><FILE>D:\CHNTU\AVR\RGR\rgr_asm\rgr_asm.asm</FILE><LINE>219</LINE></Led_action>
+  <long_loop><FILE>D:\CHNTU\AVR\RGR\rgr_asm\rgr_asm.asm</FILE><LINE>242</LINE></long_loop>
+  <short_delay><FILE>D:\CHNTU\AVR\RGR\rgr_asm\rgr_asm.asm</FILE><LINE>252</LINE></short_delay>
+  <short_loop><FILE>D:\CHNTU\AVR\RGR\rgr_asm\rgr_asm.asm</FILE><LINE>256</LINE></short_loop>
+ </LABELS>
+</ASSEMBLER_INFO>
