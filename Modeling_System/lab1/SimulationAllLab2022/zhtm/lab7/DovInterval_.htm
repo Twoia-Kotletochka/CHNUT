@@ -1,0 +1,235 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1251">
+<meta name=Generator content="Microsoft Word 11 (filtered)">
+<title>Однофакторний експеримент на одному рівні</title>
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:"MS Mincho";
+	panose-1:2 2 6 9 4 2 5 8 3 4;}
+@font-face
+	{font-family:"\@MS Mincho";
+	panose-1:0 0 0 0 0 0 0 0 0 0;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-indent:36.85pt;
+	font-size:14.0pt;
+	font-family:"Times New Roman";}
+h1
+	{margin-top:0cm;
+	margin-right:36.85pt;
+	margin-bottom:12.0pt;
+	margin-left:56.95pt;
+	text-align:center;
+	text-indent:0cm;
+	page-break-before:always;
+	font-size:14.0pt;
+	font-family:Arial;
+	color:maroon;
+	text-transform:uppercase;}
+h2
+	{margin-top:12.0pt;
+	margin-right:39.7pt;
+	margin-bottom:3.0pt;
+	margin-left:112.1pt;
+	text-indent:-1.0cm;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:Arial;}
+h3
+	{margin-top:12.0pt;
+	margin-right:39.7pt;
+	margin-bottom:3.0pt;
+	margin-left:138.4pt;
+	text-indent:-31.2pt;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:Arial;}
+h4
+	{margin-top:12.0pt;
+	margin-right:39.7pt;
+	margin-bottom:3.0pt;
+	margin-left:139.15pt;
+	text-indent:-45.35pt;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:Arial;
+	font-style:italic;}
+p.a, li.a, div.a
+	{margin-top:6.0pt;
+	margin-right:0cm;
+	margin-bottom:6.0pt;
+	margin-left:0cm;
+	text-align:right;
+	font-size:14.0pt;
+	font-family:"Times New Roman";}
+p.aCxSpFirst, li.aCxSpFirst, div.aCxSpFirst
+	{margin-top:6.0pt;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:0cm;
+	margin-bottom:.0001pt;
+	text-align:right;
+	font-size:14.0pt;
+	font-family:"Times New Roman";}
+p.aCxSpMiddle, li.aCxSpMiddle, div.aCxSpMiddle
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:right;
+	font-size:14.0pt;
+	font-family:"Times New Roman";}
+p.aCxSpLast, li.aCxSpLast, div.aCxSpLast
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:6.0pt;
+	margin-left:0cm;
+	text-align:right;
+	font-size:14.0pt;
+	font-family:"Times New Roman";}
+@page Section1
+	{size:595.3pt 841.9pt;
+	margin:2.0cm 42.5pt 2.0cm 3.0cm;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0cm;}
+ul
+	{margin-bottom:0cm;}
+-->
+</style>
+
+</head>
+
+<body lang=RU>
+
+<div class=Section1>
+
+<h3 style='margin-top:12.0pt;margin-right:36.85pt;margin-bottom:3.0pt;
+margin-left:36.85pt;text-indent:0cm'><a name="_Toc316415032"><span lang=UK>Однофакторний
+експеримент на одному рівні</span></a></h3>
+
+<p class=MsoNormal><span lang=UK>Експерименти на одному рівні проводять з метою
+оцінки значення функції відгуку для даного значення фактору. Невідоме значення
+функції відгуку визначається за результатами серії із n експериментів шляхом
+знаходження середнього значення цих результатів.</span></p>
+
+<p class=MsoNormal><span lang=UK>Отримане таким чином значення функції відгуку називають
+крапковою оцінкою, від слова крапка</span>, <span lang=UK>тобто графічно це
+значення відображається крапкою. </span></p>
+
+<p class=MsoNormal><span lang=UK>У випадку, якщо експериментів проведено дуже
+багато, то отримане середнє буде представляти значення функції відгуку досить
+точно. Це пов’язано з тим, що дисперсія середнього у n раз менше дисперсії
+початкових випадкових величин, де n - кількість повторних експериментів..</span></p>
+
+<p class=MsoNormal><span lang=UK>При вибірках малого об’єму крапкова оцінка
+може значно відрізнятись від дійсного значення оцінюваної величини. З цієї
+причини при невеликих вибірках прийнято користуватися інтервальними оцінками. У
+цьому випадку значення функції відгуку визначається довірчим інтервалом, який
+задає діапазон, з якого може приймати значення функція відгуку, «від… до…». </span></p>
+
+<p class=MsoNormal><span lang=UK>Для того щоб правильно спланувати кількість
+експериментів одно факторного експерименту, потрібно знати, як це значення
+впливає на ширину довірчого інтервалу.</span></p>
+
+<h4 style='margin-top:12.0pt;margin-right:36.85pt;margin-bottom:3.0pt;
+margin-left:40.2pt;text-indent:0cm'><a name="_Toc316415033"><span lang=UK>Довірчий
+інтервал</span></a></h4>
+
+<p class=MsoNormal><span lang=UK>Довірчий інтервал визначається двома числами –
+кінцями інтервалу. Границі інтервалу обчислюються таким чином, щоб цей інтервал
+охоплював дійсне значення оцінюваної величини із заданою імовірністю.</span></p>
+
+<p class=MsoNormal><span lang=UK> Імовірність, з якою довірчий інтервал охоплює
+істинне значення  величини, називають довірчою імовірністю, або надійністю.</span></p>
+
+<p class=MsoNormal><span lang=UK>Ширину довірчого інтервалу можна знайти, якщо
+відомий закон розподілення для випадкової величини середнього значення.  Виходячи
+з того, що середнє значення визначається на підставі суми випадкових величин,
+що незначно відрізняються одна від одної, ця величина підпорядковується
+нормальному закону (теорема Ляпунова).</span></p>
+
+<p class=MsoNormal><span lang=UK>Дисперсію середнього значення можна знайти,
+обрахувавши дисперсію результатів експериментів <sub><img width=45 height=30
+src="DovInterval_.files/image001.gif"></sub></span>.</p>
+
+<p class=a>                            <span lang=UK><sub><img width=113
+height=33 src="DovInterval_.files/image002.gif"></sub></span>                                                     <span
+lang=UK>(1)</span></p>
+
+<p class=MsoNormal><span lang=UK>Для нормального розподілення відомо, що з
+імовірністю &#947; випадкова величина попадає в діапазон </span></p>
+
+<p class=a><span lang=UK><sub><img width=96 height=34
+src="DovInterval_.files/image003.gif"></sub>         </span>         <span
+lang=UK>                                               (</span>2<span lang=UK>)</span></p>
+
+<p class=MsoNormal><span lang=UK>де     m – математичне очікування випадкової
+величини відгуку;</span></p>
+
+<p class=MsoNormal><span lang=UK>         &#963; – середньоквадратичне
+відхилення;</span></p>
+
+<p class=MsoNormal><span lang=UK>         &#947; –  довірча імовірність;</span></p>
+
+<p class=MsoNormal><span lang=UK>         t<sub>&#947;</sub> – число, для якого
+подвійне значення функції Лапласа буде дорівнювати &#947;. </span></p>
+
+<p class=MsoNormal><span lang=UK>Для імовірності &#947; = 0.95, t<sub>&#947;</sub>
+= 1.96. </span>Д<span lang=UK>ля &#947; = 0.99</span>, <span lang=UK>t<sub>&#947;</sub>
+= 2.57. Для інших ймовірностей це число можна знайти  в таблицях функції
+Лапласа.</span><span lang=UK> </span><span lang=UK>За звичай приймають &#947; =
+0.95.</span></p>
+
+<p class=MsoNormal><span lang=UK>Таким чином, якщо знайдено середнє значення функції
+відгуку </span><i><span lang=UK style='font-size:16.0pt'>y<sub>ср</sub></span></i><span
+lang=UK>, і відома дисперсія результатів експерименту, то можна стверджувати,
+що з імовірністю &#947; істинне значення <i>у</i> знаходиться у діапазоні</span></p>
+
+<p class=a><span lang=UK><sub><img width=332 height=39
+src="DovInterval_.files/image004.gif"></sub>         </span>                   <span
+lang=UK>(</span>3<span lang=UK>)</span></p>
+
+<p class=MsoNormal><span lang=UK>Границі цього діапазону і задають довірчий інтервал
+для </span><i><span lang=UK style='font-size:16.0pt'>у</span></i><span lang=UK>.</span></p>
+
+<p class=MsoNormal><span lang=UK>Формула для обчислення половини ширини
+довірчого інтервалу набуває такого вигляду </span></p>
+
+<p class=a><span lang=UK><sub><img width=165 height=47
+src="DovInterval_.files/image005.gif"></sub>                                          (4)</span></p>
+
+<p class=MsoNormal><span lang=UK>Із цієї формули випливає, що ширина довірчого
+інтервалу збільшується пропорційно квадратному кореню із дисперсії експерименту
+і звужується пропорційно квадратному кореню із кількості експериментів. Отже,
+якщо ми хочемо зменшити ширину інтервалу вдвічі, потрібно провести у 4 рази
+більше експериментів. </span></p>
+
+<p class=MsoNormal><span lang=UK>Слід мати на увазі, що величину t<sub>&#947; </sub>можна
+знаходити у відповідності з функцією Лапласа тільки при об’ємах вибірки більших
+30. Це пов’язано з тим, що оцінка дисперсії експерименту D<sub>эксп</sub> по
+вибірці малого розміру буде неточною. Тому, при малих вибірках, для визначення
+t<sub>&#947;</sub> потрібно використовувати критичні значення розподілення
+Ст’юдента для n-1 числа степенів свободи, рівні значимості, який дорівнює
+1-&#947; і двосторонній критичній області. Це призводить до розширення
+довірчого інтервалу. Так при  95% надійності і об’ємі вибірки 30 коефіцієнт t<sub>&#947;
+</sub>дорівнює 2.05, а при об’ємі вибірки 10 стає рівним 2.23. Тобто при малих
+об’ємах вибірки, ширина довірчого інтервалу при зменшенні числа експериментів
+буде збільшуватись швидше, ніж корінь квадратний із об’єму вибірки. </span></p>
+
+<p class=MsoNormal><span lang=UK>Таким чином, число експериментів в серії може
+бути вибрано виходячи з потрібної точності отриманих результатів із урахуванням
+дисперсії експерименту.</span></p>
+
+</div>
+
+</body>
+
+</html>

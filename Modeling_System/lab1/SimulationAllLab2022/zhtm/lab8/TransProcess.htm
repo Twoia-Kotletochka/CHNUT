@@ -1,0 +1,199 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1251">
+<meta name=Generator content="Microsoft Word 11 (filtered)">
+<title>Перехідні процеси у СМО</title>
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:"MS Mincho";
+	panose-1:2 2 6 9 4 2 5 8 3 4;}
+@font-face
+	{font-family:"Times New Roman CYR";
+	panose-1:2 2 6 3 5 4 5 2 3 4;}
+@font-face
+	{font-family:"\@MS Mincho";
+	panose-1:0 0 0 0 0 0 0 0 0 0;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-indent:35.45pt;
+	font-size:14.0pt;
+	font-family:"Times New Roman";}
+h1
+	{margin-top:0cm;
+	margin-right:39.7pt;
+	margin-bottom:18.0pt;
+	margin-left:148.95pt;
+	text-align:center;
+	text-indent:85.0pt;
+	page-break-before:always;
+	font-size:14.0pt;
+	font-family:Arial;
+	color:maroon;
+	text-transform:uppercase;}
+h2
+	{margin-top:18.0pt;
+	margin-right:39.7pt;
+	margin-bottom:12.0pt;
+	margin-left:36.0pt;
+	text-indent:0cm;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:Arial;}
+h3
+	{margin-top:12.0pt;
+	margin-right:39.7pt;
+	margin-bottom:6.0pt;
+	margin-left:164.2pt;
+	text-indent:-110.2pt;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:Arial;
+	font-style:italic;}
+h4
+	{margin-top:12.0pt;
+	margin-right:39.7pt;
+	margin-bottom:6.0pt;
+	margin-left:32.4pt;
+	text-indent:-32.4pt;
+	page-break-after:avoid;
+	font-size:12.0pt;
+	font-family:Arial;}
+p.MsoTitle, li.MsoTitle, div.MsoTitle
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:center;
+	font-size:14.0pt;
+	font-family:"Times New Roman";}
+p.a, li.a, div.a
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-indent:36.85pt;
+	font-size:14.0pt;
+	font-family:"Times New Roman";}
+span.1
+	{font-family:"MS Mincho";}
+@page Section1
+	{size:595.3pt 841.9pt;
+	margin:2.0cm 42.5pt 2.0cm 3.0cm;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0cm;}
+ul
+	{margin-bottom:0cm;}
+-->
+</style>
+
+</head>
+
+<body lang=RU>
+
+<div class=Section1>
+
+<h2 style='margin-right:-4.1pt'><a name="_Toc318820771"></a><a
+name="_Toc182545892"></a><a name="_Toc131673815"><span lang=UK
+style='color:black'>Перехідні процеси у СМО</span></a></h2>
+
+<p class=a>СМО відносяться до динамічних систем і, отже, при вивченні цих
+систем слід розрізняти сталий режим роботи (для реальних СМО він зазвичай рано
+чи пізно настає) і перехідний процес. Так, наприклад, черга в простішій СМО
+спочатку дорівнює 0, а через деякий час починає змінюватись навколо деякого
+середнього значення. Перші заявки у системі чекають на обслуговування недовго,
+навіть при великому завантаженні системи, а для заявок, які з’явилися пізніше,
+середній час очікування може бути досить великим.</p>
+
+<p class=a>Досліджувати перехідні процеси аналітично, як правило, не вдається
+через складність диференціальних рівнянь, що описують поведінку системи в
+перехідному режимі. Проте, ці режими є інтересними для практики.  Перш за все,
+вони цікаві для систем, які працюють недовго, і не встигають досягти сталого
+режиму. Але навіть при вивченні сталих режимів, інформація про тривалість
+перехідного процесу  корисна, оскільки дозволяє  визначити момент часу, з якого
+слід почати збирати інформацію про сталий режим. Таким чином, проблема побудови
+моделей, що дозволяють оцінити характер перехідних процесів шляхом 
+моделювання, є досить актуальною.</p>
+
+<h3 style='margin-top:12.0pt;margin-right:39.7pt;margin-bottom:3.0pt;
+margin-left:36.85pt;text-indent:0cm'><a name="_Toc318820772"></a><a
+name="_Toc182545893"></a><a name="_Toc131673816"><span lang=UK>Методика
+отримання експериментальних даних про перехідний процес</span></a></h3>
+
+<p class=a>Під час спостереження за роботою однієї СМО важко встановити 
+закономірності, характерні для перехідних процесів. Це пов’язано із сильними
+флуктуаціями змінної,  що нас цікавить, наприклад, довжини черги. Але якщо
+одночасно запустити багато паралельно працюючих моделей, і спостерігати за
+змінами усередненого по всіх моделях значення параметру, то вплив флуктуацій
+буде ослаблено, і будуть виявлені закономірності характерні для перехідного
+режиму.</p>
+
+<p class=a>Маючи засоби для моделювання псевдопаралельних процесів, вирішити
+задачу виявлення перехідного процесу достатньо легко. Для цього можна одночасно
+моделювати роботу декількох однакових систем і проводити усереднення змінної,
+яка нас цікавить. Чим більше таких систем буде паралельно працювати, тим менш
+помітними будуть флуктуації, і тим виразніше будуть виявлятися закономірності
+перехідного процесу. Надійність результатів, одержаних при цьому, залежить
+тільки від потужності комп'ютера і часу, виділеного на проведення
+експериментів. </p>
+
+<p class=MsoNormal><span style='font-family:"Times New Roman CYR"'>Таким чином
+можна запропонувати наступну методику </span>оцінки параметрів перехідного
+процесу для середньої довжини черги<span style='font-family:"Times New Roman CYR"'>.
+Створюється велика кількість однакових моделей, які одночасно стартують і
+паралельно працюють у віртуальному модельному часі, єдиному для всіх моделей.
+Кожна з моделей на невеликому відрізку часу (інтервал накопичення або
+дискретизації) збирає поточну інформацію про довжину черги і наприкінці цього
+відрізку часу визначає середнє значення черги на цьому інтервалі, реалізуючі
+таким чином усереднення у часі (рисунок 1). </span></p>
+
+<p class=MsoNormal align=center style='text-align:center;text-indent:0cm;
+text-autospace:none'><span style='font-family:"Times New Roman CYR"'><img
+width=643 height=308 src="TransProcess.files/image001.jpg"></span></p>
+
+<p class=MsoTitle><span lang=UK>Рисунок 1– Усереднювання значень довжини черги
+за часом у межах однієї  реалізації</span></p>
+
+<p class=MsoNormal style='text-autospace:none'>Послідовність середніх значень,
+отриманих у ході експерименту, не дає уявлення про характер перехідного
+процесу, але дозволяє провести дискретизацію процесу. Усереднення ж
+результатів, отриманих на кожному  інтервалу накопичення, по всіх реалізаціях
+дозволяє отримати послідовність середніх значень довжини черги для кожного
+інтервалу, що дасть уявлення про характер перехідного процесу (рисунок 2). </p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-family:"Times New Roman CYR"'>Інтервал
+накопичення може бути як-завгодно малим, але в його суттєвому зменшенні нема
+потреби, якщо у перехідному процесі нема високочастотних складових.  </span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span style='font-family:"Times New Roman CYR"'>Для
+отриманої послідовності можна знайти функцію регресії і таким чином отримати
+аналітичний опис перехідного процесу.</span></p>
+
+<p class=MsoNormal align=center style='text-align:center;text-indent:0cm;
+text-autospace:none'><span class=longtext><span lang=EN-US style='font-size:
+10.0pt;background:white'><img width=637 height=187
+src="TransProcess.files/image002.jpg"></span></span></p>
+
+<p class=MsoTitle><span lang=UK>Рисунок 2 – Результати  усереднювання середньої
+довжини черги по реалізаціях</span></p>
+
+<p class=a>В прикладі, який розглядався, зміна характеристики СМО (довжина
+черги) була пов’язана із часом. Проте таке можливо не завжди. </p>
+
+<p class=a style='text-autospace:none'>Наприклад, якщо досліджувати перехідний
+процес для часу очікування в черзі, то його потрібно пов'язувати не з часом, а
+з номером заявки. Тоді,  в результаті усереднення по реалізаціях, буде отримана
+залежність середнього часу очікування в черзі від номера заявки.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+</div>
+
+</body>
+
+</html>

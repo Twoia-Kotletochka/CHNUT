@@ -1,0 +1,299 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1251">
+<meta name=Generator content="Microsoft Word 11 (filtered)">
+<title>Пошук екстремуму за допомогою чисел Фібоначчі</title>
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:"MS Mincho";
+	panose-1:2 2 6 9 4 2 5 8 3 4;}
+@font-face
+	{font-family:"\@MS Mincho";
+	panose-1:0 0 0 0 0 0 0 0 0 0;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-indent:35.45pt;
+	font-size:14.0pt;
+	font-family:"Times New Roman";}
+h1
+	{margin-top:0cm;
+	margin-right:39.7pt;
+	margin-bottom:18.0pt;
+	margin-left:148.95pt;
+	text-align:center;
+	text-indent:85.0pt;
+	page-break-before:always;
+	font-size:14.0pt;
+	font-family:Arial;
+	color:maroon;
+	text-transform:uppercase;}
+h2
+	{margin-top:18.0pt;
+	margin-right:39.7pt;
+	margin-bottom:12.0pt;
+	margin-left:36.0pt;
+	text-indent:0cm;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:Arial;}
+h3
+	{margin-top:12.0pt;
+	margin-right:39.7pt;
+	margin-bottom:6.0pt;
+	margin-left:164.2pt;
+	text-indent:-110.2pt;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:Arial;
+	font-style:italic;}
+h4
+	{margin-top:12.0pt;
+	margin-right:39.7pt;
+	margin-bottom:6.0pt;
+	margin-left:32.4pt;
+	text-indent:-32.4pt;
+	page-break-after:avoid;
+	font-size:12.0pt;
+	font-family:Arial;}
+p.MsoCaption, li.MsoCaption, div.MsoCaption
+	{margin-top:6.0pt;
+	margin-right:2.0cm;
+	margin-bottom:12.0pt;
+	margin-left:0cm;
+	text-align:center;
+	font-size:14.0pt;
+	font-family:"Times New Roman";}
+p.a, li.a, div.a
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-indent:36.85pt;
+	font-size:14.0pt;
+	font-family:"Times New Roman";}
+span.1
+	{font-family:"MS Mincho";}
+span.41
+	{font-family:Arial;
+	font-weight:bold;}
+@page Section1
+	{size:595.3pt 841.9pt;
+	margin:2.0cm 42.5pt 2.0cm 3.0cm;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0cm;}
+ul
+	{margin-bottom:0cm;}
+-->
+</style>
+
+</head>
+
+<body lang=RU>
+
+<div class=Section1>
+
+<h3 style='margin-top:12.0pt;margin-right:39.7pt;margin-bottom:3.0pt;
+margin-left:36.85pt;text-indent:0cm'><span lang=UK>Пошук екстремуму за
+допомогою чисел Фібоначчі</span></h3>
+
+<p class=a style='text-autospace:none'><span lang=UK>Планування експериментів
+для пошуку оптимального значення цільової функції, яка залежить від однієї
+змінної, полягає в наступному.</span></p>
+
+<p class=a style='text-autospace:none'><span lang=UK>Перш за все,  задається
+точність, з якою потрібно визначити невідомий параметр. Цю величину
+називатимемо кроком пошуку. </span></p>
+
+<p class=a style='text-autospace:none'><span lang=UK>Потім визначаються границі
+області  пошуку,  всередині якої знаходиться екстремум, причому екстремум
+повинен бути тільки один. Такі функції називають унімодальними. </span></p>
+
+<h4 style='margin-top:12.0pt;margin-right:36.85pt;margin-bottom:3.0pt;
+margin-left:0cm;text-indent:35.4pt'><span lang=UK style='font-size:14.0pt'>Визначення
+границь області пошуку</span></h4>
+
+<p class=a><span lang=UK>Для визначення границь області пошуку слід максимально
+використовувати всю наявну апріорну інформацію про досліджувану систему. В тому
+випадку, якщо границі області  пошуку відразу визначити не вдається, зазвичай
+використовують наступний алгоритм (передбачається, що ми шукаємо мінімум
+цільової функції). </span></p>
+
+<p class=a style='text-autospace:none'><span lang=UK>Вибирається будь-яке
+значення параметра і для нього обчислюється значення цільової функції.</span></p>
+
+<p class=a style='text-autospace:none'><span lang=UK>Значення параметра
+збільшується на величину кроку, обчислюється значення цільової функції в новій
+точці, і порівнюється з її значенням в початковій точці.</span></p>
+
+<p class=a><span lang=UK>Якщо нове значення менше, значить напрямок пошуку
+вибрано правильно і перший етап завершено.</span></p>
+
+<p class=a style='text-autospace:none'><span lang=UK>Якщо нове значення більше
+попереднього, то знак кроку зміни змінної потрібно змінити на протилежний і
+повторити попередні дії. </span></p>
+
+<p class=a><span lang=UK>Якщо ж і в цьому випадку значення цільової функції
+більше, ніж в початковій точці, то це означає, що мінімум знаходиться в
+початковій точці і його шукати вже не потрібно.</span></p>
+
+<p class=a><span lang=UK>В результаті виконання першого етапу, стає відомим
+напрямок пошуку, який задається знаком кроку зміни параметра.</span></p>
+
+<p class=a style='text-autospace:none'><span lang=UK>Далі починається пошук
+другої границі області пошуку.</span></p>
+
+<p class=a style='text-autospace:none'><span lang=UK>В розглянутому нижче
+алгоритмі пошуку, відстань від початкової точки до точки, де проводиться
+експеримент, поступово збільшується з кожним новим кроком. Для формування цих
+відстаней зручно використовувати числа Фібоначчі. </span></p>
+
+<p class=MsoNormal><span lang=UK>Особливість   чисел   Фібоначчі   полягає  в
+тому, що кожне  наступне, починаючи з 3-го, дорівнює сумі двох попередніх:</span></p>
+
+<p class=MsoNormal><span lang=UK>&nbsp;</span></p>
+
+<p class=a><span lang=UK>                         1  1  2  3  5  8  13  21  34 
+55  89  . . .</span></p>
+
+<p class=MsoNormal><span lang=UK>&nbsp;</span></p>
+
+<p class=a><span lang=UK>Пошук починають з числа 3. В результаті, значення
+цільової функції будуть відомі для точок 0,1 і 3, оскільки точка 0 відповідає
+початковій, а в точці 1 проводився експеримент для визначення напрямку пошуку.</span></p>
+
+<p class=a style='text-autospace:none'><span lang=UK>На наступному кроці точка
+1 стає початковою і перетворюється в 0. Точка 3 приймає значення 2 (2=3-1), а
+новий експеримент проводять в точці&nbsp;5.</span></p>
+
+<p class=a style='text-autospace:none'><span lang=UK>Якщо функція продовжує
+зменшуватися, то далі 2 перетворюється на 0, 5 на 3 і новий експеримент
+проводять в точці&nbsp;8.</span></p>
+
+<p class=a style='text-autospace:none'><span lang=UK>Наступний  експеримент
+буде проводитись у точці, віддаленій на 13 кроків від початкової, причому, слід
+враховувати, що абсолютна координата початкової точки постійно зміщується,
+тобто в процесі пошуку правої границі ми постійно змінюємо і ліву границю.</span></p>
+
+<p class=a><span lang=UK>Так продовжується до тих пір, поки значення цільової
+функції не почне зростати, рисунок </span>1<span lang=UK>. </span></p>
+
+<p class=a><span lang=UK>Зверніть увагу, послідовність розмірів інтервалів між
+точками, де проводилися експерименти, відповідає послідовності чисел Фібоначчі</span></p>
+
+<p class=a style='text-indent:0cm'><span lang=UK><img width=642 height=301
+src="Fibo.files/image001.jpg"></span></p>
+
+<p class=MsoCaption><span lang=UK>Рисунок </span>1 <span lang=UK> – Результати
+визначення меж області пошуку </span></p>
+
+<p class=MsoNormal><span lang=UK>На рисунку </span>1<span lang=UK> зображена
+ситуація, коли в точці 13 цільова функція почала зростати. В результаті, на
+краях інтервалу значення функції стали більше, ніж посередині. Проте мінімум
+може бути розташований як у лівій частині інтервалу – варіант кривої “а” на
+рисунку 9.3, так і в правій – варіант кривої  “b” на тому ж рисунку.</span></p>
+
+<h4 style='margin-top:12.0pt;margin-right:36.85pt;margin-bottom:3.0pt;
+margin-left:36.85pt;text-indent:0cm'><span lang=UK style='font-size:14.0pt'>Пошук
+екстремуму у середині області</span></h4>
+
+<p class=a><span lang=UK>Після визначення границь області пошуку, можна
+починати пошук точки екстремуму всередині цієї області. Пошук полягає в
+поступовому звуженні знайденої області пошуку. Тут також дуже зручно
+використовувати числа Фібоначчі. Алгоритм фактично є продовженням попереднього
+і полягає в наступному.</span></p>
+
+<p class=a style='text-autospace:none'><span lang=UK>Усередині області пошуку
+проводять додаткові експерименти так, щоб значення цільової функції були відомі
+в обох точках, які відповідають числам Фібоначчі, з яких складається число, що
+визначає праву границю пошуку. Для рисунка </span><span lang=EN-US>1</span><span
+lang=UK> це точки 5 і 8. Як правило, для однієї з цих точок результат вже
+визначений, залишається протестувати іншу точку. В результаті, область пошуку
+розбивається на 3 інтервали, ширина кожного з яких пропорційна деякому числу
+Фібоначчі.</span></p>
+
+<p class=a><span lang=UK>Після цього порівнюють значення функції відгуку для
+двох точок всередині області пошуку, і приймають рішення про звуження цієї
+області, приймаючи в якості нової границі області пошуку точку з більшим
+значенням функції відгуку. Якщо значення цільової функції для точок всередині
+області пошуку однакові, то відкидається і лівий і правий інтервали. Ширина
+нової області пошуку у будь-якому випадку знову виходить рівною числу
+Фібоначчі.</span></p>
+
+<p class=a style='text-autospace:none'><span lang=UK>У випадку, якщо змінюється
+ліва границя області пошуку, слід відкоригувати значення чисел Фібоначчі для
+границь області і точок всередині неї. Всі ці числа повинні бути зменшені на
+старе значення лівої границі. В результаті, лівій границі знову відповідатиме
+число 0.</span></p>
+
+<p class=a style='text-autospace:none'><span lang=UK>Якщо ширина хоча б одного
+з інтервалів більше одиниці, процес повторюється.</span></p>
+
+<p class=a style='text-autospace:none'><span lang=UK>В іншому випадку
+обирається точка з мінімальним значенням цільової функції, яка і буде точкою
+оптимуму. </span></p>
+
+<p class=a style='text-autospace:none'><span lang=UK>Розглянемо приклад пошуку
+у середині області, як продовження попереднього. </span><span lang=UK>Нехай
+функція відгуку має вигляд показаний на рисунку </span>2<span lang=UK>, варіант
+b.</span></p>
+
+<p class=a style='text-autospace:none'><span lang=UK><img width=565 height=327
+src="Fibo.files/image002.jpg"></span></p>
+
+<p class=MsoCaption><span lang=UK>Рисунок </span><span lang=EN-US>2</span><span
+lang=UK> – Пошук в межах області </span></p>
+
+<p class=a style='text-autospace:none'><span lang=UK>Після визначення меж
+області пошуку ми маємо результати експериментів у точках 0, 5 та 13. Ширина
+області дорівнює числу Фібоначчі 13, що складається з 5 та 8, тому наступні
+експерименти слід проводити в точках 5 та 8. Але в точці 5 експеримент вже
+проведено. Залишається провести експеримент в точці 8, результат якого має
+позначку I. </span></p>
+
+<p class=a style='text-autospace:none'><span lang=UK>Цей результат менший ніж у
+точці 5, тому ліву границю пошуку переносимо у точку 5 и змінюємо систему
+координат.</span></p>
+
+<p class=a style='text-autospace:none'><span lang=UK>Ширина нової області
+дорівнює числу 8, що складається з 3 та 5. У точці 3 (до зміни координат це
+була точка 8) експеримент вже проведено. Залишається провести експеримент в точці
+5, результат якого має позначку II. </span></p>
+
+<p class=a style='text-autospace:none'><span lang=UK>Цей результат більший, ніж
+у точці 3, тому змінюємо праву границю і переносимо її до точки 5. Систему
+координат при цьому змінювати не потрібно.</span></p>
+
+<p class=a style='text-autospace:none'><span lang=UK>Ширина звуженої області
+дорівнює числу 5, що складається з 2 та 3. У точці 3 експеримент вже проведено.
+Залишається провести експеримент в точці 2, результат якого має позначку III.</span></p>
+
+<p class=a style='text-autospace:none'><span lang=UK>Цей результат більший, ніж
+у точці 3, тому змінюємо ліву границю і переносимо її до точки 3 і знову
+змінюємо систему координат.</span></p>
+
+<p class=a style='text-autospace:none'><span lang=UK>Ширина нової області
+дорівнює числу 3 і в усіх точках області, окрім точки 2, експерименти вже
+проведено. Залишається провести останній експеримент і визначитися з мінімумом.
+На рисунку результат експерименту має позначку IV і тут відгук має мінімальне
+значення, але могло статися й так, що відгук у цій точці мав значення більше
+ніж у точці 2, тоді б саме це значення параметру було б оптимальним.</span></p>
+
+<p class=a style='text-autospace:none'><span lang=UK>Як бачимо,  основна
+перевага методу Фібоначчі полягає в тому, що на кожному кроці використовуються
+дані попереднього кроку, що скорочує число експериментів.</span></p>
+
+<p class=MsoNormal><span lang=UK>&nbsp;</span></p>
+
+</div>
+
+</body>
+
+</html>

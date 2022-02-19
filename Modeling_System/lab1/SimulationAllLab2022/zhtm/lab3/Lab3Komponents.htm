@@ -1,0 +1,286 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1251">
+<meta name=Generator content="Microsoft Word 15 (filtered)">
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:"MS Mincho";
+	panose-1:2 2 6 9 4 2 5 8 3 4;}
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:"\@MS Mincho";
+	panose-1:2 2 6 9 4 2 5 8 3 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-indent:36.85pt;
+	font-size:14.0pt;
+	font-family:"Times New Roman","serif";}
+h1
+	{mso-style-link:"Заголовок 1 Знак";
+	margin-top:0cm;
+	margin-right:36.85pt;
+	margin-bottom:12.0pt;
+	margin-left:10.05pt;
+	text-align:center;
+	text-indent:0cm;
+	page-break-before:always;
+	font-size:14.0pt;
+	font-family:"Arial","sans-serif";
+	color:maroon;
+	text-transform:uppercase;}
+h2
+	{mso-style-link:"Заголовок 2 Знак";
+	margin-top:18.0pt;
+	margin-right:39.7pt;
+	margin-bottom:12.0pt;
+	margin-left:65.2pt;
+	text-indent:-1.0cm;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:"Arial","sans-serif";}
+h3
+	{mso-style-link:"Заголовок 3 Знак";
+	margin-top:12.0pt;
+	margin-right:39.7pt;
+	margin-bottom:3.0pt;
+	margin-left:66.7pt;
+	text-indent:-31.2pt;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:"Arial","sans-serif";}
+h4
+	{mso-style-link:"Заголовок 4 Знак";
+	margin-top:12.0pt;
+	margin-right:39.7pt;
+	margin-bottom:3.0pt;
+	margin-left:95.6pt;
+	text-indent:-45.35pt;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:"Arial","sans-serif";
+	font-style:italic;}
+span.1
+	{mso-style-name:"Заголовок 1 Знак";
+	mso-style-link:"Заголовок 1";
+	font-family:"Arial","sans-serif";
+	color:maroon;
+	text-transform:uppercase;
+	font-weight:bold;}
+span.2
+	{mso-style-name:"Заголовок 2 Знак";
+	mso-style-link:"Заголовок 2";
+	font-family:"Arial","sans-serif";
+	font-weight:bold;}
+span.3
+	{mso-style-name:"Заголовок 3 Знак";
+	mso-style-link:"Заголовок 3";
+	font-family:"Arial","sans-serif";
+	font-weight:bold;}
+span.4
+	{mso-style-name:"Заголовок 4 Знак";
+	mso-style-link:"Заголовок 4";
+	font-family:"Arial","sans-serif";
+	font-weight:bold;
+	font-style:italic;}
+.MsoChpDefault
+	{font-family:"Calibri","sans-serif";}
+.MsoPapDefault
+	{margin-bottom:8.0pt;
+	line-height:107%;}
+@page WordSection1
+	{size:595.3pt 841.9pt;
+	margin:2.0cm 42.5pt 2.0cm 3.0cm;}
+div.WordSection1
+	{page:WordSection1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0cm;}
+ul
+	{margin-bottom:0cm;}
+-->
+</style>
+
+</head>
+
+<body lang=RU>
+
+<div class=WordSection1>
+
+<h2 style='margin-right:2.85pt'><a name="_Toc391283688"><span lang=UK>4.1  </span><span
+lang=UK>Компоненти фреймворка Simulation для побудови моделі</span></a><span
+lang=UK> </span></h2>
+
+<p class=MsoNormal><span lang=UK>Фреймворк </span><span lang=EN-US>Simulation</span><span
+lang=EN-US> </span><span lang=UK>надає розробнику моделі достатньо ефективні
+засоби побудови складових частин моделі. Класи </span><span lang=EN-US>ChooseRandom,
+ChooseData, Histo, DiscretHisto, Diagram, Painter</span><span lang=EN-US> </span><span
+lang=UK>уже розглядалися у першій лабораторній роботі. Ці класи спрощують
+створення інтерфейсу користувача і використовуються для генерації випадкових
+величин, накопичення та відображення статистичної інформації.</span></p>
+
+<p class=MsoNormal><span lang=UK>Нижче розглянуто ще декілька класів, що можна
+використовувати для створення складових частин моделі.</span></p>
+
+<h3 style='margin-left:70.9pt;text-indent:-34.05pt'><a name="_Toc391283689"><span
+lang=UK style='font-size:12.0pt'>4.1.1 </span><span lang=UK style='font-size:
+13.0pt'>Клас Actor</span></a></h3>
+
+<p class=MsoNormal><span lang=UK>На базі цього класу можна створювати класи для
+активних компонентів моделі. Активним компонентом є такий компонент моделі,
+який має поведінку, що характеризується затримками у часі або затримками до
+виконання деякої умови. Клас передбачає реалізацію таких правила дії у класах
+спадкоємцях у вигляді методів </span><span lang=DE>rule</span>()<span lang=UK>.</span></p>
+
+<p class=MsoNormal><span lang=UK>У наступній лабораторній роботі цей клас
+розглядається докладніше.</span></p>
+
+<h3 style='margin-left:70.9pt;text-indent:-34.05pt'><a name="_Toc391283690"></a><a
+name="_Toc181594847"><span lang=UK style='font-size:12.0pt'>4.1.2 </span><span
+lang=UK style='font-size:13.0pt'>Клас MultiActor</span></a></h3>
+
+<p class=MsoNormal><span lang=UK>Цей клас використовується для створення груп
+однакових об'єктів</span> (<span lang=UK>бригад</span>)<span lang=UK>, що
+моделюють багатоканальну обробку в СМО. При такому обслуговуванні група
+паралельно працюючих приладів працює з однією чергою. Для налаштування об’єкту
+цього класу потрібно визначити значення двох атрибутів:</span></p>
+
+<p class=MsoNormal><span lang=EN-US>nClone</span><span lang=UK> – визначає
+кількість копій.</span></p>
+
+<p class=MsoNormal><span lang=EN-US>original</span><span lang=UK> – містить
+посилання на зразок, з якого будуть зроблені копії.</span></p>
+
+<p class=MsoNormal><span lang=UK>Для цього використовуються методи </span><span
+lang=EN-US>setNumberOfClones</span><span lang=UK>(</span><span lang=EN-US>int</span><span
+lang=UK>) та </span><span lang=EN-US>setOriginal</span><span lang=UK>(</span><span
+lang=EN-US>Actor</span><span lang=UK>)</span></p>
+
+<p class=MsoNormal><span lang=UK>Клас успадковує клас Actor і у ньому визначено
+метод </span><span lang=DE>rule</span>()<span lang=UK>.  Під час виконання
+правил дії об’єкта створюються копії оригіналу шляхом клонування і ці копії
+одразу записуються у стартовий список диспетчера.</span></p>
+
+<p class=MsoNormal><span lang=UK>Для клонування використовується метод clone()
+класу Actor. Тут слід зазначити, що операція клонування в Java є операцією
+поверхневого копіювання (shallowCopy). При такому копіюванні створюється копія
+області пам'яті, що містить інформацію про об'єкт. Внаслідок цього ми отримуємо
+копії значень для примітивних типів і типу String, а для решти класів отримуємо
+не копії об’єктів, а копії посилань на об'єкти. Таким чином, поля всіх клонованих
+об'єктів посилаються на ті самі об'єкти, що визначаються  зразком.</span></p>
+
+<p class=MsoNormal><span lang=UK>При клонуванні акторів, що забезпечують
+багатоканальну обробку, такий спосіб клонування нас майже влаштовує. Всі клони
+будуть посилатися на ту саму чергу, на той самий генератор випадкових чисел, у всіх
+буде той самий диспетчер. Імена клонів можна робити різними. Єдиний недолік
+поверхневого копіюванні в тім, що всі клони будуть мати той самий семафор
+(об'єкт класу </span><span lang=EN-US>process.</span><span lang=UK>Semaphore).
+Для того, щоб усунути цей недолік, у класі Actor перевизначений базовий метод
+clone(), у якому для кожного клону створюється власний об'єкт класу </span><span
+lang=EN-US>process.</span><span lang=UK>Semaphore. </span></p>
+
+<p class=MsoNormal><span lang=UK>Цей метод слід перевизначити і у спадкоємців
+класу</span><span lang=UK> </span><span lang=DE>Actor</span><span lang=UK>,
+якщо вони мають посилання на об’єкти, що мають бути унікальними для кожної
+копії.</span></p>
+
+<h3 style='margin-left:70.9pt;text-indent:-34.05pt'><a name="_Toc391283691"><span
+lang=UK style='font-size:12.0pt'>4.1.3 </span><span lang=UK style='font-size:
+13.0pt'>Клас </span></a><span lang=EN-US style='font-size:13.0pt'>Dispatcher</span></h3>
+
+<p class=MsoNormal><span lang=UK>Клас </span><span lang=EN-US>Dispatcher </span><span
+lang=UK>визначає властивості і поведінку об’єкту, що забезпечує синхронізацію
+роботи у часі об’єктів типу </span><span lang=EN-US>Actor, </span><span
+lang=UK>а також керування модельним часом. Докладно клас буде розглянуто у
+наступній лабораторній роботі</span></p>
+
+<h3 style='margin-left:70.9pt;text-indent:-34.05pt'><a name="_Toc391283692"></a><a
+name="_Toc181594840"><span lang=UK style='font-size:12.0pt'>4.1.4 </span><span
+lang=UK style='font-size:13.0pt'>Клас QueueForTransactions</span></a></h3>
+
+<p class=MsoNormal><span lang=UK>Клас використовується для моделювання черг у
+системах масового обслуговування. Для збереження об’єктів, що потрапляють до
+черги, клас має поле </span><span lang=EN-US>queue</span><span lang=EN-US> </span><span
+lang=UK>типу </span><span lang=DE>ArrayDeque</span><span lang=UK>, але робота з
+цим об’єктом забезпечується через методи класу QueueForTransactions.</span></p>
+
+<p class=MsoNormal><span lang=UK>Об'єкти класу QueueForTransactions можуть
+відображати свій стан у вигляді діаграми, використовуючи об'єкти класу
+paint.Painter, накопичувати інформацію про поточні розміри черги у об’єкті
+класу </span><span lang=EN-US>DiscretHisto</span><span lang=UK>, а також виводити
+інформацію про зміну розмірів до протоколу роботи моделі.</span></p>
+
+<p class=MsoNormal><span lang=UK> Для виконання цих завдань черга має мати
+посилання на диспетчера, під керівництвом якого працює імітаційна модель, щоб
+отримувати значення поточного часу. </span></p>
+
+<p class=MsoNormal><span lang=UK>Окрім того, для відображення стану черги на діаграмі,
+цій черзі слід передати посилання на об'єкт класу paint.Painter, за допомогою
+методу setPainter(Painter). А цей об'єкт класу paint.Painter, у свою чергу, має
+мати посилання на якусь діаграму. </span></p>
+
+<p class=MsoNormal><span lang=UK>А для накопичення статистичних даних про
+розмір черги їй слід передати посилання на об'єкт класу </span><span
+lang=EN-US>DiscretHisto</span><span lang=EN-US> </span><span lang=UK>за
+допомогою методу </span><span lang=EN-US>setDiscretHisto</span><span lang=UK>(</span><span
+lang=EN-US>DiscretHisto</span><span lang=UK>).</span></p>
+
+<p class=MsoNormal><a name="_Toc181594842"><span lang=UK>Для об’єктів даного
+класу використовується також поняття максимального розміру, вище якого черга
+заповнена бути не може. У випадку спроби додавання об'єкта до заповненої черги
+формується подія QueueOverflowEvent, але об'єкт не додається. Доступ до
+неприйнятої події можна отримати через об’єкт класу QueueOverflowEvent,
+створивши слухача даної події.</span></a></p>
+
+<p class=MsoNormal><span lang=UK>Перед початком роботи моделі черга повинна
+бути проініціалізована.  Для цього використовується метод init(). Під час
+ініціалізації черга очищається, а об'єкт «painter», якщо він існує, і існує
+діаграма, на якій буде зображуватися черга, переводиться у положення з
+координатами 0,0. </span></p>
+
+<p class=MsoNormal><span lang=UK>Зміна розмірів черги відбувається за допомогою
+методів addLast(Object), remove(Object), removeFirst().</span></p>
+
+<p class=MsoNormal><span lang=UK>Особливість методу addLast(Object) полягає в
+тому, що в ньому аналізується ступінь заповнення черги й, у випадку
+неможливості її подальшого збільшення, формується подія QueueOverflowEvent.</span></p>
+
+<p class=MsoNormal><span lang=UK>Особливість методів додавання й видалення
+об'єктів полягає в тому, що перед зміною черги та після її зміни викликається
+один з наступних методів - beforeAdd, beforeRemove, afterAdd, afterRemove,
+залежно від виконаної операції.  </span></p>
+
+<p class=MsoNormal><span lang=UK>Методи beforeAdd, beforeRemove виводять до
+протоколу диспетчера інформацію про новий розмір черги, а також забезпечують
+відображення стану черги перед її зміною, та накопичення інформації у гістограмі,
+якщо визначені необхідні для цього об’єкти. Ці методи мають спеціфікатор
+доступу </span><span lang=EN-US>protected</span><span lang=EN-US> </span><span
+lang=UK>і тому можуть бути довизначені у спадкоємців класу.</span></p>
+
+<h3 style='margin-left:70.9pt;text-indent:-34.05pt'><a name="_Toc181594843"></a><a
+name="_Toc391283693"><span lang=UK style='font-size:12.0pt'>4.1.5 </span><span
+lang=UK style='font-size:13.0pt'>Клас Store</span></a></h3>
+
+<p class=MsoNormal><span lang=UK>Цей клас схожий на попередній. Різниця полягає
+у тому, що об’єкти цього класу накопичують значення типу </span><span
+lang=EN-US>double</span><span lang=EN-US> </span><span lang=UK>у полі </span><span
+lang=EN-US>size</span><span lang=UK>. Так само як і у попередньому класі
+можливо відображення поточного значення </span><span lang=EN-US>size</span><span
+lang=UK> на діаграмі і накопичення цих значень у гістограмі, тільки гістограма
+має бути типа </span><span lang=EN-US>Histo</span><span lang=UK>. Перед
+початком роботи об’єкт слід проініціалізувати.</span></p>
+
+<p class=MsoNormal><span lang=UK>&nbsp;</span></p>
+
+</div>
+
+</body>
+
+</html>

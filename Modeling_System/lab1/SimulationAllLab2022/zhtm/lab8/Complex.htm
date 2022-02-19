@@ -1,0 +1,308 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1251">
+<meta name=Generator content="Microsoft Word 11 (filtered)">
+<title>Опис програмного комплексу для лабораторної роботи</title>
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:"MS Mincho";
+	panose-1:2 2 6 9 4 2 5 8 3 4;}
+@font-face
+	{font-family:"\@MS Mincho";
+	panose-1:0 0 0 0 0 0 0 0 0 0;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-indent:35.45pt;
+	font-size:14.0pt;
+	font-family:"Times New Roman";}
+h1
+	{margin-top:0cm;
+	margin-right:39.7pt;
+	margin-bottom:18.0pt;
+	margin-left:148.95pt;
+	text-align:center;
+	text-indent:85.0pt;
+	page-break-before:always;
+	font-size:14.0pt;
+	font-family:Arial;
+	color:maroon;
+	text-transform:uppercase;}
+h2
+	{margin-top:18.0pt;
+	margin-right:39.7pt;
+	margin-bottom:12.0pt;
+	margin-left:36.0pt;
+	text-indent:0cm;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:Arial;}
+h3
+	{margin-top:12.0pt;
+	margin-right:39.7pt;
+	margin-bottom:6.0pt;
+	margin-left:164.2pt;
+	text-indent:-110.2pt;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:Arial;
+	font-style:italic;}
+h4
+	{margin-top:12.0pt;
+	margin-right:39.7pt;
+	margin-bottom:6.0pt;
+	margin-left:32.4pt;
+	text-indent:-32.4pt;
+	page-break-after:avoid;
+	font-size:12.0pt;
+	font-family:Arial;}
+p.MsoTitle, li.MsoTitle, div.MsoTitle
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:center;
+	font-size:14.0pt;
+	font-family:"Times New Roman";}
+p.a, li.a, div.a
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-indent:36.85pt;
+	font-size:14.0pt;
+	font-family:"Times New Roman";}
+span.1
+	{font-family:"MS Mincho";}
+span.41
+	{font-family:Arial;
+	font-weight:bold;}
+p.a0, li.a0, div.a0
+	{margin-top:6.0pt;
+	margin-right:0cm;
+	margin-bottom:6.0pt;
+	margin-left:0cm;
+	border:none;
+	padding:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+p.a1, li.a1, div.a1
+	{margin-top:6.0pt;
+	margin-right:0cm;
+	margin-bottom:6.0pt;
+	margin-left:0cm;
+	text-align:justify;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:"Times New Roman";}
+p.a2, li.a2, div.a2
+	{margin-top:6.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:36.85pt;
+	text-indent:0cm;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:Arial;
+	font-weight:bold;}
+@page Section1
+	{size:595.3pt 841.9pt;
+	margin:2.0cm 42.5pt 2.0cm 3.0cm;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0cm;}
+ul
+	{margin-bottom:0cm;}
+-->
+</style>
+
+</head>
+
+<body lang=RU>
+
+<div class=Section1>
+
+<h2 style='margin-top:12.0pt;margin-right:0cm;margin-bottom:6.0pt;margin-left:
+36.0pt'><a name="_Toc319860488"><span lang=UK>Опис програмного комплексу для
+лабораторної роботи</span></a></h2>
+
+<p class=a><span lang=UK>Програмний комплекс для даної лабораторної роботи
+створювався у вигляді пакету toLab7_TransProcess виходячи з того, що він повинен
+забезпечувати:</span></p>
+
+<p class=MsoNormal style='margin-left:0cm;text-indent:36.0pt'><span lang=UK
+style='font-family:Symbol'>- </span><span lang=UK>налаштування параметрів
+моделі – кількість паралельно працюючих систем, довжину інтервалу усереднення
+за часом, число інтервалів усереднення, параметри вхідного потоку і процесу
+обслуговування;</span></p>
+
+<p class=MsoNormal style='margin-left:0cm;text-indent:36.0pt'><span lang=UK
+style='font-family:Symbol'>- </span><span lang=UK>накопичення, обробку і видачу
+в графічному вигляді середніх значень черги по інтервалам накопичення;</span></p>
+
+<p class=MsoNormal style='margin-left:0cm;text-indent:36.0pt'><span lang=UK
+style='font-family:Symbol'>- </span><span lang=UK>забезпечувати вибір цільової
+функції – сума модулів відхилень або сума квадратів відхилень;</span></p>
+
+<p class=MsoNormal style='margin-left:0cm;text-indent:36.0pt'><span lang=UK
+style='font-family:Symbol'>- </span><span lang=UK>можливість автоматичного
+пошуку параметрів рівняння регресії;</span></p>
+
+<p class=MsoNormal style='margin-left:0cm;text-indent:36.0pt'><span lang=UK
+style='font-family:Symbol'>- </span><span lang=UK>можливість пошуку параметрів
+рівняння регресії вручну;</span></p>
+
+<p class=MsoNormal style='margin-left:0cm;text-indent:36.0pt'><span lang=UK
+style='font-family:Symbol'>- </span><span lang=UK>індикацію значення цільової
+функції та відповідної лінії регресії;</span></p>
+
+<p class=MsoNormal style='margin-left:0cm;text-indent:36.0pt'><span lang=UK
+style='font-family:Symbol'>- </span><span lang=UK>формування та вивід протоколу
+пошуку.</span></p>
+
+<p class=a><span lang=UK>Класи, які безпосередньо пов’язані з виконанням
+лабораторної роботи знаходяться в пакеті toLab7_TransProcess проекту AllSimLab.   </span></p>
+
+<p class=a><span lang=UK>Клас TransGUI реалізує шар подання програми. До складу
+шару подання, окрім компонентів, що забезпечують налаштування параметрів
+моделі, входять компонент TransMonitorView та компонент ParmFinderView.</span></p>
+
+<p class=a><span lang=UK> Компонент TransMonitorView забезпечує настройку
+параметрів та проведення експерименту по визначенню переходного процесу.</span></p>
+
+<p class=a><span lang=UK> Компонент ParmFinderView забезпечує пошук параметрів
+рівняння регресії для перехідного процесу в системі. Початкові дані  об'єкт
+одержує від монітора, а результати обробки виводить на діаграму і в протокол. </span></p>
+
+<h3 style='margin-top:12.0pt;margin-right:39.7pt;margin-bottom:3.0pt;
+margin-left:36.85pt;text-indent:0cm'><a name="_Toc319860489"><span lang=UK>Клас
+TransGUI</span></a><span lang=UK> </span></h3>
+
+<p class=a><span lang=UK>Клас TransGUI реалізує шар подання програми. До складу
+шару подання, окрім компонентів, що забезпечують налаштування параметрів
+моделі, входять компонент TransMonitorView та компонент ParmFinderView.</span></p>
+
+<p class=a><span lang=UK> Компонент TransMonitorView забезпечує настройку
+параметрів та проведення експерименту по визначенню переходного процесу.</span></p>
+
+<p class=a><span lang=UK> Компонент ParmFinderView забезпечує пошук параметрів
+рівняння регресії для перехідного процесу в системі. Початкові дані  об'єкт
+одержує від монітора, а результати обробки виводить на діаграму і в протокол. </span></p>
+
+<p class=a style='text-autospace:none'><span lang=UK>Візуальна композиція класу
+представлена на рисунку </span>1<span lang=UK>. </span></p>
+
+<p class=a style='text-autospace:none'><span lang=UK>&nbsp;</span></p>
+
+<p class=a style='text-indent:0cm;text-autospace:none'><span lang=UK><img
+width=642 height=444 src="Complex.files/image001.jpg"></span></p>
+
+<p class=MsoTitle><span lang=UK style='color:black'>Рисунок </span><span
+style='color:black'>1</span><span lang=UK style='color:black'> - Візуальна
+композиція проекту для виконання лабораторної роботи</span></p>
+
+<p class=a style='text-autospace:none'><span lang=UK>Особливість програмної
+реалізації класу полягає у тому, що тут створюється фабрика моделей  і
+посилання на неї передається монітору. А компоненту ParmFinderView  передається
+посилання на монітор. Окрім того цим компонентам передається посилання на
+діаграму. Таким чином компоненти пов’язуються між собою.</span></p>
+
+<p class=a style='text-autospace:none'><span lang=UK>Процес моделювання
+ініціюється монітором, який за допомогою фабрики створює необхідну кількість
+моделей, після цього періодично отримує від моделей інформацію про середню
+довжину черги, накопичує ці дані і виводить на діаграму.</span></p>
+
+<p class=a style='text-autospace:none'><span lang=UK>Процес пошуку параметрів
+лінії регресії починається після закінчення роботи диспетчера, як реакція на
+подію DispatcherFinishEvent.</span></p>
+
+<h3 style='margin-top:12.0pt;margin-right:39.7pt;margin-bottom:3.0pt;
+margin-left:36.85pt;text-indent:0cm'><a name="_Toc182545905"></a><a
+name="_Toc131673829"></a><a name="_Toc319860490"><span lang=UK>Реалізація шару
+моделі</span></a></h3>
+
+<h4 style='margin-top:12.0pt;margin-right:39.7pt;margin-bottom:3.0pt;
+margin-left:39.7pt;text-indent:0cm'><a name="_Toc319860491"><span lang=UK>Клас
+TransModelFactory</span></a></h4>
+
+<p class=MsoNormal><span lang=UK>Клас фабрики практично нічим не відрізняється
+від класів фабрик, що були розглянуті у попередніх лабораторних застосуваннях.
+Єдина особливість полягає у тому, що класи моделі та візуальної частини, що
+передається до моделі, інші.</span></p>
+
+<h4 style='margin-top:12.0pt;margin-right:39.7pt;margin-bottom:3.0pt;
+margin-left:39.7pt;text-indent:0cm'><span lang=UK>Клас TransModel</span></h4>
+
+<p class=MsoNormal><span lang=UK>Клас TransModel задає структуру моделі і
+забезпечує створення та ініціалізацію її компонентів. Особливість моделі
+полягає у тому, що в якості черги використовується об’єкт класу
+TransProcessQueue, що дозволяє реалізувати у класі моделі інтерфейс I<span
+style='color:black'>TransProcessable. </span> В лістингу 1 наведено реалізації
+методів інтерфейсу IExperimentable в даному класі.</span></p>
+
+<p class=a1><span lang=UK>Лістинг 1 – Реалізація інтерфейсу I<span
+style='color:black'>TransProcessable</span> у класі TransModel </span></p>
+
+<div style='border:solid windowtext 1.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt'>
+
+<p class=a0><span lang=UK>     </span><span lang=UK style='font-size:14.0pt'>public
+void initForTrans(double </span><span lang=UK>finishTime</span><span lang=UK
+style='font-size:14.0pt'>) {</span></p>
+
+<p class=a0><span lang=UK style='font-size:14.0pt'>        gui.getChooseDataFinishTime().setText(String.valueOf(</span><span
+lang=UK>finishTime</span><span lang=UK style='font-size:14.0pt'>));       </span></p>
+
+<p class=a0><span lang=UK style='font-size:14.0pt'>    }  </span></p>
+
+<p class=a0><span lang=UK>     </span><span lang=UK style='font-size:14.0pt'>public
+double getTransResult() {</span></p>
+
+<p class=a0><span lang=UK style='font-size:14.0pt'>        return
+queue.getAvg();</span></p>
+
+<p class=a0><span lang=UK style='font-size:14.0pt'>    }</span></p>
+
+<p class=a0><span lang=UK style='font-size:14.0pt'>    public void
+resetTransAccum() {</span></p>
+
+<p class=a0><span lang=UK style='font-size:14.0pt'>        getQueue().resetAccum(); </span></p>
+
+<p class=a0><span lang=UK style='font-size:14.0pt'>    }</span></p>
+
+</div>
+
+<h3 style='margin-top:12.0pt;margin-right:39.7pt;margin-bottom:3.0pt;
+margin-left:36.85pt;text-indent:0cm'><span lang=UK>Реалізація шару компонентів
+моделі</span></h3>
+
+<p class=MsoNormal><span lang=UK>Шар компонентів моделі представлений класами:</span><span
+lang=UK style='font-size:10.0pt;font-family:"Courier New";color:black'>   </span></p>
+
+<p class=MsoNormal style='margin-left:0cm;text-indent:36.85pt'><span lang=UK
+style='font-family:Symbol'>- </span><span lang=UK>QueueForTransactions, що
+моделює чергу трансакцій;</span></p>
+
+<p class=MsoNormal style='margin-left:0cm;text-indent:36.85pt'><span lang=UK
+style='font-family:Symbol'>- </span><span lang=UK>TransactGenerator, що моделює
+генератор трансакцій;  </span></p>
+
+<p class=MsoNormal style='margin-left:0cm;text-indent:36.85pt'><span lang=UK
+style='font-family:Symbol'>- </span><span lang=UK>Device, що моделює
+обслуговуючий прилад. </span></p>
+
+<p class=MsoNormal><span lang=UK>. </span></p>
+
+<p class=MsoNormal><span lang=UK>&nbsp;</span></p>
+
+</div>
+
+</body>
+
+</html>

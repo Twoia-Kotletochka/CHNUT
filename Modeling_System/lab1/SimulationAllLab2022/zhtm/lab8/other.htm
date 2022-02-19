@@ -1,0 +1,235 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1251">
+<meta name=Generator content="Microsoft Word 11 (filtered)">
+<title>Метод золотого перетину </title>
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:"MS Mincho";
+	panose-1:2 2 6 9 4 2 5 8 3 4;}
+@font-face
+	{font-family:"\@MS Mincho";
+	panose-1:0 0 0 0 0 0 0 0 0 0;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-indent:35.45pt;
+	font-size:14.0pt;
+	font-family:"Times New Roman";}
+h1
+	{margin-top:0cm;
+	margin-right:39.7pt;
+	margin-bottom:18.0pt;
+	margin-left:148.95pt;
+	text-align:center;
+	text-indent:85.0pt;
+	page-break-before:always;
+	font-size:14.0pt;
+	font-family:Arial;
+	color:maroon;
+	text-transform:uppercase;}
+h2
+	{margin-top:18.0pt;
+	margin-right:39.7pt;
+	margin-bottom:12.0pt;
+	margin-left:36.0pt;
+	text-indent:0cm;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:Arial;}
+h3
+	{margin-top:12.0pt;
+	margin-right:39.7pt;
+	margin-bottom:6.0pt;
+	margin-left:164.2pt;
+	text-indent:-110.2pt;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:Arial;
+	font-style:italic;}
+h4
+	{margin-top:12.0pt;
+	margin-right:39.7pt;
+	margin-bottom:6.0pt;
+	margin-left:32.4pt;
+	text-indent:-32.4pt;
+	page-break-after:avoid;
+	font-size:12.0pt;
+	font-family:Arial;}
+p.MsoCaption, li.MsoCaption, div.MsoCaption
+	{margin-top:6.0pt;
+	margin-right:2.0cm;
+	margin-bottom:12.0pt;
+	margin-left:0cm;
+	text-align:center;
+	font-size:14.0pt;
+	font-family:"Times New Roman";}
+p.a, li.a, div.a
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-indent:36.85pt;
+	font-size:14.0pt;
+	font-family:"Times New Roman";}
+span.1
+	{font-family:"MS Mincho";}
+p.a0, li.a0, div.a0
+	{margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:6.0pt;
+	margin-left:0cm;
+	text-align:center;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:"Times New Roman";}
+p.a1, li.a1, div.a1
+	{margin-top:6.0pt;
+	margin-right:0cm;
+	margin-bottom:6.0pt;
+	margin-left:0cm;
+	text-align:right;
+	text-indent:17.85pt;
+	font-size:14.0pt;
+	font-family:"Times New Roman";}
+p.a1CxSpFirst, li.a1CxSpFirst, div.a1CxSpFirst
+	{margin-top:6.0pt;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:0cm;
+	margin-bottom:.0001pt;
+	text-align:right;
+	text-indent:17.85pt;
+	font-size:14.0pt;
+	font-family:"Times New Roman";}
+p.a1CxSpMiddle, li.a1CxSpMiddle, div.a1CxSpMiddle
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:right;
+	text-indent:17.85pt;
+	font-size:14.0pt;
+	font-family:"Times New Roman";}
+p.a1CxSpLast, li.a1CxSpLast, div.a1CxSpLast
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:6.0pt;
+	margin-left:0cm;
+	text-align:right;
+	text-indent:17.85pt;
+	font-size:14.0pt;
+	font-family:"Times New Roman";}
+span.a2
+	{font-family:"MS Mincho";}
+span.a3
+	{font-family:"MS Mincho";}
+@page Section1
+	{size:595.3pt 841.9pt;
+	margin:2.0cm 42.5pt 2.0cm 3.0cm;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0cm;}
+ul
+	{margin-bottom:0cm;}
+-->
+</style>
+
+</head>
+
+<body lang=RU>
+
+<div class=Section1>
+
+<h3 style='margin-top:12.0pt;margin-right:39.7pt;margin-bottom:3.0pt;
+margin-left:36.85pt;text-indent:0cm'><a name="_Toc131673821"></a><a
+name="_Toc318820777"></a><a name="_Toc182545898"><span lang=UK>Метод золотого
+перетину</span></a><span lang=UK> </span></h3>
+
+<p class=a><span lang=UK>Цей метод  відрізняється  від  попереднього  лише
+тим,  що розмір області пошуку не пов’язаний з числом Фібоначчі, але
+співвідношення між інтервалами, на які ділиться область пошуку, повинне
+зберігатися постійним. </span>На рисунку 1 представлено розділення області
+пошуку при застосуванні методу золотого перетину.</p>
+
+<p class=a0><img width=595 height=122 src="other.files/image001.gif"></p>
+
+<p class=MsoCaption>Рисунок 1– Розділення області пошуку при застосуванні
+методу золотого перетину</p>
+
+<p class=MsoNormal>Ширина всієї області на рисунку представлена одиницею. Точки
+всередині області, в яких потрібно провести експерименти, віддалені від границь
+області на відстань х. Після  оцінки результатів експериментів в цих точках,
+один із крайніх інтервалів області буде відкинуто і точки, в яких потрібно буде
+проводити експерименти на наступному кроці пошуку, будуть вже віддалені від
+границі інтервалу на відстань 1-2x. Але відношення довжини цього інтервалу до
+ширини нової області пошуку повинно залишатися незмінним. Тобто</p>
+
+<p class=a1><sub><img width=83 height=48 src="other.files/image002.gif"></sub>                                                      (<span
+lang=EN-US>1</span>)</p>
+
+<p class=a>Із цього відношення отримуємо квадратне рівняння для пошуку x.</p>
+
+<p class=a1>x<sup>2</sup> – 3x + 1 = 0                                      (<span
+lang=EN-US>2</span>)</p>
+
+<p class=a>Розв’язавши це рівняння, отримуємо </p>
+
+<p class=a1>     <span class=a2><span style='font-family:"Times New Roman"'> x
+&#8776; 0.382, 1-x</span></span> &#8776; 0.618,  1-2x &#8776; 0,236                                      (<span
+lang=EN-US>3</span>)</p>
+
+<h3 style='margin-top:12.0pt;margin-right:39.7pt;margin-bottom:3.0pt;
+margin-left:36.85pt;text-indent:0cm'><a name="_Toc318820778"></a><a
+name="_Toc182545899"></a><a name="_Toc131673822"><span lang=UK>Метод дихотом</span></a><span
+lang=UK>ії</span></h3>
+
+<p class=MsoNormal><span lang=UK>Цей метод один із найвідоміших, але не
+найкращий, оскільки він вимагає проведення більшої кількості експериментів в
+порівнянні із попередніми методами. </span>Суть методу полягає в наступному,
+рисунок <span lang=EN-US>2</span>.</p>
+
+<p class=a0><img width=576 height=180 src="other.files/image003.gif"></p>
+
+<p class=MsoCaption>  Рисунок <span lang=EN-US>2</span> – Пошук екстремуму
+методом дихотомії</p>
+
+<p class=a>Область пошуку  ділиться навпіл і з двох сторін від середньої точки,
+на невеликій відстані, яка відповідає необхідній точності визначення значення
+параметра, проводиться два експерименти. На підставі результатів цих дослідів
+робиться висновок про те, де знаходиться екстремум - в лівій або правій
+половині області пошуку, що дозволяє звузити область пошуку в 2 рази. </p>
+
+<p class=MsoNormal>В середині нової області пошуку знову проводять два
+експерименти і так доти поки ширина області пошуку не стане менше заданої
+точності.</p>
+
+<h2 style='margin-right:-4.1pt'><a name="_Toc318820779"></a><a
+name="_Toc182545900"></a><a name="_Toc131673823"><span lang=UK
+style='color:black'>Пошук екстремуму функції кількох змінних</span></a><span
+lang=UK style='color:black'>     </span></h2>
+
+<p class=a><span lang=UK>Існує декілька способів вирішення цієї задачі. </span>Найбільш
+простим із них вважається метод координатного спуску. Суть його полягає в
+наступному.</p>
+
+<p class=a style='text-autospace:none'>Обирається початкова точка для пошуку і,
+починаючи від цієї точки, знаходиться мінімум цільової функції, шляхом зміни
+лише однієї змінної. Вся решта змінних  не міняється. </p>
+
+<p class=a style='text-autospace:none'>Після визначення мінімуму по вибраній
+координаті починається пошук мінімуму по наступній координаті і так далі. Після
+того, як значення цільової функції перестануть змінюватися при переході від
+однієї змінної до іншої, пошук закінчується.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+</div>
+
+</body>
+
+</html>
