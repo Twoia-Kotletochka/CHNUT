@@ -1,0 +1,4 @@
+D:\Visual\PRO\Lab1\Debug\Lab1.exe
+D:\Visual\PRO\Lab1\Debug\Lab1.pdb
+C:\Users\user\Desktop\Lab1\Debug\Lab1.exe
+D:\CHNUT\PRO\lab1\Lab1_\Debug\Lab1.exe
