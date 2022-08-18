@@ -1,0 +1,58 @@
+{
+        "users": [
+                {
+                        "ID": "1",
+                        "login": "qwerty1234",
+                        "password": "qwert",
+                        "rights": "read"
+                },
+                {
+                        "ID": "2",
+                        "login": "mamba",
+                        "password": "12345678",
+                        "rights": "read"
+                },
+                {
+                        "ID": "3",
+                        "login": "poiu",
+                        "password": "vser",
+                        "rights": "read/write"
+                },
+                {
+                        "ID": "4",
+                        "login": "vfaw",
+                        "password": "159ns642f",
+                        "rights": "read"
+                },
+                {
+                        "ID": "5",
+                        "login": "oops",
+                        "password": "ahtung",
+                        "rights": "read/write"
+                },
+                {
+                        "ID": "6",
+                        "login": "weq",
+                        "password": "3123e",
+                        "rights": "read/write"
+                },
+                {
+                        "ID": "7",
+                        "login": "Did",
+                        "password": "123as",
+                        "rights": "read/write"
+                },
+                {
+                        "ID": "8",
+                        "login": "masa",
+                        "password": "3kg",
+                        "rights": "read/write"
+                },
+                {
+                        "ID": "9",
+                        "login": "somua",
+                        "password": "25t",
+                        "rights": "read/write"
+                }
+        ]
+}
